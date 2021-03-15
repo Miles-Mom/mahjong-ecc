@@ -119,8 +119,6 @@ function isMahjong(unlimitedSequences) {
 		combinations.push(combo);
 	}
 
-	console.log("Checking for mahjong from " + combinations.length + " combinations. ")
-
 	//TODO: Now that we support stacked sequences, we could have multiple valid winning hands. We should handle this, and return all valid hands.
 	combos:
 	for (let i=0;i<combinations.length;i++) {

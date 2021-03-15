@@ -79,22 +79,27 @@ class Room {
 		this.addBot = (require("./Room/addBot.js")).bind(this)
 
 		this.getSummary = (function(mahjongClientId, drewOwnTile) {
-			let summary = ""
+			let summary = []
+
 			for (let id in this.gameData.playerHands) {
-				summary += global.stateManager.getClient(id).getNickname()
-				summary += ": "
-				summary += this.gameData.playerHands[id].wind + ", "
+				let item = ""
+				item += global.stateManager.getClient(id).getNickname()
+				item += ": "
+				item += this.gameData.playerHands[id].wind + ", "
 				let points = this.gameData.playerHands[id].score()
 				if (id === mahjongClientId) {
 					points = this.gameData.playerHands[id].score({isMahjong: true, drewOwnTile})
 				}
-				summary += points + " points. "
+				item += points + " points. "
 				if (id === mahjongClientId) {
-					summary += "(Mahjong)"
+					item += "(Mahjong)" + (drewOwnTile !== false)?" - Drew Last Tile":""
+					summary.splice(0, 0, item) //Insert at the start.
 				}
-				summary += "\n"
+				else {
+					summary.push(item)
+				}
 			}
-			return summary
+			return summary.join("\n")
 		}).bind(this)
 
 		let shouldRotateWinds = true
