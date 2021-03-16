@@ -88,9 +88,9 @@ class Room {
 				if (id === mahjongClientId) {
 					points = this.gameData.playerHands[id].score({isMahjong: true, drewOwnTile})
 				}
-				item += points + " points. "
+				item += points + " points"
 				if (id === mahjongClientId) {
-					item += "(Mahjong)" + (drewOwnTile !== false)?" - Drew Last Tile":""
+					item += "(Mahjong)" + drewOwnTile?" - Drew Mahjong Tile (Beta)":""
 					summary.splice(0, 0, item) //Insert at the start.
 				}
 				else {
