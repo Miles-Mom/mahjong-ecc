@@ -23,6 +23,9 @@ function startGame(obj) {
 		if (!isNaN(obj?.settings?.maximumSequences)) {
 			this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))
 		}
+		else {
+			this.state.settings.maximumSequences = 4
+		}
 
 		if (obj?.settings?.botSettings?.canCharleston !== undefined) {
 			this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston

@@ -30,7 +30,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 	let hand = this.gameData.playerHands[key]
 	hand.add(this.gameData.currentTurn.thrown)
 	//wouldMakeMahjong will confirm that the current tile will allow mahjong to happen.
-	let mahjongHand = hand.isMahjong()
+	let mahjongHand = hand.isMahjong(this.state.settings.maximumSequences)
 	let wouldMakeMahjong = !!(mahjongHand);
 
 	hand.remove(this.gameData.currentTurn.thrown)

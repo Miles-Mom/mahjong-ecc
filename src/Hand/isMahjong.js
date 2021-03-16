@@ -99,7 +99,7 @@ function isMahjong(maximumSequences = 4) {
 	let neededPongEquivs = 4
 
 	if (maximumSequences > sequences) {
-		//If we are at the sequence limit, there's no need to add the sequences to the possibilities. 
+		//If we are at the sequence limit, there's no need to add the sequences to the possibilities.
 		allPossibilities = allPossibilities.concat(possibleSequences)
 		neededPongEquivs -= sequences
 	}

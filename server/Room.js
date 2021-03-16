@@ -12,8 +12,6 @@ class Room {
 		this.roomId = this.state.roomId = roomId
 		this.state.settings = this.state.settings || {}
 
-		this.state.settings.maximumSequences = 4
-
 		this.state.settings.charleston = ["across","right","left"] //TODO: This is probably the best default. We want a setting.
 		//TODO: Add a setting for allowing blind passing tiles.
 		//TODO: Add settings for 0/arbitrary number/unlimited sequences. Need to update isCalling for that as well.
@@ -524,7 +522,7 @@ class Room {
 					return client.message(obj.type, "You can't discard when it is not your turn", "error")
 				}
 				else if (placement instanceof Sequence && !placerSequenceOverride) {
-					let sequenceCount = hand.contents.reduce((amount) => {
+					let sequenceCount = hand.contents.reduce((amount, item) => {
 						if (item instanceof Sequence) {return amount++}
 						return amount
 					}, 0)

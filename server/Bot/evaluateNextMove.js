@@ -15,7 +15,7 @@ function evaluateNextMove() {
 
 
 	//Call room.onPlace properly.
-	let placeTiles = (function placeTiles(tiles = [], goMahjong = currentHand.isMahjong()) {
+	let placeTiles = (function placeTiles(tiles = [], goMahjong = currentHand.isMahjong(room.state.settings.maximumSequences)) {
 		console.log(tiles)
 		if (!(tiles instanceof Array)) {tiles = [tiles]}
 		room.onPlace({
@@ -26,7 +26,7 @@ function evaluateNextMove() {
 	}).bind(this)
 
 
-	if (currentHand.isMahjong()) {return placeTiles()} //Go mahjong.
+	if (currentHand.isMahjong(room.state.settings.maximumSequences)) {return placeTiles()} //Go mahjong.
 
 	function computeHandBreakdown(tiles, userWind, customConfig = {}) {
 		tiles = tiles.filter((item) => {return !(item instanceof Pretty)})
@@ -251,7 +251,7 @@ function evaluateNextMove() {
 		//We need to evaluate if we pick up the thrown tile.
 
 		currentHand.add(gameData.currentTurn.thrown)
-		let isMahjong = currentHand.isMahjong()
+		let isMahjong = currentHand.isMahjong(room.state.settings.maximumSequences)
 		let tile = gameData.currentTurn.thrown
 
 		if (isMahjong) {
