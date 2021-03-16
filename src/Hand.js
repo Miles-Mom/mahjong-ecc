@@ -26,6 +26,12 @@ class Hand {
 		this.isMahjong = (require("./Hand/isMahjong.js")).bind(this)
 		this.isCalling = (require("./Hand/isCalling.js")).bind(this)
 
+		Object.defineProperty(this, "placematLength", {
+			get: function getPlacematLength() {
+				if (stateManager?.lastState?.message?.settings?.gameStyle === "american") {return 6}
+				else {return 4}
+			}
+		})
 
 		this.add = (function(obj) {
 			//We will insert the tile where our sorting algorithm would find it most appropriate.
@@ -85,7 +91,7 @@ class Hand {
 			if (switchPlace) {
 				if (placematIndex === -1) {
 					//Moving from hand to placemat.
-					if (this.inPlacemat.length >= 4) {
+					if (this.inPlacemat.length >= this.placematLength) {
 						alert("Placemat is already full. ")
 						return
 					}
@@ -279,9 +285,10 @@ class Hand {
 			classForFirst = classForFirst ?? this.tilePlacemat.firstChild?.className //Don't clear existing class unless classForFirst is ""
 			while (this.tilePlacemat.firstChild) {this.tilePlacemat.firstChild.remove()} //Delete everything currently rendered in the hand.
 
-			for (let i=0;i<4;i++) {
+			for (let i=0;i<this.placematLength;i++) {
 				let tile = this.inPlacemat[i]
 				let elem = document.createElement("img")
+				this.tilePlacemat.appendChild(elem)
 				if (i === 0 && classForFirst) {
 					elem.className = classForFirst
 				}
@@ -299,7 +306,6 @@ class Hand {
 				else {
 					elem.src = "assets/tiles/tile-outline.png"
 				}
-				this.tilePlacemat.appendChild(elem)
 			}
 
 
@@ -314,7 +320,7 @@ class Hand {
 				}
 			}
 			if (tile) {
-				if (this.inPlacemat.length >= 4) {
+				if (this.inPlacemat.length >= this.placematLength) {
 					this.contents.push(this.inPlacemat.pop())
 				}
 				this.inPlacemat.unshift(tile)

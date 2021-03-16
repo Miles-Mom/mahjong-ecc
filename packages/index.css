@@ -15,12 +15,26 @@
 	display: inline-block;
 }
 
+#roomManager #heading {
+	background-color: #24911e;
+}
+
 #roomManager #fourFriendsHeading {
 	font-size: 2.2em;
 	vertical-align: top;
 	margin-left: 0.5em;
 	font-style: italic;
 	color: #ffe100;
+}
+
+#selectChineseMahjong, #selectAmericanMahjong {
+	border-radius: 250000px;
+	font-size: 1.5em;
+	padding: 5px 20px 5px 20px;
+}
+
+#selectChineseMahjong:disabled::before, #selectAmericanMahjong:disabled::before {
+	content: "✓";
 }
 
 #roomManager #roomIdInput, #roomManager #nicknameInput{
@@ -558,8 +572,8 @@ This means that something using bottom is off the page - hence we must use top. 
 	margin-left: calc(var(--vw) * 3);
 	margin-top: 8vh;
 	margin-top: calc(var(--vh) * 8);
-	max-width: 60vw;
-	max-width: calc(var(--vw) * 60);
+	max-width: 50vw;
+	max-width: calc(var(--vw) * 50);
 	max-height: 30vh;
 	max-height: calc(var(--vh) * 30);
 }
@@ -603,8 +617,8 @@ This means that something using bottom is off the page - hence we must use top. 
 
 #gameBoard #proceedButton {
 	position: absolute;
-	right: calc(9.52vh + 12vw);
-	right: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 12));
+	right: calc(9.52vh + 8vw);
+	right: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 8));
 	top: 64vh;
 	top: calc(var(--vh) * 64);
 	width: 10vw;
@@ -657,8 +671,8 @@ This means that something using bottom is off the page - hence we must use top. 
 
 #gameBoard #goMahjongButton {
 	position: absolute;
-	right: calc(9.52vh + 12vw);
-	right: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 12));
+	right: calc(9.52vh + 8vw);
+	right: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 8));
 	top: 70vh;
 	top: calc(var(--vh) * 70);
 	width: 10vw;
@@ -676,14 +690,31 @@ This means that something using bottom is off the page - hence we must use top. 
 	cursor: not-allowed;
 }
 
-
+#instructionBubble {
+	position: absolute;
+	right: calc(9.52vh + 10px + 1vw);
+	right: calc(calc(var(--vh) * 9.52) + 10px + calc(var(--vw) * 1));
+	top: 38vh;
+	top: calc(var(--vh) * 38);
+	background-color: #fdffcb;
+	padding: 10px;
+	border-radius: 10px;
+	width: 20vw;
+	width: calc(var(--vw) * 20);
+	height: 21vh;
+	height: calc(var(--vh) * 21);
+	display: flex;
+	align-items: center;
+	text-align: center;
+	justify-content: center;
+}
 
 #gameBoard #newGameNoLobbyButton {
 	position: absolute;
-	left: calc(9.52vh + 13.5vw);
-	left: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 13.5));
-	top: 67vh;
-	top: calc(var(--vh) * 67);
+	left: calc(9.52vh + 2vw);
+	left: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 2));
+	top: 58vh;
+	top: calc(var(--vh) * 58);
 	width: 10vw;
 	width: calc(var(--vw) * 10);
 	height: 5vh;

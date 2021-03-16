@@ -66,8 +66,10 @@ websocketServer.on('connection', function connection(websocket) {
 			//Admin actions for triggering maintenance.
 
 			//Example:
+			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in 5 minutes to perform a server update. \nIf all goes well, nothing will be lost, and we should be back up within a minute. Your device should automatically reconnect and resume your current game. ")
+
 			//stateManager.callServerSave(password, "update")
-			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends is shutting down to perform a server update. \nIf all goes well, nothing will be lost, and we should be back up within a minute. Your device should automatically reconnect. ")
+			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends is shutting down to perform a server update. \nIf all goes well, your current game should resume within a minute. ")
 
 			//Then apply the update, and start the server loading from the state.
 			//That should probably be done by editing crontab before reboot, then editing back.

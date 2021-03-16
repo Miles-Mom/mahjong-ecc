@@ -8,18 +8,13 @@ function startGame(obj) {
 	else {
 		this.inGame = true
 		this.messageAll([], obj.type, "Game Started", "success")
-		//Build the wall.
-		this.state.seed = this.state.seed || Math.random()
-		this.gameData.wall = new Wall(this.state.seed)
-
-		this.state.hostClientId = this.hostClientId
-		this.state.moves = []
-
-		this.logFile = fs.createWriteStream(path.join(global.stateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
-
-		this.gameData.discardPile = []
 
 		//Assign new settings
+		if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
+			this.state.settings.gameStyle = obj?.settings?.gameStyle
+		}
+		else {this.state.settings.gameStyle = "chinese"}
+
 		if (!isNaN(obj?.settings?.maximumSequences)) {
 			this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))
 		}
@@ -31,6 +26,16 @@ function startGame(obj) {
 			this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston
 		}
 
+		//Build the wall.
+		this.state.seed = this.state.seed || Math.random()
+		this.gameData.wall = new Wall(this.state.seed)
+
+		this.state.hostClientId = this.hostClientId
+		this.state.moves = []
+
+		this.logFile = fs.createWriteStream(path.join(global.stateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
+
+		this.gameData.discardPile = []
 		this.gameData.playerHands = {}
 
 		//Build the player hands.
@@ -92,6 +97,15 @@ function startGame(obj) {
 		this.gameData.currentTurn.turnChoices = new Proxy({}, this.turnChoicesProxyHandler);
 		this.logFile.write(JSON.stringify(this.state) + "\n")
 		this.sendStateToClients()
+
+		//Message East about how to start.
+		if (this.state.settings.gameStyle === "chinese") {
+			stateManager.getClient(this.gameData.currentTurn.userTurn).message("roomActionInstructions", "As East wind, you get to make the first throw. Select one tile and press Proceed.\n\nTo initiate a Charleston, select 3 tiles and hit Proceed.")
+			this.messageAll([this.gameData.currentTurn.userTurn], "roomActionInstructions", "Waiting on East Wind to make a play. ")
+		}
+		else if (this.state.settings.gameStyle === "american") {
+			this.messageAll([], "roomActionInstructions", "TODO: American Mahjong Charleston Desc")
+		}
 	}
 }
 

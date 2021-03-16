@@ -134,6 +134,10 @@ class Room {
 			}
 
 			this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has gone mahjong" , {clientId, speech: "Mahjong"})
+
+			this.messageAll([this.hostClientId], "roomActionInstructions", client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
+			stateManager.getClient(this.hostClientId).message("roomActionInstructions", client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. Press New Game to play again with the same settings. ")
+
 			this.messageAll([], "roomActionMahjong", this.getSummary(clientId, drewOwnTile), "success")
 			this.sendStateToClients()
 		}).bind(this)
@@ -294,6 +298,10 @@ class Room {
 				if (!tile) {
 					console.log("Wall Empty");
 					this.messageAll([], "roomActionWallEmpty", this.getSummary(), "success")
+
+					this.messageAll([this.hostClientId], "roomActionInstructions", "The Wall is empty. \nPress End Game to return everybody to the room screen. ")
+					stateManager.getClient(this.hostClientId).message("roomActionInstructions",  "The Wall is empty. \nPress End Game to return everybody to the room screen. Press New Game to play again with the same settings. ")
+
 					this.gameData.wall.isEmpty = true
 					this.sendStateToClients() //Game over. Wall empty.
 					return
@@ -302,7 +310,7 @@ class Room {
 			}
 			let client = global.stateManager.getClient(clientId)
 			if (!doNotMessage) {
-				client.message("roomActionGameplayAlert", "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.value + " " + tile.type), {durationMultiplier: 1})
+				client.message("roomActionInstructions", "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.value + " " + tile.type) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed.")
 				if (pretty > 0) {
 					this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " drew " + ((pretty === 1)?"a pretty!":pretty + " prettys!"), {clientId, speech: "I'm pretty!"})
 				}
@@ -361,7 +369,7 @@ class Room {
 						this.gameData.charleston = {
 							directions: this.state.settings.charleston.slice(0)
 						}
-						this.messageAll([], "roomActionGameplayAlert", "A charleston has begun. The first pass is going " + this.gameData.charleston.directions[0] , "success")
+						this.messageAll([], "roomActionInstructions", "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0] + ", then hit Proceed. " , "success")
 					}
 					else if (!obj.mahjong) {
 						return client.message(obj.type, "The very first throw must be either 1 tile, to initiate the game, or 3 tiles, to initiate charleston. ", "error")
@@ -460,6 +468,8 @@ class Room {
 						placerMahjongOverride = false
 						this.sendStateToClients()
 						this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier})
+						this.messageAll([clientId], "roomActionInstructions", discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed. ")
+
 						console.log("Throw")
 					}
 					else {

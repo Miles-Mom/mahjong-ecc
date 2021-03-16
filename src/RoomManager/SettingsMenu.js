@@ -10,20 +10,31 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 
 	let options = {
+		//gameStyle: new GameStyleSelector(),
 		maximumSequences: new MaximumSequencesSelector(),
 		randomizeWinds: new RandomizeWindsSelector(),
 		botSettings: new BotSettings()
 	}
 
+	let hasChoices = false
 	for (let option in options) {
 		let item = options[option]
 		if (item.isHost && !isHost) {
 			delete options[option];
 			continue;
 		}
+		else {
+			hasChoices = true
+		}
 		settingsDiv.appendChild(item.elem)
 		item.set() //Set default choice.
 	}
+
+	settingsDiv.style.display = hasChoices?"":"none"
+
+	let p = document.createElement("p")
+	p.innerHTML = "American Mahjong does not support bots at the moment. "
+	//settingsDiv.appendChild(p)
 
 	if (Object.keys(options).length === 0) {header.remove()} //No settings to show.
 
@@ -43,7 +54,55 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	}
 }
 
+function GameStyleSelector() {
+	let elem = document.createElement("div")
+	elem.id = "gameStyleSelectorDiv"
 
+	let chinese = document.createElement("button")
+	chinese.innerHTML = "Chinese/British/HK Mahjong"
+	chinese.value = "chinese"
+	chinese.id = "selectChineseMahjong"
+	elem.appendChild(chinese)
+
+	let american = document.createElement("button")
+	american.innerHTML = "American Mahjong"
+	american.value = "american"
+	american.id = "selectAmericanMahjong"
+	elem.appendChild(american)
+
+	let buttons = [chinese, american]
+	function setSelectedButton(selectedButton) {
+		buttons.forEach((button) => {
+			if (button === selectedButton) {
+				button.disabled = "disabled"
+			}
+			else {button.disabled = ""}
+		})
+	}
+
+	buttons.forEach((button) => {
+		button.addEventListener("click", function() {
+			setSelectedButton(button)
+		})
+	})
+
+	this.elem = elem
+
+	this.get = function() {
+		for (let i=0;i<buttons.length;i++) {
+			let button = buttons[i]
+			if (button.disabled) {
+				return button.value
+			}
+		}
+	}
+	this.set = function(value = "chinese") {
+		buttons.forEach((item, i) => {
+			if (item.value === value) {setSelectedButton(item)}
+		});
+	}
+	this.isHost = true
+}
 
 function RandomizeWindsSelector() {
 	let elem = document.createElement("div")

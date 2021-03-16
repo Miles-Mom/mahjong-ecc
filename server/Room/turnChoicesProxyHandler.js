@@ -142,10 +142,11 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		let nextDirection = this.gameData.charleston.directions[0]
 		if (nextDirection) {
-			this.messageAll([], "roomActionGameplayAlert", "The next charleston pass is going " + nextDirection , "success")
+			this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + this.gameData.charleston.directions[0] + ". Select your tiles then hit Proceed. " , "success")
 		}
 		else {
-			this.messageAll([], "roomActionGameplayAlert", "The charleston is over. Let the games begin! " , "success")
+			stateManager.getClient(this.gameData.currentTurn.userTurn).message("roomActionInstructions", "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
+			this.messageAll([this.gameData.currentTurn.userTurn], "roomActionInstructions", "The Charleston is over. Waiting on East Wind to make a play. ")
 			this.gameData.charleston = false //The charleston is over.
 		}
 	}
@@ -287,6 +288,10 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				}
 			}
 		}
+
+		let currentTurnClient = stateManager.getClient(this.gameData.currentTurn.userTurn)
+		this.messageAll([currentTurnClient.clientId], "roomActionInstructions", `Waiting on ${currentTurnClient.getNickname()} to make a move. `)
+
 		this.gameData.currentTurn.thrown = false
 	}
 
@@ -318,6 +323,24 @@ module.exports = function(obj, prop, value) {
 	if (Object.keys(obj).length === 4) {
 		calculateNextTurn.call(this, obj, exemptFromChecks)
 		exemptFromChecks = []
+	}
+	else if (!(this.gameData.charleston)) {
+		//Calculate who hasn't entered an action.
+		let message = "Waiting on: "
+		let guiltyParties = []
+		this.clientIds.forEach((clientId) => {
+			if (!obj[clientId]) {
+				guiltyParties.push(clientId)
+			}
+		})
+
+		let guiltyPartyNames = guiltyParties.map((clientId) => {
+			return stateManager.getClient(clientId).getNickname()
+		})
+
+		message += guiltyPartyNames.join(", ")
+
+		this.messageAll(guiltyParties, "roomActionInstructions", message) //Message everybody that has entered a turn - don't overwrite other instructions.
 	}
 
 	return true

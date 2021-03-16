@@ -13,12 +13,26 @@
 	display: inline-block;
 }
 
+#roomManager #heading {
+	background-color: #24911e;
+}
+
 #roomManager #fourFriendsHeading {
 	font-size: 2.2em;
 	vertical-align: top;
 	margin-left: 0.5em;
 	font-style: italic;
 	color: #ffe100;
+}
+
+#selectChineseMahjong, #selectAmericanMahjong {
+	border-radius: 250000px;
+	font-size: 1.5em;
+	padding: 5px 20px 5px 20px;
+}
+
+#selectChineseMahjong:disabled::before, #selectAmericanMahjong:disabled::before {
+	content: "✓";
 }
 
 #roomManager #roomIdInput, #roomManager #nicknameInput{

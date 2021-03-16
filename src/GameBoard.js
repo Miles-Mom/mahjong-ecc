@@ -144,6 +144,16 @@ window.stateManager.onPlaceTiles = function(obj) {
 	}
 }
 
+let instructionBubble = document.createElement("div")
+instructionBubble.id = "instructionBubble"
+instructionBubble.style.display = "none"
+gameBoard.appendChild(instructionBubble)
+
+window.stateManager.onInstructions = function(obj) {
+	instructionBubble.style.display = ""
+	instructionBubble.innerHTML = obj.message.split("\n").join("<br>")
+}
+
 window.stateManager.onGameplayAlert = function(obj) {
 	//Play sound.
 	let sound = document.createElement("audio");
