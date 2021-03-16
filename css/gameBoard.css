@@ -338,6 +338,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	right: calc(9.52vh + 10px + 1vw);
 	top: 38vh;
 	background-color: #fdffcb;
+	font-size: 1.7vw;
 	padding: 10px;
 	border-radius: 10px;
 	width: 20vw;

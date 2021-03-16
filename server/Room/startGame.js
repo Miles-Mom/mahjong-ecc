@@ -82,7 +82,7 @@ function startGame(obj) {
 				tileCount = 14
 			}
 			for (let i=0;i<tileCount;i++) {
-				this.drawTile(clientId, false, true)
+				this.drawTile(clientId, true)
 			}
 		}
 
@@ -96,7 +96,6 @@ function startGame(obj) {
 
 		this.gameData.currentTurn.turnChoices = new Proxy({}, this.turnChoicesProxyHandler);
 		this.logFile.write(JSON.stringify(this.state) + "\n")
-		this.sendStateToClients()
 
 		//Message East about how to start.
 		if (this.state.settings.gameStyle === "chinese") {
@@ -106,6 +105,8 @@ function startGame(obj) {
 		else if (this.state.settings.gameStyle === "american") {
 			this.messageAll([], "roomActionInstructions", "TODO: American Mahjong Charleston Desc")
 		}
+
+		this.sendStateToClients()
 	}
 }
 

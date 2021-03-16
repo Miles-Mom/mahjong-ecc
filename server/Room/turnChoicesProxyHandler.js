@@ -142,7 +142,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		let nextDirection = this.gameData.charleston.directions[0]
 		if (nextDirection) {
-			this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + this.gameData.charleston.directions[0] + ". Select your tiles then hit Proceed. " , "success")
+			this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + this.gameData.charleston.directions[0] + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
 		}
 		else {
 			stateManager.getClient(this.gameData.currentTurn.userTurn).message("roomActionInstructions", "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
@@ -227,7 +227,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							}
 							if (placement.amount === 4) {
 								//Draw them another tile.
-								this.drawTile(clientId, true) //Draw from back of wall.
+								this.drawTile(clientId)
 							}
 							this.gameData.currentTurn.userTurn = clientId
 						}
@@ -281,7 +281,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						this.drawTile(clientId)
 					}
 					else {
-						this.drawTile(clientId, true)
+						this.drawTile(clientId)
 					}
 
 					this.gameData.currentTurn.userTurn = clientId
@@ -324,7 +324,7 @@ module.exports = function(obj, prop, value) {
 		calculateNextTurn.call(this, obj, exemptFromChecks)
 		exemptFromChecks = []
 	}
-	else if (!(this.gameData.charleston)) {
+	else {
 		//Calculate who hasn't entered an action.
 		let message = "Waiting on: "
 		let guiltyParties = []

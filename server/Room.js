@@ -288,13 +288,12 @@ class Room {
 			})
 		}).bind(this)
 
-		this.drawTile = (function drawTile(clientId, last = false, doNotMessage = false) {
+		this.drawTile = (function drawTile(clientId, doNotMessage = false) {
 			let tile;
 			let pretty = -1
 			while (!(tile instanceof Tile)) {
 				pretty++
 				tile = this.gameData.wall.drawFirst()
-				this.lastDrawn = tile
 				if (!tile) {
 					console.log("Wall Empty");
 					this.messageAll([], "roomActionWallEmpty", this.getSummary(), "success")
@@ -310,7 +309,8 @@ class Room {
 			}
 			let client = global.stateManager.getClient(clientId)
 			if (!doNotMessage) {
-				client.message("roomActionInstructions", "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.value + " " + tile.type) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed.")
+				this.lastDrawn = tile
+				client.message("roomActionInstructions", "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.value + " " + tile.type) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
 				if (pretty > 0) {
 					this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " drew " + ((pretty === 1)?"a pretty!":pretty + " prettys!"), {clientId, speech: "I'm pretty!"})
 				}
@@ -441,7 +441,7 @@ class Room {
 						if (hand.contents.some(((item) => {
 							if (item instanceof Match && item.type === placement.type && item.value === placement.value) {
 								item.amount = 4
-								this.drawTile(clientId, true)
+								this.drawTile(clientId)
 								return true
 							}
 							return false
@@ -468,7 +468,7 @@ class Room {
 						placerMahjongOverride = false
 						this.sendStateToClients()
 						this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier})
-						this.messageAll([clientId], "roomActionInstructions", discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed. ")
+						this.messageAll([clientId], "roomActionInstructions", discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
 
 						console.log("Throw")
 					}
@@ -487,7 +487,7 @@ class Room {
 							//This must be an in hand kong, therefore we do not expose, although in hand kongs will be shown.
 							placement.exposed = false
 							//Draw them another tile.
-							this.drawTile(clientId, true) //Draw from back of wall.
+							this.drawTile(clientId)
 							this.sendStateToClients()
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed an in-hand kong of " + placement.value + " " + placement.type + "s", {clientId, speech: "kong"})
 							console.log("Kong")
