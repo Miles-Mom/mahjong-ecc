@@ -179,6 +179,9 @@ addBotButton.addEventListener("click", function() {
 	window.stateManager.addBot(name)
 })
 
+let gameSettingsElem = document.createElement("div")
+gameSettingsElem.id = "gameSettingsElem"
+inRoomContainer.appendChild(gameSettingsElem)
 
 let inviteYourFriendsElem = document.createElement("div")
 inviteYourFriendsElem.id = "inviteYourFriendsElem"
@@ -204,10 +207,6 @@ inviteYourFriendsDiv.appendChild(joinRoomLinkElem)
 let QRImageElement = document.createElement("img")
 QRImageElement.id = "QRImageElement"
 inviteYourFriendsElem.appendChild(QRImageElement)
-
-let gameSettingsElem = document.createElement("div")
-gameSettingsElem.id = "gameSettingsElem"
-inRoomContainer.appendChild(gameSettingsElem)
 
 //Create link to tutorial.
 let tutorial = document.createElement("a")

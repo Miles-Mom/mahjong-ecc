@@ -20,14 +20,13 @@ function startGame(obj) {
 		this.gameData.discardPile = []
 
 		//Assign new settings
-		if (obj?.settings?.unlimitedSequences !== undefined) {
-			this.state.settings.unlimitedSequences = obj?.settings?.unlimitedSequences
+		if (!isNaN(obj?.settings?.maximumSequences)) {
+			this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))
 		}
 
 		if (obj?.settings?.botSettings?.canCharleston !== undefined) {
 			this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston
 		}
-
 
 		this.gameData.playerHands = {}
 

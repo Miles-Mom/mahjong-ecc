@@ -5,9 +5,8 @@ const Match = require("../Match.js")
 const Tile = require("../Tile.js")
 const Hand = require("../Hand.js")
 
-function isMahjong(unlimitedSequences) {
-
-	let maximumSequences = unlimitedSequences?4:1 //4 sequences is unlimited.
+function isMahjong(maximumSequences = 4) {
+	//4 sequences is unlimited.
 
 	//Returns 2 for mahjong, and 0 for not mahjong.
 	//If the hand is not currently committed to mahjong, but is mahjong, a hand containing the organization resulting in mahjong will be returned.
@@ -99,7 +98,8 @@ function isMahjong(unlimitedSequences) {
 	let allPossibilities = possibleMatches
 	let neededPongEquivs = 4
 
-	if (unlimitedSequences || sequences === 0) {
+	if (maximumSequences > sequences) {
+		//If we are at the sequence limit, there's no need to add the sequences to the possibilities. 
 		allPossibilities = allPossibilities.concat(possibleSequences)
 		neededPongEquivs -= sequences
 	}

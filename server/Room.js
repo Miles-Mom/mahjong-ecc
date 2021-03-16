@@ -12,7 +12,7 @@ class Room {
 		this.roomId = this.state.roomId = roomId
 		this.state.settings = this.state.settings || {}
 
-		this.state.settings.unlimitedSequences = false
+		this.state.settings.maximumSequences = 4
 
 		this.state.settings.charleston = ["across","right","left"] //TODO: This is probably the best default. We want a setting.
 		//TODO: Add a setting for allowing blind passing tiles.
@@ -116,9 +116,9 @@ class Room {
 			//First, verify the user can go mahjong.
 			let client = global.stateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
-			//On override, always allow unlimitedSequences, as if the overrides are purely sequence limits (forgot to change the setting,
+			//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
 			//the scoring will now be correct, not incorrect)
-			let isMahjong = hand.isMahjong(override?true:this.state.settings.unlimitedSequences)
+			let isMahjong = hand.isMahjong(override?4:this.state.settings.maximumSequences)
 			if (isMahjong instanceof Hand) {
 				hand.contents = isMahjong.contents //Autocomplete the mahjong.
 			}
@@ -449,7 +449,7 @@ class Room {
 						let discardMessage = client.getNickname() + " has thrown a " + tileName
 						//We're also going to check if the discarder is calling.
 						let durationMultiplier = 1;
-						if (!hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.unlimitedSequences)) {
+						if (!hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
 							hand.calling = true
 							discardMessage += ", and is calling"
 							durationMultiplier = 1.5
@@ -523,10 +523,15 @@ class Room {
 				else if (!(placement instanceof Match || placement instanceof Sequence)) {
 					return client.message(obj.type, "You can't discard when it is not your turn", "error")
 				}
-				else if (placement instanceof Sequence && !this.state.settings.unlimitedSequences && !placerSequenceOverride) {
-					if (hand.contents.some((item) => {return item instanceof Sequence})) {
+				else if (placement instanceof Sequence && !placerSequenceOverride) {
+					let sequenceCount = hand.contents.reduce((amount) => {
+						if (item instanceof Sequence) {return amount++}
+						return amount
+					}, 0)
+
+					if (sequenceCount >= this.state.settings.maximumSequences) {
 						placerSequenceOverride = true //TODO: We should probably turn this override off at some point.
-						return client.message(obj.type, "Host game settings allow only one sequence - try your same move again to ignore the one sequence setting and place your sequence. Overriding sequence settings may prevent 'calling' or 'ready' hands from being automatically detected. ", "error")
+						return client.message(obj.type, "Host game settings allow only " + this.state.settings.maximumSequences + " sequence(s). Repeat your same move to ignore this setting, and place this sequence. Overriding this setting may minor issues in scoring, and may require a Mahjong override. ", "error")
 					}
 				}
 				//Schedule the order. It's validity will be checked later.

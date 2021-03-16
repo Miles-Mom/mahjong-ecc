@@ -5,7 +5,7 @@ const Match = require("../Match.js")
 const Tile = require("../Tile.js")
 const Hand = require("../Hand.js")
 
-function isCalling(discardPile, unlimitedSequences) {
+function isCalling(discardPile, maximumSequences) {
 	//This determines if, from the player's point of view, they are calling.
 	//We don't access any information that they do not have access to in making this determination.
 
@@ -48,9 +48,9 @@ function isCalling(discardPile, unlimitedSequences) {
 		}
 
 		this.add(tile)
-		if (this.isMahjong(unlimitedSequences)) {
+		if (this.isMahjong(maximumSequences)) {
 			this.remove(tile)
-			return tile //TODO: It's possible multiple tiles could make us mahjong. This is just one of them. 
+			return tile //TODO: It's possible multiple tiles could make us mahjong. This is just one of them.
 		}
 		this.remove(tile)
 	}

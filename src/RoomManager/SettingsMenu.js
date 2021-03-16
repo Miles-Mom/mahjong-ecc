@@ -4,11 +4,13 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	//Construct header.
 	let header = document.createElement("h2")
 	header.innerHTML = "Game Settings"
+	header.style.marginTop = "0"
+	header.style.marginBottom = "0.5em"
 	settingsDiv.appendChild(header)
 
 
 	let options = {
-		unlimitedSequences: new UnlimitedSequencesSelector(),
+		maximumSequences: new MaximumSequencesSelector(),
 		randomizeWinds: new RandomizeWindsSelector(),
 		botSettings: new BotSettings()
 	}
@@ -69,28 +71,27 @@ function RandomizeWindsSelector() {
 	this.isHost = true
 }
 
-function UnlimitedSequencesSelector() {
+function MaximumSequencesSelector() {
 	let elem = document.createElement("div")
-	elem.id = "unlimitedSequencesSelectorDiv"
+	elem.id = "maximumSequencesSelectorDiv"
 
-	let checkbox = document.createElement("input")
-	checkbox.id = "unlimitedSequencesSelectorCheckbox"
-	checkbox.type = "checkbox"
+	let input = document.createElement("input")
+	input.id = "maximumSequencesSelector"
+	input.type = "number"
 
 	let label = document.createElement("label")
-	label.for = "unlimitedSequencesSelectorCheckbox"
-	label.innerHTML = "Allow Unlimited Sequences"
-	label.addEventListener("click", function() {checkbox.click()})
+	label.for = "maximumSequencesSelector"
+	label.innerHTML = "Maximum Sequences: "
 
 	this.elem = elem
-	elem.appendChild(checkbox)
 	elem.appendChild(label)
+	elem.appendChild(input)
 
 	this.get = function() {
-		return checkbox.checked
+		return input.value
 	}
-	this.set = function(boolean = false) {
-		checkbox.checked = boolean
+	this.set = function(value) {
+		input.value = value ?? 4
 	}
 	this.isHost = true
 }

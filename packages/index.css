@@ -5,7 +5,7 @@
 	min-height: 100vh;
 	min-height: calc(var(--vh) * 100);
 	z-index: 10;
-	background-color: #368a36;
+	background-color: #26a221;
 	text-align: center;
 }
 
@@ -80,9 +80,9 @@
 }
 
 #roomManager #inRoomContainer {
-	background-color: #00000007; /*Darken the background slightly. */
 	min-height: 40vh;
 	min-height: calc(var(--vh) * 40);
+	background-color: #2aab24;
 }
 
 #roomManager #currentRoom {
@@ -104,7 +104,6 @@
 	padding-left: calc(var(--vw) * 2);
 	padding-right: 2vw;
 	padding-right: calc(var(--vw) * 2);
-	background-color: #00000011; /*Darken even more.*/
 	border: 2px solid #00000044;
 }
 
@@ -173,28 +172,28 @@
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#roomManager #closeRoomButton {
+#closeRoomButton {
 	margin-left: 1vw;
 	margin-left: calc(var(--vw) * 1);
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 
-#roomManager #leaveRoomButton {
+#leaveRoomButton {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
-#roomManager #tutorialLink {
+#tutorialLink {
 	font-size: 2em;
 	line-height: 60px;
 }
 
-#roomManager #documentationLink {
+#documentationLink {
 	font-size: 1.3em;
 	line-height: 30px;
 }
 
-#roomManager #inviteYourFriendsElem {
-	background-color: #3dae3b;
+#inviteYourFriendsElem {
+	background-color: #2fcb29;
 	border-radius: 10px;
 	margin-top: 10px;
 	padding: 10px;
@@ -202,33 +201,40 @@
 	overflow: hidden;
 }
 
-#roomManager #inviteYourFriendsDiv {
+#inviteYourFriendsDiv {
 	display: inline-block;
 	margin-top: 0.5em;
 	vertical-align: top;
 }
 
-#roomManager #QRImageElement {
+#QRImageElement {
 	margin-left: 20px;
 	margin-top: 1em;
 }
 
-#roomManager #joinRoomLinkElem {
+#joinRoomLinkElem {
 	font-size: 1.5em;
 	margin: 0;
 }
 
-#roomManager #screenRotationAlert {
+#screenRotationAlert {
 	font-size: 2.5em;
 	background-color: white;
 }
 
-#roomManager #externalAppStoresDiv * {
+#externalAppStoresDiv * {
 	height: 70px;
 	max-width: 90%;
 	margin: 16px;
 	margin-right: 8px;
 	margin-left: 8px;
+}
+
+#gameSettingsElem {
+	background-color: #2fcb29;
+	border-radius: 10px;
+	padding: 10px;
+	margin-top: 10px;
 }
 
 #topHand {
