@@ -12,16 +12,18 @@ function startGame(obj) {
 		//Set settings
 		//TODO: This is probably the best default. We want a setting.
 		this.state.settings.charleston = [
-			{
-				direction: "across",
-			},
-			{
-				direction: "right",
-			},
-			{
-				direction: "left",
-				//TODO: Allow Blind?
-			}
+			[
+				{
+					direction: "across",
+				},
+				{
+					direction: "right",
+				},
+				{
+					direction: "left",
+					//TODO: Allow Blind?
+				}
+			]
 		]
 
 
