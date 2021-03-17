@@ -289,8 +289,10 @@ function calculateNextTurn(obj, exemptFromChecks) {
 			}
 		}
 
-		let currentTurnClient = stateManager.getClient(this.gameData.currentTurn.userTurn)
-		this.messageAll([currentTurnClient.clientId], "roomActionInstructions", `Waiting on ${currentTurnClient.getNickname()} to make a move. `)
+		if (!(this.gameData.isMahjong || this.gameData.wall.isEmpty)) {
+			let currentTurnClient = stateManager.getClient(this.gameData.currentTurn.userTurn)
+			this.messageAll([currentTurnClient.clientId], "roomActionInstructions", `Waiting on ${currentTurnClient.getNickname()} to make a move. `)
+		}
 
 		this.gameData.currentTurn.thrown = false
 	}

@@ -326,7 +326,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #instructionBubble {
 	position: absolute;
 	right: calc(9.52vh + 10px + 1vw);
-	top: 38vh;
+	top: 35vh;
 	background-color: #fdffcb;
 	font-size: calc(1.1vmin + 0.75vmax); /*Seems to work decently, though not perfect. TODO: Might need to transpile this too. */
 	padding: 10px;
