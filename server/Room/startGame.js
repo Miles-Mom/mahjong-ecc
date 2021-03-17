@@ -9,7 +9,16 @@ function startGame(obj) {
 		this.inGame = true
 		this.messageAll([], obj.type, "Game Started", "success")
 
-		//Assign new settings
+		//Set settings
+		this.state.settings.charleston = ["across","right","left"] //TODO: This is probably the best default. We want a setting.
+
+		this.state.settings.botSettings = this.state.settings.botSettings || {}
+		this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston ?? false
+
+		this.state.settings.windAssignments = this.state.settings.windAssignments || {}
+
+		this.state.settings.checkForCalling = obj?.settings?.checkForCalling ?? true
+
 		if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
 			this.state.settings.gameStyle = obj?.settings?.gameStyle
 		}
@@ -20,10 +29,6 @@ function startGame(obj) {
 		}
 		else {
 			this.state.settings.maximumSequences = 4
-		}
-
-		if (obj?.settings?.botSettings?.canCharleston !== undefined) {
-			this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston
 		}
 
 		//Build the wall.
@@ -37,6 +42,13 @@ function startGame(obj) {
 				prettysAsTiles: true,
 				includeJokers: 8
 			})
+			this.state.settings.checkForCalling = false
+
+			if (this.clientIds.some((clientId) => {
+				return stateManager.getClient(clientId).isBot
+			})) {
+				this.messageAll([], "displayMessage", {title: "Bot Support", body: "Bots do not currently support American Mahjong, so the Chinese Mahjong bot will be used instead. It may not function properly. "})
+			}
 		}
 		else {throw "Unknown gameStyle"}
 
@@ -57,8 +69,6 @@ function startGame(obj) {
 
 		for (let clientId in this.state.settings.windAssignments) {
 			let wind = this.state.settings.windAssignments[clientId]
-
-			if (obj?.settings?.randomizeWinds && wind !== "east") {continue}
 
 			if (this.clientIds.includes(clientId)) {
 				let windIndex = winds.indexOf(wind)

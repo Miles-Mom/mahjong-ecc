@@ -2,6 +2,7 @@ const Match = require("../../src/Match.js")
 const Sequence = require("../../src/Sequence.js")
 const Tile = require("../../src/Tile.js")
 const Hand = require("../../src/Hand.js")
+const TileContainer = require("../../src/TileContainer.js")
 
 
 let windOrder = ["north", "east", "south", "west"]
@@ -28,78 +29,83 @@ function getPriority(obj, key, exemptFromChecks = false) {
 	let throwerWind = this.gameData.playerHands[this.gameData.currentTurn.userTurn].wind
 
 	let hand = this.gameData.playerHands[key]
-	hand.add(this.gameData.currentTurn.thrown)
-	//wouldMakeMahjong will confirm that the current tile will allow mahjong to happen.
-	let mahjongHand = hand.isMahjong(this.state.settings.maximumSequences)
-	let wouldMakeMahjong = !!(mahjongHand);
-
-	hand.remove(this.gameData.currentTurn.thrown)
-
-	if (mahjongHand instanceof Hand && !exemptFromChecks) {
-		//Determine if the possible mahjong contains the specified placement, and if not, notify user and drop mahjong priority.
-		let stringContents = mahjongHand.getStringContents()
-		//Exposed vs unexposed can cause issues comparing strings. Need a .matches in future.
-		let previousValue = obj[key].exposed
-		obj[key].exposed = false
-		let unexposed = obj[key].toJSON()
-		obj[key].exposed = true
-		let exposed = obj[key].toJSON()
-		obj[key].exposed = previousValue
-
-		if (!(stringContents.includes(unexposed) || stringContents.includes(exposed))) {
-			wouldMakeMahjong = false
-		}
-	}
-
-	let nakedMahjong = false
-	if (obj[key] instanceof Tile && obj[key].mahjong && mahjongHand) {
-		//Naked Mahjong. The one tile is the tile someone else discarded.
-		console.log("Naked Mahjong Bypassing Checks")
-		nakedMahjong = true
-	}
-	else if (obj[key].mahjong && !wouldMakeMahjong && !exemptFromChecks) {
-		client.message("roomActionPlaceTiles", "Unable to detect a mahjong in your hand. (Press 'Mahjong' again to override). ", "error")
-		return false;
-	}
+	let placerWind = hand.wind
 
 	let priority;
-	let placerWind = hand.wind
-	if ((wouldMakeMahjong || nakedMahjong) && obj[key].mahjong) {
-		priority = 109
-		let total = getBackwardsDistance(placerWind, throwerWind)
-		console.log(total)
-		priority -= total
-	}
-	else if (obj[key] instanceof Match) {
-		//Validate that this is not a pair.
-		if (obj[key].amount === 2) {
-			if (!wouldMakeMahjong && !exemptFromChecks) {
-				client.message("roomActionPlaceTiles", "You can't place a pair when it will not make you mahjong. (Press 'Proceed' or 'Mahjong' again to override)", "error")
-				return false;
-			}
-			else if (exemptFromChecks) {
-				//Allow, and don't force mahjong.
-			}
-			else {
-				placement.mahjong = true //The specified action can only be accomplished through mahjong.
-			}
-		}
-		priority = 104;
-		//Add priority based on position to thrower. The closer to the thrower, the highest priority.
-		let total = getBackwardsDistance(placerWind, throwerWind)
-		console.log(total)
-		priority -= total
-	}
-	else if (obj[key] instanceof Sequence) {
-		//Verify that the user is the one immediently before.
-		if (getBackwardsDistance(placerWind, throwerWind) > 1 && !exemptFromChecks) {
-			client.message("roomActionPlaceTiles", "You can only take a sequence from the player before you, except with mahjong. (Press 'Proceed' again to override) ", "error")
-			return false;
-		}
-		priority = 99
+	if (obj[key] instanceof TileContainer) {
+		priority = 89 - getBackwardsDistance(placerWind, throwerWind)
+		if (obj[key].mahjong) {priority += 20}
 	}
 	else {
-		priority = 98
+		hand.add(this.gameData.currentTurn.thrown)
+
+		//wouldMakeMahjong will confirm that the current tile will allow mahjong to happen.
+		let mahjongHand = hand.isMahjong(this.state.settings.maximumSequences)
+		let wouldMakeMahjong = !!(mahjongHand);
+
+		hand.remove(this.gameData.currentTurn.thrown)
+
+		if (mahjongHand instanceof Hand && !exemptFromChecks) {
+			//Determine if the possible mahjong contains the specified placement, and if not, notify user and drop mahjong priority.
+			let stringContents = mahjongHand.getStringContents()
+			//Exposed vs unexposed can cause issues comparing strings. Need a .matches in future.
+			let previousValue = obj[key].exposed
+			obj[key].exposed = false
+			let unexposed = obj[key].toJSON()
+			obj[key].exposed = true
+			let exposed = obj[key].toJSON()
+			obj[key].exposed = previousValue
+
+			if (!(stringContents.includes(unexposed) || stringContents.includes(exposed))) {
+				wouldMakeMahjong = false
+			}
+		}
+
+		let nakedMahjong = false
+		if (obj[key] instanceof Tile && obj[key].mahjong && mahjongHand) {
+			//Naked Mahjong. The one tile is the tile someone else discarded.
+			console.log("Naked Mahjong Bypassing Checks")
+			nakedMahjong = true
+		}
+		else if (obj[key].mahjong && !wouldMakeMahjong && !exemptFromChecks) {
+			client.message("roomActionPlaceTiles", "Unable to detect a mahjong in your hand. (Press 'Mahjong' again to override). ", "error")
+			return false;
+		}
+
+		if ((wouldMakeMahjong || nakedMahjong) && obj[key].mahjong) {
+			priority = 109
+			let total = getBackwardsDistance(placerWind, throwerWind)
+			console.log(total)
+			priority -= total
+		}
+		else if (obj[key] instanceof Match) {
+			//Validate that this is not a pair.
+			if (obj[key].amount === 2) {
+				if (!wouldMakeMahjong && !exemptFromChecks) {
+					client.message("roomActionPlaceTiles", "You can't place a pair when it will not make you mahjong. (Press 'Proceed' or 'Mahjong' again to override)", "error")
+					return false;
+				}
+				else if (exemptFromChecks) {
+					//Allow, and don't force mahjong.
+				}
+				else {
+					placement.mahjong = true //The specified action can only be accomplished through mahjong.
+				}
+			}
+			priority = 104 - getBackwardsDistance(placerWind, throwerWind)
+		}
+		else if (obj[key] instanceof Sequence) {
+			//Verify that the user is the one immediently before.
+			if (getBackwardsDistance(placerWind, throwerWind) > 1 && !exemptFromChecks) {
+				client.message("roomActionPlaceTiles", "You can only take a sequence from the player before you, except with mahjong. (Press 'Proceed' again to override) ", "error")
+				return false;
+			}
+			priority = 99 - getBackwardsDistance(placerWind, throwerWind)
+		}
+		else {
+			console.error("Unknown Placement in turnChoicesProxyHandler")
+			priority = 89 - getBackwardsDistance(placerWind, throwerWind)
+		}
 	}
 	return [priority, key]
 }
@@ -142,6 +148,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		let nextDirection = this.gameData.charleston.directions[0]
 		if (nextDirection) {
+			this.messageAll([], "roomActionGameplayAlert", "The next Charleston pass is " + this.gameData.charleston.directions[0] , "success")
 			this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + this.gameData.charleston.directions[0] + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
 		}
 		else {
@@ -182,8 +189,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					//Confirm that the sequence uses the thrown tile.
 					let valid = false
 					placement.tiles.forEach((tile) => {
-						console.log(tile)
-						console.log(this.gameData.currentTurn.thrown)
 						if (tile.value === this.gameData.currentTurn.thrown.value && tile.type === this.gameData.currentTurn.thrown.type) {
 							valid = true
 						}
@@ -235,6 +240,39 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							console.log("Attempted to place invalid match")
 							client.message("roomActionPlaceTiles", "You can't place a match of tiles you do not possess", "error")
 						}
+					}
+					else {
+						client.message("roomActionPlaceTiles", "Are you trying to hack? You must use the thrown tile when attempting to place off turn. ", "error")
+					}
+				}
+				else if (placement instanceof TileContainer) {
+					//Confirm that the TileContainer uses the thrown tile.
+					let valid = false
+					placement.tiles.forEach((tile) => {
+						if (tile.value === this.gameData.currentTurn.thrown.value && tile.type === this.gameData.currentTurn.thrown.type) {
+							valid = true
+						}
+					})
+
+					if (valid) {
+						//Add the tile to hand, attempt to verify, and, if not, remove
+						hand.add(this.gameData.currentTurn.thrown)
+						if (hand.removeTilesFromHand(placement)) {
+							utilized = true
+							hand.add(placement)
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed tiles" , {clientId, speech: "I'll take that"})
+							if (placement.mahjong) {
+								this.goMahjong(clientId, undefined, exemptFromChecks.includes(clientId))
+							}
+							this.gameData.currentTurn.userTurn = clientId
+						}
+						else {
+							hand.remove(this.gameData.currentTurn.thrown)
+							client.message("roomActionPlaceTiles", "You can't place tiles you do not possess", "error")
+						}
+					}
+					else {
+						client.message("roomActionPlaceTiles", "Are you trying to hack? You must use the thrown tile when attempting to place off turn. ", "error")
 					}
 				}
 				else if (placement.mahjong) {

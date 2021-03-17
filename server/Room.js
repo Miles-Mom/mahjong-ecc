@@ -4,6 +4,7 @@ const Tile = require("../src/Tile.js")
 const Match = require("../src/Match.js")
 const Pretty = require("../src/Pretty.js")
 const Sequence = require("../src/Sequence.js")
+const TileContainer = require("../src/TileContainer.js")
 
 class Room {
 	constructor(roomId, state = {}) {
@@ -11,15 +12,6 @@ class Room {
 		this.state = state
 		this.roomId = this.state.roomId = roomId
 		this.state.settings = this.state.settings || {}
-
-		this.state.settings.charleston = ["across","right","left"] //TODO: This is probably the best default. We want a setting.
-		//TODO: Add a setting for allowing blind passing tiles.
-		//TODO: Add settings for 0/arbitrary number/unlimited sequences. Need to update isCalling for that as well.
-
-		this.state.settings.botSettings = this.state.settings.botSettings || {}
-		this.state.settings.botSettings.canCharleston = false
-
-		this.state.settings.windAssignments = this.state.settings.windAssignments || {}
 
 		console.log(state)
 		//TODO: Currently, clientId of other users is shown to users in the same room, allowing for impersonation. This needs to be fixed by using different identifiers.
@@ -121,7 +113,7 @@ class Room {
 				hand.contents = isMahjong.contents //Autocomplete the mahjong.
 			}
 
-			if (!isMahjong && !override) {
+			if (!isMahjong && !override && this.state.settings.gameStyle !== "american") {
 				return client.message("roomActionPlaceTiles", "Unable to go mahjong with this hand. If you play by different rules, try again to override. ", "error")
 			}
 
@@ -384,17 +376,18 @@ class Room {
 					}
 				}
 				else if (placement.length > 1) {
-					try {
-						let sequence = new Sequence({exposed: true, tiles: placement})
-						placement = sequence
+					if (this.state.settings.gameStyle === "american") {
+						//TileContainers bypass everything, which American Mahjong needs right now.
+						placement = new TileContainer({tiles: placement})
 					}
-					catch (e) {
-						if (Match.isValidMatch(placement)) {
-							placement = new Match({exposed: true, amount: placement.length, type: placement[0].type, value: placement[0].value})
-						}
-						else {
-							return client.message(obj.type, "Unable to create a sequence, or match. Please check your tiles. ", "error")
-						}
+					else if (Match.isValidMatch(placement)) {
+						placement = new Match({exposed: true, amount: placement.length, type: placement[0].type, value: placement[0].value})
+					}
+					else if (Sequence.isValidSequence(placement)) {
+						placement = new Sequence({exposed: true, tiles: placement})
+					}
+					else {
+						return client.message(obj.type, "Unable to create a sequence, or match. Please check your tiles. ", "error")
 					}
 				}
 				else {
@@ -455,7 +448,7 @@ class Room {
 						let discardMessage = client.getNickname() + " has thrown a " + tileName
 						//We're also going to check if the discarder is calling.
 						let durationMultiplier = 1;
-						if (!hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
+						if (this.state.settings.checkForCalling && !hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
 							hand.calling = true
 							discardMessage += ", and is calling"
 							durationMultiplier = 1.5
@@ -528,7 +521,7 @@ class Room {
 					//Naked Mahjong
 					placement.mahjong = obj.mahjong
 				}
-				else if (!(placement instanceof Match || placement instanceof Sequence)) {
+				else if (!(placement instanceof Match || placement instanceof Sequence || placement instanceof TileContainer)) {
 					return client.message(obj.type, "You can't discard when it is not your turn", "error")
 				}
 				else if (placement instanceof Sequence && !placerSequenceOverride) {

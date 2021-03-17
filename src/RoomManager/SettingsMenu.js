@@ -14,7 +14,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	Object.assign(options, {
 		gameStyle: new GameStyleSelector(options),
 		maximumSequences: new MaximumSequencesSelector(),
-		randomizeWinds: new RandomizeWindsSelector(),
+		checkForCalling: new CheckForCallingSelector(),
 		botSettings: new BotSettings()
 	})
 
@@ -117,17 +117,17 @@ function GameStyleSelector(allSettingsSelectors) {
 	this.isHost = true
 }
 
-function RandomizeWindsSelector() {
+function CheckForCallingSelector() {
 	let elem = document.createElement("div")
-	elem.id = "randomizeWindsSelectorDiv"
+	elem.id = "checkForCallingSelectorDiv"
 
 	let checkbox = document.createElement("input")
-	checkbox.id = "randomizeWindsSelectorCheckbox"
+	checkbox.id = "checkForCallingSelectorCheckbox"
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.for = "randomizeWindsSelectorCheckbox"
-	label.innerHTML = "Randomize Winds (Except East)"
+	label.for = "checkForCallingSelectorCheckbox"
+	label.innerHTML = "Check and Alert for Calling/Ready Hands"
 	label.addEventListener("click", function() {checkbox.click()})
 
 	this.elem = elem
@@ -137,7 +137,7 @@ function RandomizeWindsSelector() {
 	this.get = function() {
 		return checkbox.checked
 	}
-	this.set = function(boolean = false) {
+	this.set = function(boolean = true) {
 		checkbox.checked = boolean
 	}
 	this.displayFor = ["chinese"]

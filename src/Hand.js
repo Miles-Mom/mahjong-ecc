@@ -249,7 +249,7 @@ class Hand {
 		}).bind(this)
 
 		this.removeTilesFromHand = (function removeTilesFromHand(tiles, simulated = false) {
-			if (tiles instanceof Sequence) {tiles = tiles.tiles}
+			if (tiles instanceof Sequence || tiles instanceof TileContainer) {tiles = tiles.tiles}
 			if (tiles instanceof Tile) {tiles = [tiles]}
 			else if (!tiles instanceof Array) {throw "Must send a Sequence, Tile, or Array. "}
 
@@ -470,7 +470,7 @@ class Hand {
 		//The greater the value, the further to the right we place the tile.
 		let tileValue = 0
 
-		tileValue += 100 * ["pretty", "circle", "bamboo", "character", "wind", "dragon"].findIndex((suit) => {return tile.type === suit})
+		tileValue += 100 * ["pretty", "flower", "season", "circle", "bamboo", "character", "wind", "dragon", "joker"].findIndex((suit) => {return tile.type === suit})
 
 		if (typeof tile.value === "number") {tileValue += tile.value}
 		else if (tile.type === "wind") {
@@ -479,7 +479,7 @@ class Hand {
 		else if (tile.type === "dragon") {
 			tileValue += 10 * ["red", "green", "white"].findIndex((value) => {return tile.value === value})
 		}
-		else if (!tile.faceDown) {console.error("Couldn't fully calculate value for " + tile)}
+		else if (!tile.faceDown && tile.type !== "joker") {console.error("Couldn't fully calculate value for " + tile)}
 		return tileValue
 	}
 
@@ -501,6 +501,9 @@ class Hand {
 			}
 			else if (obj.class === "Sequence") {
 				return Sequence.fromJSON(itemStr)
+			}
+			else if (obj.class === "TileContainer") {
+				return TileContainer.fromJSON(itemStr)
 			}
 			else if (obj.class === "Match") {
 				return Match.fromJSON(itemStr)
