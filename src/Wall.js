@@ -85,7 +85,7 @@ class Wall {
 		return tiles
 	}
 
-	static shuffleArray(array, seed) {
+	static shuffleArray(array, seed = Math.random()) {
 		let random = SeedRandom(seed)
 
 		//Durstenfeld shuffle

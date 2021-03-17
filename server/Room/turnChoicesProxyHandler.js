@@ -3,7 +3,7 @@ const Sequence = require("../../src/Sequence.js")
 const Tile = require("../../src/Tile.js")
 const Hand = require("../../src/Hand.js")
 const TileContainer = require("../../src/TileContainer.js")
-
+const Wall = require("../../src/Wall.js")
 
 let windOrder = ["north", "east", "south", "west"]
 
@@ -22,8 +22,8 @@ function getBackwardsDistance(placerWind, throwerWind) {
 }
 
 function getPriority(obj, key, exemptFromChecks = false) {
-	if (this.gameData.charleston) {return true} //We don't validate these.
-	if (obj[key] === "Next") {return true} //Valid, but no-op.
+
+	if (obj[key] === "Next") {return true}
 
 	let client = global.stateManager.getClient(key)
 	let throwerWind = this.gameData.playerHands[this.gameData.currentTurn.userTurn].wind
@@ -32,7 +32,30 @@ function getPriority(obj, key, exemptFromChecks = false) {
 	let placerWind = hand.wind
 
 	let priority;
-	if (obj[key] instanceof TileContainer) {
+
+	if (this.gameData.charleston) {
+		if (obj[key].length > 3) {
+			client.message("roomActionPlaceTiles", "You can pass no more than 3 tiles during one Charleston round. ", "error")
+			return false
+		}
+		else if (obj[key].length !== 3 && !this.gameData.charleston.directions[0][0].blind && !this.gameData.charleston.directions[0][0].allAgree) {
+			client.message("roomActionPlaceTiles", "This Charleston round requires exactly three tiles. ", "error")
+			return false
+		}
+		else if (![0,3].includes(obj[key].length) && this.gameData.charleston.directions[0][0].allAgree) {
+			client.message("roomActionPlaceTiles", "Pass zero tiles (press proceed on nothing) to veto this round. Pass three tiles to vote in favor. ", "error")
+			return false
+		}
+		else if (hand.removeTilesFromHand(obj[key])) {
+			//Assume number of tiles is valid for turn.
+			return true
+		}
+		else {
+			client.message("roomActionPlaceTiles", "You can't pass tiles you don't possess. ", "error")
+			return false
+		}
+	}
+	else if (obj[key] instanceof TileContainer) {
 		priority = 89 - getBackwardsDistance(placerWind, throwerWind)
 		if (obj[key].mahjong) {priority += 20}
 	}
@@ -114,7 +137,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 	//Obj is the turnChoices object.
 
 	if (this.gameData.charleston) {
-		//Note that the tiles being passed have already been removed from respective hands.
 		let playerHands = []
 		let placements = []
 		for (let clientId in this.gameData.playerHands) {
@@ -123,33 +145,93 @@ function calculateNextTurn(obj, exemptFromChecks) {
 			playerHands[position] = hand
 			placements[position] = obj[clientId]
 		}
-		let currentDirection = this.gameData.charleston.directions.shift()
+
+		let currentDirection = this.gameData.charleston.directions[0].shift()
+
+		if (currentDirection.allAgree && !placements.every((placement) => {return placement.length === 3})) {
+			//Veto the entire round.
+			this.messageAll([], "roomActionGameplayAlert", "Charleston Round Vetoed" , "success")
+			this.gameData.charleston.directions.shift()
+			currentDirection.direction = "none"
+		}
+
+		//If the round is empty, switch rounds.
+		if (this.gameData.charleston.directions[0].length === 0) {
+			this.gameData.charleston.directions.shift()
+		}
+
 
 		let increment;
-		console.log(currentDirection)
-		switch (currentDirection) {
+		console.log(currentDirection.direction)
+		switch (currentDirection.direction) {
 			case "right": increment = 1; break;
 			case "across": increment = 2; break;
 			case "left": increment = 3; break;
-			case undefined: increment = 0; console.error("Charleston increment 0");break; //This should NEVER happen. But don't break if it does.
+			case "none": increment = 0; break;
+			default: throw "Unknown Direction" + currentDirection
 		}
 
-		playerHands.forEach((hand, index) => {
-			let placement = placements[index]
-			console.log(index, increment)
-			let passToIndex = (index+increment)%4
+		if (increment === 2) {
+			//Swap tiles in order specified.
+			;[0,1].forEach((position) => {
+				let placement = placements[position]
+				let passerHand = playerHands[position]
 
-			placement.forEach((tile) => {
-				console.log(playerHands)
-				console.log(passToIndex)
-				playerHands[passToIndex].add(tile)
+				let passToIndex = position + 2
+				let passToHand = playerHands[passToIndex]
+				let passToHandPlacement = placements[passToIndex]
+
+				for (let i=0;i<Math.max(placement.length, passToHandPlacement.length);i++) {
+					if (placement[i] && passToHandPlacement[i]) {
+						passToHand.add(placement[i])
+						passerHand.add(passToHandPlacement[i])
+					}
+					else if (placement[i]) {
+						passerHand.add(placement[i])
+					}
+					else if (passToHandPlacement[i]) {
+						passToHand.add(passToHandPlacement[i])
+					}
+				}
 			})
-		})
+		}
+		else {
+			let tiles = []
+			placements.forEach((placement) => {
+				//Pass tiles into cache.
+				Wall.shuffleArray(placement) //It's BLIND!
+				placement.forEach((tile) => {
+					console.log(tile.tileName)
+					tiles.push(tile)
+				})
+			})
 
-		let nextDirection = this.gameData.charleston.directions[0]
+			//Take tiles out of cache - order based on receivers of passes.
+			//This should ensure that blind passes are handled properly.
+			placements.forEach((unused, position) => {
+				let receiveIndex = (position+increment)%4
+				let tilesToReceive = placements[receiveIndex].length
+				let receiveHand = playerHands[receiveIndex]
+
+				for (let i=0;i<tilesToReceive;i++) {
+					receiveHand.add(tiles.shift())
+				}
+			})
+		}
+
+		let nextDirection = this.gameData.charleston.directions[0]?.[0]
+		console.log(nextDirection)
 		if (nextDirection) {
-			this.messageAll([], "roomActionGameplayAlert", "The next Charleston pass is " + this.gameData.charleston.directions[0] , "success")
-			this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + this.gameData.charleston.directions[0] + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
+			this.messageAll([], "roomActionGameplayAlert", "The next Charleston pass is " + nextDirection.direction , "success")
+			if (nextDirection.allAgree) {
+				this.messageAll([], "roomActionInstructions", "Round Vote - Pass 3 tiles " + nextDirection.direction + " for another Charleston round. Pass 0 to block it. Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
+			}
+			else if (nextDirection.blind) {
+				this.messageAll([], "roomActionInstructions", "Optional Charleston Pass - Pass 0-3 tiles " + nextDirection.direction + ". Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
+			}
+			else {
+				this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + nextDirection.direction + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
+			}
 		}
 		else {
 			stateManager.getClient(this.gameData.currentTurn.userTurn).message("roomActionInstructions", "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
@@ -209,7 +291,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						}
 						else {
 							hand.remove(this.gameData.currentTurn.thrown)
-							client.message("roomActionPlaceTiles", "You can't place a sequence of tiles you do not possess", "error")
+							client.message("roomActionPlaceTiles", "You can't place a sequence of tiles you do not possess - try reloading the page or restarting the app", "error")
 						}
 					}
 					else {
@@ -238,7 +320,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						}
 						else {
 							console.log("Attempted to place invalid match")
-							client.message("roomActionPlaceTiles", "You can't place a match of tiles you do not possess", "error")
+							client.message("roomActionPlaceTiles", "You can't place a match of tiles you do not possess - try reloading the page or restarting the app", "error")
 						}
 					}
 					else {
@@ -268,7 +350,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						}
 						else {
 							hand.remove(this.gameData.currentTurn.thrown)
-							client.message("roomActionPlaceTiles", "You can't place tiles you do not possess", "error")
+							client.message("roomActionPlaceTiles", "You can't place tiles you do not possess - try reloading the page or restarting the app", "error")
 						}
 					}
 					else {

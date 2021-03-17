@@ -10,7 +10,20 @@ function startGame(obj) {
 		this.messageAll([], obj.type, "Game Started", "success")
 
 		//Set settings
-		this.state.settings.charleston = ["across","right","left"] //TODO: This is probably the best default. We want a setting.
+		//TODO: This is probably the best default. We want a setting.
+		this.state.settings.charleston = [
+			{
+				direction: "across",
+			},
+			{
+				direction: "right",
+			},
+			{
+				direction: "left",
+				//TODO: Allow Blind?
+			}
+		]
+
 
 		this.state.settings.botSettings = this.state.settings.botSettings || {}
 		this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston ?? false
@@ -43,6 +56,40 @@ function startGame(obj) {
 				includeJokers: 8
 			})
 			this.state.settings.checkForCalling = false
+
+			this.state.settings.charleston = [
+				[
+					{
+						direction: "right",
+					},
+					{
+						direction: "across",
+					},
+					{
+						direction: "left",
+						blind: true
+					}
+				],
+				[
+					{
+						direction: "left",
+						allAgree: true
+					},
+					{
+						direction: "across",
+					},
+					{
+						direction: "right",
+					}
+				],
+				[
+					{
+						direction: "across",
+						blind: true
+					}
+				]
+			]
+
 
 			if (this.clientIds.some((clientId) => {
 				return stateManager.getClient(clientId).isBot

@@ -361,7 +361,7 @@ class Room {
 						this.gameData.charleston = {
 							directions: this.state.settings.charleston.slice(0)
 						}
-						this.messageAll([], "roomActionInstructions", "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0] + ", then hit Proceed. " , "success")
+						this.messageAll([], "roomActionInstructions", "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0][0].direction + ", then hit Proceed. " , "success")
 					}
 					else if (!obj.mahjong) {
 						return client.message(obj.type, "The very first throw must be either 1 tile, to initiate the game, or 3 tiles, to initiate charleston. ", "error")
@@ -370,11 +370,7 @@ class Room {
 						placement = undefined
 					}
 				}
-				else if (this.gameData.charleston) {
-					if (placement.length !== 3) {
-						return client.message(obj.type, "During charleston, you must pass exactly 3 tiles. ", "error")
-					}
-				}
+				else if (this.gameData.charleston) {}
 				else if (placement.length > 1) {
 					if (this.state.settings.gameStyle === "american") {
 						//TileContainers bypass everything, which American Mahjong needs right now.
@@ -407,14 +403,9 @@ class Room {
 				if (this.gameData.currentTurn.turnChoices[clientId]) {
 					return client.message(obj.type, "You have already passed tiles for this charleston round. ", "error")
 				}
-				if (hand.removeTilesFromHand(placement)) {
-					console.log("Scheduling")
-					this.gameData.currentTurn.turnChoices[clientId] = placement
-					this.sendStateToClients()
-				}
-				else {
-					return client.message(obj.type, "You can't pass tiles you don't possess. ", "error")
-				}
+
+				this.gameData.currentTurn.turnChoices[clientId] = placement
+				this.sendStateToClients()
 			}
 			else if (this.gameData.currentTurn.thrown === false || this.gameData.currentTurn.thrown === undefined) {
 				if (clientId !== this.gameData.currentTurn.userTurn) {
@@ -466,7 +457,7 @@ class Room {
 						console.log("Throw")
 					}
 					else {
-						return client.message(obj.type, "You can't place a tile you do not possess", "error")
+						return client.message(obj.type, "You can't place a tile you do not possess - try reloading the page or restarting the app", "error")
 					}
 				}
 				else if (placement instanceof Match) {
@@ -487,7 +478,7 @@ class Room {
 
 						}
 						else {
-							return client.message(obj.type, "You can't place tiles you do not possess", "error")
+							return client.message(obj.type, "You can't place tiles you do not possess - try reloading the page or restarting the app", "error")
 						}
 					}
 					else {
