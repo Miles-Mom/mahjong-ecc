@@ -202,7 +202,7 @@ This means that something using bottom is off the page - hence we must use top. 
 
 #rightNametag {
 	transform: rotate(90deg);
-	right: calc(4.52vh + 1vmin);
+	right: calc(9.52vh - 3.5vmin);
 	top: calc(12vh + 7vmin);
 }
 
