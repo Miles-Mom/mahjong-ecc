@@ -3,6 +3,7 @@ const Match = require("./Match.js")
 const Sequence = require("./Sequence.js")
 const Pretty = require("./Pretty.js")
 const Wall = require("./Wall.js")
+const TileContainer = require("./TileContainer.js")
 
 class Hand {
 	constructor(config = {}) {
@@ -373,6 +374,9 @@ class Hand {
 							unexposedTiles = unexposedTiles.concat(items)
 						}
 					}
+				}
+				else if (item instanceof TileContainer) {
+					exposedTiles = exposedTiles.concat(item.tiles)
 				}
 				else {console.error("Unknown item " + item)}
 			}

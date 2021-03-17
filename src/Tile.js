@@ -7,13 +7,16 @@ class Tile {
 		if (config.faceDown) {
 			this.faceDown = true
 			this.imageUrl = "assets/tiles/face-down.png"
-			//Some face down tiles might be part of a kong. 
+			//Some face down tiles might be part of a kong.
 			if (this.value && this.type) {
 				this.tileName = "Face Down " + this.tileName
 			}
 			else {
 				this.tileName = "Face Down Tile"
 			}
+		}
+		else if (this.type === "joker") {
+			this.imageUrl = "assets/tiles/joker.png"
 		}
 		else {
 			this.imageUrl = "assets/tiles/" + this.type + "s" + "/" + this.value + ".png"

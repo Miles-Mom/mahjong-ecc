@@ -3,7 +3,7 @@ const Pretty = require("./Pretty.js")
 const SeedRandom = require("seed-random")
 
 class Wall {
-	constructor(seed = Math.random()) {
+	constructor(seed = Math.random(), config = {}) {
 		this.drawFirst = function() {
 			return this.tiles.pop()
 		}
@@ -13,14 +13,35 @@ class Wall {
 		//Time to add the tiles to the deck...
 		this.tiles = this.tiles.concat(Wall.getNonPrettyTiles())
 
-		;[false, true].forEach((isSeason) => {
-			for (let i=1;i<=4;i++) {
-				this.tiles.push(new Pretty({
-					value: i,
-					seasonOrFlower: isSeason?"season":"flower"
+		if (!config.noPrettys) {
+			;[false, true].forEach((isSeason) => {
+				for (let i=1;i<=4;i++) {
+					//Prettys are tiles ("flowers") in American Mahjong
+					if (!config.prettysAsTiles) {
+						this.tiles.push(new Pretty({
+							value: i,
+							seasonOrFlower: isSeason?"season":"flower"
+						}))
+					}
+					else {
+						this.tiles.push(new Tile({
+							value: i,
+							type: isSeason?"season":"flower"
+						}))
+					}
+				}
+			})
+		}
+
+		if (config.includeJokers) {
+			for (let i=0;i<config.includeJokers;i++) {
+				this.tiles.push(new Tile({
+					type: "joker",
+					value: ""
 				}))
 			}
-		})
+		}
+
 
 		//Randomly mix the tiles.
 		Wall.shuffleArray(this.tiles, seed)

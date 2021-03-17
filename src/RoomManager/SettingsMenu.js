@@ -9,12 +9,14 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	settingsDiv.appendChild(header)
 
 
-	let options = {
-		//gameStyle: new GameStyleSelector(),
+	let options = {}
+	//Use Object.assign so GameStyleSelector can get a reference to all selectors.
+	Object.assign(options, {
+		gameStyle: new GameStyleSelector(options),
 		maximumSequences: new MaximumSequencesSelector(),
 		randomizeWinds: new RandomizeWindsSelector(),
 		botSettings: new BotSettings()
-	}
+	})
 
 	let hasChoices = false
 	for (let option in options) {
@@ -33,8 +35,9 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	settingsDiv.style.display = hasChoices?"":"none"
 
 	let p = document.createElement("p")
-	p.innerHTML = "American Mahjong does not support bots at the moment. "
-	//settingsDiv.appendChild(p)
+	p.innerHTML = "American Mahjong does not support bots at the moment. Play with your own card. "
+	p.style.fontSize = "1.3em"
+	settingsDiv.appendChild(p)
 
 	if (Object.keys(options).length === 0) {header.remove()} //No settings to show.
 
@@ -54,7 +57,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	}
 }
 
-function GameStyleSelector() {
+function GameStyleSelector(allSettingsSelectors) {
 	let elem = document.createElement("div")
 	elem.id = "gameStyleSelectorDiv"
 
@@ -72,12 +75,22 @@ function GameStyleSelector() {
 
 	let buttons = [chinese, american]
 	function setSelectedButton(selectedButton) {
+		//Switch the button selected.
 		buttons.forEach((button) => {
 			if (button === selectedButton) {
 				button.disabled = "disabled"
 			}
 			else {button.disabled = ""}
 		})
+
+		//Hide all settings not for this mode.
+		for (let prop in allSettingsSelectors) {
+			let selector = allSettingsSelectors[prop]
+			if (!selector.displayFor || selector.displayFor.includes(selectedButton.value)) {
+				selector.elem.style.display = ""
+			}
+			else {selector.elem.style.display = "none"}
+		}
 	}
 
 	buttons.forEach((button) => {
@@ -127,6 +140,7 @@ function RandomizeWindsSelector() {
 	this.set = function(boolean = false) {
 		checkbox.checked = boolean
 	}
+	this.displayFor = ["chinese"]
 	this.isHost = true
 }
 
@@ -152,6 +166,7 @@ function MaximumSequencesSelector() {
 	this.set = function(value) {
 		input.value = value ?? 4
 	}
+	this.displayFor = ["chinese"]
 	this.isHost = true
 }
 
@@ -180,6 +195,7 @@ function BotSettings() {
 	this.set = function(obj = {}) {
 		checkbox.checked = obj?.canCharleston ?? false
 	}
+	this.displayFor = ["chinese"]
 	this.isHost = true
 }
 

@@ -28,7 +28,17 @@ function startGame(obj) {
 
 		//Build the wall.
 		this.state.seed = this.state.seed || Math.random()
-		this.gameData.wall = new Wall(this.state.seed)
+
+		if (this.state.settings.gameStyle === "chinese") {
+			this.gameData.wall = new Wall(this.state.seed)
+		}
+		else if (this.state.settings.gameStyle === "american") {
+			this.gameData.wall = new Wall(this.state.seed, {
+				prettysAsTiles: true,
+				includeJokers: 8
+			})
+		}
+		else {throw "Unknown gameStyle"}
 
 		this.state.hostClientId = this.hostClientId
 		this.state.moves = []
@@ -105,6 +115,7 @@ function startGame(obj) {
 		else if (this.state.settings.gameStyle === "american") {
 			this.messageAll([], "roomActionInstructions", "TODO: American Mahjong Charleston Desc")
 		}
+		else {throw "Unknown gameStyle"}
 
 		this.sendStateToClients()
 	}
