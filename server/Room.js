@@ -517,15 +517,17 @@ class Room {
 				}
 				else if (placement instanceof Sequence && !placerSequenceOverride) {
 					let sequenceCount = hand.contents.reduce((amount, item) => {
-						if (item instanceof Sequence) {return amount++}
+						if (item instanceof Sequence) {return ++amount}
 						return amount
 					}, 0)
+
 
 					if (sequenceCount >= this.state.settings.maximumSequences) {
 						placerSequenceOverride = true //TODO: We should probably turn this override off at some point.
 						return client.message(obj.type, "Host game settings allow only " + this.state.settings.maximumSequences + " sequence(s). Repeat your same move to ignore this setting, and place this sequence. Overriding this setting may minor issues in scoring, and may require a Mahjong override. ", "error")
 					}
 				}
+
 				//Schedule the order. It's validity will be checked later.
 				console.log("Scheduling")
 				this.gameData.currentTurn.turnChoices[clientId] = placement
