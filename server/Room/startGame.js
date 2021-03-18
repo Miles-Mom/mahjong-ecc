@@ -96,7 +96,11 @@ function startGame(obj) {
 			if (this.clientIds.some((clientId) => {
 				return stateManager.getClient(clientId).isBot
 			})) {
-				this.messageAll([], "displayMessage", {title: "Bot Support", body: "Bots do not currently support American Mahjong, so the Chinese Mahjong bot will be used instead. It may not function properly. "})
+				this.messageAll([], "displayMessage", {title: "Bot Support", body: "Bots do not currently support American Mahjong, so the Chinese Mahjong bot will be used instead. It will likely make illegal moves, or crash trying to do so. "})
+			}
+
+			this.gameData.charleston = {
+				directions: this.state.settings.charleston.slice(0)
 			}
 		}
 		else {throw "Unknown gameStyle"}
@@ -172,7 +176,7 @@ function startGame(obj) {
 			this.messageAll([this.gameData.currentTurn.userTurn], "roomActionInstructions", "Waiting on East Wind to make a play. ")
 		}
 		else if (this.state.settings.gameStyle === "american") {
-			this.messageAll([], "roomActionInstructions", "TODO: American Mahjong Charleston Desc")
+			this.messageAll([], "roomActionInstructions", "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0][0].direction + ", then hit Proceed. " , "success")
 		}
 		else {throw "Unknown gameStyle"}
 

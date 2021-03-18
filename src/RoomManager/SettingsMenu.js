@@ -8,11 +8,15 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	header.style.marginBottom = "0.5em"
 	settingsDiv.appendChild(header)
 
+	//Appended later, so it is last.
+	let americanMahjongInfo = document.createElement("p")
+	americanMahjongInfo.innerHTML = "Brand New! (Beta - Please report issues to support@mahjong4friends.com) - Play with your own card (bots play by Chinese rules if used). <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
+	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
 	//Use Object.assign so GameStyleSelector can get a reference to all selectors.
 	Object.assign(options, {
-		gameStyle: new GameStyleSelector(options),
+		gameStyle: new GameStyleSelector(options, {americanMahjongInfo}),
 		maximumSequences: new MaximumSequencesSelector(),
 		checkForCalling: new CheckForCallingSelector(),
 		botSettings: new BotSettings()
@@ -34,10 +38,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	settingsDiv.style.display = hasChoices?"":"none"
 
-	let p = document.createElement("p")
-	p.innerHTML = "American Mahjong does not support bots at the moment. Play with your own card. "
-	p.style.fontSize = "1.3em"
-	settingsDiv.appendChild(p)
+	settingsDiv.appendChild(americanMahjongInfo)
 
 	if (Object.keys(options).length === 0) {header.remove()} //No settings to show.
 
@@ -57,7 +58,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	}
 }
 
-function GameStyleSelector(allSettingsSelectors) {
+function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 	let elem = document.createElement("div")
 	elem.id = "gameStyleSelectorDiv"
 
@@ -82,6 +83,8 @@ function GameStyleSelector(allSettingsSelectors) {
 			}
 			else {button.disabled = ""}
 		})
+
+		americanMahjongInfo.style.display = selectedButton.value === "american"?"":"none"
 
 		//Hide all settings not for this mode.
 		for (let prop in allSettingsSelectors) {
