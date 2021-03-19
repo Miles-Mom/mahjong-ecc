@@ -82,7 +82,7 @@ class Room {
 				}
 				item += points + " points"
 				if (id === mahjongClientId) {
-					item += "(Mahjong)" + drewOwnTile?" - Drew Mahjong Tile (Beta)":""
+					item += " (Mahjong)" + (drewOwnTile?" - Drew Mahjong Tile":"")
 					summary.splice(0, 0, item) //Insert at the start.
 				}
 				else {

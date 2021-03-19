@@ -82,6 +82,7 @@ function startGame(obj) {
 					},
 					{
 						direction: "right",
+						blind: true
 					}
 				],
 				[
