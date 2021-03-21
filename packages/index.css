@@ -306,7 +306,7 @@
 
 /*We would use bottom, however Safari treats bottom as the bottom of the viewport, and Safari has the viewport != visible area bug.
 This means that something using bottom is off the page - hence we must use top. */
-#gameBoard #userHand, #gameBoard #userHandExposed, #gameBoard #tilePlacemat {
+#userHand, #userHandExposed, #tilePlacemat {
 	position: absolute;
 	/*bottom: 0;*/
 	top: 88vh;
@@ -362,54 +362,49 @@ This means that something using bottom is off the page - hence we must use top. 
 #gameBoard #topHand img {
 	max-width: calc(calc(100vw - 19.04vh) / 14); /*Raised from 14 in order to allow for more tiles to fit. */
 	max-width: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 14); /*Raised from 14 in order to allow for more tiles to fit. */
-	margin-left: calc(calc(100vw - 19.04vh) / 17 / -10); /*Negative margin of 10%. Allows even more tiles to fit. */
-	margin-left: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 17 / -10); /*Negative margin of 10%. Allows even more tiles to fit. */
 	max-height: 12vh;
 	max-height: calc(var(--vh) * 12);
 	/*transform: rotate(180deg);*/ /*Rotate tiles 180 degrees away from the viewer (they would be across from this person)*/
 }
 
 /*Note: Currently leftHand and rightHand tiles are facing 180 degrees away from where they would in a real game, however this probably makes it easier to read the tiles. */
-#gameBoard #leftHand img {
-	transform: rotate(270deg) translate(-3vh, 0px);
-	transform: rotate(270deg) translate(calc(var(--vh) * -3), 0px);
-	max-width: 9.52vh;
-	max-width: calc(var(--vh) * 9.52);
-	max-height: 10.5vh;
-	max-height: calc(var(--vh) * 10.5);
+#leftHand img {
+	transform: rotate(270deg) translate(-1vh, 0px);
+	transform: rotate(270deg) translate(calc(var(--vh) * -1), 0px);
 	padding-left: 2.38vh; /*Otherwise it is transformed partially off the screen. */
 	padding-left: calc(var(--vh) * 2.38); /*Otherwise it is transformed partially off the screen. */
-	margin-bottom: 0vh; /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
-	margin-bottom: calc(var(--vh) * 0); /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
-	margin-top: -4vh; /*Split margin between top and bottom, as to prevent margin causing page to scroll downwards. */
-	margin-top: calc(var(--vh) * -4); /*Split margin between top and bottom, as to prevent margin causing page to scroll downwards. */
 }
 
-#gameBoard #rightHand img {
-	transform: rotate(90deg) translate(.75vh, 0px);
-	transform: rotate(90deg) translate(calc(var(--vh) * .75), 0px);
-	max-width: 9.52vh;
-	max-width: calc(var(--vh) * 9.52);
-	max-height: 10.5vh;
-	max-height: calc(var(--vh) * 10.5);
-	margin-top: -4vh; /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
-	margin-top: calc(var(--vh) * -4); /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
-	margin-bottom: 0vh;
-	margin-bottom: calc(var(--vh) * 0);
+#rightHand img {
+	transform: rotate(90deg) translate(-1.25vh, 0px);
+	transform: rotate(90deg) translate(calc(var(--vh) * -1.25), 0px);
 	padding-left: 2.77vh; /*Stop from travling off hand to left. */
 	padding-left: calc(var(--vh) * 2.77); /*Stop from travling off hand to left. */
 }
 
-#gameBoard #userHand img, #gameBoard #userHandExposed img, #gameBoard #tilePlacemat img {
+#leftHand img, #rightHand img {
+	max-width: 9.52vh;
+	max-width: calc(var(--vh) * 9.52);
+	max-height: 10.5vh;
+	max-height: calc(var(--vh) * 10.5);
+}
+
+#leftHand img:not(:first-child), #rightHand img:not(:first-child) {
+	margin-top: calc(-3.4vh - 0.6vh * var(--negativeMarginMultiplier)); /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
+	margin-top: calc(calc(var(--vh) * -3.4) - calc(var(--vh) * 0.6) * var(--negativeMarginMultiplier)); /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
+}
+
+#userHand img, #userHandExposed img, #tilePlacemat img {
 	max-width: calc(calc(100vw - 19.04vh) / 14);
 	max-width: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 14);
 	max-height: 12vh;
 	max-height: calc(var(--vh) * 12);
 }
 
-#gameBoard #userHand img {
-	margin-left: calc(calc(100vw - 19.04vh) / 17 / -10); /*Negative margin of 10%. Allows even more tiles to fit. */
-	margin-left: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 17 / -10); /*Negative margin of 10%. Allows even more tiles to fit. */
+#gameBoard #userHand img:not(:first-child), #userHand img:not(:first-child),
+#userHandExposed img:not(:first-child), #gameBoard #topHand img:not(:first-child) {
+	margin-left: calc(calc(100vw - 19.04vh) / 17 / -10 * var(--negativeMarginMultiplier)); /*Negative margin of 10%. Allows even more tiles to fit. */
+	margin-left: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 17 / -10 * var(--negativeMarginMultiplier)); /*Negative margin of 10%. Allows even more tiles to fit. */
 }
 
 /*Note: These animations are eating up a very significant amount of CPU/GPU power. We may want to stop using them. */
@@ -511,31 +506,24 @@ This means that something using bottom is off the page - hence we must use top. 
 	top: calc(calc(var(--vh) * 12) + 7vmin);
 }
 
-/*The max number of tiles should be 91. Therefore, we will prepare for tiles 31 by 3. The last two spots will be filled by a count of the tiles in the wall.  */
-#gameBoard #wall {
+#wallAndDiscardContainer {
 	position: absolute;
-	left: 9.52vh;
-	left: calc(var(--vh) * 9.52);
-	top: 12vh;
-	top: calc(var(--vh) * 12);
-	margin-left: 1vw;
-	margin-left: calc(var(--vw) * 1);
-	margin-top: 1vh;
-	margin-top: calc(var(--vh) * 1);
-	max-width: 50vw;
-	max-width: calc(var(--vw) * 50);
-	max-height: 10vh;
-	max-height: calc(var(--vh) * 10);
+	left: calc(9.52vh + 3vw);
+	left: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 3));
+	top: calc(12vh + 1vh);
+	top: calc(calc(var(--vh) * 12) + calc(var(--vh) * 1));
+	max-width: 56vw;
+	max-width: calc(var(--vw) * 56);
 }
 
-#gameBoard #wall * {
+#wall * {
 	max-width: calc(50vw / 31);
 	max-width: calc(calc(var(--vw) * 50) / 31);
 	max-height: 3.33vh;
 	max-height: calc(var(--vh) * 3.33);
 }
 
-#gameBoard #wall p {
+#wall p {
 	display: inline-block;
 	margin: 0;
 	font-size: 2.5vh;
@@ -546,23 +534,12 @@ This means that something using bottom is off the page - hence we must use top. 
 	text-align: center;
 }
 
-#gameBoard #discardPile {
-	position: absolute;
-	left: 9.52vh;
-	left: calc(var(--vh) * 9.52);
-	top: 22vh;
-	top: calc(var(--vh) * 22);
-	margin-left: 3vw;
-	margin-left: calc(var(--vw) * 3);
-	margin-top: 8vh;
-	margin-top: calc(var(--vh) * 8);
-	max-width: 50vw;
-	max-width: calc(var(--vw) * 50);
-	max-height: 30vh;
-	max-height: calc(var(--vh) * 30);
+#discardPile {
+	margin-top: 1vh;
+	margin-top: calc(var(--vh) * 1);
 }
 
-#gameBoard #discardPile * {
+#discardPile * {
 	max-width: calc(60vw / 23);
 	max-width: calc(calc(var(--vw) * 60) / 23);
 	max-height: 7.5vh;
@@ -850,6 +827,8 @@ This means that something using bottom is off the page - hence we must use top. 
 	--sar: env(safe-area-inset-right);
 	--sab: env(safe-area-inset-bottom);
 	--sal: env(safe-area-inset-left);
+
+	--negativeMarginMultiplier: 1; /*This is adjusted for tile grouping*/
 }
 
 html, body {

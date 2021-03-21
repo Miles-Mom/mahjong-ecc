@@ -360,33 +360,42 @@ class Hand {
 						}
 					}
 					if (item.exposed) {
-						exposedTiles = exposedTiles.concat(items)
+						exposedTiles.push(items)
 					}
 					else {
 						if (item instanceof Match && item.amount === 4) {
 							//In hand kong. Expose with 2 flipped tiles. (One already flipped)
 							items[3].faceDown = true
 							items[3] = Tile.fromJSON(items[3].toJSON()) //Regenerate tile. This fixes the image url and name.
-							exposedTiles = exposedTiles.concat(items)
+							exposedTiles.push(items)
 						}
 						else {
 							console.log(items)
-							unexposedTiles = unexposedTiles.concat(items)
+							unexposedTiles.push(items)
 						}
 					}
 				}
 				else if (item instanceof TileContainer) {
-					exposedTiles = exposedTiles.concat(item.tiles)
+					exposedTiles.push(item.tiles)
 				}
 				else {console.error("Unknown item " + item)}
 			}
 
 			let drawTiles = (function drawTiles(tiles, type, applyColorShading = false) {
-				for (let i=0;i<tiles.length;i++) {
-					let tile = tiles[i]
+
+				let drawTile = (function(tile, indexInGroup) {
+
 					let elem = document.createElement("img")
 					elem.src = tile.imageUrl
 					elem.title = tile.tileName
+
+					//Group tiles in a match together.
+					if (indexInGroup && indexInGroup !== 0) {
+						elem.style.setProperty("--negativeMarginMultiplier", 2)
+					}
+					else if (indexInGroup === 0) {
+						elem.style.setProperty("--negativeMarginMultiplier", 0)
+					}
 
 					if (type === "exposed" && this.handForExposed) {
 						this.handForExposed.appendChild(elem)
@@ -417,6 +426,21 @@ class Hand {
 						}
 						this.handToRender.appendChild(elem)
 					}
+				}).bind(this)
+
+				for (let i=0;i<tiles.length;i++) {
+					let tile = tiles[i]
+					if (tile instanceof Array) {
+						for (let j=0;j<tile.length;j++) {
+							drawTile(tile[j], j)
+						}
+					}
+					else if (type === "unexposed" && i===0) {
+						drawTile(tile, 0) //Add extra margin in front of the first unexposed tile.
+					}
+					else {
+						drawTile(tile)
+					}
 				}
 
 				//Note: If the window is resized, tiles will not adjust until the hand is redrawn.
@@ -439,8 +463,6 @@ class Hand {
 				if (this.handForExposed) {resizeHandTiles(this.handForExposed)}
 			}).bind(this)
 
-			console.log(exposedTiles)
-			console.log(unexposedTiles)
 			let applyColorShading = false
 			//If there are any tiles in unexposedTiles that are not face down, or there are no unexposed tiles.
 			if (unexposedTiles.some((tile) => {return !(tile.faceDown)}) || unexposedTiles.length === 0) {

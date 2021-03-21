@@ -10,7 +10,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "Brand New! (Beta - Please report issues to support@mahjong4friends.com) - Play with your own card (bots play by Chinese rules if used). <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
+	americanMahjongInfo.innerHTML = "Brand New! (Beta - Please report issues to support@mahjong4friends.com) - Play with your own card. Bots still under development - currently plays under Chinese rules if used. <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
@@ -70,7 +70,6 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 
 	let american = document.createElement("button")
 	american.innerHTML = "American Mahjong"
-	american.style.display = "none"
 	american.value = "american"
 	american.id = "selectAmericanMahjong"
 	elem.appendChild(american)

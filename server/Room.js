@@ -75,12 +75,18 @@ class Room {
 				let item = ""
 				item += global.stateManager.getClient(id).getNickname()
 				item += ": "
-				item += this.gameData.playerHands[id].wind + ", "
+				item += this.gameData.playerHands[id].wind
 				let points = this.gameData.playerHands[id].score()
 				if (id === mahjongClientId) {
 					points = this.gameData.playerHands[id].score({isMahjong: true, drewOwnTile})
 				}
-				item += points + " points"
+				if (this.state.settings.gameStyle === "chinese") {
+					item += ", " + points + " points"
+				}
+				else if (this.state.settings.gameStyle === "american") {
+					//TODO: Add scoring.
+				}
+
 				if (id === mahjongClientId) {
 					item += " (Mahjong)" + (drewOwnTile?" - Drew Mahjong Tile":"")
 					summary.splice(0, 0, item) //Insert at the start.
@@ -524,7 +530,7 @@ class Room {
 
 					if (sequenceCount >= this.state.settings.maximumSequences) {
 						placerSequenceOverride = true //TODO: We should probably turn this override off at some point.
-						return client.message(obj.type, "Host game settings allow only " + this.state.settings.maximumSequences + " sequence(s). Repeat your same move to ignore this setting, and place this sequence. Overriding this setting may minor issues in scoring, and may require a Mahjong override. ", "error")
+						return client.message(obj.type, "Host game settings allow only " + this.state.settings.maximumSequences + " sequence(s). Repeat your same move to ignore this setting, and place this sequence. Overriding this setting may cause minor issues in scoring, and may require a Mahjong override. ", "error")
 					}
 				}
 

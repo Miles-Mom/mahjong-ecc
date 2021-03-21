@@ -263,13 +263,17 @@ goMahjongButton.addEventListener("click", function() {
 	window.stateManager.placeTiles(placement, {mahjong: true})
 })
 
+let wallAndDiscardContainer = document.createElement("div")
+wallAndDiscardContainer.id = "wallAndDiscardContainer"
+gameBoard.appendChild(wallAndDiscardContainer)
+
 let wallRendering = document.createElement("div")
 wallRendering.id = "wall"
-gameBoard.appendChild(wallRendering)
+wallAndDiscardContainer.appendChild(wallRendering)
 
 let discardPile = document.createElement("div")
 discardPile.id = "discardPile"
-gameBoard.appendChild(discardPile)
+wallAndDiscardContainer.appendChild(discardPile)
 
 function renderDiscardPile(tileStrings) {
 	while (discardPile.firstChild) {discardPile.firstChild.remove()}
@@ -319,6 +323,9 @@ let nametags = nametagIds.map((id) => {
 	return nametag
 })
 
+//We place the changed tiles into the placemat during charleston. We employ this check to stop the initial state sync after a reload or
+//game start in american mahjong from filling the placemat with the first 3 tiles in the hand (as the entire hand changed)
+let charlestonStart = false;
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	if (window.stateManager.isHost) {
 		newGameNoLobbyButton.style.display = ""
@@ -331,6 +338,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	if (!message.inGame) {
 		document.body.style.overflow = ""
+		charlestonStart = false
 		return
 	};
 	document.body.style.overflow = "hidden"
@@ -358,11 +366,14 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		if (client.hand) {
 			console.log("User hand stuff")
 			let tempHand = Hand.fromString(client.hand)
-			//TODO: Currently, after refreshing the page during charleston, this results in the first 3 tiles stored on the server being put into the placemat, a very glitchy behavior.
-			userHand.syncContents(tempHand.contents,  message?.currentTurn?.charleston)
+			userHand.syncContents(tempHand.contents,  charlestonStart && message?.currentTurn?.charleston)
 			userWind = tempHand.wind
 		}
 	})
+
+	if (message?.currentTurn?.charleston) {
+		charlestonStart = true
+	}
 
 	let userWindIndex = winds.indexOf(userWind)
 
