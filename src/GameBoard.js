@@ -91,6 +91,16 @@ if (fullscreenControls.toggleElement) {
 	gameBoard.appendChild(fullscreenControls.toggleElement)
 }
 
+let syncButton = document.createElement("img")
+syncButton.src = "assets/reload-icon.svg"
+syncButton.id = "syncButton"
+syncButton.title = "Sync (Reload)"
+gameBoard.appendChild(syncButton)
+
+syncButton.addEventListener("click", function() {
+	window.location.reload()
+})
+
 window.Tile = Tile
 window.Sequence = require("./Sequence.js")
 window.Match = require("./Match.js")
@@ -116,6 +126,37 @@ revertStateButton.addEventListener("click", function() {
 	if (res !== null && confirm("Are you sure you would like to revert the game state? Other players will be notified, so you should clear the revert with them. ")) {
 		window.stateManager.revertState(res)
 	}
+})
+
+let swapJokerButton = document.createElement("button")
+swapJokerButton.id = "swapJokerButton"
+swapJokerButton.innerHTML = "Swap Joker"
+gameBoard.appendChild(swapJokerButton)
+
+swapJokerButton.addEventListener("click", function() {
+	let elem = document.createElement("div")
+	let p = document.createElement("p")
+	p.innerHTML = "Who would you like to try and swap with?"
+	elem.appendChild(p)
+
+	let popup;
+
+	stateManager.lastState.message.clients.forEach((item, i) => {
+		let btn = document.createElement("button")
+		btn.innerHTML = item.nickname
+		btn.className = "swapJokerOptionMenuButton"
+		if (item.id === window.clientId) {btn.innerHTML += " (You)"}
+
+		elem.appendChild(btn)
+		btn.addEventListener("click", function() {
+			alert("Attempted")
+			popup.dismiss()
+		})
+	});
+
+	popup = new Popups.Notification("Swap Tile For Joker", elem)
+	popup.show()
+
 })
 
 
@@ -333,6 +374,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	else {
 		newGameNoLobbyButton.style.display = "none"
 	}
+
+	gameBoard.className = obj?.message?.settings?.gameStyle //Buttons use this class to determine layout and visibility.
 
 	let message = obj.message
 

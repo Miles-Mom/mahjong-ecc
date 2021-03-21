@@ -97,7 +97,7 @@ function startGame(obj) {
 			if (this.clientIds.some((clientId) => {
 				return stateManager.getClient(clientId).isBot
 			})) {
-				this.messageAll([], "displayMessage", {title: "Bot Support", body: "Bots do not currently support American Mahjong, so the Chinese Mahjong bot will be used instead. It will likely make illegal moves, or crash trying to do so. We're hoping to support bots on the NMJL 2020 and 2021 card sometime in April"})
+				this.messageAll([], "displayMessage", {title: "Bot Support", body: "Bots do not currently support American Mahjong, so the Chinese Mahjong bot will be used instead. It will likely make illegal moves, or crash trying to do so. We're hoping to support bots on the NMJL 2020 and 2021 cards sometime in April"})
 			}
 
 			this.gameData.charleston = {

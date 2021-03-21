@@ -1,7 +1,5 @@
 class Notification {
 	constructor(errorText, messageText) {
-		messageText = messageText.split("\n").join("<br>")
-
 		let cover = document.createElement("div")
 		cover.id = "errorPopupCover"
 		cover.style.display = "none"
@@ -16,10 +14,16 @@ class Notification {
 		error.id = "errorText"
 		popup.appendChild(error)
 
-		let message = document.createElement("p")
-		message.innerHTML = messageText
-		message.id = "messageText"
-		popup.appendChild(message)
+		if (typeof messageText === "string") {
+			let message = document.createElement("p")
+			message.innerHTML = messageText.split("\n").join("<br>")
+			message.id = "messageText"
+			popup.appendChild(message)
+		}
+		else {
+			popup.appendChild(messageText) //Allow appending divs to this.
+			messageText.id = "messageText"
+		}
 
 		let dismissButton = document.createElement("button")
 		dismissButton.id = "dismissButton"
@@ -42,6 +46,7 @@ class Notification {
 		this.show = function() {
 			cover.style.display = ""
 		}
+		this.dismiss = dismiss
 	}
 }
 

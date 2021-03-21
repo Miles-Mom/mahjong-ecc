@@ -118,8 +118,8 @@ This means that something using bottom is off the page - hence we must use top. 
 	max-height: 12vh;
 }
 
-#gameBoard #userHand img:not(:first-child), #userHand img:not(:first-child),
-#userHandExposed img:not(:first-child), #gameBoard #topHand img:not(:first-child) {
+#userHand img:not(:first-child), #userHand img:not(:first-child),
+#userHandExposed img:not(:first-child), #topHand img:not(:first-child) {
 	margin-left: calc(calc(100vw - 19.04vh) / 17 / -10 * var(--negativeMarginMultiplier)); /*Negative margin of 10%. Allows even more tiles to fit. */
 }
 
@@ -146,7 +146,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	animation: handTurnPulse 3s linear infinite;
 }
 
-#gameBoard #tilePlacemat img {
+#tilePlacemat img {
 	margin-right: 20px;
 	border-radius: calc((100vw - 19.04vh) / 14 / 12); /*border radius 1/12th the width of a tile. TODO: This should be analyzed later to make sure it works right*/
 }
@@ -163,11 +163,11 @@ This means that something using bottom is off the page - hence we must use top. 
   }
 }
 
-#gameBoard #tilePlacemat img.pending {
+#tilePlacemat img.pending {
 	animation: discardSlotPulse 3s infinite;
 }
 
-#gameBoard #compass {
+#compass {
 	position: absolute;
 	right: calc(9.52vh + 4vmin);
 	top: calc(12vh + 3vmin);
@@ -238,16 +238,25 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 /*Since we have to use top instead of bottom due to viewport bugs, this can be floating above where it should be. */
-#gameBoard #fullscreenControls {
+#fullscreenControls {
 	position: absolute;
-	right: 10.52vh;
-	top: 71vh;
+	right: calc(10.52vh + 1vw);
+	top: calc(71vh - 1vh);
 	max-height: 5vh;
 	max-width: 5vw;
 	z-index: 1;
 }
 
-#gameBoard #revertStateButton {
+#syncButton {
+	position: absolute;
+	right: calc(10.52vh + 1vw);
+	top: 64vh;
+	max-height: 5vh;
+	max-width: 5vw;
+	z-index: 1;
+}
+
+#revertStateButton {
 	position: absolute;
 	left: calc(9.52vh + 2vw);
 	top: 64vh;
@@ -257,11 +266,17 @@ This means that something using bottom is off the page - hence we must use top. 
 	font-size: 1.6vh;
 }
 
-#gameBoard #proceedButton {
-	position: absolute;
+#gameBoard.chinese #revertStateButton {
+	left: initial;
 	right: calc(9.52vh + 8vw);
-	top: 64vh;
-	width: 10vw;
+	top: 70vh;
+}
+
+#proceedButton {
+	position: absolute;
+	right: calc(9.52vh + 36vw);
+	top: 57vh;
+	width: 15vw;
 	height: 5vh;
 	border-radius: 50vh;
 	font-size: 1.6vh;
@@ -286,10 +301,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	animation: animateScale 3s linear 6s infinite;
 }
 
-
-
-
-#gameBoard #endGameButton {
+#endGameButton {
 	position: absolute;
 	left: calc(9.52vh + 2vw);
 	top: 70vh;
@@ -299,7 +311,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	font-size: 1.6vh;
 }
 
-#gameBoard #goMahjongButton {
+#goMahjongButton {
 	position: absolute;
 	right: calc(9.52vh + 8vw);
 	top: 70vh;
@@ -309,9 +321,41 @@ This means that something using bottom is off the page - hence we must use top. 
 	font-size: 1.6vh;
 }
 
-#gameBoard #proceedButton:disabled {
+#gameBoard.chinese #goMahjongButton {
+	top: 64vh;
+}
+
+#proceedButton:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+
+#newGameNoLobbyButton {
+	position: absolute;
+	left: calc(9.52vh + 2vw);
+	top: 58vh;
+	width: 10vw;
+	height: 5vh;
+	border-radius: 50vh;
+	font-size: 1.6vh;
+}
+
+#gameBoard.chinese #newGameNoLobbyButton {
+	top: 64vh;
+}
+
+#swapJokerButton {
+	position: absolute;
+	right: calc(9.52vh + 8vw);
+	top: 64vh;
+	width: 10vw;
+	height: 5vh;
+	border-radius: 50vh;
+	font-size: 1.6vh;
+}
+
+#gameBoard.chinese #swapJokerButton {
+	display: none;
 }
 
 #instructionBubble {
@@ -330,14 +374,11 @@ This means that something using bottom is off the page - hence we must use top. 
 	justify-content: center;
 }
 
-#gameBoard #newGameNoLobbyButton {
-	position: absolute;
-	left: calc(9.52vh + 2vw);
-	top: 58vh;
-	width: 10vw;
-	height: 5vh;
-	border-radius: 50vh;
-	font-size: 1.6vh;
+.swapJokerOptionMenuButton {
+	font-size: inherit;
+	width: 60%;
+	margin-left: 20%;
+	display: block;
 }
 
 #gameBoard {

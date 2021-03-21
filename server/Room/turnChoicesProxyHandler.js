@@ -415,7 +415,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		if (!(this.gameData.isMahjong || this.gameData.wall.isEmpty)) {
 			let currentTurnClient = stateManager.getClient(this.gameData.currentTurn.userTurn)
-			this.messageAll([currentTurnClient.clientId], "roomActionInstructions", `Waiting on ${currentTurnClient.getNickname()} to make a move. `)
+			this.messageAll([currentTurnClient.clientId], "roomActionInstructions", `Waiting on ${currentTurnClient.getNickname()} to make a move. \n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! `)
 		}
 
 		this.gameData.currentTurn.thrown = false
@@ -465,6 +465,8 @@ module.exports = function(obj, prop, value) {
 		})
 
 		message += guiltyPartyNames.join(", ")
+
+		message += "\n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! "
 
 		this.messageAll(guiltyParties, "roomActionInstructions", message) //Message everybody that has entered a turn - don't overwrite other instructions.
 	}
