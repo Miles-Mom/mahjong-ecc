@@ -41,6 +41,10 @@ class Hand {
 			if (obj instanceof Sequence) {
 				newItemScore = Hand.getTileValue(obj.tiles[0]) //Use value of first tile in sequence.
 			}
+			else if (obj instanceof TileContainer) {
+				//Same as sequence for now - use first tile.
+				newItemScore = Hand.getTileValue(obj.tiles[0]) //Use value of first tile in sequence.
+			}
 			else {
 				newItemScore = Hand.getTileValue(obj)
 			}
@@ -51,6 +55,10 @@ class Hand {
 				if (currentItem instanceof Sequence) {
 					//Not quite sure how to handle this.
 					currentItem = currentItem.tiles[2] //Get the value using the last tile in sequence.
+				}
+				if (currentItem instanceof TileContainer) {
+					//Use the first tile in container.
+					currentItem = currentItem.tiles[0]
 				}
 				let currentScore = Hand.getTileValue(currentItem) //Value of the tile in that position
 

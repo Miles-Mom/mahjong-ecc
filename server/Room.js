@@ -441,26 +441,77 @@ class Room {
 							return;
 						}
 
-						let tileName = placement.value + " " + placement.type
-						let discardMessage = client.getNickname() + " has thrown a " + tileName
-						//We're also going to check if the discarder is calling.
-						let durationMultiplier = 1;
-						if (this.state.settings.checkForCalling && !hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
-							hand.calling = true
-							discardMessage += ", and is calling"
-							durationMultiplier = 1.5
+						if (obj.swapJoker) {
+							//We're going to try to swap this discard out for a joker if possible.
+							//Bots can pass true to auto-detect.
+							let clientIds;
+							if (obj.swapJoker === true) {
+								clientIds = [clientId].concat(this.clientIds) //This is 5 - but it doesn't matter since we'll short circuit.
+							}
+							else if (this.clientIds.indexOf(obj.swapJoker) !== -1) {
+								clientIds = [obj.swapJoker]
+							}
+							else {
+								return client.message(obj.type, "Unable to identify which player you want to swap with. ", "error")
+							}
+
+							let res = clientIds.some((clientId) => {
+								let swapWithHand = this.gameData.playerHands[clientId]
+								return swapWithHand.contents.some((item) => {
+									if (item.exposed) {
+										//In American Mahjong, the only tiles that can be called for are pongs, kongs, quints, and sextets.
+										//Therefore, the jokers must match the other tiles exposed.
+										let tile = item.tiles.find((tile) => {
+											return tile.type !== "joker"
+										})
+
+										let jokerIndex = item.tiles.findIndex((tile) => {
+											return tile.type === "joker"
+										})
+
+										if (jokerIndex !== -1 && tile.matches(placement)) {
+											//Swap the joker for this tile
+											hand.add(item.tiles[jokerIndex])
+											item.tiles.splice(jokerIndex, 1)
+											item.tiles.push(placement)
+											return true
+										}
+									}
+								})
+							})
+
+							if (res) {
+								//Swapped for a joker
+								client.message("roomActionGameplayAlert", "Successfully Swapped", {clientId, speech: "Swapped", durationMultiplier: 0.5})
+								this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has swapped a " + placement.type + " " + placement.value + " for a joker", {clientId, speech: "Swap", durationMultiplier: 1})
+								return this.sendStateToClients()
+							}
+							else {
+								//Couldn't swap - send error.
+								hand.add(placement) //Restore the hand.
+								return client.message(obj.type, "Could not find a joker to swap with. ", "error")
+							}
 						}
+						else {
+							let tileName = placement.value + " " + placement.type
+							let discardMessage = client.getNickname() + " has thrown a " + tileName
+							//We're also going to check if the discarder is calling.
+							let durationMultiplier = 1;
+							if (this.state.settings.checkForCalling && !hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
+								hand.calling = true
+								discardMessage += ", and is calling"
+								durationMultiplier = 1.5
+							}
 
-						//Discard tile.
-						this.gameData.currentTurn.thrown = placement
-						delete this.lastDrawn
-						this.gameData.currentTurn.turnChoices[clientId] = "Next"
-						placerMahjongOverride = false
-						this.sendStateToClients()
-						this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier})
-						this.messageAll([clientId], "roomActionInstructions", discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
-
-						console.log("Throw")
+							//Discard tile.
+							this.gameData.currentTurn.thrown = placement
+							delete this.lastDrawn
+							this.gameData.currentTurn.turnChoices[clientId] = "Next"
+							placerMahjongOverride = false
+							this.sendStateToClients()
+							this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier})
+							this.messageAll([clientId], "roomActionInstructions", discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
+						}
 					}
 					else {
 						return client.message(obj.type, "You can't place a tile you do not possess - try reloading the page or restarting the app", "error")

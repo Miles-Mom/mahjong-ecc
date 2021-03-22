@@ -134,6 +134,11 @@ swapJokerButton.innerHTML = "Swap Joker"
 gameBoard.appendChild(swapJokerButton)
 
 swapJokerButton.addEventListener("click", function() {
+	if (userHand.inPlacemat.length !== 1) {
+		new Popups.Notification("Error With Swap", "You must have exactly one tile in your placemat to swap - act like you are going to discard the tile, but hit Swap Joker instead of proceed. ").show()
+		return
+	}
+
 	let elem = document.createElement("div")
 	let p = document.createElement("p")
 	p.innerHTML = "Who would you like to try and swap with?"
@@ -141,6 +146,7 @@ swapJokerButton.addEventListener("click", function() {
 
 	let popup;
 
+	//TODO: Consider adding an "auto" to this.
 	stateManager.lastState.message.clients.forEach((item, i) => {
 		let btn = document.createElement("button")
 		btn.innerHTML = item.nickname
@@ -149,7 +155,7 @@ swapJokerButton.addEventListener("click", function() {
 
 		elem.appendChild(btn)
 		btn.addEventListener("click", function() {
-			alert("Attempted")
+			window.stateManager.placeTiles(userHand.inPlacemat, false, {swapJoker: item.id})
 			popup.dismiss()
 		})
 	});
@@ -450,10 +456,13 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	})
 
 	hands.forEach((hand) => {hand.renderTiles(message?.currentTurn?.lastDrawn)}) //lastDrawn only affects unexposed tiles, so there isn't a problem passing it to all.
+	swapJokerButton.disabled = ""
 	if (message.currentTurn?.playersReady?.length > 0) {
 		//The person has thrown their tile. Waiting on players to ready.
-		proceedButton.disabled = message.currentTurn.playersReady.includes(window.clientId)?"disabled":""
-		goMahjongButton.disabled = message.currentTurn.playersReady.includes(window.clientId)?"disabled":""
+		let clientIdReady = message.currentTurn.playersReady.includes(window.clientId)
+		proceedButton.disabled = clientIdReady?"disabled":""
+		goMahjongButton.disabled = clientIdReady?"disabled":""
+		swapJokerButton.disabled = "disabled"
 		proceedButton.innerHTML = "Proceed (" + message.currentTurn.playersReady.length + "/4)"
 		//If you haven't thrown, are not in charleston, and it is your turn, override and enable.
 		if (!message.currentTurn.thrown && !message.currentTurn.charleston && message.currentTurn.userTurn === clientId) {proceedButton.disabled = ""}
@@ -484,8 +493,10 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 		if (message.currentTurn.userTurn === window.clientId) {
 			userHand.renderPlacemat("pending")
+			swapJokerButton.disabled = ""
 		}
 		else {
+			swapJokerButton.disabled = "disabled"
 			if (!message.currentTurn.charleston) {
 				proceedButton.disabled = "disabled"
 				goMahjongButton.disabled = "disabled"
