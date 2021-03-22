@@ -69,7 +69,7 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 	elem.appendChild(chinese)
 
 	let american = document.createElement("button")
-	american.innerHTML = "American Mahjong"
+	american.innerHTML = "American Mahjong (Beta!)"
 	american.value = "american"
 	american.id = "selectAmericanMahjong"
 	elem.appendChild(american)
