@@ -279,7 +279,7 @@ setTimeout(function() {
 	if (stateManager.inRoom.includes("fbtest")) {
 		facebookDiv.innerHTML += `<iframe sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FMahjong-4-Friends-103233541852386&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true&appId" width="500" height="500" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`
 	}
-}, 6000)
+}, 2000)
 roomManager.appendChild(facebookDiv)
 
 let copyrightNotice = document.createElement("p")
