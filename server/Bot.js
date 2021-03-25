@@ -6,7 +6,8 @@ class Bot extends Client {
 
 		this.isBot = true
 
-		this.evaluateNextMove = require("./Bot/evaluateNextMove.js").bind(this)
+		let evaluateNextMoveChinese = require("./Bot/chineseBot.js").bind(this)
+		let evaluateNextMoveAmerican = require("./Bot/americanBot.js").bind(this)
 
 		let _message = this.message //So we don't lose access to the websocket based sending.
 
@@ -36,7 +37,12 @@ class Bot extends Client {
 				//console.log(turnState, handState)
 
 				try {
-					this.evaluateNextMove()
+					if (this.getRooom()?.state?.settings?.gameStyle === "american") {
+						evaluateNextMoveAmerican()
+					}
+					else {
+						evaluateNextMoveChinese()
+					}
 				}
 				catch (e) {
 					if (turnState) {this.getRoom().gameData.currentTurn.turnChoices[clientId] = turnState}
@@ -47,18 +53,18 @@ class Bot extends Client {
 					//Only send the message once every 60 seconds at most.
 					if (!lastSent || Date.now() - lastSent > 60*1000) {
 						lastSent = Date.now()
-						this.getRoom().messageAll([this.clientId], "roomActionPlaceTiles", `${this.clientId} has encountered an error, which affects this turn, and possibly successive ones. You can manually control the bot <a target="_blank" href="?clientId=${this.clientId}">here</a>. This message will be sent for the first error every minute. `, "error")
+						this.getRoom().messageAll([this.clientId], "roomActionPlaceTiles", `${this.clientId} has encountered an error, which affects this turn, and possibly successive ones. You can manually control the bot <a target="_blank" href="#clientId=${this.clientId}">here</a>. This message will be sent for the first error every minute. `, "error")
 					}
 				}
 			}
 			//Don't error on the manually control bot message (I believe it triggers all other bots to error otherwise), or when we can't place because another player had a higher priority placement.
-			//If the message is not a string (no message.includes), ignore. 
+			//If the message is not a string (no message.includes), ignore.
 			if (status === "error" && message.includes && !message.includes("manually control the bot") && !message.includes("higher priority placement")) {
 				//Only send the message once every 60 seconds at most.
 				lastWasError = true
 				if (!lastSent || Date.now() - lastSent > 60*1000) {
 					lastSent = Date.now()
-					this.getRoom().messageAll([this.clientId], "roomActionPlaceTiles", `${this.clientId} has received an error message. If it is not functioning, you can manually control the bot <a target="_blank" href="?clientId=${this.clientId}">here</a>. This message will be sent for the first error every minute. `, "error")
+					this.getRoom().messageAll([this.clientId], "roomActionPlaceTiles", `${this.clientId} has received an error message. If it is not functioning, you can manually control the bot <a target="_blank" href="#clientId=${this.clientId}">here</a>. This message will be sent for the first error every minute. `, "error")
 				}
 				console.error("Bot received an error message: " + message)
 			}
