@@ -274,6 +274,7 @@ else {
 }
 
 //Facebook Embed - https://developers.facebook.com/docs/plugins/page-plugin/
+//Will not work on iOS until version 1.3 is released. 
 let facebookDiv = document.createElement("div")
 setTimeout(function() {
 	if (stateManager.inRoom.includes("fbtest")) {
