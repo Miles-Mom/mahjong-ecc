@@ -55,6 +55,125 @@ module.exports = [
 			concealed: false
 		}
 	},
+	function(tiles = []) {
+		allOptions.slice(0, -3).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[1], value: 2+offset, amount: 4}))
+				newArr.push(createTiles({type: suitOrder[1], value: 3+offset, amount: 4}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 25,
+			concealed: false
+		}
+	},
+	function(tiles = []) {
+		allOptions.slice(0, -2).forEach((offset) => {
+			allSuits.forEach((suit) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suit, value: offset, amount: 3}))
+				newArr.push(createTiles({type: suit, value: 1+offset, amount: 4}))
+				newArr.push(createTiles({type: suit, value: 2+offset, amount: 3}))
+				newArr.push(createTiles({type: "dragon", value: suitDragonConversion[suit], amount: 4}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 25,
+			concealed: false
+		}
+	},
+	function(tiles = []) {
+		allOptions.slice(0, -4).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 2}))
+				newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 2}))
+				newArr.push(createTiles({type: suitOrder[0], value: 2+offset, amount: 2}))
+				newArr.push(createTiles({type: suitOrder[1], value: 3+offset, amount: 4}))
+				newArr.push(createTiles({type: suitOrder[2], value: 4+offset, amount: 4}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 25,
+			concealed: false
+		}
+	},
+	function(tiles = []) {
+		allOptions.slice(0, -3).forEach((offset) => {
+			allSuits.forEach((suit) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: "flower", value: "4", amount: 4})) //Value is no-op here.
+
+				newArr.push(createTiles({type: suit, value: offset, amount: 1}))
+				newArr.push(createTiles({type: suit, value: 1+offset, amount: 2}))
+				newArr.push(createTiles({type: suit, value: 2+offset, amount: 3}))
+				newArr.push(createTiles({type: suit, value: 3+offset, amount: 4}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 25,
+			concealed: false
+		}
+	},
+	function(tiles = []) {
+		allOptions.slice(0, -2).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 2}))
+				newArr.push(createTiles({type: suitOrder[0], value: 2+offset, amount: 3}))
+				newArr.push(createTiles({type: "dragon", value: suitDragonConversion[suitOrder[1]], amount: 3}))
+				newArr.push(createTiles({type: "dragon", value: suitDragonConversion[suitOrder[2]], amount: 3}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 30,
+			concealed: true
+		}
+	},
+	function(tiles = []) {
+		allOptions.slice(0, -2).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[1], value: offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[1], value: 1+offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[2], value: 2+offset, amount: 2}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 30,
+			concealed: true
+		}
+	},
 ].map((func, index) => {
 	let output = func()
 	output.cardIndex = index

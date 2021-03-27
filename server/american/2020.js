@@ -1,8 +1,9 @@
 const utilities = require("./utilities.js")
 
 let output = []
-output = output.concat(require("./2020/consecutive-run.js"))
 output = output.concat(require("./2020/winds-dragons.js"))
+output = output.concat(require("./2020/consecutive-run.js"))
+
 output = utilities.outputExpander(output)
 
 /*let tempHand = []
@@ -36,5 +37,5 @@ doubleMahjong.push(...utilities.createTiles({type: "joker", value: "", amount: 8
 
 console.log(utilities.getTileDifferential(output, doubleMahjong))
 
-
-//module.exports = output
+console.log(output)
+module.exports = output
