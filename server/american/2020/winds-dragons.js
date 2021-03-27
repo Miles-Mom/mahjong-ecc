@@ -1,8 +1,6 @@
 const {createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, dragonOptions, dragonArrangments, suitDragonConversion}
 = require("../utilities.js");
 
-//TODO: Confirm these score valuations.
-
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
 module.exports = [
 	function(tiles = []) {
@@ -57,7 +55,7 @@ module.exports = [
 
 		return {
 			tiles,
-			score: 25,
+			score: 30,
 			concealed: false
 		}
 	},
@@ -75,7 +73,7 @@ module.exports = [
 
 		return {
 			tiles,
-			score: 25,
+			score: 30,
 			concealed: false
 		}
 	},
