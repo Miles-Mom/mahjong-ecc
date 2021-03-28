@@ -27,10 +27,8 @@ function evaluateNextMove() {
 	}).bind(this)
 
 	console.log(currentHand.contents)
-	console.time("Analyze")
 	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
 	console.log(analysis[0])
-	console.timeEnd("Analyze")
 
 	if (gameData.charleston) {
 		let round = gameData.charleston.directions[0][0]

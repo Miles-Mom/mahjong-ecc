@@ -166,7 +166,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 
 		let increment;
-		console.log(currentDirection.direction)
 		switch (currentDirection.direction) {
 			case "right": increment = 1; break;
 			case "across": increment = 2; break;
@@ -223,7 +222,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 		}
 
 		let nextDirection = this.gameData.charleston.directions[0]?.[0]
-		console.log(nextDirection)
 		if (nextDirection) {
 			this.messageAll([], "roomActionGameplayAlert", "The next Charleston pass is " + nextDirection.direction , "success")
 			if (nextDirection.allAgree) {

@@ -74,8 +74,6 @@ class Client {
 				roomId: this.roomId,
 				isBot: this.isBot
 			}
-			console.log("Called")
-			console.log(JSON.stringify(obj))
 			return JSON.stringify(obj)
 		}).bind(this)
 	}

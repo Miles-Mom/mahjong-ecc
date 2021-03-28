@@ -215,9 +215,6 @@ function CardSelector() {
 		let option = document.createElement("option")
 		option.value = value
 		option.innerHTML = value
-		if (index === 0) {
-			option.innerHTML += " (Default)"
-		}
 		select.appendChild(option)
 	})
 
