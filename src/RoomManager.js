@@ -42,6 +42,15 @@ nicknameInput.id = "nicknameInput"
 nicknameInput.placeholder = "Choose a Nickname..."
 notInRoomContainer.appendChild(nicknameInput)
 
+//Allow query params.
+let params = new URLSearchParams("?" + window.location.hash.slice(1))
+if (params.has("roomId")) {
+	roomIdInput.value = params.get("roomId")
+}
+if (params.has("name")) {
+	nicknameInput.value = params.get("name")
+}
+
 //The join/create room buttons.
 let joinOrCreateRoom = document.createElement("div")
 joinOrCreateRoom.id = "joinOrCreateRoom"
@@ -493,11 +502,17 @@ function exitRoom() {
 	notInRoomContainer.style.display = "block"
 }
 
+let showRestoreNotice = true
 window.stateManager.onJoinRoom = function(obj) {
 	if (obj.status === "error") {
 		return new Popups.Notification("Unable to Join Room", obj.message).show()
 	}
 	else {
+		if (showRestoreNotice && params.has("roomId") && params.get("roomId") !== obj.message) {
+			new Popups.Notification("Room Restored", "You followed a link to room " + params.get("roomId") + ", but were already in room " + obj.message + ". Your room has been restored - to join a new room, leave your current one. ").show()
+			showRestoreNotice = false
+		}
+
 		currentRoom.innerHTML = "You are in room " + obj.message
 		enterRoom()
 	}
@@ -580,18 +595,7 @@ window.stateManager.addEventListener("onEndGame", function(obj) {
 		//State Sync game ends happen to the person that ends the game, as well as in development mode.
 		new Popups.Notification("Game Ended", obj.message).show()
 	}
-	else {console.log("Game Ended due to state sync. Popup suppressed in dev mode. ")}
 })
 
-let isDevMode = false;
-
-//Allow query params.
-let params = new URLSearchParams("?" + window.location.hash.slice(1))
-if (params.has("roomId")) {
-	roomIdInput.value = params.get("roomId")
-}
-if (params.has("name")) {
-	nicknameInput.value = params.get("name")
-}
 
 module.exports = roomManager

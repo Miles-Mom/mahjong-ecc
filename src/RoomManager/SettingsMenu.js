@@ -10,7 +10,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "Brand New! - Play with your own card. Bots support some of 2020 card, and are still being improved. <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
+	americanMahjongInfo.innerHTML = "Play with bots or friends! Bots (beta) support the 2020 card - have feedback? Think they're bad? Send us an email! <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
