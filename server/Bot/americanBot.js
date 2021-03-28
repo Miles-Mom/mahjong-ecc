@@ -33,11 +33,50 @@ function evaluateNextMove() {
 	console.timeEnd("Analyze")
 
 	if (gameData.charleston) {
-		//We need to choose 3 tiles.
-		//TODO: Detect which round we are in - might not need to pass 3
-		//TODO: We might be forced to charleston with less than 3 tiles in notUsed. We need to not pick jokers in that case.
+		let round = gameData.charleston.directions[0][0]
+		let notUsed = analysis[0].notUsed
 
-		placeTiles(analysis[0].notUsed.slice(0,3))
+		if (round.blind) {
+			//Blind pass. Pass as many as notUsed, 3 max.
+			placeTiles(notUsed.slice(0,3))
+		}
+		else if (notUsed.length >= 3) {
+			//We can pass 3 tiles. Pass them. TODO: Consider if we want to require more than 3 for allAgree rounds.
+			placeTiles(notUsed.slice(0,3))
+		}
+		else if (round.allAgree) {
+			//We can't produce 3 tiles without throwing ones we want. Kill the round.
+			placeTiles([])
+		}
+		else {
+			//We must produce exactly 3 tiles. notUsed has less than 3 tiles.
+			//We must not pick jokers.
+
+			let passing = []
+
+			//We will pass every tile in notUsed. Remove them from the hand when picked.
+			notUsed.forEach((item) => {
+				passing.push(item)
+				hand.remove(item)
+			})
+
+			//Pick randomly from remaining tiles until we have 3 tiles to pass.
+			while (passing.length < 3) {
+				let removed = hand.contents[Math.floor(Math.random() * hand.contents.length)] //Random pick.
+				if (removed.type === "joker") {continue} //This should never get stuck, as there are only 8 jokers, and we are in charleston.
+
+				passing.push(removed)
+				hand.remove(removed)
+			}
+
+			//Restore the removed tiles and pass them.
+			passing.forEach((item) => {
+				hand.add(item)
+			})
+
+			placeTiles(passing)
+		}
+
 	}
 	else if (gameData.currentTurn.userTurn === this.clientId) {
 		//We need to choose a discard tile.
