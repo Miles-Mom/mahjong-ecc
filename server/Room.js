@@ -85,17 +85,16 @@ class Room {
 					points = hand.score({isMahjong: true, drewOwnTile})
 
 					if (this.state.settings.gameStyle === "american") {
-							let hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
+						let hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
 
-							hands.forEach((hand, index) => {
-								if (hand.diff === 0) {
-									item += ", "
+						hands.forEach((hand, index) => {
+							if (hand.diff === 0) {
+								item += ", "
 
-									let handOption = hand.handOption
-									item += handOption.score + " points - " + handOption.section + " #" + (handOption.cardIndex + 1)
-								}
-							})
-						}
+								let handOption = hand.handOption
+								item += handOption.score + " points - " + handOption.section + " #" + (handOption.cardIndex + 1)
+							}
+						})
 					}
 				}
 				if (this.state.settings.gameStyle === "chinese") {
