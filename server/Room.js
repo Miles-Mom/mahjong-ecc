@@ -5,6 +5,7 @@ const Match = require("../src/Match.js")
 const Pretty = require("../src/Pretty.js")
 const Sequence = require("../src/Sequence.js")
 const TileContainer = require("../src/TileContainer.js")
+const americanUtilities = require("./american/utilities.js")
 
 class Room {
 	constructor(roomId, state = {}) {
@@ -72,19 +73,33 @@ class Room {
 			let summary = []
 
 			for (let id in this.gameData.playerHands) {
+				let hand = this.gameData.playerHands[id]
+
 				let item = ""
 				item += global.stateManager.getClient(id).getNickname()
 				item += ": "
-				item += this.gameData.playerHands[id].wind
-				let points = this.gameData.playerHands[id].score()
+				item += hand.wind
+
+				let points = hand.score()
 				if (id === mahjongClientId) {
-					points = this.gameData.playerHands[id].score({isMahjong: true, drewOwnTile})
+					points = hand.score({isMahjong: true, drewOwnTile})
+
+					if (this.state.settings.gameStyle === "american") {
+							let hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
+
+							hands.forEach((hand, index) => {
+								if (hand.diff === 0) {
+									item += ", "
+
+									let handOption = hand.handOption
+									item += handOption.score + " points - " + handOption.section + " #" + (handOption.cardIndex + 1)
+								}
+							})
+						}
+					}
 				}
 				if (this.state.settings.gameStyle === "chinese") {
 					item += ", " + points + " points"
-				}
-				else if (this.state.settings.gameStyle === "american") {
-					//TODO: Add scoring.
 				}
 
 				if (id === mahjongClientId) {

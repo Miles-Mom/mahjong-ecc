@@ -216,7 +216,7 @@ window.stateManager.onGameplayAlert = function(obj) {
 		//urls = ["tile-drop-table.mp3"]
 	}
 	else if (obj.message.includes("mahjong")) {
-		sound.volume = 1.2
+		sound.volume = 1
 		urls = ["tiles-dropping-table.mp3"]
 	}
 
