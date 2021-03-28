@@ -10,7 +10,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "Brand New! (Beta - Please report issues to support@mahjong4friends.com) - Play with your own card. Bots still under development - currently plays under Chinese rules if used. <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
+	americanMahjongInfo.innerHTML = "Brand New! - Play with your own card. Bots support some of 2020 card, and are still being improved. <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
@@ -18,6 +18,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	Object.assign(options, {
 		gameStyle: new GameStyleSelector(options, {americanMahjongInfo}),
 		maximumSequences: new MaximumSequencesSelector(),
+		card: new CardSelector(),
 		checkForCalling: new CheckForCallingSelector(),
 		botSettings: new BotSettings()
 	})
@@ -61,6 +62,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 	let elem = document.createElement("div")
 	elem.id = "gameStyleSelectorDiv"
+	elem.style.marginBottom = "5px"
 
 	let chinese = document.createElement("button")
 	chinese.innerHTML = "Chinese/British/HK Mahjong"
@@ -69,7 +71,7 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 	elem.appendChild(chinese)
 
 	let american = document.createElement("button")
-	american.innerHTML = "American Mahjong (Beta!)"
+	american.innerHTML = "American Mahjong"
 	american.value = "american"
 	american.id = "selectAmericanMahjong"
 	elem.appendChild(american)
@@ -199,6 +201,41 @@ function BotSettings() {
 		checkbox.checked = obj?.canCharleston ?? false
 	}
 	this.displayFor = ["chinese"]
+	this.isHost = true
+}
+
+function CardSelector() {
+	let elem = document.createElement("div")
+	elem.id = "cardSelectorDiv"
+
+	let select = document.createElement("select")
+	select.id = "cardSelectorDropdown"
+
+	;["2020 National Mahjongg League"].forEach((value, index) => {
+		let option = document.createElement("option")
+		option.value = value
+		option.innerHTML = value
+		if (index === 0) {
+			option.innerHTML += " (Default)"
+		}
+		select.appendChild(option)
+	})
+
+	let label = document.createElement("label")
+	label.for = "cardSelectorDropdown"
+	label.innerHTML = "Select Mahjong Card: "
+
+	this.elem = elem
+	elem.appendChild(label)
+	elem.appendChild(select)
+
+	this.get = function() {
+		return select.value
+	}
+	this.set = function(value = "2020 National Mahjongg League") {
+		select.value = value
+	}
+	this.displayFor = ["american"]
 	this.isHost = true
 }
 

@@ -37,7 +37,7 @@ class Bot extends Client {
 				//console.log(turnState, handState)
 
 				try {
-					if (this.getRooom()?.state?.settings?.gameStyle === "american") {
+					if (this.getRoom()?.state?.settings?.gameStyle === "american") {
 						evaluateNextMoveAmerican()
 					}
 					else {

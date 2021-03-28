@@ -94,11 +94,14 @@ function startGame(obj) {
 			]
 
 
-			if (this.clientIds.some((clientId) => {
-				return stateManager.getClient(clientId).isBot
-			})) {
-				this.messageAll([], "displayMessage", {title: "Bot Support", body: "Bots do not currently support American Mahjong, so the Chinese Mahjong bot will be used instead. It will likely make illegal moves, or crash trying to do so. We're hoping to support bots on the NMJL 2020 and 2021 cards sometime in April"})
+			let cardOptionsToScript = {
+				"2020 National Mahjongg League": "../american/2020.js"
 			}
+
+			this.state.settings.card = cardOptionsToScript[obj?.settings?.card] || cardOptionsToScript["2020 National Mahjongg League"]
+			this.gameData.card = require(this.state.settings.card)
+
+			console.log(this.gameData.card)
 
 			this.gameData.charleston = {
 				directions: this.state.settings.charleston.slice(0)

@@ -3,6 +3,7 @@ const utilities = require("./utilities.js")
 let output = []
 output = output.concat(require("./2020/winds-dragons.js"))
 output = output.concat(require("./2020/consecutive-run.js"))
+output = output.concat(require("./2020/quints.js"))
 
 output = utilities.outputExpander(output)
 
@@ -35,7 +36,9 @@ doubleMahjong.push(...utilities.createTiles({type: "bamboo", value: 3, amount: 2
 
 doubleMahjong.push(...utilities.createTiles({type: "joker", value: "", amount: 8}))
 
+console.time("Calc")
 console.log(utilities.getTileDifferential(output, doubleMahjong))
+console.timeEnd("Calc")
 
 console.log(output)
 module.exports = output

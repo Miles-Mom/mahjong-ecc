@@ -46,10 +46,10 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			client.message("roomActionPlaceTiles", "Pass zero tiles (press proceed on nothing) to veto this round. Pass three tiles to vote in favor. ", "error")
 			return false
 		}
-		/*else if (obj[key].some((tile) => {return tile.type === "joker"})) {
+		else if (obj[key].some((tile) => {return tile.type === "joker"})) {
 			client.message("roomActionPlaceTiles", "Jokers may not be passed during Charleston. ", "error")
 			return false
-		}*/
+		}
 		else if (hand.removeTilesFromHand(obj[key])) {
 			//Assume number of tiles is valid for turn.
 			return true
@@ -205,7 +205,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				//Pass tiles into cache.
 				Wall.shuffleArray(placement) //It's BLIND!
 				placement.forEach((tile) => {
-					console.log(tile.tileName)
 					tiles.push(tile)
 				})
 			})

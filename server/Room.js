@@ -278,7 +278,6 @@ class Room {
 		}).bind(this)
 
 		this.messageAll = (function(exclude = [], ...args) {
-			console.log(this.clientIds.length)
 			this.clientIds.forEach((clientId) => {
 				if (exclude.includes(clientId)) {return}
 				let client = global.stateManager.getClient(clientId)
@@ -443,10 +442,10 @@ class Room {
 
 						if (obj.swapJoker) {
 							//We're going to try to swap this discard out for a joker if possible.
-							//Bots can pass true to auto-detect.
+							//Bots can pass true to auto-detect and not receive errors on fail.
 							let clientIds;
 							if (obj.swapJoker === true) {
-								clientIds = [clientId].concat(this.clientIds) //This is 5 - but it doesn't matter since we'll short circuit.
+								clientIds = [clientId].concat(this.clientIds) //This is 5 clientIds - but it doesn't matter since we'll short circuit.
 							}
 							else if (this.clientIds.indexOf(obj.swapJoker) !== -1) {
 								clientIds = [obj.swapJoker]
@@ -487,12 +486,18 @@ class Room {
 								return this.sendStateToClients()
 							}
 							else {
-								//Couldn't swap - send error.
-								hand.add(placement) //Restore the hand.
-								return client.message(obj.type, "Could not find a joker to swap with. ", "error")
+								if (obj.swapJoker !== true) {
+									hand.add(placement) //Restore the hand.
+									//Couldn't swap - send error.
+									return client.message(obj.type, "Could not find a joker to swap with. ", "error")
+								}
 							}
 						}
-						else {
+
+
+						//Bots can pass true to auto-detect and not receive errors on fail.
+						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile. 
+						if (!obj.swapJoker || obj.swapJoker === true) {
 							let tileName = placement.value + " " + placement.type
 							let discardMessage = client.getNickname() + " has thrown a " + tileName
 							//We're also going to check if the discarder is calling.
@@ -593,8 +598,6 @@ class Room {
 		}).bind(this)
 
 		this.onIncomingMessage = (function(clientId, obj) {
-			console.log("Received message")
-			console.log(clientId)
 			console.log(JSON.stringify(obj))
 
 			let client = global.stateManager.getClient(clientId)

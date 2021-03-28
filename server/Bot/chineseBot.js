@@ -16,7 +16,6 @@ function evaluateNextMove() {
 
 	//Call room.onPlace properly.
 	let placeTiles = (function placeTiles(tiles = [], goMahjong = currentHand.isMahjong(room.state.settings.maximumSequences)) {
-		console.log(tiles)
 		if (!(tiles instanceof Array)) {tiles = [tiles]}
 		room.onPlace({
 			mahjong: goMahjong || undefined,

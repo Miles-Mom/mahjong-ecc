@@ -3,6 +3,7 @@ const Hand = require("../../src/Hand.js")
 const Match = require("../../src/Match.js")
 const Pretty = require("../../src/Pretty.js")
 const TileContainer = require("../../src/TileContainer.js")
+const utilities = require("../american/utilities.js")
 
 function evaluateNextMove() {
 	let room = this.getRoom()
@@ -14,270 +15,121 @@ function evaluateNextMove() {
 
 	if (gameData.currentTurn.turnChoices[this.clientId]) {return}; //We are ready for this turn.
 
-
 	//Call room.onPlace properly.
-	let placeTiles = (function placeTiles(tiles = [], goMahjong = currentHand.isMahjong(room.state.settings.maximumSequences)) {
-		console.log(tiles)
+	let placeTiles = (function placeTiles(tiles = [], goMahjong) {
 		if (!(tiles instanceof Array)) {tiles = [tiles]}
 		room.onPlace({
 			mahjong: goMahjong || undefined,
+			swapJoker: true, //Special parameter for bots - auto-swaps when possible.
 			type: "roomActionPlaceTiles",
 			message: tiles = tiles.map((tile) => {return tile.toJSON()})
 		}, this.clientId)
 	}).bind(this)
 
-
-	if (currentHand.isMahjong(room.state.settings.maximumSequences)) {return placeTiles()} //Go mahjong.
-
-	function computeHandBreakdown(tiles, userWind, customConfig = {}) {
-		tiles = tiles.filter((item) => {return !(item instanceof Pretty)})
-
-		//TODO: Need support for clearing to terminals (1s and 9s), even though it is somewhat rare.
-		//TODO: Also need to weigh 1s and 9s more highly than other tiles when choosing suits and what to throw.
-		//TODO: Also need to weigh dragons and own wind above other winds.
-		//TODO: Need to throw dead or nearly dead tiles sooner.
-
-		let config = {
-			looseTileCost: 5, //We should cut this dramatically if we have yet to charleston. Probably pass around 2.
-			possibleDoubleRatio: 0.4, //Should be no more than 1. Reduction in double value for first pair that might result in doubles.
-			chooseSecondarySuit: false, //Intended for charleston, don't suggest weakest suit, suggest next weakest, if there are all 3.
-			charleston: false //Used to determine in hand kong placements.
-		}
-		Object.assign(config, customConfig)
-
-
-		let breakdown = {}
-		tiles.forEach((tile) => {
-			let type = tile.type
-			if (["wind", "dragon"].includes(tile.type)) {
-				type = "honor"
-			}
-			breakdown[type] = breakdown[type] || []
-			breakdown[type].push(tile)
-		})
-
-		//For .sort
-		function getValue(item) {
-			if (item instanceof Tile) {return Math.random()} //We want the tiles to be randomly ordered. This is far from perfect, but should help move them slightly.
-			return item.amount
-		}
-
-		function prepForSelection(arr) {
-			arr.sort((a, b) => {
-				return getValue(a) - getValue(b)
-			})
-			arr = arr.filter((a) => {
-				if (!a.isGenerated && a instanceof Match) {return false}
-				else {
-					return true;
-				}
-			})
-			return arr
-		}
-
-		for (let type in breakdown) {
-			let tiles = breakdown[type]
-
-			let generationHand = new Hand()
-			generationHand.contents = tiles.slice(0)
-
-			for (let i=0;i<generationHand.contents.length;i++) {
-				let tile = generationHand.contents[i]
-				if (!(tile instanceof Tile)) {continue;}
-				;[4,3,2].forEach(((amount) => {
-					if (generationHand.removeMatchingTilesFromHand(tile, amount)) {
-						i-- //Counteract position shifting.
-						let item = new Match({amount, type: tile.type, value: tile.value, exposed: false})
-						item.isGenerated = true
-						generationHand.contents.push(item)
-					}
-				}).bind(this))
-			}
-
-			//If we start off with ANY honor doubles, we will include honors.
-			let obj = generationHand.contents.reduce((totals, currentItem) => {
-
-				//Weight: The cost of clearing away.
-				//Value: The value this suit provides.
-				totals.weight += config.looseTileCost * (currentItem.amount || 1)
-
-				//valueMult: Multiplier for value (only applicable to honors) due to doubles.
-				if (currentItem.isDouble(userWind)) {
-					totals.valueMult += 1
-				}
-				else if (currentItem.isDouble(userWind, true)) {
-					if (Math.round(totals.valueMult) === totals.valueMult) {
-						totals.valueMult += config.possibleDoubleRatio //TODO: We should have dragons be lower than your wind
-					}
-					else {totals.valueMult += 1} //We only go out with one pair, therefore, if we keep honors, we will at most have one potential, non guaranteed, double.
-				}
-
-				if (currentItem.amount === 2) {
-					totals.value += 10
-				}
-				else if (currentItem.amount === 3) {
-					totals.value += 25
-				}
-				else if (currentItem.amount === 4) {
-					totals.value += 40
-				}
-
-				return totals
-			}, {weight: 0, value: 0, valueMult: 0})
-
-			obj.value *= (2 ** obj.valueMult)
-			delete obj.valueMult
-
-			Object.assign(obj, {
-				tiles,
-				contents: generationHand.contents
-			})
-
-			obj.contents = prepForSelection(obj.contents)
-
-			breakdown[type] = obj
-		}
-
-		//Decide recommended strategy.
-		let standardTypes = Object.assign({}, breakdown)
-		delete standardTypes.honor
-		let strategy = {
-			honors: false
-		}
-
-		let suits = Object.keys(standardTypes)
-		if (suits.length > 1) {strategy.honors = true} //No reason to eliminate honors at the moment.
-		if (suits.length === 1) {strategy.suit = suits[0]}
-		else {
-			let results = []
-			for (let key in standardTypes) {
-				//If contents does not exist, or is empty, omit type from consideration. There is nothing we can throw, as all tiles are exposed.
-				if (standardTypes[key].contents.length === 0) {continue}
-				results.push([
-					key, standardTypes[key].value + standardTypes[key].weight
-				])
-			}
-			if (results.length !== 0) {
-				strategy.results = results
-				results.sort((a, b) => {return b[1] - a[1]}) //Highest value suits first.
-				strategy.suit = results[0][0]
-				strategy.throwSuit = results[results.length - 1][0]
-
-				//TODO: Only choose secondary suit if it would NOT result in breaking up a pong, etc.
-				if (config.chooseSecondarySuit && results.length === 3) {
-					strategy.throwSuit = results[1][0]
-				}
-			}
-			else {
-				//We have no normal suits. Honors for now.
-				strategy.suit = "honor"
-				strategy.throwSuit = "honor"
-			}
-		}
-
-		if (strategy.suit !== "honor" && breakdown.honor && breakdown.honor.value + breakdown.honor.weight > standardTypes[strategy.suit].value / 2) {strategy.honors = true}
-
-		if (strategy.throwSuit === strategy.suit && strategy.honors === false) {strategy.throwSuit = "honor"}
-
-		strategy.throw = breakdown[strategy.throwSuit]?.contents?.[0]
-
-		breakdown.tiles = []
-		breakdown.contents = []
-		for (let suit in breakdown) {
-			if (!breakdown[suit].tiles) {continue;}
-			breakdown.tiles = breakdown.tiles.concat(breakdown[suit].tiles)
-			breakdown.contents = breakdown.contents.concat(breakdown[suit].contents)
-		}
-
-		if (!strategy.throw) {
-			console.warn("WARNING: A throw was not found through normal measures. Picking tile to avoid crash. ")
-			breakdown.contents = prepForSelection(breakdown.contents)
-			strategy.throw = breakdown.contents[0]
-		}
-
-		if (strategy.throw instanceof Match) {strategy.throw = strategy.throw.getComponentTile()}
-
-		//One last check... If we have an in hand kong, place it.
-		if (config.charleston === false) {
-			breakdown.contents.forEach((item => {
-				if (item.amount === 4) {
-					strategy.throw = new Array(4).fill(item.getComponentTile())
-				}
-			}))
-		}
-
-		breakdown.strategy = strategy
-		return breakdown
-	}
-
-	function getCharlestonTiles() {
-		let tiles = []
-		for (let i=0;i<3;i++) {
-			let breakdown = computeHandBreakdown(currentHand.contents, currentHand.wind, {chooseSecondarySuit: Boolean(i%2), looseTileCost: 2, charleston: true}) //TODO: Base looseTileCost off of round.
-			let strategy = breakdown.strategy
-			currentHand.removeMatchingTile(strategy.throw)
-			tiles.push(strategy.throw)
-		}
-		tiles.forEach((tile) => {currentHand.add(tile)})
-		return tiles
-	}
+	console.log(currentHand.contents)
+	console.time("Analyze")
+	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
+	console.log(analysis[0])
+	console.timeEnd("Analyze")
 
 	if (gameData.charleston) {
 		//We need to choose 3 tiles.
-		placeTiles(getCharlestonTiles())
+		//TODO: Detect which round we are in - might not need to pass 3
+		//TODO: We might be forced to charleston with less than 3 tiles in notUsed. We need to not pick jokers in that case.
+
+		placeTiles(analysis[0].notUsed.slice(0,3))
 	}
 	else if (gameData.currentTurn.userTurn === this.clientId) {
 		//We need to choose a discard tile.
-		//TODO: We need to check if we should, and can, charleston (as of, we are east).
-
-		let breakdown = computeHandBreakdown(currentHand.contents, currentHand.wind, {chooseSecondarySuit: false, looseTileCost: 5})
-
-		if (currentHand.wind === "east" && room.state.settings.charleston.length > 0 && gameData.charleston !== false && room.state.settings.botSettings.canCharleston) {
-			let values = ["circle", "character", "bamboo", "honor"].map((str) => {
-				return breakdown[str]?.value || 0
-			})
-			let max = Math.max(...values)
-			if (max > 55) { //Very high bar for not charlestoning, as east charlestons with an extra tile, which extends advantage.
-				placeTiles(breakdown.strategy.throw)
-			}
-			else {
-				placeTiles(getCharlestonTiles())
-			}
+		//In American Mahjong, charleston starts automatically, so there is nothing needed to initiate charleston.
+		if (analysis[0].notUsed[0]) {
+			placeTiles(analysis[0].notUsed[0])
+		}
+		else if (analysis[0].diff === 0) {
+			placeTiles([], true) //Go Mahjong
 		}
 		else {
-			placeTiles(breakdown.strategy.throw)
+			console.error("Bot hand appears to be dead. Initiating emergency pick. ") //TODO: If we start checking exposed tiles in the future,
+
+			if (!currentHand.contents.some((tile) => {
+				if (tile instanceof Tile) {
+					placeTiles(tile)
+					return true
+				}
+			})) {
+				throw "Bot was unable to choose a discard tile. "
+			}
 		}
 	}
 	else if (gameData.currentTurn.thrown) {
+		if (gameData.currentTurn.thrown.type === "joker") {return placeTiles([])} //Can't pick up a joker.
+
 		//We need to evaluate if we pick up the thrown tile.
+		//Take another analysis with the additional tile.
+		let withTileAnalysis = utilities.getTileDifferential(gameData.card, currentHand.contents.concat(gameData.currentTurn.thrown))
+		console.log(withTileAnalysis)
+		console.log(withTileAnalysis[0])
 
-		currentHand.add(gameData.currentTurn.thrown)
-		let isMahjong = currentHand.isMahjong(room.state.settings.maximumSequences)
-		let tile = gameData.currentTurn.thrown
+		if (withTileAnalysis[0].handOption.concealed && withTileAnalysis.diff !== 0) {
+			//The top hand including this tile would be concealed, and it would not be for Mahjong.
+		}
+		else if (withTileAnalysis.some((withTileAnalysisItem) => {
+				if (withTileAnalysisItem.diff < analysis[0].diff) {
+					console.log(withTileAnalysisItem)
+					//Claiming this tile would put us closer to Mahjong.
 
-		if (isMahjong) {
-			console.log("Naked Mahjong")
-			currentHand.remove(gameData.currentTurn.thrown)
-			return placeTiles([gameData.currentTurn.thrown], isMahjong); //Naked Mahjong.
-		}
+					//Now we need to confirm we actually can claim it.
+					//Jokers will complicate this.
 
-		if (currentHand.removeMatchingTilesFromHand(tile, 4, true)) {
-			//TODO: Look at keeping for sequence.
-			currentHand.remove(gameData.currentTurn.thrown)
-			return placeTiles(new Array(4).fill(gameData.currentTurn.thrown), isMahjong)
-		}
-		if (currentHand.removeMatchingTilesFromHand(tile, 3, true)) {
-			currentHand.remove(gameData.currentTurn.thrown)
-			return placeTiles(new Array(3).fill(gameData.currentTurn.thrown), isMahjong)
-		}
-		if (isMahjong && currentHand.removeMatchingTilesFromHand(tile, 2, true)) {
-			currentHand.remove(gameData.currentTurn.thrown)
-			return placeTiles(new Array(2).fill(gameData.currentTurn.thrown), isMahjong)
-		}
-		//TODO: Look at making sequence.
+					//First, determine what match this tile would be going into, to tell if jokers can be used.
+					let match = withTileAnalysisItem.handOption.tiles.find((arr) => {
+						if (arr[0].matches(gameData.currentTurn.thrown)) {
+							return true
+						}
+					})
+					console.log(match)
+					console.warn("Want Tile")
 
-		//Nothing we can do. Next.
-		currentHand.remove(gameData.currentTurn.thrown)
+					let tilesToPlace = []
+
+					//If this tile is beneficial, we shouldn't have enough of it, so don't need to check against match length here.
+					currentHand.contents.forEach((item) => {
+						if (match[0].matches(item)) {
+							tilesToPlace.push(item)
+						}
+					})
+					console.log(tilesToPlace)
+
+					if (match.length > 2) {
+						currentHand.contents.forEach((item) => {
+							if (tilesToPlace.length !== match.length - 1) {
+								if (item.type === "joker") {
+									tilesToPlace.push(item)
+								}
+							}
+						})
+
+						console.log(tilesToPlace)
+
+						if (tilesToPlace.length === match.length - 1) {
+							placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown))
+							return true
+						}
+						else {console.warn("Continuing")}
+					}
+					else if (withTileAnalysisItem.diff === 0) {
+						//Can only pick up for Mahjong.
+						if (tilesToPlace.length === match.length - 1) {
+							placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), true)
+							return true
+						}
+						else {console.warn("Continuing Needs Mahjong")}
+					}
+					else {console.warn("Mahj only. Continuing. ")}
+				}
+			})
+		) {console.warn("Returned");return}
+
 		placeTiles([])
 	}
 }

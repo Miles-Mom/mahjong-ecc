@@ -33,6 +33,7 @@ var suitDragonConversion = {
 function getTileDifferential(handOptions, hand) {
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
+
 	let results = []
 
 	for (let i=0;i<handOptions.length;i++) {
@@ -52,33 +53,36 @@ function getTileDifferential(handOptions, hand) {
 
 		let jokerCount = 0
 		let diff;
-		let exposedMatches = 0
+		let exposedMatches = 0 //May not be used anymore - was supposed to be used to detect where concealed hands were an issue.
+
+		let notUsed = [] //Used to return which tiles should be thrown for this hand. TODO: This slows things down quite a bit.
+
+		//We need TileContainers and Arrays to be processed first, as those can't be discarded.
+		function removeItem(item) {
+			if (item.type === "joker") {
+				++jokerCount
+				return true
+			}
+
+			//TODO: The splice and search should be able to be optimized.
+			let noFillIndex = noFillJoker.findIndex((tile) => {return tile.matches(item)})
+			if (noFillIndex !== -1) {
+				noFillJoker.splice(noFillIndex, 1)
+				return true
+			}
+
+			let canFillIndex = canFillJoker.findIndex((tile) => {return tile.matches(item)})
+			if (canFillIndex !== -1) {
+				canFillJoker.splice(canFillIndex, 1)
+				return true
+			}
+
+			return false
+		}
 
 		processHandItems:
 		for (let i=0;i<hand.length;i++) {
 			let handItem = hand[i]
-
-			function removeItem(item) {
-				if (item.type === "joker") {
-					++jokerCount
-					return true
-				}
-
-				//TODO: The splice and search should be able to be optimized.
-				let noFillIndex = noFillJoker.findIndex((tile) => {return tile.matches(item)})
-				if (noFillIndex !== -1) {
-					noFillJoker.splice(noFillIndex, 1)
-					return true
-				}
-
-				let canFillIndex = canFillJoker.findIndex((tile) => {return tile.matches(item)})
-				if (canFillIndex !== -1) {
-					canFillJoker.splice(canFillIndex, 1)
-					return true
-				}
-
-				return false
-			}
 
 			if (handItem instanceof TileContainer) {handItem = handItem.tiles}
 			if (handItem instanceof Array) {
@@ -87,32 +91,49 @@ function getTileDifferential(handOptions, hand) {
 					exposedMatches++
 				}
 
+				let itemValue = handItem.find((item) => {
+					return item.type !== "joker"
+				})
+
 				for (let i=0;i<handItem.length;i++) {
-					if (!removeItem(handItem[i])) {
-						diff = Infinity
+					//These items may have jokers acting as something - if they are exposed, they are stuck unless we swap them.
+					//We treat the jokers like the tile it serves as - that way, if we get another copy, the new copy goes in notUsed
+					if (!removeItem(itemValue)) {
+						diff = Infinity //The hand is impossible with current exposures.
 						break processHandItems;
 					}
 				}
 			}
-			else {
-				removeItem(handItem)
-			}
 		}
 
 		if (diff !== Infinity) {
+
+			for (let i=0;i<hand.length;i++) {
+				let handItem = hand[i]
+
+				if (handItem instanceof TileContainer || handItem instanceof Array) {}
+				else {
+					if (!removeItem(handItem)) {
+						notUsed.push(handItem) //TODO: If we have a joker acting as this item, put it at the beginning.
+					}
+				}
+			}
+
 			diff = noFillJoker.length + Math.max(0, canFillJoker.length - jokerCount)
 
 			//This check was preventing the removal of duplicates.
-			
+
 			/*if (handOption.concealed && !(exposedMatches === 0 || (exposedMatches === 1 && diff === 0))) {
 				diff = Infinity
 				console.warn("Hand Requires Concealed, Combo Disabled")
+				continue;
 			}*/
-			//else {
-				results.push({
-					diff, handOption
-				})
-			//}
+
+			//TODO: Should we add jokers to notUsed if we have excess ones? Excess is hard to define, as we might want to
+			//hoard jokers, or we might want to dump to try and get the double.
+			results.push({
+				diff, handOption, noFillJoker, canFillJoker, notUsed, jokerCount
+			})
 		}
 	}
 
@@ -134,6 +155,9 @@ function getTileDifferential(handOptions, hand) {
 function outputExpander(combos) {
 	console.time("Expand")
 	let output = []
+
+	let duplicatesRemoved = 0
+
 	combos.forEach((combo) => {
 		//combo composes all the possibilities that one item on the card can be
 		let comboOutput = []
@@ -147,7 +171,8 @@ function outputExpander(combos) {
 		//Combos might include duplicate outputs - while they wouldn't if they were ideally designed, using the first two
 		//of three set permutations is extremely useful, generating extra possibilities as a side effect.
 
-		let checkForDuplicates = true
+		//We don't currently check for duplicate outputs outside of combos.
+
 		//Duplicate checking slows stuff down quite a bit - it is a one time cost, but if it is too slow, it might need
 		//to be optimized even more, to only run on specific combos, etc.
 
@@ -155,8 +180,8 @@ function outputExpander(combos) {
 		for (let i=0;i<comboOutput.length;i++) {
 			let combo = comboOutput[i]
 
-			if (checkForDuplicates && getTileDifferential(uniqueCombos, combo.tiles)[0]?.diff === 0) {
-				console.warn("Removed Duplicate Combo", combo)
+			if (getTileDifferential(uniqueCombos, combo.tiles)[0]?.diff === 0) {
+				duplicatesRemoved++
 			}
 			else {
 				uniqueCombos.push(combo)
@@ -166,6 +191,9 @@ function outputExpander(combos) {
 		output.push(...uniqueCombos)
 	})
 	console.timeEnd("Expand")
+	if (duplicatesRemoved) {
+		console.warn("Removed " + duplicatesRemoved +  " Duplicate Combos")
+	}
 	return output
 }
 
