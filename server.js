@@ -66,7 +66,7 @@ websocketServer.on('connection', function connection(websocket) {
 			//Admin actions for triggering maintenance.
 
 			//Example:
-			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in 5 minutes to perform a server update. \nIf all goes well, nothing will be lost, and we should be back up within a minute. Your device should automatically reconnect and resume your current game. ")
+			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in a few minutes to perform a server update. Feel free to continue playing - all games will be restored to where they were before the start of maintenance. ")
 
 			//stateManager.callServerSave(password, "update")
 			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends is shutting down to perform a server update. \nIf all goes well, your current game should resume within a minute. ")
@@ -139,14 +139,7 @@ websocketServer.on('connection', function connection(websocket) {
 					return websocket.send(getMessage("joinRoom", "Room Does Not Exist", "error"))
 				}
 				client.setNickname(obj.nickname)
-				let status = global.stateManager.getRoom(obj.roomId).addClient(clientId)
-				if (status === true) {
-					client.setRoomId(obj.roomId)
-					return websocket.send(getMessage("joinRoom", obj.roomId, "success"))
-				}
-				else {
-					return websocket.send(getMessage("joinRoom", status, "error"))
-				}
+				return global.stateManager.getRoom(obj.roomId).addClient(clientId)
 			}
 			else if (obj.type === "getCurrentRoom") {
 				console.log(client.getRoomId())

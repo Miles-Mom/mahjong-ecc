@@ -274,7 +274,7 @@ else {
 }
 
 //Facebook Embed - https://developers.facebook.com/docs/plugins/page-plugin/
-//Will not work on iOS until version 1.3 is released. 
+//Will not work on iOS until version 1.3 is released.
 let facebookDiv = document.createElement("div")
 setTimeout(function() {
 	if (stateManager.inRoom.includes("fbtest")) {
@@ -544,9 +544,9 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			//If they leave, the room closes. Hide the leave room button.
 			leaveRoomButton.style.display = "none"
 		}
-		else if (obj.message.clients.length === 4) {
+		else if (obj.message.clients.length >= 4) {
 			startGameButton.style.display = ""
-			addBotButton.style.display = "none"
+			addBotButton.style.display = "none" //No reason to allow adding bots when game is full.
 		}
 
 	}
@@ -592,12 +592,6 @@ if (params.has("roomId")) {
 }
 if (params.has("name")) {
 	nicknameInput.value = params.get("name")
-}
-
-//This feature is intended for development use only. Show a warning.
-if (params.has("clientId") && !params.get("clientId").startsWith("bot")) {
-	isDevMode = true
-	new Popups.MessageBar("This page is in development mode due to the clientId parameter. ").show(8000)
 }
 
 module.exports = roomManager

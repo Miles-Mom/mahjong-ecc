@@ -244,6 +244,11 @@ class StateManager {
 			if (obj.status === "success") {
 				this.inRoom = false
 				this.isHost = false
+
+				if (this.inGame === true) {
+					this.inGame = false
+					onEndGame({status: "success", message: "State Sync"})
+				}
 			}
 			if (this.onLeaveRoom instanceof Function) {this.onLeaveRoom(obj)}
 		}).bind(this)

@@ -192,7 +192,7 @@ class Room {
 			}
 
 			state.clients = []
-			this.clientIds.forEach((currentClientId) => {
+			this.clientIds.slice(0, state.inGame?4:Infinity).forEach((currentClientId) => {
 				let visibleClientState = {
 					id: currentClientId,
 					nickname: global.stateManager.getClient(currentClientId).getNickname(),
@@ -231,12 +231,13 @@ class Room {
 		}).bind(this)
 
 		this.addClient = (function(clientId) {
-			if (this.clientIds.length >= 4) {
-				//Alert the host somebody was blocked from joining.
-				global.stateManager.getClient(this.hostClientId).message("roomActionGameplayAlert", global.stateManager.getClient(clientId).getNickname() + ` tried to join the room. `, "success")
-				return "Room Full. You can ask the host to kick a player or bot. "
-			}
-			if (this.clientIds.includes(clientId)) {return "Already In Room"}
+			let client = global.stateManager.getClient(clientId)
+
+			if (this.clientIds.includes(clientId)) {return client.message("joinRoom", "Already In Room", "error")}
+
+			client.setRoomId(this.roomId)
+			client.message("joinRoom", this.roomId, "success")
+
 			if (!this.hostClientId) {this.hostClientId = clientId}
 			this.clientIds.push(clientId)
 			this.sendStateToClients()
@@ -350,6 +351,10 @@ class Room {
 
 			let client = global.stateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
+
+			if (!hand) {
+				return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
+			}
 
 			if (this.gameData.isMahjong || this.gameData.wall.isEmpty) {
 				return client.message(obj.type, "The game is over. If you wish to continue playing, you can end the game and start a new one, or revert the current game and see how it works playing a different way. ", "error")
@@ -496,7 +501,7 @@ class Room {
 
 
 						//Bots can pass true to auto-detect and not receive errors on fail.
-						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile. 
+						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile.
 						if (!obj.swapJoker || obj.swapJoker === true) {
 							let tileName = placement.value + " " + placement.type
 							let discardMessage = client.getNickname() + " has thrown a " + tileName
@@ -635,6 +640,9 @@ class Room {
 				if (!this.inGame) {
 					return client.message(obj.type, "No Game In Progress", "error")
 				}
+				if (this.clientIds.indexOf(clientId) > 3) {
+					return this.removeClient(clientId)
+				}
 				this.endGame(obj, clientId) //Clientid is an optional parameter.
 			}
 			else if (obj.type === "roomActionCloseRoom") {
@@ -665,6 +673,9 @@ class Room {
 				return this.addBot(obj)
 			}
 			else if (obj.type === "roomActionRevertState") {
+				if (this.clientIds.indexOf(clientId) > 3) {
+					return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
+				}
 				if (!isNaN(obj.message)) {
 					this.messageAll([], "roomActionGameplayAlert", client.getNickname() + " is reverting the state " + Number(obj.message) + " moves. ", "success" )
 					return this.revertState(Number(obj.message))

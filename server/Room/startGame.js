@@ -4,7 +4,7 @@ const fs = require("fs")
 const path = require("path")
 
 function startGame(obj) {
-	if (this.clientIds.length !== 4) {return "Not Enough Clients"}
+	if (this.clientIds.length < 4) {return "Not Enough Clients"}
 	else {
 		this.inGame = true
 		this.messageAll([], obj.type, "Game Started", "success")
@@ -137,7 +137,7 @@ function startGame(obj) {
 			}
 		}
 
-		this.clientIds.forEach((clientId) => {
+		this.clientIds.slice(0, 4).forEach((clientId) => {
 			if (!windAssignments[clientId]) {
 				windAssignments[clientId] = winds.splice(Math.floor(Math.random() * winds.length), 1)[0]
 			}

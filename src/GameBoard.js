@@ -94,7 +94,7 @@ if (fullscreenControls.toggleElement) {
 let syncButton = document.createElement("img")
 syncButton.src = "assets/reload-icon.svg"
 if (window.Capacitor) {
-	//Needed on iOS until version 1.3 is released. 
+	//Needed on iOS until version 1.3 is released.
 	syncButton.src = "https://mahjong4friends.com/assets/reload-icon.svg"
 }
 syncButton.id = "syncButton"
@@ -261,7 +261,6 @@ window.stateManager.onGameplayAlert = function(obj) {
 
 let endGameButton = document.createElement("button")
 endGameButton.id = "endGameButton"
-endGameButton.innerHTML = "End Game"
 gameBoard.appendChild(endGameButton)
 
 let newGameNoLobbyButton = document.createElement("button")
@@ -277,7 +276,8 @@ window.stateManager.addEventListener("onStartGame", function() {
 endGameButton.addEventListener("click", function() {
 	//Require confirmation unless the game is over. Note that this might be slightly bugged with revert.
 	if (
-		!shouldConfirm
+		endGameButton.innerHTML === "Leave Room" //Spectating
+		|| !shouldConfirm
 		|| confirm("Are you absolutely sure you want to end the game?")
 	) {
 		window.stateManager.endGame()
@@ -374,6 +374,9 @@ let nametags = nametagIds.map((id) => {
 	return nametag
 })
 
+
+let showSpectating = true
+
 //We place the changed tiles into the placemat during charleston. We employ this check to stop the initial state sync after a reload or
 //game start in american mahjong from filling the placemat with the first 3 tiles in the hand (as the entire hand changed)
 let charlestonStart = false;
@@ -430,8 +433,21 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	let userWindIndex = winds.indexOf(userWind)
 
-	compass.setDirectionForUserWind(userWind)
 	let windOrder = winds.slice(userWindIndex).concat(winds.slice(0, userWindIndex))
+	if (!userWind) {
+		//Must be spectating.
+		compass.setDirectionForUserWind(windOrder[0])
+		endGameButton.innerHTML = "Leave Room"
+
+		if (showSpectating) {
+			new Popups.MessageBar("You are spectating (message will close automatically)").show(10000)
+			showSpectating = false
+		}
+	}
+	else {
+		compass.setDirectionForUserWind(userWind)
+		endGameButton.innerHTML = "End Game"
+	}
 	console.log(windOrder)
 	console.log(hands)
 
