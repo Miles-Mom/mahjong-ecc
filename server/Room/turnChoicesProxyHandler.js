@@ -32,6 +32,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 	let placerWind = hand.wind
 
 	let priority;
+
 	if (this.gameData.charleston) {
 		if (obj[key].length > 3) {
 			client.message("roomActionPlaceTiles", "You can pass no more than 3 tiles during one Charleston round. ", "error")
@@ -316,7 +317,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							hand.add(placement)
 							placement.exposed = true
 							let matchType = [,,"pair","pong","kong"][placement.amount]
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchType + " of " + placement.value + " " + placement.type + "s", {clientId, speech: matchType})
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: matchType})
 							if (placement.mahjong) {
 								this.goMahjong(clientId, undefined, exemptFromChecks.includes(clientId))
 							}

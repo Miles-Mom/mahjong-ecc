@@ -335,7 +335,7 @@ function renderDiscardPile(tileStrings) {
 	tiles.forEach((tile) => {
 		let img = document.createElement("img")
 		img.src = tile.imageUrl
-		img.title = tile.tileName
+		img.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 		discardPile.appendChild(img)
 	})
 }

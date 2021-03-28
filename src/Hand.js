@@ -303,7 +303,7 @@ class Hand {
 				}
 				if (tile) {
 					elem.src = tile.imageUrl
-					elem.title = tile.tileName
+					elem.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 					elem.draggable = true //Is this even neccessary? It wasn't set earlier, yet it was working fine. Do browsers just assume or something?
 					//Both work. Using i is faster and simpler.
 					elem.placematIndex = i //this.inPlacemat.findIndex((item) => {return item === tile})
@@ -395,7 +395,7 @@ class Hand {
 
 					let elem = document.createElement("img")
 					elem.src = tile.imageUrl
-					elem.title = tile.tileName
+					elem.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 
 					//Group tiles in a match together.
 					if (indexInGroup && indexInGroup !== 0) {

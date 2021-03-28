@@ -3,17 +3,35 @@ class Tile {
 		this.type = config.type //Ex. wind, bamboo, character, pretty, dragon
 		this.value = config.value //Ex. 1,3 red, west
 
-		this.tileName = this.value + " " + this.type //TODO: Should we capitalize?
+		this.getTileName = (function(gameStyle = "chinese") {
+			let tileName = this.value + " " + this.type
+
+			if (gameStyle === "american") {
+				let americanTranslations = {
+					"bamboo": "bam",
+					"character": "crak",
+					"circle": "dot"
+				}
+
+				tileName = this.value + " " + (americanTranslations[this.type] || this.type)
+			}
+
+			if (this.faceDown) {
+				//Some face down tiles might be part of a kong.
+				if (this.value && this.type) {
+					tileName = "Face Down " + tileName
+				}
+				else {
+					tileName = "Face Down Tile"
+				}
+			}
+
+			return tileName
+		}).bind(this)
+
 		if (config.faceDown) {
 			this.faceDown = true
 			this.imageUrl = "assets/tiles/face-down.png"
-			//Some face down tiles might be part of a kong.
-			if (this.value && this.type) {
-				this.tileName = "Face Down " + this.tileName
-			}
-			else {
-				this.tileName = "Face Down Tile"
-			}
 		}
 		else if (this.type === "joker") {
 			this.imageUrl = "assets/tiles/joker.png"

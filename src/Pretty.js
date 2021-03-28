@@ -10,7 +10,7 @@ class Pretty {
 		this.seasonOrFlower = config.seasonOrFlower
 		this.exposed = true
 
-		this.tileName = "Pretty"
+		this.getTileName = function() {return "Pretty"}
 
 		let numberToWind = ["east", "south", "west", "north"]
 

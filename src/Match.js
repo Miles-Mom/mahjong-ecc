@@ -12,6 +12,10 @@ class Match {
 		this.amount = config.amount
 		this.exposed = config.exposed
 
+		this.getTileName = (function(...args) {
+			return this.getComponentTile().getTileName(...args)
+		}).bind(this)
+
 		this.getComponentTile = function() {
 			return new Tile({
 				type: this.type,

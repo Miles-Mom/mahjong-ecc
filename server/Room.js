@@ -322,7 +322,7 @@ class Room {
 			let client = global.stateManager.getClient(clientId)
 			if (!doNotMessage) {
 				this.lastDrawn = tile
-				client.message("roomActionInstructions", "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.value + " " + tile.type) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
+				client.message("roomActionInstructions", "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.getTileName(this.state.settings.gameStyle)) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
 				if (pretty > 0) {
 					this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " drew " + ((pretty === 1)?"a pretty!":pretty + " prettys!"), {clientId, speech: "I'm pretty!"})
 				}
@@ -501,7 +501,7 @@ class Room {
 							if (res) {
 								//Swapped for a joker
 								client.message("roomActionGameplayAlert", "Successfully Swapped", {clientId, speech: "Swapped", durationMultiplier: 0.5})
-								this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has swapped a " + placement.type + " " + placement.value + " for a joker", {clientId, speech: "Swap", durationMultiplier: 1})
+								this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has swapped a " + placement.getTileName(this.state.settings.gameStyle) + " for a joker", {clientId, speech: "Swap", durationMultiplier: 1})
 								return this.sendStateToClients()
 							}
 							else {
@@ -517,7 +517,7 @@ class Room {
 						//Bots can pass true to auto-detect and not receive errors on fail.
 						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile.
 						if (!obj.swapJoker || obj.swapJoker === true) {
-							let tileName = placement.value + " " + placement.type
+							let tileName = placement.getTileName(this.state.settings.gameStyle)
 							let discardMessage = client.getNickname() + " has thrown a " + tileName
 							//We're also going to check if the discarder is calling.
 							let durationMultiplier = 1;
@@ -554,7 +554,7 @@ class Room {
 							//Draw them another tile.
 							this.drawTile(clientId)
 							this.sendStateToClients()
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed an in-hand kong of " + placement.value + " " + placement.type + "s", {clientId, speech: "kong"})
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed an in-hand kong of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: "kong"})
 							console.log("Kong")
 
 						}
