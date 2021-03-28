@@ -5,6 +5,7 @@ output = output.concat(require("./2020/winds-dragons.js"))
 output = output.concat(require("./2020/consecutive-run.js"))
 output = output.concat(require("./2020/quints.js"))
 output = output.concat(require("./2020/any-like-numbers.js"))
+output = output.concat(require("./2020/2468.js"))
 
 output = utilities.outputExpander(output)
 
