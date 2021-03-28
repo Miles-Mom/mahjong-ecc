@@ -13,7 +13,12 @@ class Tile {
 					"circle": "dot"
 				}
 
-				tileName = this.value + " " + (americanTranslations[this.type] || this.type)
+				if (["flower", "season"].includes(this.type)) {
+					tileName = "flower"
+				}
+				else {
+					tileName = this.value + " " + (americanTranslations[this.type] || this.type)
+				}
 			}
 
 			if (this.faceDown) {
