@@ -107,7 +107,7 @@ function evaluateNextMove() {
 		console.log(withTileAnalysis)
 		console.log(withTileAnalysis[0])
 
-		if (withTileAnalysis[0].handOption.concealed && withTileAnalysis.diff !== 0) {
+		if (withTileAnalysis[0].handOption.concealed && withTileAnalysis[0].diff !== 0) {
 			//The top hand including this tile would be concealed, and it would not be for Mahjong.
 		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {

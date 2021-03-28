@@ -377,7 +377,6 @@ class Room {
 			let placement;
 			try {
 				placement = Hand.convertStringsToTiles(obj.message)
-				console.log(obj.message)
 
 				//The very first throw will determine if we charleston or not. Throwing one tile will start the game, throwing 3 will initiate charleston.
 				if (this.state.settings.charleston.length > 0 && this.gameData.charleston === undefined && placement.length !== 1 && hand.wind === "east") {
