@@ -32,7 +32,6 @@ function getPriority(obj, key, exemptFromChecks = false) {
 	let placerWind = hand.wind
 
 	let priority;
-
 	if (this.gameData.charleston) {
 		if (obj[key].length > 3) {
 			client.message("roomActionPlaceTiles", "You can pass no more than 3 tiles during one Charleston round. ", "error")
@@ -59,7 +58,15 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			return false
 		}
 	}
-	else if (obj[key] instanceof TileContainer) {
+	else if (obj[key] instanceof TileContainer || (this.state.settings.gameStyle === "american" && obj[key].mahjong)) {
+		//TileContainers are American Mahjong, which we don't validate.
+
+		if (!(obj[key] instanceof TileContainer)) {
+			//Also, In American Mahjong, you can pick up a single tile with nothing for Mahjong. So
+			//any empty pressing of Mahjong means to pick up the specified tile.
+			obj[key] = new TileContainer({tiles: [obj[key]]})
+		}
+
 		priority = 89 - getBackwardsDistance(placerWind, throwerWind)
 		if (obj[key].mahjong) {priority += 20}
 	}
