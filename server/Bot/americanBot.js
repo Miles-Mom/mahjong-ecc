@@ -30,8 +30,12 @@ function evaluateNextMove() {
 	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
-	function getTopTiles(analysis, maxAmount) {
-		let toThrow = analysis[0].notUsed
+	function getTopTiles(analysis, maxAmount, noJokers = false) {
+		let toThrow = analysis[0].notUsed.slice(0)
+
+		if (noJokers) {toThrow = toThrow.filter((item) => {
+			return item.type !== "joker"
+		})}
 
 		//We start at item 0 to give the joker elimination code a chance to run.
 		analysisLoop:
@@ -75,11 +79,11 @@ function evaluateNextMove() {
 
 		if (round.blind) {
 			//Blind pass. Pass as many as notUsed, 3 max.
-			placeTiles(getTopTiles(analysis, 3))
+			placeTiles(getTopTiles(analysis, 3, true))
 		}
-		else if (analysis[0].notUsed.length >= 3) {
+		else if (getTopTiles(analysis, 3, true).length >= 3) {
 			//We can pass 3 tiles. Pass them. TODO: Consider if we want to require more than 3 for allAgree rounds.
-			placeTiles(getTopTiles(analysis, 3))
+			placeTiles(getTopTiles(analysis, 3, true))
 		}
 		else if (round.allAgree) {
 			//We can't produce 3 tiles without throwing ones we want. Kill the round.
@@ -88,11 +92,10 @@ function evaluateNextMove() {
 		else {
 			//We must produce exactly 3 tiles. notUsed has less than 3 tiles.
 			//We must not pick jokers.
-
 			let passing = []
 
 			//We will pass every tile in notUsed. Remove them from the hand when picked.
-			getTopTiles(analysis, 3).forEach((item) => {
+			getTopTiles(analysis, 3, true).forEach((item) => {
 				passing.push(item)
 				hand.remove(item)
 			})
