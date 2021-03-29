@@ -30,7 +30,7 @@ var suitDragonConversion = {
 	"circle": "white"
 }
 
-function getTileDifferential(handOptions, hand, exposedBenefit = 0.35) {
+function getTileDifferential(handOptions, hand) {
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
 
@@ -146,17 +146,41 @@ function getTileDifferential(handOptions, hand, exposedBenefit = 0.35) {
 		//Some hands can be Mahjong in multiple different ways, with differing point values (Example: 2020 card, Quints #3, 13579 #1).
 		//Therefore, we should sort, in case one hand is more valuable.
 
+		//Apply some weighting to reduce the overuse of concealed and jokerless hands.
+		let exposedBenefit = 0.25
+
+		let jokersBenefit = 0.5 //0.5 points per spot that would allow a joker.
+		let maxJokerBenefit = 0.8 //0.8 points per joker max.
+
 		let diffA = a.diff
 		let diffB = b.diff
 
-		//If we are more than 2 tiles away, give a benefit to the exposed hands.
+		//If we are more than 1 tiles away, give a benefit to the exposed hands.
 		//TODO: This benefit should be less in Charleston, more elsewhere.
-		if (diffA > 2 && a.handOption.concealed) {
-			diffA += (diffA - 2) * exposedBenefit
+		if (diffA > 1 && a.handOption.concealed) {
+			diffA += (diffA - 1) * exposedBenefit
 		}
-		if (diffB > 2 && b.handOption.concealed) {
-			diffB += (diffB - 2) * exposedBenefit
+		if (diffB > 1 && b.handOption.concealed) {
+			diffB += (diffB - 1) * exposedBenefit
 		}
+
+		//If we are more than 1 tiles away, give a benefit to the hands that can use more jokers, limited to the maximum number
+		//of jokers they can use.
+		if (diffA > 1 && a.canFillJoker.length <= a.jokerCount) {
+			diffA += Math.min(
+				(diffA - 1) * jokersBenefit,
+				maxJokerBenefit * (a.canFillJoker.length - a.jokerCount)
+			)
+		}
+		if (diffB > 1 && b.canFillJoker.length <= b.jokerCount) {
+			diffB += Math.min(
+				(diffB - 1) * jokersBenefit,
+				maxJokerBenefit * (b.canFillJoker.length - b.jokerCount)
+			)
+		}
+
+		a.weightedDiff = diffA
+		b.weightedDiff = diffB
 
 		if (diffA !== diffB) {return diffA - diffB} //Sort by closest to Mahjong
 

@@ -29,9 +29,12 @@ function evaluateNextMove() {
 	console.log(currentHand.contents)
 	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
 	console.log(analysis[0])
+	console.log(analysis[1])
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
 	function getTopTiles(analysis, maxAmount, noJokers = false) {
+		maxAmount = Math.max(1, maxAmount)
+
 		let toThrow = analysis[0].notUsed.slice(0)
 
 		if (noJokers) {toThrow = toThrow.filter((item) => {
@@ -44,7 +47,9 @@ function evaluateNextMove() {
 			let analysisItem = analysis[i]
 
 			for (let i=0;i<toThrow.length;i++) {
-				if (toThrow.length <= maxAmount) {break analysisLoop;}
+				if (toThrow.length <= maxAmount) {
+					break analysisLoop;
+				}
 
 				let toThrowItem = toThrow[i]
 
@@ -71,9 +76,17 @@ function evaluateNextMove() {
 
 			}
 		}
+
+		//If there is only a small number of possible hands given exposures, we might have more than maxAmount tiles.
+		//In that case, we'll eliminate some. This is currently done at random.
+
+		while (maxAmount < toThrow.length) {
+			toThrow.splice(Math.floor(Math.random() * toThrow.length), 1)
+			console.warn("Randomly Filtering")
+		}
+
 		return toThrow
 	}
-
 
 	if (gameData.charleston) {
 		let round = gameData.charleston.directions[0][0]
@@ -123,7 +136,8 @@ function evaluateNextMove() {
 		//We need to choose a discard tile.
 		//In American Mahjong, charleston starts automatically, so there is nothing needed to initiate charleston.
 		if (analysis[0].notUsed.length > 0) {
-			placeTiles(getTopTiles(analysis, 1))
+			let tile = getTopTiles(analysis, 1)
+			placeTiles(tile)
 		}
 		else if (analysis[0].diff === 0) {
 			placeTiles([], true) //Go Mahjong
@@ -167,45 +181,49 @@ function evaluateNextMove() {
 							return true
 						}
 					})
-					console.log(match)
+
 					console.warn("Want Tile")
+					if (match) {
+						console.log(match)
 
-					let tilesToPlace = []
+						let tilesToPlace = []
 
-					//If this tile is beneficial, we shouldn't have enough of it, so don't need to check against match length here.
-					currentHand.contents.forEach((item) => {
-						if (match[0].matches(item)) {
-							tilesToPlace.push(item)
-						}
-					})
-					console.log(tilesToPlace)
-
-					if (match.length > 2) {
+						//If this tile is beneficial, we shouldn't have enough of it, so don't need to check against match length here.
 						currentHand.contents.forEach((item) => {
-							if (tilesToPlace.length !== match.length - 1) {
-								if (item.type === "joker") {
-									tilesToPlace.push(item)
-								}
+							if (match[0].matches(item)) {
+								tilesToPlace.push(item)
 							}
 						})
-
 						console.log(tilesToPlace)
 
-						if (tilesToPlace.length === match.length - 1) {
-							placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown))
-							return true
+						if (match.length > 2) {
+							currentHand.contents.forEach((item) => {
+								if (tilesToPlace.length !== match.length - 1) {
+									if (item.type === "joker") {
+										tilesToPlace.push(item)
+									}
+								}
+							})
+
+							console.log(tilesToPlace)
+
+							if (tilesToPlace.length === match.length - 1) {
+								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown))
+								return true
+							}
+							else {console.warn("Continuing")}
 						}
-						else {console.warn("Continuing")}
-					}
-					else if (withTileAnalysisItem.diff === 0) {
-						//Can only pick up for Mahjong.
-						if (tilesToPlace.length === match.length - 1) {
-							placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), true)
-							return true
+						else if (withTileAnalysisItem.diff === 0) {
+							//Can only pick up for Mahjong.
+							if (tilesToPlace.length === match.length - 1) {
+								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), true)
+								return true
+							}
+							else {console.warn("Continuing Needs Mahjong")}
 						}
-						else {console.warn("Continuing Needs Mahjong")}
+						else {console.warn("Mahj only. Continuing. ")}
 					}
-					else {console.warn("Mahj only. Continuing. ")}
+					else {console.warn("Something odd happened, probably in sorting, causing a match not including the thrown tile to be provided. ")}
 				}
 			})
 		) {console.warn("Returned");return}
