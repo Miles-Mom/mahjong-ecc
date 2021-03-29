@@ -144,15 +144,17 @@ function getTileDifferential(handOptions, hand) {
 
 	return results.sort((function(a,b) {
 		//Some hands can be Mahjong in multiple different ways, with differing point values (Example: 2020 card, Quints #3, 13579 #1).
-		//I'm not aware of any cases where point values are the same, yet only one is concealed. Note that this
-		//sorting applies even when not Mahjong though. We'll want to adjust how we handle concealed when we add
-		//stuff like detecting exposed tiles.
+		//Therefore, we should sort, in case one hand is more valuable. 
 
 		if (a.diff !== b.diff) {return a.diff - b.diff} //Sort by closest to Mahjong
-		else if (b.handOption.score !== a.handOption.score) {return b.handOption.score - a.handOption.score} //If same distance, sort by score.
-		else {
-			return Number(a.handOption.concealed) - Number(b.handOption.concealed) //Return exposed before concealed.
+
+		if (a.diff > 2 && a.handOption.concealed !== b.handOption.concealed) {
+			//If we are more than 2 tiles away, sort exposed hands first.
+			return Number(a.handOption.concealed) - Number(b.handOption.concealed)
 		}
+
+		return b.handOption.score - a.handOption.score //Sort by score.
+
 	}))
 }
 
