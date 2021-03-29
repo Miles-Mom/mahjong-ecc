@@ -102,7 +102,7 @@ function evaluateNextMove() {
 
 			//Pick randomly from remaining tiles until we have 3 tiles to pass.
 			while (passing.length < 3) {
-				let removed = hand.contents[Math.floor(Math.random() * hand.contents.length)] //Random pick.
+				let removed = currentHand.contents[Math.floor(Math.random() * currentHand.contents.length)] //Random pick.
 				if (removed.type === "joker") {continue} //This should never get stuck, as there are only 8 jokers, and we are in charleston.
 
 				passing.push(removed)
