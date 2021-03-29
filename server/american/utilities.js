@@ -103,6 +103,13 @@ function getTileDifferential(handOptions, hand) {
 						break processHandItems;
 					}
 				}
+
+				if (removeItem(itemValue)) {
+					//If the current exposures are less than what is needed - we exposed a pong, but need a kong,
+					//the hands is ALSO impossible. If we can remove another item for something exposed, this won't work.
+					diff = Infinity
+					break processHandItems;
+				}
 			}
 		}
 
@@ -129,8 +136,10 @@ function getTileDifferential(handOptions, hand) {
 				continue;
 			}*/
 
-			//TODO: Should we add jokers to notUsed if we have excess ones? Excess is hard to define, as we might want to
-			//hoard jokers, or we might want to dump to try and get the double.
+			//Add jokers that we aren't using to fill anything
+			//We could take a different approach - add jokers until we can't use them -
+			//however this approach, while making recovery plans worse,
+			//increases the odds of no joker point doubles.
 			if (jokerCount > canFillJoker.length) {
 				notUsed.push(new Tile({type: "joker", value: ""}))
 				jokerCount--
@@ -189,7 +198,7 @@ function getTileDifferential(handOptions, hand) {
 		diffA += a.noFillJoker.length * noJokerPenalty
 		diffB += b.noFillJoker.length * noJokerPenalty
 
-		//For Debugging and Analysis. 
+		//For Debugging and Analysis.
 		a.weightedDiff = diffA
 		b.weightedDiff = diffB
 
