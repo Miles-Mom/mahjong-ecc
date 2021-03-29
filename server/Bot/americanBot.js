@@ -28,6 +28,7 @@ function evaluateNextMove() {
 
 	console.log(currentHand.contents)
 	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
+	console.log(analysis[0])
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
 	function getTopTiles(analysis, maxAmount, noJokers = false) {

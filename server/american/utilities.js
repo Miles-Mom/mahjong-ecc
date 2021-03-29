@@ -30,7 +30,7 @@ var suitDragonConversion = {
 	"circle": "white"
 }
 
-function getTileDifferential(handOptions, hand) {
+function getTileDifferential(handOptions, hand, exposedBenefit = 0.35) {
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
 
@@ -144,17 +144,23 @@ function getTileDifferential(handOptions, hand) {
 
 	return results.sort((function(a,b) {
 		//Some hands can be Mahjong in multiple different ways, with differing point values (Example: 2020 card, Quints #3, 13579 #1).
-		//Therefore, we should sort, in case one hand is more valuable. 
+		//Therefore, we should sort, in case one hand is more valuable.
 
-		if (a.diff !== b.diff) {return a.diff - b.diff} //Sort by closest to Mahjong
+		let diffA = a.diff
+		let diffB = b.diff
 
-		if (a.diff > 2 && a.handOption.concealed !== b.handOption.concealed) {
-			//If we are more than 2 tiles away, sort exposed hands first.
-			return Number(a.handOption.concealed) - Number(b.handOption.concealed)
+		//If we are more than 2 tiles away, give a benefit to the exposed hands.
+		//TODO: This benefit should be less in Charleston, more elsewhere.
+		if (diffA > 2 && a.handOption.concealed) {
+			diffA += (diffA - 2) * exposedBenefit
+		}
+		if (diffB > 2 && b.handOption.concealed) {
+			diffB += (diffB - 2) * exposedBenefit
 		}
 
-		return b.handOption.score - a.handOption.score //Sort by score.
+		if (diffA !== diffB) {return diffA - diffB} //Sort by closest to Mahjong
 
+		return b.handOption.score - a.handOption.score //Sort by score.
 	}))
 }
 
