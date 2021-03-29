@@ -146,28 +146,50 @@ function getTileDifferential(handOptions, hand) {
 		//Some hands can be Mahjong in multiple different ways, with differing point values (Example: 2020 card, Quints #3, 13579 #1).
 		//Therefore, we should sort, in case one hand is more valuable.
 
-		//Apply some weighting to reduce the overuse of concealed and jokerless hands.
-		let exposedPenalty = 0.15 //Point penalty per unfilled spot against concealed hands multiple tiles from Mahjong
-		let noJokerPenalty = 0.25 //Point penalty per unfilled spot that requires a non-joker. 1 spot grace (as can be picked up)
+		//TODO: These penalties should be lower earlier in charleston.
 
-		//TODO: We need penalties against quints, which require jokers.
+		//Apply some weighting to reduce the overuse of concealed and jokerless hands.
+		let uncallablePenalty = 0.15 //Point penalty per unfilled spot that can't be called for.
+		let noJokerPenalty = 0.15 //Point penalty per unfilled spot that requires a non-joker.
+
+		//TODO: We need small penalties against quints, which require jokers.
 
 		let diffA = a.diff
 		let diffB = b.diff
 
-		//If we are more than 1 tiles away, give a benefit to the exposed hands.
-		//TODO: This benefit should be less in Charleston, more elsewhere.
-		if (diffA > 1 && a.handOption.concealed) {
-			diffA += (diffA - 1) * exposedPenalty
+		//Give a benefit for hands where we can call for tiles.
+		//TODO: Penalize singular remaining tiles less than pairs.
+		function getUncallableTiles(hand) {
+			//Can call for the last tile, so minus 1
+			if (hand.handOption.concealed) {
+				return Math.max(0, hand.diff - 1) //Diff excludes joker-replacable tiles.
+			}
+			else {
+				let uncallableMatches = hand.handOption.tiles.filter((item) => {return item.length < 3})
+
+				//We won't penalize for joker replaced tiles - those are, in effect, already in hand.
+				let uncallableTiles = [hand.noFillJoker, Math.max(0, hand.canFillJoker - hand.jokerCount)].reduce((sum, tiles) => {
+				    for (let i=0;i<tiles.length;i++) {
+						let tile = tiles[i]
+						if (uncallableMatches.some((match) => {
+							return tile.matches(match[0])
+						})) {sum++}
+					}
+					return sum
+				}, 0)
+
+				return Math.max(0, uncallableTiles - 1)
+			}
 		}
-		if (diffB > 1 && b.handOption.concealed) {
-			diffB += (diffB - 1) * exposedPenalty
-		}
+
+		diffA += getUncallableTiles(a) * uncallablePenalty
+		diffB += getUncallableTiles(b) * uncallablePenalty
 
 		//Give a penalty to the hands that need non-joker tiles.
-		diffA += Math.max(0, (a.noFillJoker.length - 1) * noJokerPenalty)
-		diffB += Math.max(0, (b.noFillJoker.length - 1) * noJokerPenalty)
+		diffA += a.noFillJoker.length * noJokerPenalty
+		diffB += b.noFillJoker.length * noJokerPenalty
 
+		//For Debugging and Analysis. 
 		a.weightedDiff = diffA
 		b.weightedDiff = diffB
 
