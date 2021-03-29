@@ -131,6 +131,11 @@ function getTileDifferential(handOptions, hand) {
 
 			//TODO: Should we add jokers to notUsed if we have excess ones? Excess is hard to define, as we might want to
 			//hoard jokers, or we might want to dump to try and get the double.
+			if (jokerCount > canFillJoker.length) {
+				notUsed.push(new Tile({type: "joker", value: ""}))
+				jokerCount--
+			}
+
 			results.push({
 				diff, handOption, noFillJoker, canFillJoker, notUsed, jokerCount
 			})

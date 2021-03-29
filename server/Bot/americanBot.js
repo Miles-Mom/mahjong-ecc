@@ -28,19 +28,58 @@ function evaluateNextMove() {
 
 	console.log(currentHand.contents)
 	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
-	console.log(analysis[0])
+
+	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
+	function getTopTiles(analysis, maxAmount) {
+		let toThrow = analysis[0].notUsed
+
+		//We start at item 0 to give the joker elimination code a chance to run.
+		analysisLoop:
+		for (let i=0;i<analysis.length;i++) {
+			let analysisItem = analysis[i]
+
+			for (let i=0;i<toThrow.length;i++) {
+				if (toThrow.length <= maxAmount) {break analysisLoop;}
+
+				let toThrowItem = toThrow[i]
+
+				//If this item does not exist in notUsed, it is needed for one of the top hands.
+				//Therefore, we shouldn't throw it.
+
+				let index;
+
+				if (toThrowItem.type === "joker") {
+					//We will throw jokers only when there are no other options.
+					index = -1
+				}
+				else {
+					index = analysisItem.notUsed.findIndex((item) => {
+						return item.matches(toThrowItem)
+					})
+				}
+
+				if (index === -1) {
+					//Remove the item from toThrow
+					toThrow.splice(i, 1)
+					i--
+				}
+
+			}
+		}
+		return toThrow
+	}
+
 
 	if (gameData.charleston) {
 		let round = gameData.charleston.directions[0][0]
-		let notUsed = analysis[0].notUsed
 
 		if (round.blind) {
 			//Blind pass. Pass as many as notUsed, 3 max.
-			placeTiles(notUsed.slice(0,3))
+			placeTiles(getTopTiles(analysis, 3))
 		}
-		else if (notUsed.length >= 3) {
+		else if (analysis[0].notUsed.length >= 3) {
 			//We can pass 3 tiles. Pass them. TODO: Consider if we want to require more than 3 for allAgree rounds.
-			placeTiles(notUsed.slice(0,3))
+			placeTiles(getTopTiles(analysis, 3))
 		}
 		else if (round.allAgree) {
 			//We can't produce 3 tiles without throwing ones we want. Kill the round.
@@ -53,7 +92,7 @@ function evaluateNextMove() {
 			let passing = []
 
 			//We will pass every tile in notUsed. Remove them from the hand when picked.
-			notUsed.forEach((item) => {
+			getTopTiles(analysis, 3).forEach((item) => {
 				passing.push(item)
 				hand.remove(item)
 			})
@@ -79,8 +118,8 @@ function evaluateNextMove() {
 	else if (gameData.currentTurn.userTurn === this.clientId) {
 		//We need to choose a discard tile.
 		//In American Mahjong, charleston starts automatically, so there is nothing needed to initiate charleston.
-		if (analysis[0].notUsed[0]) {
-			placeTiles(analysis[0].notUsed[0])
+		if (analysis[0].notUsed.length > 0) {
+			placeTiles(getTopTiles(analysis, 1))
 		}
 		else if (analysis[0].diff === 0) {
 			placeTiles([], true) //Go Mahjong
