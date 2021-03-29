@@ -223,7 +223,7 @@ function evaluateNextMove() {
 						else {console.warn("Mahj only. Continuing. ")}
 					}
 					else {
-						console.warn(gameData.currentTurn.throw, currentHand.contents, analysis[0], withTileAnalysisItem)
+						console.warn(gameData.currentTurn.thrown, currentHand.contents, analysis[0], withTileAnalysisItem)
 						console.warn("Something odd happened, probably in sorting, causing a match not including the thrown tile to be provided. ")
 					}
 				}
