@@ -48,6 +48,13 @@ function SettingsMenu(settingsDiv, isHost = false) {
 		for (let option in options) {
 			obj[option] = options[option].get()
 		}
+
+		try {
+			//TODO: Should we save all changes, or just when getChoices is called (it's called when games are started, etc)
+			localStorage.setItem("gameSettings", JSON.stringify(obj))
+		}
+		catch (e) {console.error(e)}
+
 		return obj
 	}
 	this.setChoices = function(obj = {}) {
@@ -56,6 +63,11 @@ function SettingsMenu(settingsDiv, isHost = false) {
 				options[option].set(obj[option])
 			}
 		}
+	}
+
+	//Remember settings across reloads.
+	if (localStorage.getItem("gameSettings")) {
+		this.setChoices(JSON.parse(localStorage.getItem("gameSettings")))
 	}
 }
 
