@@ -97,7 +97,7 @@ function evaluateNextMove() {
 			//We will pass every tile in notUsed. Remove them from the hand when picked.
 			getTopTiles(analysis, 3, true).forEach((item) => {
 				passing.push(item)
-				hand.remove(item)
+				currentHand.remove(item)
 			})
 
 			//Pick randomly from remaining tiles until we have 3 tiles to pass.
@@ -106,12 +106,12 @@ function evaluateNextMove() {
 				if (removed.type === "joker") {continue} //This should never get stuck, as there are only 8 jokers, and we are in charleston.
 
 				passing.push(removed)
-				hand.remove(removed)
+				currentHand.remove(removed)
 			}
 
 			//Restore the removed tiles and pass them.
 			passing.forEach((item) => {
-				hand.add(item)
+				currentHand.add(item)
 			})
 
 			placeTiles(passing)
