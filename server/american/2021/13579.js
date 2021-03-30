@@ -1,4 +1,4 @@
-const {createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, dragonOptions, dragonArrangments, suitDragonConversion}
+const {createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, dragonOptions, dragonArrangments, windOptions, suitDragonConversion}
 = require("../utilities.js");
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.

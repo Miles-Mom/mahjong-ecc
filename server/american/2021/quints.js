@@ -42,6 +42,56 @@ module.exports = [
 			concealed: false
 		}
 	},
+	function(tiles = []) {
+		allOptions.slice(0, -2).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 5}))
+				newArr.push(createTiles({type: suitOrder[1], value: 1+offset, amount: 4}))
+				newArr.push(createTiles({type: suitOrder[2], value: 2+offset, amount: 5}))
+			})
+		})
+
+		//Part 2
+		allOptions.slice(0, -2).forEach((offset) => {
+			allSuits.forEach((suit) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suit, value: offset, amount: 5}))
+				newArr.push(createTiles({type: suit, value: 1+offset, amount: 4}))
+				newArr.push(createTiles({type: suit, value: 2+offset, amount: 5}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 45,
+			concealed: false
+		}
+	},
+	function(tiles = []) {
+		allOptions.slice(0, -1).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 2}))
+				newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 5}))
+
+				newArr.push(createTiles({type: suitOrder[1], value: offset, amount: 2}))
+				newArr.push(createTiles({type: suitOrder[1], value: 1+offset, amount: 5}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 45,
+			concealed: false
+		}
+	},
 ].map((func, index) => {
 	let output = func()
 	output.cardIndex = index
