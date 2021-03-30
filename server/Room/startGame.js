@@ -95,7 +95,7 @@ function startGame(obj) {
 
 
 			let cardOptionsToScript = {
-				"2020 National Mahjongg League": "../american/2020.js"
+				"2020 National Mahjongg League": "../american/2020.js",
 				"2021 National Mahjongg League": "../american/2021.js"
 			}
 

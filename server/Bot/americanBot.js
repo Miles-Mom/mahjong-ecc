@@ -31,7 +31,6 @@ function evaluateNextMove() {
 
 	console.log(currentHand.contents)
 	let cardToUse = gameData.card
-	console.log(cardToUse)
 	let botDifficulty = room.state.settings.americanBotDifficulty
 	if (botDifficulty < 100) {
 		let filterSeedRandom = SeedRandom(seed) //We need the same random tiles every time. The card may change between games though,
@@ -41,6 +40,7 @@ function evaluateNextMove() {
 			return (filterSeedRandom() * 100) < botDifficulty
 		})
 	}
+	console.log(cardToUse)
 	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
 	console.log(analysis[0])
 
