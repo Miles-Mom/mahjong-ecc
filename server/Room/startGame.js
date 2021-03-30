@@ -96,6 +96,7 @@ function startGame(obj) {
 
 			let cardOptionsToScript = {
 				"2020 National Mahjongg League": "../american/2020.js"
+				"2021 National Mahjongg League": "../american/2021.js"
 			}
 
 			this.state.settings.card = cardOptionsToScript[obj?.settings?.card] || cardOptionsToScript["2020 National Mahjongg League"]
@@ -107,7 +108,7 @@ function startGame(obj) {
 				directions: this.state.settings.charleston.slice(0)
 			}
 
-			this.state.settings.americanBotDifficulty = Number(obj?.settings?.americanBotDifficulty) || 100 //Percentage of card bots can use. 
+			this.state.settings.americanBotDifficulty = Number(obj?.settings?.americanBotDifficulty) || 100 //Percentage of card bots can use.
 			console.log("Bot Difficulty: " + this.state.settings.americanBotDifficulty)
 		}
 		else {throw "Unknown gameStyle"}

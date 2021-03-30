@@ -20,6 +20,7 @@ var allSuitArrangements = permutations(allSuits)
 var oddOptions = [1,3,5,7,9]
 var evenOptions = [2,4,6,8]
 var allOptions = oddOptions.concat(evenOptions).sort()
+let windOptions = ["north", "east", "west", "south"]
 
 //Dragons are associated with a suit.
 var dragonOptions = ["red", "green", "white"]
@@ -30,7 +31,7 @@ var suitDragonConversion = {
 	"circle": "white"
 }
 
-function getTileDifferential(handOptions, hand) {	
+function getTileDifferential(handOptions, hand) {
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
 
@@ -255,4 +256,4 @@ function outputExpander(combos) {
 }
 
 
-module.exports = {createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+module.exports = {createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}

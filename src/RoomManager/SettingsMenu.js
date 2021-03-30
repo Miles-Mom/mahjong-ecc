@@ -10,7 +10,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "Play with bots or friends (link and/or QR below!) You can play with any card you want - If we don't have it, bots (if any) will play the 2020 NMJL card, and hands won't be automatically scored. <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. <br><br>We're aware that the bots may be a little *TOO* good. The current difficulty selector reduces the portion of the card that bots are allowed to use, but had surprisingly little impact on them due to the long charleston. We're examining additional ways to improve this setting, and offer easier bots. "
+	americanMahjongInfo.innerHTML = "Playing on 2021 Card is Now Supported (Scoring only supported on some hands right now)! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on a different card than you). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. <br><br>We're aware that the bots may be a little *TOO* good. The current difficulty selector reduces the portion of the card that bots are allowed to use, but had surprisingly little impact on them due to the long charleston. We're examining additional ways to improve this setting, and offer easier bots. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
@@ -230,7 +230,7 @@ function CardSelector() {
 	let select = document.createElement("select")
 	select.id = "cardSelectorDropdown"
 
-	;["2020 National Mahjongg League"].forEach((value, index) => {
+	;["2021 National Mahjongg League", "2020 National Mahjongg League"].forEach((value, index) => {
 		let option = document.createElement("option")
 		option.value = value
 		option.innerHTML = value
@@ -248,7 +248,7 @@ function CardSelector() {
 	this.get = function() {
 		return select.value
 	}
-	this.set = function(value = "2020 National Mahjongg League") {
+	this.set = function(value = "2021 National Mahjongg League") {
 		select.value = value
 	}
 	this.displayFor = ["american"]
