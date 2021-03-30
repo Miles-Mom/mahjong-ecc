@@ -1,9 +1,12 @@
 const utilities = require("./utilities.js")
 
+//Order doesn't really matter (might influence sorting output if ratings end up the same, but that should be really minor),
+//however putting cards under development last makes them much easier to review for accuracy. 
 let output = []
-output = output.concat(require("./2021/winds-dragons.js"))
-output = output.concat(require("./2021/consecutive-run.js"))
 output = output.concat(require("./2021/quints.js"))
+output = output.concat(require("./2021/consecutive-run.js"))
+
+output = output.concat(require("./2021/winds-dragons.js"))
 output = output.concat(require("./2021/any-like-numbers.js"))
 output = output.concat(require("./2021/2468.js"))
 output = output.concat(require("./2021/2021.js"))
