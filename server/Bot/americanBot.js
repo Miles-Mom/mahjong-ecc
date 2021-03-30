@@ -5,6 +5,9 @@ const Pretty = require("../../src/Pretty.js")
 const TileContainer = require("../../src/TileContainer.js")
 const utilities = require("../american/utilities.js")
 
+let seed = Math.random()
+const SeedRandom = require("seed-random")
+
 function evaluateNextMove() {
 	let room = this.getRoom()
 
@@ -27,7 +30,18 @@ function evaluateNextMove() {
 	}).bind(this)
 
 	console.log(currentHand.contents)
-	let analysis = utilities.getTileDifferential(gameData.card, currentHand.contents)
+	let cardToUse = gameData.card
+	console.log(cardToUse)
+	let botDifficulty = room.state.settings.americanBotDifficulty
+	if (botDifficulty < 100) {
+		let filterSeedRandom = SeedRandom(seed) //We need the same random tiles every time. The card may change between games though,
+		//so if we only do this once, we need to verify it hasn't changed.
+		cardToUse = cardToUse.filter((item, index) => {
+			if (!index) {return true} //Make sure there is always at least one combo - zero combos would crash.
+			return (filterSeedRandom() * 100) < botDifficulty
+		})
+	}
+	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
 	console.log(analysis[0])
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
@@ -159,7 +173,7 @@ function evaluateNextMove() {
 
 		//We need to evaluate if we pick up the thrown tile.
 		//Take another analysis with the additional tile.
-		let withTileAnalysis = utilities.getTileDifferential(gameData.card, currentHand.contents.concat(gameData.currentTurn.thrown))
+		let withTileAnalysis = utilities.getTileDifferential(cardToUse, currentHand.contents.concat(gameData.currentTurn.thrown))
 		console.log(withTileAnalysis)
 		console.log(withTileAnalysis[0])
 

@@ -10,17 +10,24 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "Play with bots or friends! Bots (beta) support the 2020 card - have feedback? Think they're bad? Send us an email! <br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
+	americanMahjongInfo.innerHTML = "Play with bots or friends (link and/or QR below!) You can play with any card you want - If we don't have it, bots (if any) will play the 2020 NMJL card, and hands won't be automatically scored. <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. <br><br>We're aware that the bots may be a little *TOO* good. The current difficulty selector reduces the portion of the card that bots are allowed to use, but had surprisingly little impact on them due to the long charleston. We're examining additional ways to improve this setting, and offer easier bots. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
 	//Use Object.assign so GameStyleSelector can get a reference to all selectors.
 	Object.assign(options, {
 		gameStyle: new GameStyleSelector(options, {americanMahjongInfo}),
+
+		//Chinese
 		maximumSequences: new MaximumSequencesSelector(),
-		card: new CardSelector(),
 		checkForCalling: new CheckForCallingSelector(),
-		botSettings: new BotSettings()
+		botSettings: new BotSettings(),
+
+		//American
+		card: new CardSelector(),
+		americanBotDifficulty: new AmericanBotDifficulty()
+
+		//Both
 	})
 
 	let hasChoices = false
@@ -243,6 +250,36 @@ function CardSelector() {
 	}
 	this.set = function(value = "2020 National Mahjongg League") {
 		select.value = value
+	}
+	this.displayFor = ["american"]
+	this.isHost = true
+}
+
+function AmericanBotDifficulty() {
+	let elem = document.createElement("div")
+
+	let input = document.createElement("input")
+	input.type = "range"
+	input.min = 3
+	input.max = 100
+
+	let label = document.createElement("label")
+	label.innerHTML = "Bot Difficulty Level:  Medium"
+
+	//Right now, no browser supports labeled tick marks, so we'll just do this.
+	let label2 = document.createElement("label")
+	label2.innerHTML = "Hard"
+
+	this.elem = elem
+	elem.appendChild(label)
+	elem.appendChild(input)
+	elem.appendChild(label2)
+
+	this.get = function() {
+		return input.value
+	}
+	this.set = function(value = 100) {
+		input.value = value
 	}
 	this.displayFor = ["american"]
 	this.isHost = true

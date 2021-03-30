@@ -106,6 +106,9 @@ function startGame(obj) {
 			this.gameData.charleston = {
 				directions: this.state.settings.charleston.slice(0)
 			}
+
+			this.state.settings.americanBotDifficulty = Number(obj?.settings?.americanBotDifficulty) || 100 //Percentage of card bots can use. 
+			console.log("Bot Difficulty: " + this.state.settings.americanBotDifficulty)
 		}
 		else {throw "Unknown gameStyle"}
 

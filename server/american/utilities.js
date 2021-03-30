@@ -30,7 +30,7 @@ var suitDragonConversion = {
 	"circle": "white"
 }
 
-function getTileDifferential(handOptions, hand) {
+function getTileDifferential(handOptions, hand) {	
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
 
