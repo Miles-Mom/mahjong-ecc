@@ -233,18 +233,18 @@ function calculateNextTurn(obj, exemptFromChecks) {
 		if (nextDirection) {
 			this.messageAll([], "roomActionGameplayAlert", "The next Charleston pass is " + nextDirection.direction , "success")
 			if (nextDirection.allAgree) {
-				this.messageAll([], "roomActionInstructions", "Round Vote - Pass 3 tiles " + nextDirection.direction + " for another Charleston round. Pass 0 to block it. Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
+				this.setAllInstructions([], "Round Vote - Pass 3 tiles " + nextDirection.direction + " for another Charleston round. Pass 0 to block it. Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
 			}
 			else if (nextDirection.blind) {
-				this.messageAll([], "roomActionInstructions", "Optional Charleston Pass - Pass 0-3 tiles " + nextDirection.direction + ". Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
+				this.setAllInstructions([], "Optional Charleston Pass - Pass 0-3 tiles " + nextDirection.direction + ". Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
 			}
 			else {
-				this.messageAll([], "roomActionInstructions", "The next Charleston pass is " + nextDirection.direction + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
+				this.setAllInstructions([], "The next Charleston pass is " + nextDirection.direction + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
 			}
 		}
 		else {
-			stateManager.getClient(this.gameData.currentTurn.userTurn).message("roomActionInstructions", "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
-			this.messageAll([this.gameData.currentTurn.userTurn], "roomActionInstructions", "The Charleston is over. Waiting on East Wind to make a play. ")
+			this.setInstructions(this.gameData.currentTurn.userTurn, "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
+			this.setAllInstructions([this.gameData.currentTurn.userTurn], "The Charleston is over. Waiting on East Wind to make a play. ")
 			this.gameData.charleston = false //The charleston is over.
 		}
 	}
@@ -420,7 +420,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		if (!(this.gameData.isMahjong || this.gameData.wall.isEmpty)) {
 			let currentTurnClient = stateManager.getClient(this.gameData.currentTurn.userTurn)
-			this.messageAll([currentTurnClient.clientId], "roomActionInstructions", `Waiting on ${currentTurnClient.getNickname()} to make a move. \n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! `)
+			this.setAllInstructions([currentTurnClient.clientId], `Waiting on ${currentTurnClient.getNickname()} to make a move. \n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! `)
 		}
 
 		this.gameData.currentTurn.thrown = false
@@ -473,7 +473,7 @@ module.exports = function(obj, prop, value) {
 
 		message += "\n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! "
 
-		this.messageAll(guiltyParties, "roomActionInstructions", message) //Message everybody that has entered a turn - don't overwrite other instructions.
+		this.setAllInstructions(guiltyParties, message) //Message everybody that has entered a turn - don't overwrite other instructions.
 	}
 
 	return true

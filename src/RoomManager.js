@@ -43,12 +43,25 @@ nicknameInput.placeholder = "Choose a Nickname..."
 notInRoomContainer.appendChild(nicknameInput)
 
 //Allow query params.
-let params = new URLSearchParams("?" + window.location.hash.slice(1))
+let params = new URLSearchParams(window.location.hash.slice(1))
 if (params.has("roomId")) {
 	roomIdInput.value = params.get("roomId")
 }
 if (params.has("name")) {
 	nicknameInput.value = params.get("name")
+}
+
+//Development only - fakes native UI somewhat. Intended for automated screenshotting.
+if (params.has("fakeNative")) {
+	if (params.get("fakeNative") === "android") {
+		window.isAndroid = true
+	}
+	else if (params.get("fakeNative") === "ios") {
+		window.Capacitor = true
+	}
+	else {
+		console.error("fakeNative set and invalid")
+	}
 }
 
 //The join/create room buttons.
@@ -97,8 +110,10 @@ joinOrCreateRoom.appendChild(singlePlayerGame)
 
 
 //Inform user to use landscape.
-if (window.isNative) {
+if (window.Capacitor) {
     try {
+		//This shouldn't be needed on iOS when build settings are set to landscape.
+		//This doesn't run on the Android TWA anyways.
         window.screen.orientation.lock('landscape');
     }
     catch (e) {console.error(e)}
@@ -246,7 +261,7 @@ if (window.Capacitor || window.isAndroid) {
 	if (window.Capacitor) {
 		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://apps.apple.com/us/app/mahjong-4-friends/id1552704332" target="_blank">rate us in the App Store</a>!`
 	}
-	else if (window.isAndroid){
+	else if (window.isAndroid) {
 		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://play.google.com/store/apps/details?id=com.mahjong4friends.twa" target="_blank">leave a review on Google Play</a>!`
 	}
 	roomManager.appendChild(ratingPrompt)

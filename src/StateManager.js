@@ -14,9 +14,6 @@ class StateManager {
 			else if (obj.type === "roomActionState") {
 				onStateUpdate(obj)
 			}
-			else if (obj.type === "roomActionInstructions") {
-				if (this.onInstructions instanceof Function) {this.onInstructions(obj)}
-			}
 			else if (obj.type === "roomActionKickFromRoom") {
 				//We kicked somebody else. Should probably show an error message or success.
 			}

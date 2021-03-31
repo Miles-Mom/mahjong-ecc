@@ -180,11 +180,11 @@ function startGame(obj) {
 
 		//Message East about how to start.
 		if (this.state.settings.gameStyle === "chinese") {
-			stateManager.getClient(this.gameData.currentTurn.userTurn).message("roomActionInstructions", "As East wind, you get to make the first throw. Select one tile and press Proceed.\n\nTo initiate a Charleston, select 3 tiles and hit Proceed.")
-			this.messageAll([this.gameData.currentTurn.userTurn], "roomActionInstructions", "Waiting on East Wind to make a play. ")
+			this.setInstructions(this.gameData.currentTurn.userTurn, "As East wind, you get to make the first throw. Select one tile and press Proceed.\n\nTo initiate a Charleston, select 3 tiles and hit Proceed.")
+			this.setAllInstructions([this.gameData.currentTurn.userTurn], "Waiting on East Wind to make a play. ")
 		}
 		else if (this.state.settings.gameStyle === "american") {
-			this.messageAll([], "roomActionInstructions", "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0][0].direction + ", then hit Proceed. " , "success")
+			this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0][0].direction + ", then hit Proceed. " , "success")
 		}
 
 		this.sendStateToClients()

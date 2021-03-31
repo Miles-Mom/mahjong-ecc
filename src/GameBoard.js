@@ -196,10 +196,10 @@ instructionBubble.id = "instructionBubble"
 instructionBubble.style.display = "none"
 gameBoard.appendChild(instructionBubble)
 
-window.stateManager.onInstructions = function(obj) {
+window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	instructionBubble.style.display = ""
-	instructionBubble.innerHTML = obj.message.split("\n").join("<br>")
-}
+	instructionBubble.innerHTML = obj.message.instructions.split("\n").join("<br>")
+})
 
 window.stateManager.onGameplayAlert = function(obj) {
 	//Play sound.

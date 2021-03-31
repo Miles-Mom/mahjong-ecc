@@ -24,7 +24,7 @@ class Client {
 		this.unsuppress = function() {this.suppressed = false}
 
 		this.message = (function message(type, message, status) {
-			if (this.suppressed && message.type !== "roomActionInstructions") {return}
+			if (this.suppressed) {return}
 			if (!this.websocket) {
 				//This should only happen if we loaded from state, as we would for testing.
 				return
