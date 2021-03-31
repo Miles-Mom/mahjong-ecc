@@ -199,7 +199,7 @@ class Room {
 			}
 
 			state.settings = this.state.settings
-			console.log(this.gameData.instructions)
+
 			state.instructions = this?.gameData?.instructions?.[requestingClientId] || ""
 			state.discardPile = this.gameData.discardPile
 

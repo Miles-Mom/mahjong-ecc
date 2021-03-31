@@ -85,6 +85,7 @@ class Hand {
 
 		this.moveTile = (function moveTile(tile, switchPlace = true, targetPosition) {
 			//Tile is the object in either the hand or placemat.
+			//targetPosition is the position to the left of where we want to move this tile.
 
 			let placematIndex = this.inPlacemat.indexOf(tile)
 			let contentsIndex = this.contents.indexOf(tile)
@@ -125,18 +126,12 @@ class Hand {
 					}
 				}
 			}
-			else if (!isNaN(targetPosition)){
+			else if (!isNaN(targetPosition)) {
 				if (contentsIndex === -1) {
 					console.error("Reordering in placemat is not supported. Must be in hand.")
 				}
 				else {
-					console.log(contentsIndex)
-					console.log(targetPosition)
-
-					let newTargetPosition = targetPosition
-					if (targetPosition > contentsIndex) {targetPosition--}
-
-					console.log(targetPosition)
+					if (targetPosition > contentsIndex) {targetPosition--} //Compensate for the splice.
 
 					this.contents.splice(targetPosition, 0, this.contents.splice(contentsIndex, 1)[0])
 				}
@@ -195,15 +190,14 @@ class Hand {
 			let elem = document.getElementsByClassName(randomClass)[0]
 			elem.classList.remove(randomClass)
 
-			let targetIndex = 0
+			let targetIndex;
 			for (let i=0;i<this.handToRender.children.length;i++) {
 				let child = this.handToRender.children[i]
 				let bounds = child.getBoundingClientRect()
 
-				targetIndex++
+				targetIndex = child.tileIndex + 1
 
-				//clientX + offsetX for iOS. Seems to work about perfectly.
-				if ((ev.x ?? (ev.clientX + ev.offsetX)) < bounds.left + bounds.width / 2) {
+				if (ev.clientX < bounds.left + bounds.width / 2) {
 					//This child is to the left of the drop point.
 					targetIndex-- //Should not be at the very end.
 					break;
@@ -416,7 +410,7 @@ class Hand {
 						}
 						this.handToRender.appendChild(elem)
 					}
-					else if (type === "unexposed"){
+					else if (type === "unexposed") {
 						if (!this.handForExposed && applyColorShading) {
 							//There is no hand for exposed tiles, let's make it clear this is unexposed
 							elem.style.filter = "brightness(0.8)"
