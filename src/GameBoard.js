@@ -93,10 +93,6 @@ if (fullscreenControls.toggleElement) {
 
 let syncButton = document.createElement("img")
 syncButton.src = "assets/reload-icon.svg"
-if (window.Capacitor) {
-	//Needed on iOS until version 1.3 is released.
-	syncButton.src = "https://mahjong4friends.com/assets/reload-icon.svg"
-}
 syncButton.id = "syncButton"
 syncButton.title = "Sync (Reload)"
 gameBoard.appendChild(syncButton)
