@@ -68,6 +68,8 @@ sizes.forEach((size) => {
 
 const StateManager = require("./StateManager.js")
 
+
+
 //Mobile browsers use the touch API - desktop is drag and drop. We'll use a polyfill so we don't have to implement both.
 let mobile_drag_drop_polyfill = require("mobile-drag-drop").polyfill
 // optional import of scroll behaviour
@@ -78,6 +80,8 @@ mobile_drag_drop_polyfill({
     dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
 });
 
+
+
 let url = new URL(window.location.origin + window.location.pathname)
 url.pathname = "/node"
 if (window.location.protocol === "https:") {
@@ -86,7 +90,7 @@ if (window.location.protocol === "https:") {
 else {
     url.protocol = "ws:"
 }
-if (window.location.hostname === "127.0.0.1" || window.location.hostname.startsWith("192.168.1")) {
+if (window.location.hostname === "127.0.0.1" || window.location.hostname.startsWith("192.168.1") || window.location.hostname.startsWith("10.")) {
     //Local development
     url.port = 7591
 }

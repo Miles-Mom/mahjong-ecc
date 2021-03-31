@@ -202,7 +202,8 @@ class Hand {
 
 				targetIndex++
 
-				if (ev.x < bounds.left + bounds.width / 2) {
+				//clientX + offsetX for iOS. Seems to work about perfectly.
+				if ((ev.x ?? (ev.clientX + ev.offsetX)) < bounds.left + bounds.width / 2) {
 					//This child is to the left of the drop point.
 					targetIndex-- //Should not be at the very end.
 					break;
