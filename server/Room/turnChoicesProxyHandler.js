@@ -351,7 +351,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						if (hand.removeTilesFromHand(placement)) {
 							utilized = true
 							hand.add(placement)
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed tiles" , {clientId, speech: "I'll take that"})
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a match" , {clientId, speech: "I'll take that"})
 							if (placement.mahjong) {
 								this.goMahjong(clientId, undefined, exemptFromChecks.includes(clientId))
 							}

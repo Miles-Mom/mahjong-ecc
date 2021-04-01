@@ -52,9 +52,10 @@ class Notification {
 
 let previousMessagePromise = new Promise((resolve) =>{resolve()});
 let counter = 0
+let maxCounter = 0 //We want to adjust to the average load somewhat.
 
 class BlocklessAlert {
-	constructor(messageText, duration = 3200) {
+	constructor(messageText, duration = 3200, config = {}) {
 		let cover = document.createElement("div")
 		cover.classList.add("blocklessAlertCover")
 		cover.style.display = "none"
@@ -67,11 +68,19 @@ class BlocklessAlert {
 		let onStart = previousMessagePromise
 		previousMessagePromise = new Promise((resolve) => {
 			counter++
+			maxCounter = Math.max(counter, maxCounter)
 			previousMessagePromise.then(() => {
+				const triggerLevel = 6
+				if (maxCounter > triggerLevel && config.optional) {
+					//Skip
+					console.log("Skipping optional message due to time. ")
+					counter--
+					return resolve()
+				}
+
 				console.log(counter + " messages remaining to be posted. ")
-				//Aggressively speed up alerts to eat through queue
-				let newDuration = duration / (Math.max(1, counter ** 0.8) || 1)
-				newDuration = Math.max(800, newDuration) //TODO: The audio will need to be sped up if we speed these up too much. Not much speedup needed on audio though.
+				//Speed up alerts to eat through queue - if maxCounter exceeds triggerLevel, message volume is reduced, so we stop factoring in maxCounter
+				let newDuration = duration / Math.min(2.5, (Math.max(1, ((counter + ((maxCounter > triggerLevel)?counter:maxCounter)) / 2) ** 0.7) || 1)) //2.5x speedup max.
 				console.log(`Adjusting duration from ${duration} to ${newDuration}`)
 				duration = newDuration
 				cover.style.animation = "fadeInAndOut " + duration + "ms ease-in"

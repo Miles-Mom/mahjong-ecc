@@ -548,7 +548,7 @@ class Room {
 							delete this.lastDrawn
 							this.gameData.currentTurn.turnChoices[clientId] = "Next"
 							placerMahjongOverride = false
-							this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier})
+							this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
 							this.setAllInstructions([clientId], discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
 							this.sendStateToClients()
 						}
