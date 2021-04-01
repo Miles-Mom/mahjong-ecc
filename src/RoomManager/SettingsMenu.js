@@ -10,7 +10,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "Playing on 2021 Card is Now Supported (Scoring only supported on some hands right now)! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on a different card than you). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. <br><br>We're aware that the bots may be a little *TOO* good. The current difficulty selector reduces the portion of the card that bots are allowed to use, but had surprisingly little impact on them due to the long charleston. We're examining additional ways to improve this setting, and offer easier bots. "
+	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on whichever card is selected). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. <br><br>Bots play by the same rules as you - in fact, bots are only allowed to see their own hands, not even the discard pile or other players' exposures! Reducing bot difficulty causes bots to analyze a percentage of the card (instead of the entire card), pass a small number of random tiles during charleston, and only consider one possible hand when discarding. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
@@ -81,7 +81,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 	let elem = document.createElement("div")
 	elem.id = "gameStyleSelectorDiv"
-	elem.style.marginBottom = "5px"
+	elem.style.marginBottom = "10px"
 
 	let chinese = document.createElement("button")
 	chinese.innerHTML = "Chinese/British/HK Mahjong"
@@ -225,10 +225,10 @@ function BotSettings() {
 
 function CardSelector() {
 	let elem = document.createElement("div")
-	elem.id = "cardSelectorDiv"
+	elem.style.marginBottom = "5px"
 
 	let select = document.createElement("select")
-	select.id = "cardSelectorDropdown"
+	select.style.fontSize = "1.4em"
 
 	;["2021 National Mahjongg League", "2020 National Mahjongg League"].forEach((value, index) => {
 		let option = document.createElement("option")
@@ -238,8 +238,8 @@ function CardSelector() {
 	})
 
 	let label = document.createElement("label")
-	label.for = "cardSelectorDropdown"
 	label.innerHTML = "Select Mahjong Card: "
+	label.style.fontSize = "1.4em"
 
 	this.elem = elem
 	elem.appendChild(label)
@@ -257,10 +257,11 @@ function CardSelector() {
 
 function AmericanBotDifficulty() {
 	let elem = document.createElement("div")
+	elem.style.fontSize = "1.4em"
 
 	let input = document.createElement("input")
 	input.type = "range"
-	input.min = 3
+	input.min = 0
 	input.max = 100
 
 	let label = document.createElement("label")
@@ -268,7 +269,7 @@ function AmericanBotDifficulty() {
 
 	//Right now, no browser supports labeled tick marks, so we'll just do this.
 	let label2 = document.createElement("label")
-	label2.innerHTML = "Hard"
+	label2.innerHTML = "Superhuman"
 
 	this.elem = elem
 	elem.appendChild(label)
@@ -278,7 +279,7 @@ function AmericanBotDifficulty() {
 	this.get = function() {
 		return input.value
 	}
-	this.set = function(value = 100) {
+	this.set = function(value = 60) {
 		input.value = value
 	}
 	this.displayFor = ["american"]

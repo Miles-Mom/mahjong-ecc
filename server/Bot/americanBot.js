@@ -31,16 +31,41 @@ function evaluateNextMove() {
 
 	console.log(currentHand.contents)
 	let cardToUse = gameData.card
-	let botDifficulty = room.state.settings.americanBotDifficulty
-	if (botDifficulty < 100) {
+
+	//Bot difficulty settings.
+	//While the max settings really aren't broken - bots can still get locked into impossible hands (dead tiles),
+	//and aren't aware of what others are doing, that is counterbalanced by their superhuman analysis abilities.
+	//Since in single player modes, people want to win quite a bit of the time, we're going to balance it out a bit more.
+	let botDifficultyConfig = {
+		botDifficulty: room.state.settings.americanBotDifficulty
+	}
+
+	let expo = 40
+	botDifficultyConfig.cardPercentage = (100/expo) * (expo ** (botDifficultyConfig.botDifficulty/100))
+
+	botDifficultyConfig.maxAnalysisRounds = Infinity
+	if (botDifficultyConfig.botDifficulty < 100) {
+		botDifficultyConfig.maxAnalysisRounds = Math.max(1, 100 * 0.7**(100-botDifficultyConfig.botDifficulty))
+	}
+
+	botDifficultyConfig.averageAnalyzedCharlestonTiles = 3 - (1 * (100 - botDifficultyConfig.botDifficulty) / 100) //Bots will be forced to randomly charleston some tiles.
+
+	console.log(botDifficultyConfig)
+
+	//Reduce bot card proportion.
+	if (botDifficultyConfig.cardPercentage < 100) {
 		let filterSeedRandom = SeedRandom(seed) //We need the same random tiles every time. The card may change between games though,
 		//so if we only do this once, we need to verify it hasn't changed.
 		cardToUse = cardToUse.filter((item, index) => {
 			if (!index) {return true} //Make sure there is always at least one combo - zero combos would crash.
-			return (filterSeedRandom() * 100) < botDifficulty
+			return (filterSeedRandom() * 100) < botDifficultyConfig.cardPercentage
 		})
 	}
-	console.log(cardToUse)
+	console.warn(cardToUse)
+
+	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + Math.random())
+	console.log(allowedAnalysisTiles)
+
 	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
 	console.log(analysis[0])
 
@@ -61,6 +86,10 @@ function evaluateNextMove() {
 
 			for (let i=0;i<toThrow.length;i++) {
 				if (toThrow.length <= maxAmount) {
+					break analysisLoop;
+				}
+				if (i > botDifficultyConfig.maxAnalysisRounds) {
+					console.warn("Bot Difficulty Loop Break")
 					break analysisLoop;
 				}
 
@@ -106,23 +135,21 @@ function evaluateNextMove() {
 
 		if (round.blind) {
 			//Blind pass. Pass as many as notUsed, 3 max.
-			placeTiles(getTopTiles(analysis, 3, true))
+			//TODO: We want to analyze at most allowedAnalysisTiles, but want to pass 3 to a person if they send us 3.
+			//So analyze allowedAnalysisTiles, rest random is probably best. 
+			placeTiles(getTopTiles(analysis, allowedAnalysisTiles, true))
 		}
-		else if (getTopTiles(analysis, 3, true).length >= 3) {
-			//We can pass 3 tiles. Pass them. TODO: Consider if we want to require more than 3 for allAgree rounds.
-			placeTiles(getTopTiles(analysis, 3, true))
-		}
-		else if (round.allAgree) {
+		else if (round.allAgree && getTopTiles(analysis, 3, true).length < 3) {
+			//TODO: Consider if we want to require more than 3 for allAgree rounds.
 			//We can't produce 3 tiles without throwing ones we want. Kill the round.
 			placeTiles([])
 		}
 		else {
-			//We must produce exactly 3 tiles. notUsed has less than 3 tiles.
-			//We must not pick jokers.
+			//We must produce exactly 3 tiles. We must not pick jokers.
 			let passing = []
 
 			//We will pass every tile in notUsed. Remove them from the hand when picked.
-			getTopTiles(analysis, 3, true).forEach((item) => {
+			getTopTiles(analysis, allowedAnalysisTiles, true).forEach((item) => {
 				passing.push(item)
 				currentHand.remove(item)
 			})
@@ -177,7 +204,7 @@ function evaluateNextMove() {
 		console.log(withTileAnalysis)
 		console.log(withTileAnalysis[0])
 
-		if (withTileAnalysis[0].handOption.concealed && withTileAnalysis[0].diff !== 0) {
+		if (withTileAnalysis[0]?.handOption?.concealed && withTileAnalysis[0].diff !== 0) {
 			//The top hand including this tile would be concealed, and it would not be for Mahjong.
 		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {
