@@ -8,15 +8,20 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	header.style.marginBottom = "0.5em"
 	settingsDiv.appendChild(header)
 
-	//Appended later, so it is last.
+	//Appended later, so these are last.
 	let americanMahjongInfo = document.createElement("p")
 	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on whichever card is selected). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
+	let chineseMahjongInfo = document.createElement("p")
+	chineseMahjongInfo.innerHTML = "Most variants should be supported, although overrides may be needed, and you might need to score your own hands. Can't play your way? Have suggestions? Need different bots? Send an email to support@mahjong4friends.com!"
+	chineseMahjongInfo.style.fontSize = "1.3em"
+
+
 	let options = {}
 	//Use Object.assign so GameStyleSelector can get a reference to all selectors.
 	Object.assign(options, {
-		gameStyle: new GameStyleSelector(options, {americanMahjongInfo}),
+		gameStyle: new GameStyleSelector(options, {americanMahjongInfo, chineseMahjongInfo}),
 
 		//Chinese
 		maximumSequences: new MaximumSequencesSelector(),
@@ -47,6 +52,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	settingsDiv.style.display = hasChoices?"":"none"
 
 	settingsDiv.appendChild(americanMahjongInfo)
+	settingsDiv.appendChild(chineseMahjongInfo)
 
 	if (Object.keys(options).length === 0) {header.remove()} //No settings to show.
 
@@ -78,7 +84,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	}
 }
 
-function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
+function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo, chineseMahjongInfo}) {
 	let elem = document.createElement("div")
 	elem.id = "gameStyleSelectorDiv"
 	elem.style.marginBottom = "10px"
@@ -106,6 +112,7 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 		})
 
 		americanMahjongInfo.style.display = selectedButton.value === "american"?"":"none"
+		chineseMahjongInfo.style.display = selectedButton.value === "chinese"?"":"none"
 
 		//Hide all settings not for this mode.
 		for (let prop in allSettingsSelectors) {
