@@ -63,6 +63,11 @@ function getPriority(obj, key, exemptFromChecks = false) {
 		//TileContainers are American Mahjong. We don't validate everything here -
 		//We will block some illegal moves, but don't validate anything against a card.
 
+		if (this.gameData.currentTurn.thrown.type === "joker") {
+			client.message("roomActionPlaceTiles", "You can't pick up a joker! Jokers are dead when thrown! ", "error")
+			return false
+		}
+
 		if (!(obj[key] instanceof TileContainer)) {
 			//Must be going Mahjong. In American Mahjong, you can pick up a single tile with nothing for Mahjong.
 			//If the user empty pressed Mahjong, pick up the specified tile and go Mahjong.
