@@ -50,8 +50,6 @@ function evaluateNextMove() {
 
 	botDifficultyConfig.averageAnalyzedCharlestonTiles = 3 - (1 * (100 - botDifficultyConfig.botDifficulty) / 100) //Bots will be forced to randomly charleston some tiles.
 
-	console.log(botDifficultyConfig)
-
 	//Reduce bot card proportion.
 	if (botDifficultyConfig.cardPercentage < 100) {
 		let filterSeedRandom = SeedRandom(this.clientId) //We need the same random tiles every time. The card may change between games though,
@@ -61,7 +59,6 @@ function evaluateNextMove() {
 			return (filterSeedRandom() * 100) < botDifficultyConfig.cardPercentage
 		})
 	}
-	console.warn(cardToUse)
 
 	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + Math.random())
 	console.log(allowedAnalysisTiles)
@@ -89,7 +86,6 @@ function evaluateNextMove() {
 					break analysisLoop;
 				}
 				if (i > botDifficultyConfig.maxAnalysisRounds) {
-					console.warn("Bot Difficulty Loop Break")
 					break analysisLoop;
 				}
 
@@ -124,7 +120,6 @@ function evaluateNextMove() {
 
 		while (maxAmount < toThrow.length) {
 			toThrow.splice(Math.floor(Math.random() * toThrow.length), 1)
-			console.warn("Randomly Filtering")
 		}
 
 		return toThrow

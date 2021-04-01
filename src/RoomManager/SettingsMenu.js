@@ -10,7 +10,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so it is last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on whichever card is selected). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. <br><br>Bots play by the same rules as you - in fact, bots are only allowed to see their own hands, not even the discard pile or other players' exposures! Reducing bot difficulty causes bots to analyze a percentage of the card (instead of the entire card), pass a small number of random tiles during charleston, and only consider one possible hand when discarding. "
+	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on whichever card is selected). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let options = {}
@@ -265,7 +265,7 @@ function AmericanBotDifficulty() {
 	input.max = 100
 
 	let label = document.createElement("label")
-	label.innerHTML = "Bot Difficulty Level:  Medium"
+	label.innerHTML = "Bot Difficulty:  Medium"
 
 	//Right now, no browser supports labeled tick marks, so we'll just do this.
 	let label2 = document.createElement("label")
