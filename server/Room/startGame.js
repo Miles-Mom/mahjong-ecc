@@ -6,6 +6,13 @@ const path = require("path")
 function startGame(obj) {
 	if (this.clientIds.length < 4) {return "Not Enough Clients"}
 	else {
+		if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
+			this.state.settings.gameStyle = obj?.settings?.gameStyle
+		}
+		else {
+			return "You must select either Chinese or American Mahjong in Game Settings (scroll down if not visible). ";
+		}
+
 		this.inGame = true
 		this.messageAll([], obj.type, "Game Started", "success")
 
@@ -33,11 +40,6 @@ function startGame(obj) {
 		this.state.settings.windAssignments = this.state.settings.windAssignments || {}
 
 		this.state.settings.checkForCalling = obj?.settings?.checkForCalling ?? true
-
-		if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
-			this.state.settings.gameStyle = obj?.settings?.gameStyle
-		}
-		else {this.state.settings.gameStyle = "chinese"}
 
 		if (!isNaN(obj?.settings?.maximumSequences)) {
 			this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))

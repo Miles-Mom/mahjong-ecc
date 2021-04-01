@@ -656,14 +656,19 @@ class Room {
 			}
 			else if (obj.type === "roomActionStartGame") {
 				if (!isHost) {
-					return client.message(obj.type, "Only Host Can Start", "error")
+					return client.message("displayMessage", {title: "Error Starting Game", body: "Only Host Can Start"})
 				}
 				if (this.inGame) {
-					return client.message(obj.type, "Already In Game", "error")
+					return client.message("displayMessage", {title: "Error Starting Game", body: "Already in Game"})
 				}
 
 				//Time to start the game.
-				return this.startGame(obj)
+				let res = this.startGame(obj)
+				if (typeof res === "string") {
+					//Strings are error messages.
+					return client.message("displayMessage", {title: "Error Starting Game", body: res})
+				}
+				return
 			}
 			else if (obj.type === "roomActionEndGame") {
 				//Anybody can end the game, as they could do the same going AFK.

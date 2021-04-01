@@ -133,7 +133,8 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo}) {
 			}
 		}
 	}
-	this.set = function(value = "chinese") {
+	this.set = function(value) {
+		setSelectedButton("mustbeset")
 		buttons.forEach((item, i) => {
 			if (item.value === value) {setSelectedButton(item)}
 		});
@@ -153,6 +154,9 @@ function CheckForCallingSelector() {
 	label.for = "checkForCallingSelectorCheckbox"
 	label.innerHTML = "Check and Alert for Calling/Ready Hands"
 	label.addEventListener("click", function() {checkbox.click()})
+
+	label.style.fontSize = "1.4em"
+	checkbox.style.fontSize = "1.4em"
 
 	this.elem = elem
 	elem.appendChild(checkbox)
@@ -180,6 +184,9 @@ function MaximumSequencesSelector() {
 	label.for = "maximumSequencesSelector"
 	label.innerHTML = "Maximum Sequences: "
 
+	label.style.fontSize = "1.4em"
+	input.style.fontSize = "1.4em"
+
 	this.elem = elem
 	elem.appendChild(label)
 	elem.appendChild(input)
@@ -206,6 +213,9 @@ function BotSettings() {
 	label.for = "botSelectorCheckbox"
 	label.innerHTML = "Allow bot to charleston"
 	label.addEventListener("click", function() {checkbox.click()})
+
+	label.style.fontSize = "1.4em"
+	checkbox.style.fontSize = "1.4em"
 
 	this.elem = elem
 	elem.appendChild(checkbox)
