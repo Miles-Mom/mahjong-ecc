@@ -52,8 +52,7 @@ function evaluateNextMove() {
 
 	//Reduce bot card proportion.
 	if (botDifficultyConfig.cardPercentage < 100) {
-		let filterSeedRandom = SeedRandom(this.clientId) //We need the same random tiles every time. The card may change between games though,
-		//so if we only do this once, we need to verify the card it hasn't changed.
+		let filterSeedRandom = SeedRandom(this.clientId + room.state.seed) //We need the same random tiles every time, even reloading from state. 
 		cardToUse = cardToUse.filter((item, index) => {
 			if (!index) {return true} //Make sure there is always at least one combo - zero combos would crash.
 			return (filterSeedRandom() * 100) < botDifficultyConfig.cardPercentage

@@ -129,6 +129,7 @@ function startGame(obj) {
 
 		//windAssignments is clientId: wind
 		let winds = ["north", "east", "south", "west"]
+		let winds2 = winds.slice(0) //Clone used for ordering bots below.
 		let windAssignments = {}
 
 		for (let clientId in this.state.settings.windAssignments) {
@@ -144,13 +145,49 @@ function startGame(obj) {
 			}
 		}
 
+
+		//Order bots alphabetically - every bot is basically the same anyway.
+		//This makes sure that something like Bot 1, Bot 2, Bot 3 always goes the same direction.
+		let botWinds = []
+		let botNames = []
+		let clientNames = []
+
 		this.clientIds.slice(0, 4).forEach((clientId) => {
 			if (!windAssignments[clientId]) {
 				windAssignments[clientId] = winds.splice(Math.floor(Math.random() * winds.length), 1)[0]
 			}
+			let client = global.stateManager.getClient(clientId)
+			if (client.isBot) {
+				botWinds.push(windAssignments[clientId])
+				botNames.push([clientId, client.getNickname()])
+			}
+			else {
+				clientNames.push([windAssignments[clientId], client.getNickname()])
+			}
 		})
 
-		console.log(windAssignments)
+		botNames = botNames.sort((function(a, b) {
+			return Number(a[1] > b[1]) - 0.5
+		}))
+
+		//Place bots based on alphabetically ordered client names.
+		clientNames = clientNames.sort((function(a, b) {
+			return Number(a[1] > b[1]) - 0.5
+		}))
+
+		let userWindIndex = winds2.indexOf(clientNames[0]?.[0])
+		if (userWindIndex === -1) {userWindIndex = 0}
+
+		winds2 = winds2.slice(userWindIndex).concat(winds2.slice(0, userWindIndex))
+
+		botWinds = botWinds.sort((function(a, b) {
+			return winds2.indexOf(a) - winds2.indexOf(b)
+		}))
+
+		botNames.forEach((botInfo, index) => {
+			windAssignments[botInfo[0]] = botWinds[index]
+		})
+
 
 		let eastWindPlayerId;
 		for (let clientId in windAssignments) {
