@@ -1,7 +1,5 @@
 const Tile = require("./Tile.js")
 
-//TileContainer isn't supported by quite a bit of code, as it is typically assumed to be a Tile or an unknown class.
-//That said, it doesn't need to be. It's American Mahjong only. 
 class TileContainer {
 	constructor(config = {}) {
 		this.isDouble = function(userWind) {return false}
@@ -24,6 +22,21 @@ class TileContainer {
 
 			return JSON.stringify(obj)
 		}).bind(this)
+	}
+
+	isValidMatch(allowJokers = false) {
+		//Confirm that the tiles all match.
+		let validationTile = this.tiles.find((tile) => {return tile.type !== "joker"})
+
+		if (!validationTile) {return false}
+
+		if (this.tiles.every((tile) => {
+			if (
+				tile.matches(validationTile)
+				|| (allowJokers && tile.type === "joker")
+			) {return true}
+		})) {return validationTile} //Truthy, and tells them what the match is of.
+		else {return false}
 	}
 
 	static fromJSON(str) {

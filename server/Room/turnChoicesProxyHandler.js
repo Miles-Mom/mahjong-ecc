@@ -60,12 +60,32 @@ function getPriority(obj, key, exemptFromChecks = false) {
 		}
 	}
 	else if (obj[key] instanceof TileContainer || (this.state.settings.gameStyle === "american" && obj[key].mahjong)) {
-		//TileContainers are American Mahjong, which we don't validate.
+		//TileContainers are American Mahjong. We don't validate everything here -
+		//We will block some illegal moves, but don't validate anything against a card.
 
 		if (!(obj[key] instanceof TileContainer)) {
-			//Also, In American Mahjong, you can pick up a single tile with nothing for Mahjong. So
-			//any empty pressing of Mahjong means to pick up the specified tile.
-			obj[key] = new TileContainer({tiles: [obj[key]]})
+			//Must be going Mahjong. In American Mahjong, you can pick up a single tile with nothing for Mahjong.
+			//If the user empty pressed Mahjong, pick up the specified tile and go Mahjong.
+			let temp = new TileContainer({tiles: [obj[key]]})
+			temp.mahjong = obj[key].mahjong
+			obj[key] = temp
+		}
+		else if (!(obj[key].mahjong)) {
+			//Validate that this is 3 or more tiles.
+			if (obj[key].tiles.length < 3) {
+				client.message("roomActionPlaceTiles", "Except for Mahjong, you can only call for matches of 3+ tiles and/or jokers. ", "error")
+				return false
+			}
+			else if (!obj[key].isValidMatch(true)) {
+				client.message("roomActionPlaceTiles", "Except for Mahjong, you can only call for matches. ", "error")
+				return false
+			}
+		}
+
+		if (obj[key].tiles.length === 2 && obj[key].isValidMatch() === false && obj[key].isValidMatch(true)) {
+			//The tile object is returned, so === true would not work.
+			client.message("roomActionPlaceTiles", "Jokers can't be used to make a pair. ", "error")
+			return false
 		}
 
 		priority = 89 - getBackwardsDistance(placerWind, throwerWind)
@@ -351,7 +371,13 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						if (hand.removeTilesFromHand(placement)) {
 							utilized = true
 							hand.add(placement)
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a match" , {clientId, speech: "I'll take that"})
+							let matchInfo = "match"
+							let matchTile = placement.isValidMatch(true)
+							if (matchTile) {
+								matchInfo = [,,"pair","pong","kong","quint","sextet"][placement.tiles.length]
+								matchInfo += " of " + matchTile.getTileName(this.state.settings.gameStyle) + "s"
+							}
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchInfo , {clientId, speech: "I'll take that"})
 							if (placement.mahjong) {
 								this.goMahjong(clientId, undefined, exemptFromChecks.includes(clientId))
 							}
