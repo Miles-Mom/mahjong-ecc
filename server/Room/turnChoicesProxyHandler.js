@@ -235,7 +235,13 @@ function calculateNextTurn(obj, exemptFromChecks) {
 			let tiles = []
 			placements.forEach((placement) => {
 				//Pass tiles into cache.
-				Wall.shuffleArray(placement) //It's BLIND!
+
+				//Blind pass needs to pick the same tiles every time when state is reloaded -
+				//we can't use a form of randomness that is going to change when reloading from state.
+				//We will seed with roomId and first tile in placement.
+
+				let rngSeed = this.roomId + placement[0]?.type //There might not be a first element in placement.
+				Wall.shuffleArray(placement, rngSeed) //It's BLIND! Pick random!
 				placement.forEach((tile) => {
 					tiles.push(tile)
 				})
