@@ -47,12 +47,12 @@ class Tile {
 
 		this.matches = function(tile) {
 			if (this.faceDown) {return false}
+			if (tile instanceof Tile && tile.type === this.type && tile.value === this.value) {return true}
 			if (["flower", "season"].includes(this.type) && ["flower", "season"].includes(tile.type)) {
 				//For American Mahjong - all flowers and seasons are identical.
 				//Since Chinese mahjong uses Pretty tiles, this is enough to check.
 				return true
 			}
-			if (tile instanceof Tile && tile.type === this.type && tile.value === this.value) {return true}
 			return false
 		}
 

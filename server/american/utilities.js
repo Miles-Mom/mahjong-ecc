@@ -154,7 +154,7 @@ function getTileDifferential(handOptions, hand) {
 		}
 	}
 
-	return results.sort((function(a,b) {
+	results = results.sort((function(a,b) {
 		//Some hands can be Mahjong in multiple different ways, with differing point values (Example: 2020 card, Quints #3, 13579 #1).
 		//Therefore, we should sort, in case one hand is more valuable.
 
@@ -171,27 +171,35 @@ function getTileDifferential(handOptions, hand) {
 
 		//Give a benefit for hands where we can call for tiles.
 		//TODO: Penalize singular remaining tiles less than pairs.
+		//TODO: Penalize for callable, but not now, vs never callale.
+
 		function getUncallableTiles(hand) {
+			//This function is called so much it is insanely expensive. Cache per hand.
+
 			//Can call for the last tile, so minus 1
 			if (hand.handOption.concealed) {
 				return Math.max(0, hand.diff - 1) //Diff excludes joker-replacable tiles.
 			}
-			else {
+			else if (hand.uncallableTiles === undefined) {
 				let uncallableMatches = hand.handOption.tiles.filter((item) => {return item.length < 3})
 
-				//We won't penalize for joker replaced tiles - those are, in effect, already in hand.
-				let uncallableTiles = [hand.noFillJoker, Math.max(0, hand.canFillJoker - hand.jokerCount)].reduce((sum, tiles) => {
-				    for (let i=0;i<tiles.length;i++) {
+				function _calculateUncallableTiles(tiles) {
+					let sum = 0;
+					for (let i=0;i<tiles.length;i++) {
 						let tile = tiles[i]
 						if (uncallableMatches.some((match) => {
 							return tile.matches(match[0])
 						})) {sum++}
 					}
 					return sum
-				}, 0)
+				}
 
-				return Math.max(0, uncallableTiles - 1)
+				//We won't penalize for joker replaced tiles - those are, in effect, already in hand.
+				let uncallableTiles = _calculateUncallableTiles(hand.noFillJoker) + Math.max(0, _calculateUncallableTiles(hand.canFillJoker) - hand.jokerCount)
+
+				hand.uncallableTiles = Math.max(0, uncallableTiles - 1)
 			}
+			return hand.uncallableTiles
 		}
 
 		diffA += getUncallableTiles(a) * uncallablePenalty
@@ -209,6 +217,7 @@ function getTileDifferential(handOptions, hand) {
 
 		return b.handOption.score - a.handOption.score //Sort by score.
 	}))
+	return results
 }
 
 
