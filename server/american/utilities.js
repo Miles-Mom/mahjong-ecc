@@ -108,6 +108,8 @@ function getTileDifferential(handOptions, hand) {
 				if (removeItem(itemValue)) {
 					//If the current exposures are less than what is needed - we exposed a pong, but need a kong,
 					//the hands is ALSO impossible. If we can remove another item for something exposed, this won't work.
+
+					//TODO: This doesn't work with 2021 Winds/Dragons #3
 					diff = Infinity
 					break processHandItems;
 				}

@@ -8,9 +8,9 @@ output = output.concat(require("./2021/consecutive-run.js"))
 output = output.concat(require("./2021/13579.js"))
 output = output.concat(require("./2021/any-like-numbers.js"))
 output = output.concat(require("./2021/2468.js"))
+output = output.concat(require("./2021/2021.js"))
 
 output = output.concat(require("./2021/winds-dragons.js"))
-output = output.concat(require("./2021/2021.js"))
 output = output.concat(require("./2021/369.js"))
 output = output.concat(require("./2021/singles-and-pairs.js"))
 
