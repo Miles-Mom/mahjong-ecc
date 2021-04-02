@@ -101,8 +101,13 @@ function startGame(obj) {
 				"2021 National Mahjongg League": "../american/2021.js"
 			}
 
-			this.state.settings.card = cardOptionsToScript[obj?.settings?.card] || cardOptionsToScript["2020 National Mahjongg League"]
-			this.gameData.card = require(this.state.settings.card)
+			if (cardOptionsToScript[obj?.settings?.card]) {
+				this.state.settings.card = obj?.settings?.card
+			}
+			else {
+				this.state.settings.card = "2021 National Mahjongg League"
+			}
+			this.gameData.card = require(cardOptionsToScript[this.state.settings.card])
 
 			console.log(this.gameData.card)
 
@@ -204,6 +209,9 @@ function startGame(obj) {
 			}
 		}
 
+		console.log(this.gameData.playerHands)
+		global.savePrefix = global.savePrefix || 1
+//global.saveServerState(global.savePrefix + "start game")
 		this.state.settings.windAssignments = windAssignments
 		console.log(this.state.settings.windAssignments)
 
