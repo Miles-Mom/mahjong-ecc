@@ -38,19 +38,34 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			client.message("roomActionPlaceTiles", "You can pass no more than 3 tiles during one Charleston round. ", "error")
 			return false
 		}
-		else if (obj[key].length !== 3 && !this.gameData.charleston.directions[0][0].blind && !this.gameData.charleston.directions[0][0].allAgree) {
+
+		if (obj[key].length !== 3 && !this.gameData.charleston.directions[0][0].blind && !this.gameData.charleston.directions[0][0].allAgree) {
 			client.message("roomActionPlaceTiles", "This Charleston round requires exactly three tiles. ", "error")
 			return false
 		}
-		else if (![0,3].includes(obj[key].length) && this.gameData.charleston.directions[0][0].allAgree) {
-			client.message("roomActionPlaceTiles", "Pass zero tiles (press proceed on nothing) to veto this round. Pass three tiles to vote in favor. ", "error")
-			return false
+
+		if (this.gameData.charleston.directions[0][0].allAgree) {
+			if (![0,3].includes(obj[key].length)) {
+				client.message("roomActionPlaceTiles", "Pass zero tiles (press proceed on nothing) to veto this round. Pass three tiles to vote in favor. ", "error")
+				return false
+			}
+			else if (obj[key].length === 0) {
+				this.messageAll([key], "roomActionGameplayAlert", "Charleston Round Vetoed by " + client.getNickname() , "success")
+				client.message("roomActionGameplayAlert", "Charleston Round Vetoed" , "success")
+				//Veto the round - don't make other players wait.
+				this.clientIds.slice(0, 4).forEach((clientId) => {
+					if (!obj[clientId]) {obj[clientId] = []}
+				})
+				return true
+			}
 		}
-		else if (obj[key].some((tile) => {return tile.type === "joker"})) {
+
+		if (obj[key].some((tile) => {return tile.type === "joker"})) {
 			client.message("roomActionPlaceTiles", "Jokers may not be passed during Charleston. ", "error")
 			return false
 		}
-		else if (hand.removeTilesFromHand(obj[key])) {
+
+		if (hand.removeTilesFromHand(obj[key])) {
 			//Assume number of tiles is valid for turn.
 			return true
 		}
@@ -187,7 +202,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		if (currentDirection.allAgree && !placements.every((placement) => {return placement.length === 3})) {
 			//Veto the entire round.
-			this.messageAll([], "roomActionGameplayAlert", "Charleston Round Vetoed" , "success")
 			this.gameData.charleston.directions.shift()
 			currentDirection.direction = "none"
 		}
@@ -496,7 +510,7 @@ module.exports = function(obj, prop, value) {
 		//Calculate who hasn't entered an action.
 		let message = "Waiting on: "
 		let guiltyParties = []
-		this.clientIds.forEach((clientId) => {
+		this.clientIds.slice(0, 4).forEach((clientId) => {
 			if (!obj[clientId]) {
 				guiltyParties.push(clientId)
 			}
