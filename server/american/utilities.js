@@ -234,6 +234,7 @@ function outputExpander(combos) {
 			//Create a seperate object for each possibility
 			let obj = Object.assign({}, combo)
 			obj.tiles = tileCombo
+			if (obj.tiles.flat().length !== 14) {throw "Invalid Combo"}
 			comboOutput.push(obj)
 		})
 
