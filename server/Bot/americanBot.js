@@ -40,7 +40,7 @@ function evaluateNextMove() {
 		botDifficulty: room.state.settings.americanBotDifficulty
 	}
 
-	let expo = 40
+	let expo = 50
 	botDifficultyConfig.cardPercentage = (100/expo) * (expo ** (botDifficultyConfig.botDifficulty/100))
 
 	botDifficultyConfig.maxAnalysisRounds = Infinity
@@ -48,11 +48,11 @@ function evaluateNextMove() {
 		botDifficultyConfig.maxAnalysisRounds = Math.max(1, 100 * 0.7**(100-botDifficultyConfig.botDifficulty))
 	}
 
-	botDifficultyConfig.averageAnalyzedCharlestonTiles = 3 - (1 * (100 - botDifficultyConfig.botDifficulty) / 100) //Bots will be forced to randomly charleston some tiles.
+	botDifficultyConfig.averageAnalyzedCharlestonTiles = 3 - (1.5 * (100 - botDifficultyConfig.botDifficulty) / 100) //Bots will be forced to randomly charleston some tiles.
 
 	//Reduce bot card proportion.
 	if (botDifficultyConfig.cardPercentage < 100) {
-		let filterSeedRandom = SeedRandom(this.clientId + room.state.seed) //We need the same random tiles every time, even reloading from state. 
+		let filterSeedRandom = SeedRandom(this.clientId + room.state.seed) //We need the same random tiles every time, even reloading from state.
 		cardToUse = cardToUse.filter((item, index) => {
 			if (!index) {return true} //Make sure there is always at least one combo - zero combos would crash.
 			return (filterSeedRandom() * 100) < botDifficultyConfig.cardPercentage

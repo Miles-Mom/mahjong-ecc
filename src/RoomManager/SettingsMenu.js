@@ -296,7 +296,7 @@ function AmericanBotDifficulty() {
 	this.get = function() {
 		return input.value
 	}
-	this.set = function(value = 60) {
+	this.set = function(value = 50) {
 		input.value = value
 	}
 	this.displayFor = ["american"]

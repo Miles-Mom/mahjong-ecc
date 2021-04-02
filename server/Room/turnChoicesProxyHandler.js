@@ -39,11 +39,6 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			return false
 		}
 
-		if (obj[key].length !== 3 && !this.gameData.charleston.directions[0][0].blind && !this.gameData.charleston.directions[0][0].allAgree) {
-			client.message("roomActionPlaceTiles", "This Charleston round requires exactly three tiles. ", "error")
-			return false
-		}
-
 		if (this.gameData.charleston.directions[0][0].allAgree) {
 			if (![0,3].includes(obj[key].length)) {
 				client.message("roomActionPlaceTiles", "Pass zero tiles (press proceed on nothing) to veto this round. Pass three tiles to vote in favor. ", "error")
@@ -58,6 +53,14 @@ function getPriority(obj, key, exemptFromChecks = false) {
 				})
 				return true
 			}
+		}
+		else if (this.gameData.charleston.directions[0][0].blind) {
+			//We probably want to notify the player across how many tiles are being passed,
+			//or short circuit them if no tiles are passed. 
+		}
+		else if (obj[key].length !== 3) {
+			client.message("roomActionPlaceTiles", "This Charleston round requires exactly three tiles. ", "error")
+			return false
 		}
 
 		if (obj[key].some((tile) => {return tile.type === "joker"})) {

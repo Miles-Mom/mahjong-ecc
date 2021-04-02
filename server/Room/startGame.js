@@ -116,7 +116,8 @@ function startGame(obj) {
 			}
 
 			this.state.settings.americanBotDifficulty = Math.max(0, Number(obj?.settings?.americanBotDifficulty))
-			if (isNaN(this.state.settings.americanBotDifficulty)) {this.state.settings.americanBotDifficulty = 60}
+			if (isNaN(this.state.settings.americanBotDifficulty)) {this.state.settings.americanBotDifficulty = 50}
+			
 			console.log("Bot Difficulty: " + this.state.settings.americanBotDifficulty)
 		}
 		else {throw "Unknown gameStyle"}
