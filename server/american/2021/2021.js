@@ -83,8 +83,8 @@ module.exports = [
 
 		return {
 			tiles,
-			score: 25,
-			concealed: false
+			score: 30,
+			concealed: true
 		}
 	},
 ].map((func, index) => {
