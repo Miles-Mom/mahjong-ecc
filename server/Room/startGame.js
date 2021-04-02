@@ -146,11 +146,14 @@ function startGame(obj) {
 		}
 
 
-		//Order bots alphabetically - every bot is basically the same anyway.
+		//Order bots alphabetically
 		//This makes sure that something like Bot 1, Bot 2, Bot 3 always goes the same direction.
-		let botWinds = []
+		//We should do this by changing the names - names aren't saved in state, so we aren't changing
+		//anything that is going to cause issues with debugging (where bots might be sorted differently when
+		//the names were generated from clientIds)
 		let botNames = []
-		let clientNames = []
+		let botIds = []
+		let clientIds = []
 
 		this.clientIds.slice(0, 4).forEach((clientId) => {
 			if (!windAssignments[clientId]) {
@@ -158,36 +161,30 @@ function startGame(obj) {
 			}
 			let client = global.stateManager.getClient(clientId)
 			if (client.isBot) {
-				botWinds.push(windAssignments[clientId])
-				botNames.push([clientId, client.getNickname()])
+				botNames.push(client.getNickname())
+				botIds.push(clientId)
 			}
 			else {
-				clientNames.push([windAssignments[clientId], client.getNickname()])
+				clientIds.push(clientId)
 			}
 		})
 
-		botNames = botNames.sort((function(a, b) {
-			return Number(a[1] > b[1]) - 0.5
-		}))
+		//Place bots based on alphabetically ordered clientIds.
+		clientIds = clientIds.sort()
+		botNames = botNames.sort()
 
-		//Place bots based on alphabetically ordered client names.
-		clientNames = clientNames.sort((function(a, b) {
-			return Number(a[1] > b[1]) - 0.5
-		}))
-
-		let userWindIndex = winds2.indexOf(clientNames[0]?.[0])
+		let userWindIndex = winds2.indexOf(windAssignments[clientIds[0]])
 		if (userWindIndex === -1) {userWindIndex = 0}
 
 		winds2 = winds2.slice(userWindIndex).concat(winds2.slice(0, userWindIndex))
 
-		botWinds = botWinds.sort((function(a, b) {
-			return winds2.indexOf(a) - winds2.indexOf(b)
+		botIds = botIds.sort((function(a, b) {
+			return winds2.indexOf(windAssignments[a]) - winds2.indexOf(windAssignments[b])
 		}))
 
-		botNames.forEach((botInfo, index) => {
-			windAssignments[botInfo[0]] = botWinds[index]
+		botIds.forEach((botId, index) => {
+			global.stateManager.getClient(botId).setNickname(botNames[index])
 		})
-
 
 		let eastWindPlayerId;
 		for (let clientId in windAssignments) {
