@@ -42,8 +42,6 @@ module.exports = [
 			concealed: false
 		}
 	},
-	//Currently not enabled due to an issue in utilities.js with the same tile in the same suit being in different matches where one can
-	//be picked up, and the other can't.
 	function(tiles = []) {
 		allSuits.forEach((suit) => {
 			let newArr = []
