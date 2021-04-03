@@ -37,7 +37,7 @@ module.exports = [
 
 				newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 4}))
 				newArr.push(createTiles({type: suitOrder[1], value: offset, amount: 2}))
-				newArr.push(createTiles({type: suitOrder[1], value: offset, amount: 4}))
+				newArr.push(createTiles({type: suitOrder[2], value: offset, amount: 4}))
 			})
 		})
 
