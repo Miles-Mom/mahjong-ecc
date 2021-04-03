@@ -1,7 +1,13 @@
 const Wall = require("../../src/Wall.js")
 const Hand = require("../../src/Hand.js")
-const fs = require("fs")
-const path = require("path")
+let fs;
+let path;
+
+try {
+	fs = require("fs")
+	path = require("path")
+}
+catch (e) {console.error(e)}
 
 function startGame(obj) {
 	if (this.clientIds.length < 4) {return "Not Enough Clients"}
@@ -117,7 +123,7 @@ function startGame(obj) {
 
 			this.state.settings.americanBotDifficulty = Math.max(0, Number(obj?.settings?.americanBotDifficulty))
 			if (isNaN(this.state.settings.americanBotDifficulty)) {this.state.settings.americanBotDifficulty = 50}
-			
+
 			console.log("Bot Difficulty: " + this.state.settings.americanBotDifficulty)
 		}
 		else {throw "Unknown gameStyle"}
@@ -125,7 +131,9 @@ function startGame(obj) {
 		this.state.hostClientId = this.hostClientId
 		this.state.moves = []
 
-		this.logFile = fs.createWriteStream(path.join(global.stateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
+		if (fs) {
+			this.logFile = fs.createWriteStream(path.join(global.stateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
+		}
 
 		this.gameData.discardPile = []
 		this.gameData.playerHands = {}
@@ -210,11 +218,7 @@ function startGame(obj) {
 			}
 		}
 
-		console.log(this.gameData.playerHands)
-		global.savePrefix = global.savePrefix || 1
-//global.saveServerState(global.savePrefix + "start game")
 		this.state.settings.windAssignments = windAssignments
-		console.log(this.state.settings.windAssignments)
 
 		this.gameData.currentTurn = {
 			thrown: false,
@@ -222,7 +226,9 @@ function startGame(obj) {
 		}
 
 		this.gameData.currentTurn.turnChoices = new Proxy({}, this.turnChoicesProxyHandler);
-		this.logFile.write(JSON.stringify(this.state) + "\n")
+		if (this.logFile) {
+			this.logFile.write(JSON.stringify(this.state) + "\n")
+		}
 
 		//Message East about how to start.
 		if (this.state.settings.gameStyle === "chinese") {

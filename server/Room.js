@@ -61,6 +61,7 @@ class Room {
 				}).bind(this))
 
 				let _moves = this.state.moves.slice(0)
+
 				this.startGame({type: "roomActionStartGame", settings: this.state.settings})
 				console.log(_moves)
 				//These moves are going to get added back in...
@@ -364,8 +365,10 @@ class Room {
 			if (shouldRotateWinds) {this.rotateWinds()}
 			shouldRotateWinds = true
 			this.inGame = false
-			this.state.seed = Math.random()
+			delete this.state.seed
 			delete this.state.wall
+			//Without a seed, moves won't be evaluated, as no wall can be constructed.
+			this.state.moves = []
 			this.gameData = {}
 			this.messageAll([clientId], obj.type, gameEndMessage, "success")
 			this.sendStateToClients()
