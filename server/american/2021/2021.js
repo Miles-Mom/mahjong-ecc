@@ -60,8 +60,7 @@ module.exports = [
 		})
 
 		return {
-			tiles: [],
-			//tiles,
+			tiles,
 			score: 30,
 			concealed: false
 		}

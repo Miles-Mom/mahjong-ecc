@@ -24,9 +24,13 @@ class TileContainer {
 		}).bind(this)
 	}
 
+	static findNonJoker(tiles) {
+		return tiles.find((tile) => {return tile.type !== "joker"})
+	}
+
 	isValidMatch(allowJokers = false) {
 		//Confirm that the tiles all match.
-		let validationTile = this.tiles.find((tile) => {return tile.type !== "joker"})
+		let validationTile = TileContainer.findNonJoker(this.tiles)
 
 		if (!validationTile) {return false}
 
@@ -37,6 +41,10 @@ class TileContainer {
 			) {return true}
 		})) {return validationTile} //Truthy, and tells them what the match is of.
 		else {return false}
+	}
+
+	static isValidMatch(tiles, allowJokers) {
+		return new TileContainer({tiles}).isValidMatch(allowJokers)
 	}
 
 	static fromJSON(str) {

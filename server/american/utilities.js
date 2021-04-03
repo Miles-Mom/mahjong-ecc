@@ -92,24 +92,32 @@ function getTileDifferential(handOptions, hand) {
 					exposedMatches++
 				}
 
-				let itemValue = handItem.find((item) => {
-					return item.type !== "joker"
-				})
+				//Like in the 2021 card, with 2021 #3, it is possible for the same tile to be used in multiple different
+				//matches - therefore, we must verify that such a match exists in the target hand.
 
-				for (let i=0;i<handItem.length;i++) {
-					//These items may have jokers acting as something - if they are exposed, they are stuck unless we swap them.
-					//We treat the jokers like the tile it serves as - that way, if we get another copy, the new copy goes in notUsed
-					if (!removeItem(itemValue)) {
-						diff = Infinity //The hand is impossible with current exposures.
-						break processHandItems;
+				let itemValue = TileContainer.isValidMatch(handItem)
+
+				if (handOption.tiles.some((item) => {
+					if (!itemValue) {return true} //This exposure must be a bunch of individual tiles, like a 2019.
+					else if (item.length === handItem.length && itemValue.matches(TileContainer.findNonJoker(item))) {
+						return true
+					}
+					else {return false}
+				})) {
+					//It exists! Now remove the tiles.
+
+					for (let i=0;i<handItem.length;i++) {
+						//These items may have jokers acting as something - if they are exposed, they are stuck unless we swap them.
+						//We treat the jokers like the tile it serves as - that way, if we get another copy, the new copy goes in notUsed
+						let tile = handItem[i]
+
+						if (!removeItem(tile)) {
+							diff = Infinity //The hand is impossible with current exposures.
+							break processHandItems;
+						}
 					}
 				}
-
-				if (removeItem(itemValue)) {
-					//If the current exposures are less than what is needed - we exposed a pong, but need a kong,
-					//the hands is ALSO impossible. If we can remove another item for something exposed, this won't work.
-
-					//TODO: This doesn't work with 2021 Winds/Dragons #3
+				else {
 					diff = Infinity
 					break processHandItems;
 				}

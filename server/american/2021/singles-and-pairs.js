@@ -120,6 +120,27 @@ module.exports = [
 			concealed: true
 		}
 	},
+	function(tiles = []) {
+		allSuits.forEach((suit) => {
+			let newArr = []
+			tiles.push(newArr)
+
+			newArr.push(createTiles({type: "flower", value: "4", amount: 2})) //Value is no-op here.
+
+			allSuits.forEach((suit) => {
+				newArr.push(createTiles({type: suit, value: 2, amount: 2}))
+				newArr.push(createTiles({type: suit, value: 1, amount: 1}))
+
+				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 75,
+			concealed: true
+		}
+	},
 ].map((func, index) => {
 	let output = func()
 	output.cardIndex = index
