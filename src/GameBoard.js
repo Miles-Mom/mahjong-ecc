@@ -264,11 +264,7 @@ newGameNoLobbyButton.id = "newGameNoLobbyButton"
 newGameNoLobbyButton.innerHTML = "New Game"
 gameBoard.appendChild(newGameNoLobbyButton)
 
-let shouldConfirm = true
-window.stateManager.addEventListener("onStartGame", function() {
-	shouldConfirm = true
-})
-
+let shouldConfirm = true;
 endGameButton.addEventListener("click", function() {
 	//Require confirmation unless the game is over. Note that this might be slightly bugged with revert.
 	if (
@@ -285,19 +281,6 @@ newGameNoLobbyButton.addEventListener("click", function() {
 	//Calling startGame when in a game does nothing, so it's fine to call it without guards.
 	document.getElementById("startGameButton").click() //Clicks button on RoomManager - not currently visible.
 })
-
-function gameOver(message, obj) {
-	shouldConfirm = false;
-	new Popups.Notification(message, obj.message).show()
-}
-
-window.stateManager.onGameMahjong = function(obj) {
-	gameOver("Mahjong!", obj)
-}
-
-window.stateManager.onWallEmpty = function(obj) {
-	gameOver("Game Over - Wall Empty", obj)
-}
 
 let goMahjongButton = document.createElement("button")
 goMahjongButton.id = "goMahjongButton"
@@ -387,6 +370,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	gameBoard.className = obj?.message?.settings?.gameStyle //Buttons use this class to determine layout and visibility.
 
 	let message = obj.message
+
+	shouldConfirm = !message.isGameOver
 
 	if (!message.inGame) {
 		document.body.style.overflow = ""
@@ -520,10 +505,12 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		}
 	}
 
-	if (!proceedButton.disabled) {
+	if (!proceedButton.disabled && !message.isGameOver) {
 		proceedButton.classList.add("scaleAnimation")
 	}
 	else {proceedButton.classList.remove("scaleAnimation")}
+
+	if (message.isGameOver) {proceedButton.innerHTML = "View Scores"}
 })
 
 proceedButton.addEventListener("click", function() {

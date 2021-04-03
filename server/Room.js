@@ -84,6 +84,7 @@ class Room {
 		this.startGame = (require("./Room/startGame.js")).bind(this)
 		this.addBot = (require("./Room/addBot.js")).bind(this)
 
+		let lastSummary;
 		this.getSummary = (function(mahjongClientId, drewOwnTile) {
 			let summary = []
 
@@ -125,7 +126,8 @@ class Room {
 					summary.push(item)
 				}
 			}
-			return summary.join("\n")
+			lastSummary = summary.join("\n")
+			return lastSummary;
 		}).bind(this)
 
 		let shouldRotateWinds = true
@@ -166,7 +168,7 @@ class Room {
 			this.setAllInstructions([this.hostClientId], client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 			this.setInstructions(this.hostClientId, client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 
-			this.messageAll([], "roomActionMahjong", this.getSummary(clientId, drewOwnTile), "success")
+			this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, drewOwnTile)}, "success")
 			this.sendStateToClients()
 		}).bind(this)
 
@@ -198,6 +200,7 @@ class Room {
 				}
 			}
 
+			state.isGameOver = this?.gameData?.isMahjong || this?.gameData?.wall?.isEmpty
 			state.settings = this.state.settings
 
 			state.instructions = this?.gameData?.instructions?.[requestingClientId] || ""
@@ -325,7 +328,8 @@ class Room {
 				tile = this.gameData.wall.drawFirst()
 				if (!tile) {
 					console.log("Wall Empty");
-					this.messageAll([], "roomActionWallEmpty", this.getSummary(), "success")
+
+					this.messageAll([], "displayMessage", {title: "Game Over - Wall Empty", body: this.getSummary()}, "success")
 
 					this.setInstructions([this.hostClientId], "The Wall is empty. \nPress End Game to return everybody to the room screen. ")
 					this.setInstructions(this.hostClientId,  "The Wall is empty. \nPress End Game to return everybody to the room screen. Press New Game to play again with the same settings. ")
@@ -383,12 +387,15 @@ class Room {
 			let client = global.stateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
 
-			if (!hand) {
-				return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
+			if (this.gameData.isMahjong) {
+				return client.message("displayMessage", {title: "Mahjong!", body: lastSummary})
+			}
+			else if (this.gameData.wall.isEmpty) {
+				return client.message("displayMessage", {title: "Game Over - Wall Empty", body: lastSummary})
 			}
 
-			if (this.gameData.isMahjong || this.gameData.wall.isEmpty) {
-				return client.message(obj.type, "The game is over. If you wish to continue playing, you can end the game and start a new one, or revert the current game and see how it works playing a different way. ", "error")
+			if (!hand) {
+				return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
 			}
 
 			let placement;
