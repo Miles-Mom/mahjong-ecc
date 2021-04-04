@@ -1,5 +1,8 @@
 const Wall = require("../../src/Wall.js")
 const Hand = require("../../src/Hand.js")
+
+const cards = require("../american/cards.js")
+
 let fs;
 let path;
 
@@ -101,21 +104,14 @@ function startGame(obj) {
 				]
 			]
 
-
-			let cardOptionsToScript = {
-				"2020 National Mahjongg League": "../american/2020.js",
-				"2021 National Mahjongg League": "../american/2021.js"
-			}
-
-			if (cardOptionsToScript[obj?.settings?.card]) {
+			if (cards[obj?.settings?.card]) {
 				this.state.settings.card = obj?.settings?.card
 			}
 			else {
+				console.error("Unknown Card", obj?.settings?.card)
 				this.state.settings.card = "2021 National Mahjongg League"
 			}
-			this.gameData.card = require(cardOptionsToScript[this.state.settings.card])
-
-			console.log(this.gameData.card)
+			this.gameData.card = cards[this.state.settings.card]
 
 			this.gameData.charleston = {
 				directions: this.state.settings.charleston.slice(0)

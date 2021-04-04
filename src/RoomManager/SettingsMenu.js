@@ -247,7 +247,7 @@ function CardSelector() {
 	let select = document.createElement("select")
 	select.style.fontSize = "1.4em"
 
-	;["2021 National Mahjongg League", "2020 National Mahjongg League"].forEach((value, index) => {
+	;["2021 National Mahjongg League", "2020 National Mahjongg League", "Other Card - Bots Use Random Card"].forEach((value, index) => {
 		let option = document.createElement("option")
 		option.value = value
 		option.innerHTML = value
