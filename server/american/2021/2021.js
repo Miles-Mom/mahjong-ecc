@@ -33,7 +33,7 @@ module.exports = [
 			newArr.push(createTiles({type: "dragon", value: "white", amount: 4}))
 
 			newArr.push(createTiles({type: suitOrder[1], value: 2, amount: 3}))
-			newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 4}))
+			newArr.push(createTiles({type: suitOrder[1], value: 1, amount: 4}))
 		})
 
 		return {
