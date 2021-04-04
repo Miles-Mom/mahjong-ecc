@@ -599,8 +599,10 @@ This means that something using bottom is off the page - hence we must use top. 
 
 /*Make these from the left*/
 #gameBoard.chinese #proceedButton {
-	width: calc(62vw - 19.04vh);
-	width: calc(calc(var(--vw) * 62) - calc(var(--vh) * 19.04));
+	left: calc(9.52vh + 2vw);
+	left: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 2));
+	width: calc(73vw - 19.04vh);
+	width: calc(calc(var(--vw) * 73) - calc(var(--vh) * 19.04));
 }
 
 #proceedButton {
@@ -609,14 +611,19 @@ This means that something using bottom is off the page - hence we must use top. 
 	left: calc(calc(var(--vh) * 9.52) + calc(var(--vw) * 13));
 	top: 57vh;
 	top: calc(var(--vh) * 57);
-	width: calc(45vw - 19.04vh);
-	width: calc(calc(var(--vw) * 45) - calc(var(--vh) * 19.04));
+	width: calc(62vw - 19.04vh);
+	width: calc(calc(var(--vw) * 62) - calc(var(--vh) * 19.04));
 	height: 5vh;
 	height: calc(var(--vh) * 5);
 	border-radius: 50vh;
 	border-radius: calc(var(--vh) * 50);
 	font-size: 2.1vh;
 	font-size: calc(var(--vh) * 2.1);
+}
+
+#proceedButton.shrinkForHintButton {
+	width: calc(45vw - 19.04vh);
+	width: calc(calc(var(--vw) * 45) - calc(var(--vh) * 19.04));
 }
 
 #gameBoard.chinese #hintButton {
@@ -657,21 +664,18 @@ This means that something using bottom is off the page - hence we must use top. 
 
 @keyframes animateScale {
   0% {
-    transform: scale(1);
+    transform: scaleY(1) scaleX(1);
   }
-  33% {
-	transform: scale(1.4);
-  }
-  83% {
-	transform: scale(0.8);
+  50% {
+	transform: scaleY(1.2) scaleX(0.9);
   }
   100% {
-	transform: scale(1);
+	transform: scaleY(1) scaleX(1);
   }
 }
 
 .scaleAnimation {
-	animation: animateScale 3s linear 6s infinite;
+	animation: animateScale 1.5s linear 6s infinite;
 }
 
 #endGameButton {

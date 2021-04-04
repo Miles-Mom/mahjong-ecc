@@ -274,17 +274,22 @@ This means that something using bottom is off the page - hence we must use top. 
 
 /*Make these from the left*/
 #gameBoard.chinese #proceedButton {
-	width: calc(62vw - 19.04vh);
+	left: calc(9.52vh + 2vw);
+	width: calc(73vw - 19.04vh);
 }
 
 #proceedButton {
 	position: absolute;
 	left: calc(9.52vh + 13vw);
 	top: 57vh;
-	width: calc(45vw - 19.04vh);
+	width: calc(62vw - 19.04vh);
 	height: 5vh;
 	border-radius: 50vh;
 	font-size: 2.1vh;
+}
+
+#proceedButton.shrinkForHintButton {
+	width: calc(45vw - 19.04vh);
 }
 
 #gameBoard.chinese #hintButton {
@@ -318,21 +323,18 @@ This means that something using bottom is off the page - hence we must use top. 
 
 @keyframes animateScale {
   0% {
-    transform: scale(1);
+    transform: scaleY(1) scaleX(1);
   }
-  33% {
-	transform: scale(1.4);
-  }
-  83% {
-	transform: scale(0.8);
+  50% {
+	transform: scaleY(1.2) scaleX(0.9);
   }
   100% {
-	transform: scale(1);
+	transform: scaleY(1) scaleX(1);
   }
 }
 
 .scaleAnimation {
-	animation: animateScale 3s linear 6s infinite;
+	animation: animateScale 1.5s linear 6s infinite;
 }
 
 #endGameButton {

@@ -443,7 +443,13 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	shouldConfirm = !message.isGameOver
 
-	hintButton.style.display = (message?.settings?.disableHints)?"none":""
+	hintButton.style.display = ""
+	proceedButton.classList.add("shrinkForHintButton")
+	
+	if (message?.settings?.disableHints) {
+		hintButton.style.display = "none"
+		proceedButton.classList.remove("shrinkForHintButton")
+	}
 
 	if (!message.inGame) {
 		document.body.style.overflow = ""
