@@ -1,10 +1,6 @@
 let cards = {
-	"2020 National Mahjongg League": "./2020.js",
-	"2021 National Mahjongg League": "./2021.js"
-}
-
-for (let cardName in cards) {
-	cards[cardName] = require(cards[cardName])
+	"2020 National Mahjongg League": require("./2020.js"),
+	"2021 National Mahjongg League": require("./2021.js")
 }
 
 let cardNames = Object.keys(cards)

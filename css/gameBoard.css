@@ -263,7 +263,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
-	font-size: 1.6vh;
+	font-size: 2.1vh;
 }
 
 #gameBoard.chinese #revertStateButton {
@@ -272,14 +272,48 @@ This means that something using bottom is off the page - hence we must use top. 
 	top: 70vh;
 }
 
+/*Make these from the left*/
+#gameBoard.chinese #proceedButton {
+	width: calc(62vw - 19.04vh);
+}
+
 #proceedButton {
 	position: absolute;
-	right: calc(9.52vh + 36vw);
+	left: calc(9.52vh + 13vw);
 	top: 57vh;
-	width: 15vw;
+	width: calc(45vw - 19.04vh);
 	height: 5vh;
 	border-radius: 50vh;
-	font-size: 1.6vh;
+	font-size: 2.1vh;
+}
+
+#gameBoard.chinese #hintButton {
+	display: none;
+}
+
+.suggestedHandsTable {
+	background: #fdfdfd;
+	color: black;
+	display: inline-block;
+	width: 100%;
+	max-height: 35vh;
+	overflow: scroll;
+}
+
+.suggestedHandsTable img {
+	max-width: calc(100% / 14);
+	padding-bottom: 10px;
+	border-bottom: 1px solid black;
+}
+
+#hintButton {
+	position: absolute;
+	right: calc(9.52vh + 25.5vw);
+	top: 57vh;
+	width: 15.5vw;
+	height: 5vh;
+	border-radius: 50vh;
+	font-size: 2.1vh;
 }
 
 @keyframes animateScale {
@@ -308,7 +342,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
-	font-size: 1.6vh;
+	font-size: 2.1vh;
 }
 
 #goMahjongButton {
@@ -318,7 +352,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
-	font-size: 1.6vh;
+	font-size: 2.1vh;
 }
 
 #gameBoard.chinese #goMahjongButton {
@@ -337,7 +371,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
-	font-size: 1.6vh;
+	font-size: 2.1vh;
 }
 
 #gameBoard.chinese #newGameNoLobbyButton {
@@ -351,7 +385,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
-	font-size: 1.6vh;
+	font-size: 2.1vh;
 }
 
 #gameBoard.chinese #swapJokerButton {

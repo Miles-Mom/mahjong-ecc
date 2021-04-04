@@ -191,6 +191,78 @@ window.stateManager.onPlaceTiles = function(obj) {
 	}
 }
 
+let hintButton = document.createElement("button")
+hintButton.id = "hintButton"
+hintButton.innerHTML = "Suggested Hands"
+gameBoard.appendChild(hintButton)
+
+hintButton.addEventListener("click", function() {
+	let popup;
+	try {
+		let cardName = stateManager.lastState.message.settings.card
+
+		if (cardName === "Other Card - Bots Use Random Card") {
+			popup = new Popups.Notification("Suggested Hands", "This card does not support Suggested Hands. ")
+		}
+		else if (stateManager.lastState.message.settings.disableHints) {
+			popup = new Popups.Notification("Suggested Hands", "The host has disabled Suggested Hands. ")
+		}
+		else {
+			const cards = require("../server/american/cards.js")
+			const utilities = require("../server/american/utilities.js")
+
+			let card = cards[cardName]
+
+			let options = utilities.getTileDifferential(card, userHand.contents)
+
+			if (options.length === 0) {
+				popup = new Popups.Notification("No Hands Found", " - Your hand might be dead<br> - You might have selected the wrong card. <br> - Bots might only support a portion of your card")
+			}
+			else {
+				let elem = document.createElement("div")
+				let p = document.createElement("p")
+				p.innerHTML = "(Sorted by Bot - Scroll to see more)"
+				elem.appendChild(p)
+
+				let table = document.createElement("table")
+
+				options.forEach((item, index) => {
+					if (index < 100) {
+						let row = document.createElement("tr")
+						table.appendChild(row)
+
+						let nameColumn = document.createElement("td")
+						nameColumn.innerHTML = `${item.handOption.section} #${item.handOption.cardIndex++} - ${item.diff} Tiles Away (${item.handOption.concealed?"C":"X"})`
+						row.appendChild(nameColumn)
+
+						let tileRow = document.createElement("tr")
+						table.appendChild(tileRow)
+
+						item.handOption.tiles.flat().forEach((tile) => {
+							let img = document.createElement("img")
+							img.src = tile.imageUrl
+							tileRow.appendChild(img)
+						})
+					}
+				})
+
+				elem.appendChild(table)
+				table.className = "suggestedHandsTable"
+				console.log(elem)
+
+				popup = new Popups.Notification("Suggested Hands", elem)
+			}
+		}
+	}
+	catch (e) {
+		console.error(e)
+		popup = new Popups.Notification("Suggested Hands", "There was an error displaying suggested hands. Sorry. ")
+	}
+	popup.show()
+})
+
+console.log(hintButton)
+
 let instructionBubble = document.createElement("div")
 instructionBubble.id = "instructionBubble"
 instructionBubble.style.display = "none"
