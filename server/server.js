@@ -1,6 +1,16 @@
 const Room = require("./Room.js")
 const Client = require("./Client.js")
 
+let path, fs;
+
+try {
+	path = require("path")
+	fs = require("fs")
+}
+catch (e) {
+	console.error(e)
+}
+
 function getMessage(type, message, status) {
 	return JSON.stringify({
 		type, message, status
@@ -110,7 +120,7 @@ function onConnection(websocket) {
 			else if (obj.type === "createRoomFromState") {
 				//Intended for developer use.
 				try {
-					let roomFilePath = path.join(serverDataDirectory, obj.saveId + ".room")
+					let roomFilePath = path.join(stateManager.serverDataDirectory, obj.saveId + ".room")
 
 					if (fs.existsSync(roomFilePath)) {
 						//Technically roomPath could be a ../ path, however this kind of "hacking" shouldn't do any damage here. We don't write or expose non-mahjong data.
