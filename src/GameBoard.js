@@ -204,9 +204,6 @@ hintButton.addEventListener("click", function() {
 		if (cardName === "Other Card - Bots Use Random Card") {
 			popup = new Popups.Notification("Suggested Hands", "This card does not support Suggested Hands. ")
 		}
-		else if (stateManager.lastState.message.settings.disableHints) {
-			popup = new Popups.Notification("Suggested Hands", "The host has disabled Suggested Hands. ")
-		}
 		else {
 			const cards = require("../server/american/cards.js")
 			const utilities = require("../server/american/utilities.js")
@@ -445,6 +442,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let message = obj.message
 
 	shouldConfirm = !message.isGameOver
+
+	hintButton.style.display = (message?.settings?.disableHints)?"none":""
 
 	if (!message.inGame) {
 		document.body.style.overflow = ""

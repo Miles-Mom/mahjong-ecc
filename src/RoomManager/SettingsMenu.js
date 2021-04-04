@@ -30,8 +30,8 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 		//American
 		card: new CardSelector(),
-		americanBotDifficulty: new AmericanBotDifficulty()
-
+		americanBotDifficulty: new AmericanBotDifficulty(),
+		disableHints: new DisableHintsSelector(),
 		//Both
 	})
 
@@ -298,6 +298,33 @@ function AmericanBotDifficulty() {
 	}
 	this.set = function(value = 50) {
 		input.value = value
+	}
+	this.displayFor = ["american"]
+	this.isHost = true
+}
+
+function DisableHintsSelector() {
+	let elem = document.createElement("div")
+
+	let checkbox = document.createElement("input")
+	checkbox.type = "checkbox"
+
+	let label = document.createElement("label")
+	label.innerHTML = "Disable Hints/Suggested Hands"
+	label.addEventListener("click", function() {checkbox.click()})
+
+	label.style.fontSize = "1.4em"
+	checkbox.style.fontSize = "1.4em"
+
+	this.elem = elem
+	elem.appendChild(checkbox)
+	elem.appendChild(label)
+
+	this.get = function() {
+		return checkbox.checked
+	}
+	this.set = function(value = false) {
+		checkbox.checked = value
 	}
 	this.displayFor = ["american"]
 	this.isHost = true

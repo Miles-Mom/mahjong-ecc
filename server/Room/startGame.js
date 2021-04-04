@@ -44,6 +44,9 @@ function startGame(obj) {
 
 
 		this.state.settings.botSettings = this.state.settings.botSettings || {}
+
+		this.state.settings.disableHints = obj?.settings?.disableHints || false
+
 		this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston ?? false
 
 		this.state.settings.windAssignments = this.state.settings.windAssignments || {}
