@@ -201,7 +201,6 @@ function startGame(obj) {
 
 		let eastWindPlayerId;
 		for (let clientId in windAssignments) {
-			console.log(clientId)
 			let wind = windAssignments[clientId]
 
 			let hand = new Hand({wind})

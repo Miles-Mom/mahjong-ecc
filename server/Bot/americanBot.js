@@ -29,7 +29,6 @@ function evaluateNextMove() {
 		}, this.clientId)
 	}).bind(this)
 
-	console.log(currentHand.contents)
 	let cardToUse = gameData.card
 
 	//Bot difficulty settings.
@@ -60,10 +59,8 @@ function evaluateNextMove() {
 	}
 
 	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + Math.random())
-	console.log(allowedAnalysisTiles)
 
 	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
-	console.log(analysis[0])
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
 	function getTopTiles(analysis, maxAmount, noJokers = false) {

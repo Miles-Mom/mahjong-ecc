@@ -643,8 +643,6 @@ class Room {
 		}).bind(this)
 
 		this.onIncomingMessage = (function(clientId, obj) {
-			console.log(JSON.stringify(obj))
-
 			let client = global.stateManager.getClient(clientId)
 			let isHost = (clientId === this.hostClientId)
 
