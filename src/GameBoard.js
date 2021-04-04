@@ -213,10 +213,11 @@ hintButton.addEventListener("click", function() {
 
 			let card = cards[cardName]
 
-			let options = utilities.getTileDifferential(card, userHand.contents)
+			let tiles = userHand.contents.concat(userHand.inPlacemat.filter((tile) => {return !tile.evicting}))
+			let options = utilities.getTileDifferential(card, tiles)
 
 			if (options.length === 0) {
-				popup = new Popups.Notification("No Hands Found", " - Your hand might be dead<br> - You might have selected the wrong card. <br> - Bots might only support a portion of your card")
+				popup = new Popups.Notification("No Hands Found", ` - Your hand might be dead<br> - You might have selected the wrong card (using ${cardName}). <br> - Bots might only support a portion of your card`)
 			}
 			else {
 				let elem = document.createElement("div")
@@ -232,7 +233,7 @@ hintButton.addEventListener("click", function() {
 						table.appendChild(row)
 
 						let nameColumn = document.createElement("td")
-						nameColumn.innerHTML = `${item.handOption.section} #${item.handOption.cardIndex++} - ${item.diff} Tiles Away (${item.handOption.concealed?"C":"X"})`
+						nameColumn.innerHTML = `${item.handOption.section} #${item.handOption.cardIndex + 1} - ${item.diff} Tiles Away (${item.handOption.concealed?"C":"X"})`
 						row.appendChild(nameColumn)
 
 						let tileRow = document.createElement("tr")
