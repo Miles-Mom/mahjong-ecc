@@ -55,7 +55,7 @@ class Room {
 
 				//Make sure we don't blast all the clients with repeat messages.
 				this.clientIds.forEach(((clientId) => {
-					let client = global.stateManager.getClient(clientId)
+					let client = globalThis.serverStateManager.getClient(clientId)
 					client.suppress()
 					if (client.getRoomId() === undefined) {client.setRoomId(this.roomId)}
 				}).bind(this))
@@ -71,7 +71,7 @@ class Room {
 				})
 
 				this.clientIds.forEach((clientId) => {
-					global.stateManager.getClient(clientId).unsuppress()
+					globalThis.serverStateManager.getClient(clientId).unsuppress()
 				})
 
 				this.sendStateToClients()
@@ -93,7 +93,7 @@ class Room {
 				let hand = this.gameData.playerHands[id]
 
 				let item = ""
-				item += global.stateManager.getClient(id).getNickname()
+				item += globalThis.serverStateManager.getClient(id).getNickname()
 				item += ": "
 				item += hand.wind
 
@@ -143,7 +143,7 @@ class Room {
 
 		this.goMahjong = (function goMahjong(clientId, drewOwnTile = false, override = false) {
 			//First, verify the user can go mahjong.
-			let client = global.stateManager.getClient(clientId)
+			let client = globalThis.serverStateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
 			//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
 			//the scoring will now be correct, not incorrect)
@@ -177,10 +177,10 @@ class Room {
 			//Reverts state, removing moveCount moves
 			//TODO: We probably want to save state here. Can we simply change the save ID or something?
 			if (moveCount < 1) {return} //Block revert by zero or negative numbers.
-			global.stateManager.deleteRoom(this.roomId)
+			globalThis.serverStateManager.deleteRoom(this.roomId)
 			this.state.moves = this.state.moves.slice(0, -moveCount)
 			let room = new Room(this.roomId, this.state)
-			global.stateManager.createRoom(this.roomId, room)
+			globalThis.serverStateManager.createRoom(this.roomId, room)
 			room.init()
 		}).bind(this)
 
@@ -230,7 +230,7 @@ class Room {
 			this.clientIds.slice(0, state.inGame?4:Infinity).forEach((currentClientId) => {
 				let visibleClientState = {
 					id: currentClientId,
-					nickname: global.stateManager.getClient(currentClientId).getNickname(),
+					nickname: globalThis.serverStateManager.getClient(currentClientId).getNickname(),
 					isHost: (currentClientId === this.hostClientId)
 				}
 				if (this.inGame) {
@@ -259,14 +259,14 @@ class Room {
 
 		this.sendStateToClients = (function sendStateToClients() {
 			this.clientIds.forEach((clientId) => {
-				let client = global.stateManager.getClient(clientId)
+				let client = globalThis.serverStateManager.getClient(clientId)
 				let state = getState(clientId)
 				client.message("roomActionState", state, "success")
 			})
 		}).bind(this)
 
 		this.addClient = (function(clientId) {
-			let client = global.stateManager.getClient(clientId)
+			let client = globalThis.serverStateManager.getClient(clientId)
 
 			if (this.clientIds.includes(clientId)) {return client.message("joinRoom", "Already In Room", "error")}
 
@@ -291,24 +291,24 @@ class Room {
 					this.hostClientId = null;
 					this.clientIds.forEach(((clientId) => {
 						if (this.hostClientId) {return}
-						if (!global.stateManager.getClient(clientId).isBot) {
+						if (!globalThis.serverStateManager.getClient(clientId).isBot) {
 							this.hostClientId = clientId
 						}
 					}).bind(this))
 				}
 				this.sendStateToClients()
 
-				let clientBeingKicked = global.stateManager.getClient(clientId)
+				let clientBeingKicked = globalThis.serverStateManager.getClient(clientId)
 				if (clientBeingKicked) {
 					clientBeingKicked.message("roomActionLeaveRoom", explaination, "success")
 					//The client is going to change their client Id. We can now delete the old client.
-					global.stateManager.deleteClient(clientId)
+					globalThis.serverStateManager.deleteClient(clientId)
 				}
 				if (this.hostClientId === null) {
 					//We have no clients. Delete this room.
 					//Note that this code shouldn't be called, unless there is a bug or lag. The client will not show the Leave Room button if they are the
 					//only player and host (which they should be if they are the only player), and therefore roomActionCloseRoom will be sent instead.
-					global.stateManager.deleteRoom(this.roomId)
+					globalThis.serverStateManager.deleteRoom(this.roomId)
 				}
 			}
 		}).bind(this)
@@ -316,7 +316,7 @@ class Room {
 		this.messageAll = (function(exclude = [], ...args) {
 			this.clientIds.forEach((clientId) => {
 				if (exclude.includes(clientId)) {return}
-				let client = global.stateManager.getClient(clientId)
+				let client = globalThis.serverStateManager.getClient(clientId)
 				client.message(...args)
 			})
 		}).bind(this)
@@ -341,7 +341,7 @@ class Room {
 				}
 				this.gameData.playerHands[clientId].add(tile)
 			}
-			let client = global.stateManager.getClient(clientId)
+			let client = globalThis.serverStateManager.getClient(clientId)
 			if (!doNotMessage) {
 				this.lastDrawn = tile
 				this.setInstructions(client.clientId, "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.getTileName(this.state.settings.gameStyle)) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
@@ -358,7 +358,7 @@ class Room {
 		this.endGame = (function endGame(obj, clientId) {
 			let gameEndMessage = "The Game Has Ended";
 			if (clientId) {
-				let client = global.stateManager.getClient(clientId)
+				let client = globalThis.serverStateManager.getClient(clientId)
 				//Tell players who ended the game.
 				gameEndMessage = "The game has been ended by " + client.getNickname() + "."
 			}
@@ -387,7 +387,7 @@ class Room {
 				catch (e) {console.error("ERROR WRITING TO ROOM LOGFILE: ", e)}
 			}
 
-			let client = global.stateManager.getClient(clientId)
+			let client = globalThis.serverStateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
 
 			if (this.gameData.isMahjong) {
@@ -594,7 +594,7 @@ class Room {
 				}
 				else if (obj.mahjong) {
 					this.goMahjong(clientId, !this.gameData.previousTurnPickedUp, placerMahjongOverride)
-					if (global.stateManager.getClient(clientId).isBot) {
+					if (globalThis.serverStateManager.getClient(clientId).isBot) {
 						console.log("Bots are not allowed to obtain override power")
 					}
 					else {
@@ -608,7 +608,7 @@ class Room {
 			}
 			else if (placement === undefined) {
 				if (this.gameData.charleston) {
-					return global.stateManager.getClient(clientId).message("roomActionPlaceTiles", "You must choose 3 tiles to pass during charleston. ", "error")
+					return globalThis.serverStateManager.getClient(clientId).message("roomActionPlaceTiles", "You must choose 3 tiles to pass during charleston. ", "error")
 				}
 				this.gameData.currentTurn.turnChoices[clientId] = "Next"
 				this.sendStateToClients()
@@ -643,7 +643,7 @@ class Room {
 		}).bind(this)
 
 		this.onIncomingMessage = (function(clientId, obj) {
-			let client = global.stateManager.getClient(clientId)
+			let client = globalThis.serverStateManager.getClient(clientId)
 			let isHost = (clientId === this.hostClientId)
 
 			if (obj.type === "roomActionLeaveRoom") {
@@ -702,7 +702,7 @@ class Room {
 					}
 				})
 				this.removeClient(hostClientId, "You closed the room. ")
-				global.stateManager.deleteRoom(this.roomId)
+				globalThis.serverStateManager.deleteRoom(this.roomId)
 			}
 			else if (obj.type === "roomActionPlaceTiles") {
 				//Action to place tiles.
@@ -730,7 +730,7 @@ class Room {
 			}
 			else if (obj.type === "roomActionChangeNickname") {
 				let message; //Message will remain undefined if the user does not have permission to rename.
-				let target = global.stateManager.getClient(obj.targetId)
+				let target = globalThis.serverStateManager.getClient(obj.targetId)
 
 				if (obj.targetId === clientId) {
 					message = target.getNickname() + " renamed to " + obj.nickname

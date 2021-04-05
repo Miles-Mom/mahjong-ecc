@@ -26,14 +26,14 @@ const websocketServer = new WebSocket.Server({
 
 const StateManager = require("./server/StateManager.js")
 
-global.stateManager = new StateManager()
-global.stateManager.serverDataDirectory = serverDataDirectory
+globalThis.serverStateManager = new StateManager()
+globalThis.serverStateManager.serverDataDirectory = serverDataDirectory
 if (process.argv.includes("--loadState")) {
 	let filePath = process.argv[process.argv.indexOf("--loadState") + 1]
 	if (filePath) {
 		let inputPath = path.join(serverDataDirectory, filePath) + ".server.json"
 		console.log("Loading state from " + inputPath)
-		global.stateManager.init(fs.readFileSync(inputPath))
+		globalThis.serverStateManager.init(fs.readFileSync(inputPath))
 	}
 }
 

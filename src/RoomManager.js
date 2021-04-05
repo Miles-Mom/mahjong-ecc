@@ -73,6 +73,8 @@ let joinRoom = document.createElement("button")
 joinRoom.id = "joinRoom"
 joinRoom.innerHTML = "Join Room"
 joinRoom.addEventListener("click", function() {
+	stateManager.offlineMode = false
+
 	if (roomIdInput.value.trim().length === 0) {
 		return new Popups.Notification("Room Name Invalid", "The room name contains at least one character. Please enter it into the box labeled \"Enter Room Name\" ").show()
 	}
@@ -84,6 +86,8 @@ let createRoom = document.createElement("button")
 createRoom.id = "createRoom"
 createRoom.innerHTML = "Create Room"
 createRoom.addEventListener("click", function() {
+	stateManager.offlineMode = false
+
 	if (roomIdInput.value.trim().length === 0) {
 		return new Popups.Notification("Unable to Create Room", "Please pick a 1+ character long name, and enter it into the box labeled \"Enter Room Name\" ").show()
 	}
@@ -96,6 +100,8 @@ let singlePlayerGame = document.createElement("button")
 singlePlayerGame.id = "singlePlayerGame"
 singlePlayerGame.innerHTML = "Single Player"
 singlePlayerGame.addEventListener("click", function() {
+	stateManager.offlineMode = false
+
 	let roomId = roomIdInput.value.trim() || ("sp-" + Math.floor(Math.random() * 1e10)) //We need to stop depending on randomness - collisions are possible.
 	//Websockets guarantees delivery order, so we should be safe here, unless any calls error.
 
@@ -107,6 +113,41 @@ singlePlayerGame.addEventListener("click", function() {
 	window.stateManager.addBot("Bot 3")
 })
 joinOrCreateRoom.appendChild(singlePlayerGame)
+
+
+let offlineSinglePlayer = document.createElement("button")
+offlineSinglePlayer.id = "offlineSinglePlayer"
+offlineSinglePlayer.innerHTML = "Offline (Single Player - Beta)"
+offlineSinglePlayer.addEventListener("click", function() {
+	stateManager.offlineMode = true //Send to local server.
+
+	let roomId = roomIdInput.value.trim() || ("sp-" + Math.floor(Math.random() * 1e10)) //We need to stop depending on randomness - collisions are possible.
+	//Websockets guarantees delivery order, so we should be safe here, unless any calls error.
+
+	let nickname = nicknameInput.value || "Player 1"
+
+	window.stateManager.createRoom(roomId, nickname)
+	window.stateManager.addBot("Bot 1")
+	window.stateManager.addBot("Bot 2")
+	window.stateManager.addBot("Bot 3")
+})
+joinOrCreateRoom.appendChild(offlineSinglePlayer)
+
+
+
+let connectionStatus = document.createElement("p")
+connectionStatus.id = "connectionStatus"
+
+notInRoomContainer.appendChild(connectionStatus)
+
+let dots = 1 //We could make these go a bit faster...
+window.setConnectionStatus = function({connected}) {
+	connectionStatus.innerHTML = connected?"✓ Connected to Server":"Trying To Connect" + ".".repeat(1 + (++dots % 5))
+	connectionStatus.className = connected?"connected":""
+	joinRoom.disabled = createRoom.disabled = singlePlayerGame.disabled = connected?"":"disabled"
+}
+
+window.setConnectionStatus({connected: false})
 
 
 //Inform user to use landscape.

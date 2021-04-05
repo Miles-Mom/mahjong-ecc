@@ -47,12 +47,17 @@ class StateManager {
 			this.websocket = new WebSocket(websocketURL)
 			this.websocket.addEventListener("message", onmessage)
 
+			this.websocket.addEventListener("open", function() {
+				if (window.setConnectionStatus) {window.setConnectionStatus({connected: true})}
+			})
+
 			this.websocket.addEventListener("error", (async function(e) {
 				console.error(e)
 			}).bind(this))
 
 			//Error events also result in a close, so we end up with exponential blowup if reconnect on both. We'll only reconnect on close.
 			this.websocket.addEventListener("close", (async function(e) {
+				if (window.setConnectionStatus) {window.setConnectionStatus({connected: false})}
 				console.warn(e)
 				if (e.code !== 1000) {
 					//If not a normal closure, reestablish and sync.
@@ -62,16 +67,52 @@ class StateManager {
 				}
 			}).bind(this))
 
-			this.sendMessage = async function(message) {
-				//Send message once socket opens.
-				if (this.websocket.readyState === 0) {
-					await new Promise((resolve, reject) => {
-						this.websocket.onopen = resolve
-						this.websocket.onerror = reject //TODO: Handle error.
-					})
+			class FakeWebsocket {
+				on(listener, func) {
+					console.log(listener)
+					this.onmessage = func
 				}
-				console.log(message)
-				this.websocket.send(message)
+
+				send(message) {
+					console.log(message)
+					onmessage({data: message})
+				}
+			}
+
+			let fakeSocket = new FakeWebsocket()
+
+			this.sendMessage = async function(message) {
+				if (this.offlineMode) {
+					if (!this.localServer) {
+						const ServerStateManager = require("../server/StateManager.js")
+						globalThis.serverStateManager = new ServerStateManager()
+
+						this.localServer = require("../server/server.js")
+						console.log(this.localServer)
+
+						this.localServer(fakeSocket)
+					}
+
+					console.log(fakeSocket)
+
+					if (!fakeSocket.onmessage) {
+						console.log(fakeSocket)
+						this.localServer(fakeSocket)
+					}
+
+					fakeSocket.onmessage(message)
+				}
+				else {
+					//Send message once socket opens.
+					if (this.websocket.readyState === 0) {
+						await new Promise((resolve, reject) => {
+							this.websocket.onopen = resolve
+							this.websocket.onerror = reject //TODO: Handle error.
+						})
+					}
+					console.log(message)
+					this.websocket.send(message)
+				}
 			}
 		}).bind(this)
 		this.createWebsocket()

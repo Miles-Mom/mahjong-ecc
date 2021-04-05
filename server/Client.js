@@ -47,7 +47,7 @@ class Client {
 				websocket.close(1000) //Status code: Normal close.
 			}
 			catch(e) {}
-			global.stateManager.deleteClient(clientId)
+			globalThis.serverStateManager.deleteClient(clientId)
 		}).bind(this)
 
 		//roomId should be removed once this client is removed from a room. Probably moot due to getRoomId checks though.
@@ -57,14 +57,14 @@ class Client {
 
 		this.getRoomId = function() {
 			//Validate that the client is actually in the room...
-			let room = global.stateManager.getRoom(this.roomId)
+			let room = globalThis.serverStateManager.getRoom(this.roomId)
 			if (room && room.clientIds.includes(this.clientId)) {
 				return this.roomId
 			}
 		}
 
 		this.getRoom = function() {
-			return global.stateManager.getRoom(this.getRoomId())
+			return globalThis.serverStateManager.getRoom(this.getRoomId())
 		}
 
 		this.toJSON = (function() {

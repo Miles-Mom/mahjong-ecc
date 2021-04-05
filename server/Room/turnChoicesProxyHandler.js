@@ -25,7 +25,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 
 	if (obj[key] === "Next") {return true}
 
-	let client = global.stateManager.getClient(key)
+	let client = globalThis.serverStateManager.getClient(key)
 	let throwerWind = this.gameData.playerHands[this.gameData.currentTurn.userTurn].wind
 
 	let hand = this.gameData.playerHands[key]
@@ -56,7 +56,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 		}
 		else if (this.gameData.charleston.directions[0][0].blind) {
 			//We probably want to notify the player across how many tiles are being passed,
-			//or short circuit them if no tiles are passed. 
+			//or short circuit them if no tiles are passed.
 		}
 		else if (obj[key].length !== 3) {
 			client.message("roomActionPlaceTiles", "This Charleston round requires exactly three tiles. ", "error")
@@ -312,7 +312,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 			priorityList.sort((a, b) => {return b[0] - a[0]})
 			for (let i=0;i<priorityList.length;i++) {
 				let clientId = priorityList[i][1]
-				let client = global.stateManager.getClient(clientId)
+				let client = globalThis.serverStateManager.getClient(clientId)
 
 				if (utilized === true) {
 					client.message("roomActionPlaceTiles", "Placing tiles failed because another player had a higher priority placement (mahjong>match>sequence, and by order within category).", "error")
@@ -473,7 +473,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 		}
 
 		if (!(this.gameData.isMahjong || this.gameData.wall.isEmpty)) {
-			let currentTurnClient = stateManager.getClient(this.gameData.currentTurn.userTurn)
+			let currentTurnClient = globalThis.serverStateManager.getClient(this.gameData.currentTurn.userTurn)
 			this.setAllInstructions([currentTurnClient.clientId], `Waiting on ${currentTurnClient.getNickname()} to make a move. \n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! `)
 		}
 
@@ -492,7 +492,7 @@ module.exports = function(obj, prop, value) {
 	//Remove invalid assignments. getPriority will issue error messages to clients as needed.
 	if (getPriority.call(this, obj, prop, exemptFromChecks.includes(prop)) === false) {
 		delete obj[prop]
-		if (global.stateManager.getClient(prop).isBot) {
+		if (globalThis.serverStateManager.getClient(prop).isBot) {
 			console.log("Bots are not allowed to obtain override power. ")
 		}
 		else {
@@ -520,7 +520,7 @@ module.exports = function(obj, prop, value) {
 		})
 
 		let guiltyPartyNames = guiltyParties.map((clientId) => {
-			return stateManager.getClient(clientId).getNickname()
+			return globalThis.serverStateManager.getClient(clientId).getNickname()
 		})
 
 		message += guiltyPartyNames.join(", ")

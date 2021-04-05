@@ -8,7 +8,7 @@ try {
 	fs = require("fs")
 }
 catch (e) {
-	console.error(e)
+	console.warn(e)
 }
 
 function getMessage(type, message, status) {
@@ -22,7 +22,6 @@ function onConnection(websocket) {
 
 	websocket.on('message', function incoming(message) {
 		try {
-
 			let obj;
 			try {
 				obj = JSON.parse(message)
@@ -33,7 +32,7 @@ function onConnection(websocket) {
 
 			console.log('received: ' + JSON.stringify(obj));
 
-			//Admin actions for triggering maintenance.
+			//Admin actions for triggering maintenance. 
 
 			//Example:
 			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in a few minutes to perform a server update. Feel free to continue playing - all games will be restored to where they were before the start of maintenance. ")
@@ -61,7 +60,7 @@ function onConnection(websocket) {
 					return websocket.send(getMessage("displayMessage", {title: "Server Save", body: saveServerState(obj.saveName)}, "error"))
 				}
 				else if (obj.type === "messageAllServerClients") {
-					global.stateManager.getAllClients().forEach((client) => {
+					globalThis.serverStateManager.getAllClients().forEach((client) => {
 						client.message("displayMessage", {title: obj.title, body: obj.body}, "error")
 					})
 				}
@@ -75,17 +74,17 @@ function onConnection(websocket) {
 			}
 			else {
 				clientId = obj.clientId
-				if (!global.stateManager.getClient(clientId)) {
+				if (!globalThis.serverStateManager.getClient(clientId)) {
 					if (clientId.startsWith("bot")) {
 						//Intended for dev use.
-						client = global.stateManager.createBot(clientId, websocket)
+						client = globalThis.serverStateManager.createBot(clientId, websocket)
 					}
 					else {
-						client = global.stateManager.createClient(clientId, websocket)
+						client = globalThis.serverStateManager.createClient(clientId, websocket)
 					}
 				}
 				else {
-					client = global.stateManager.getClient(clientId)
+					client = globalThis.serverStateManager.getClient(clientId)
 					client.setWebsocket(websocket)
 				}
 			}
@@ -94,22 +93,22 @@ function onConnection(websocket) {
 				if (typeof obj.roomId !== "string" || obj.roomId.trim().length === 0) {
 					return websocket.send(getMessage("createRoom", "roomId must be a string with at least one character", "error"))
 				}
-				else if (global.stateManager.getRoom(obj.roomId)) {
+				else if (globalThis.serverStateManager.getRoom(obj.roomId)) {
 					return websocket.send(getMessage("createRoom", "Room Already Exists", "error"))
 				}
 				else {
 					client.setNickname(obj.nickname)
-					global.stateManager.createRoom(obj.roomId).addClient(clientId)
+					globalThis.serverStateManager.createRoom(obj.roomId).addClient(clientId)
 					client.setRoomId(obj.roomId)
 					return websocket.send(getMessage("createRoom", obj.roomId, "success"))
 				}
 			}
 			else if (obj.type === "joinRoom") {
-				if (!global.stateManager.getRoom(obj.roomId)) {
+				if (!globalThis.serverStateManager.getRoom(obj.roomId)) {
 					return websocket.send(getMessage("joinRoom", "Room Does Not Exist", "error"))
 				}
 				client.setNickname(obj.nickname)
-				return global.stateManager.getRoom(obj.roomId).addClient(clientId)
+				return globalThis.serverStateManager.getRoom(obj.roomId).addClient(clientId)
 			}
 			else if (obj.type === "getCurrentRoom") {
 				console.log(client.getRoomId())
@@ -120,13 +119,13 @@ function onConnection(websocket) {
 			else if (obj.type === "createRoomFromState") {
 				//Intended for developer use.
 				try {
-					let roomFilePath = path.join(stateManager.serverDataDirectory, obj.saveId + ".room")
+					let roomFilePath = path.join(globalThis.serverStateManager.serverDataDirectory, obj.saveId + ".room")
 
 					if (fs.existsSync(roomFilePath)) {
 						//Technically roomPath could be a ../ path, however this kind of "hacking" shouldn't do any damage here. We don't write or expose non-mahjong data.
 						let room = Room.fromJSON(fs.readFileSync(roomFilePath, {encoding: "utf8"}))
 						let roomId = room.roomId
-						if (!global.stateManager.createRoom(roomId, room)) {return console.warn("Room already exists. ")}
+						if (!globalThis.serverStateManager.createRoom(roomId, room)) {return console.warn("Room already exists. ")}
 						room.init()
 					}
 					else {console.warn("Invalid save path")}
@@ -136,7 +135,7 @@ function onConnection(websocket) {
 			}
 			else if (obj.type.includes("roomAction")) {
 				//The user is in a room, and this action will be handled by the room.
-				let room = global.stateManager.getRoom(obj.roomId) || client.getRoom()
+				let room = globalThis.serverStateManager.getRoom(obj.roomId) || client.getRoom()
 				if (!room) {
 					//The user did not specify a valid room to use, and was not in a room.
 					return websocket.send(getMessage(obj.type, "Room Does Not Exist", "error"))
@@ -160,8 +159,5 @@ function onConnection(websocket) {
 		}
 	});
 }
-
-
-
 
 module.exports = onConnection

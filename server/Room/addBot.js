@@ -1,6 +1,6 @@
 function addBot(obj) {
 	//Create a clientId for the bot.
-	let client = global.stateManager.createBot()
+	let client = globalThis.serverStateManager.createBot()
 
 	if (obj.botName) {client.setNickname(obj.botName)}
 	client.setRoomId(this.roomId)

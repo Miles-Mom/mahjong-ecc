@@ -10,7 +10,7 @@ try {
 	fs = require("fs")
 	path = require("path")
 }
-catch (e) {console.error(e)}
+catch (e) {console.warn(e)}
 
 function startGame(obj) {
 	if (this.clientIds.length < 4) {return "Not Enough Clients"}
@@ -131,7 +131,7 @@ function startGame(obj) {
 		this.state.moves = []
 
 		if (fs) {
-			this.logFile = fs.createWriteStream(path.join(global.stateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
+			this.logFile = fs.createWriteStream(path.join(globalThis.serverStateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
 		}
 
 		this.gameData.discardPile = []
@@ -172,7 +172,7 @@ function startGame(obj) {
 			if (!windAssignments[clientId]) {
 				windAssignments[clientId] = winds.splice(Math.floor(Math.random() * winds.length), 1)[0]
 			}
-			let client = global.stateManager.getClient(clientId)
+			let client = globalThis.serverStateManager.getClient(clientId)
 			if (client.isBot) {
 				botNames.push(client.getNickname())
 				botIds.push(clientId)
@@ -196,7 +196,7 @@ function startGame(obj) {
 		}))
 
 		botIds.forEach((botId, index) => {
-			global.stateManager.getClient(botId).setNickname(botNames[index])
+			globalThis.serverStateManager.getClient(botId).setNickname(botNames[index])
 		})
 
 		let eastWindPlayerId;

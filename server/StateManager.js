@@ -3,8 +3,13 @@ const Client = require("./Client.js")
 const Bot = require("./Bot.js")
 
 //For state saving.
-const fs = require("fs")
-const path = require("path")
+let fs, path;
+
+try {
+	fs = require("fs")
+	path = require("path")
+}
+catch (e) {console.warn(e)}
 
 class StateManager {
 	constructor(rooms = {}, clients = {}) {
@@ -82,7 +87,7 @@ class StateManager {
 			for (let roomId in loadRooms) {
 				rooms[roomId] = Room.fromJSON(loadRooms[roomId])
 				rooms[roomId].init()
-				console.log(global.stateManager.getRoom(roomId))
+				console.log(globalThis.serverStateManager.getRoom(roomId))
 			}
 			console.timeEnd("Initializing server state... ")
 		}).bind(this)

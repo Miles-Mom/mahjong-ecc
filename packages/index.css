@@ -61,7 +61,7 @@
 	margin-top: calc(var(--vh) * 2);
 }
 
-#roomManager #joinRoom, #roomManager #createRoom, #roomManager #singlePlayerGame{
+#joinRoom, #createRoom, #singlePlayerGame, #offlineSinglePlayer{
 	min-width: 150px;
 	border-radius: 3.5vh;
 	border-radius: calc(var(--vh) * 3.5);
@@ -69,7 +69,7 @@
 	padding: 10px;
 }
 
-#roomManager #joinRoom {
+#joinRoom, #offlineSinglePlayer {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
@@ -77,6 +77,12 @@
 	margin-left: 1vw;
 	margin-left: calc(var(--vw) * 1);
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
+}
+
+#offlineSinglePlayer {
+	margin-left: 1vw;
+	margin-left: calc(var(--vw) * 1);
+	background: linear-gradient(45deg, #b895ea, #899dfa, #4790ff);
 }
 
 #roomManager #singlePlayerGame {
@@ -102,6 +108,19 @@
 #roomManager #currentRoom {
 	font-size: 2em;
 	margin: 0;
+}
+
+#connectionStatus {
+	font-size: 2em;
+	width: fit-content;
+	padding: 6px 15px;
+	background: #ffc3c3;
+	margin: auto;
+	margin-top: 10px;
+}
+
+#connectionStatus.connected {
+	background-color: #4de83a;
 }
 
 #roomManager #playerCount {
