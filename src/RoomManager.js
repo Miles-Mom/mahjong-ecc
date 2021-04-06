@@ -487,6 +487,9 @@ function enterRoom() {
 	if (window.Capacitor) {
 	    joinRoomLink.href = "https://mahjong4friends.com" + queryParam
 	}
+
+	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
+
 	joinRoomLink.innerHTML = joinRoomLink.href
 	try {
 		let dpi = 4
