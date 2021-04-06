@@ -42,6 +42,11 @@ sudo tee -a /etc/apache2/sites-available/mahjong.conf > /dev/null << EOF
 		CustomLog ${APACHE_LOG_DIR}/mahjongaccess.log combined
 </VirtualHost>
 
+<Directory /var/www/>
+  AllowOverride all
+  Require all granted
+</Directory>
+
 LoadModule proxy_module modules/mod_proxy.so
 LoadModule proxy_http_module modules/mod_proxy_http.so
 LoadModule proxy_wstunnel_module modules/mod_proxy_wstunnel.so
