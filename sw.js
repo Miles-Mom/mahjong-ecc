@@ -14,7 +14,7 @@ self.addEventListener("activate", async function() {
 		registration.scope,
 		"packages/index.js",
 		"packages/index.css",
-		"assets/exit.svg",
+		"assets/edit.svg",
 		"assets/exit-full-screen.svg",
 		"assets/go-full-screen.svg",
 		"assets/tiles/joker.png",
