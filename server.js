@@ -42,7 +42,7 @@ websocketServer.on('connection', onConnection);
 
 function saveServerState(filePath) {
 	let outputPath = path.join(serverDataDirectory, filePath + ".server.json")
-	fs.writeFileSync(outputPath, stateManager.toJSON())
+	fs.writeFileSync(outputPath, globalThis.serverStateManager.toJSON())
 	return "State saved to " + outputPath
 }
 
