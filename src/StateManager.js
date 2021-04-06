@@ -1,3 +1,5 @@
+const Popups = require("./Popups.js")
+
 class StateManager {
 	constructor(websocketURL) {
 
@@ -43,12 +45,14 @@ class StateManager {
 			}
 		}).bind(this)
 
+		let popup;
 		this.createWebsocket = (async function createWebsocket() {
 			this.websocket = new WebSocket(websocketURL)
 			this.websocket.addEventListener("message", onmessage)
 
 			this.websocket.addEventListener("open", function() {
 				if (window.setConnectionStatus) {window.setConnectionStatus({connected: true})}
+				if (popup) {popup.dismiss();popup = null}
 			})
 
 			this.websocket.addEventListener("error", (async function(e) {
@@ -63,7 +67,15 @@ class StateManager {
 					//If not a normal closure, reestablish and sync.
 					await new Promise((resolve, reject) => {setTimeout(resolve, 1000)}) //1 second delay on reconnects.
 					this.createWebsocket()
-					this.getCurrentRoom() //Syncs state.
+					if (!stateManager.offlineMode) {
+						this.getCurrentRoom() //Syncs state.
+					}
+
+					if (stateManager.offlineMode === false) {
+						if (popup) {popup.dismiss();popup = null}
+						popup = new Popups.MessageBar("You Disconnected from the Server. Attempting to Reconnect...")
+						popup.show(8000)
+					}
 				}
 			}).bind(this))
 

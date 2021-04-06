@@ -117,6 +117,10 @@ class MessageBar {
 				bar.remove()
 			}, duration)
 		}
+
+		this.dismiss = function() {
+			bar.remove()
+		}
 	}
 }
 

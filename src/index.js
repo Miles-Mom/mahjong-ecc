@@ -68,8 +68,6 @@ sizes.forEach((size) => {
 
 const StateManager = require("./StateManager.js")
 
-
-
 //Mobile browsers use the touch API - desktop is drag and drop. We'll use a polyfill so we don't have to implement both.
 let mobile_drag_drop_polyfill = require("mobile-drag-drop").polyfill
 // optional import of scroll behaviour
