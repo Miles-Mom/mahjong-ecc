@@ -484,7 +484,7 @@ function enterRoom() {
 	notInRoomContainer.style.display = "none"
 	let queryParam = "#roomId=" + stateManager.inRoom
 	joinRoomLink.href = queryParam
-	if (window.isNative) {
+	if (window.Capacitor) {
 	    joinRoomLink.href = "https://mahjong4friends.com" + queryParam
 	}
 	joinRoomLink.innerHTML = joinRoomLink.href

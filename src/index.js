@@ -46,7 +46,7 @@ if (window.Capacitor) {
             //Using numeric comparison, so version codes can't have more than one decimal.
             if (parseFloat(currentVersion) < parseFloat(latestVersion)) {
                 const Popups = require("./Popups.js")
-                new Popups.Notification("App Update", "There is a Mahjong 4 Friends <a href='https://apps.apple.com/us/app/mahjong-4-friends/id1552704332' target='_blank'>app update</a>. Downloading it is recommended. You may experience minor issues if you do not update. ").show()
+                new Popups.Notification("App Update", "There is a Mahjong 4 Friends <a href='https://apps.apple.com/us/app/mahjong-4-friends/id1552704332' target='_blank'>app update</a>. Downloading it is recommended. You may issues if you do not update. ").show()
             }
         })())
     }
@@ -93,7 +93,7 @@ if (window.location.hostname === "127.0.0.1" || window.location.hostname.startsW
     url.port = 7591
 }
 let websocketURL = url.toString()
-if (window.isNative) {
+if (window.Capacitor) {
     websocketURL = "wss://mahjong4friends.com/node"
 }
 window.stateManager = new StateManager(websocketURL)
