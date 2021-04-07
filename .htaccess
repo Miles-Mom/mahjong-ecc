@@ -2,6 +2,6 @@
 Header add Access-Control-Allow-Origin "*"
 
 <FilesMatch "assetlinks.json">
-	#Testing to see if stale-while-revalidate works. 
-	Header set Cache-Control "max-age=10, public, stale-while-revalidate=400000"
+	#Testing to see if stale-while-revalidate works.
+	Header set Cache-Control "max-age=30, public, stale-while-revalidate=400000"
 </FilesMatch>

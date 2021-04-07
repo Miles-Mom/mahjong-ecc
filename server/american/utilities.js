@@ -94,8 +94,10 @@ function getTileDifferential(handOptions, hand) {
 
 				//Like in the 2021 card, with 2021 #3, it is possible for the same tile to be used in multiple different
 				//matches - therefore, we must verify that such a match exists in the target hand.
+				//TODO: 2021 #3 still has issues - we remove the kong from noFillJoker instead of canFillJoker,
+				//and we also would take a kong when possible, yet a kong makes the hand dead (need 1+ jokers in kong)
 
-				let itemValue = TileContainer.isValidMatch(handItem)
+				let itemValue = TileContainer.isValidMatch(handItem, true) //True to allow jokers when matching.
 
 				if (handOption.tiles.some((item) => {
 					if (!itemValue) {return true} //This exposure must be a bunch of individual tiles, like a 2019.
@@ -107,9 +109,12 @@ function getTileDifferential(handOptions, hand) {
 					//It exists! Now remove the tiles.
 
 					for (let i=0;i<handItem.length;i++) {
-						//These items may have jokers acting as something - if they are exposed, they are stuck unless we swap them.
-						//We treat the jokers like the tile it serves as - that way, if we get another copy, the new copy goes in notUsed
 						let tile = handItem[i]
+
+						if (tile.type === "joker") {
+							//The jokers in this match are acting as something. (It must be a pong, kong, etc, to have jokers)
+							tile = itemValue
+						}
 
 						if (!removeItem(tile)) {
 							diff = Infinity //The hand is impossible with current exposures.

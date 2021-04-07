@@ -177,7 +177,7 @@ function evaluateNextMove() {
 			//Our hand should only be dead if we start checking exposed tiles in the future.
 			//Otherwise, we should never make a move that would make us dead by our detection.
 			console.error("Bot hand appears to be dead. Initiating emergency pick. ")
-			throw "Dead" //Should not happen - if it does, analysis or bot is bugged. Or something else. 
+			throw "Hand is Dead"
 
 			if (!currentHand.contents.some((tile) => {
 				if (tile instanceof Tile) {
@@ -196,10 +196,12 @@ function evaluateNextMove() {
 		//Take another analysis with the additional tile.
 		let withTileAnalysis = utilities.getTileDifferential(cardToUse, currentHand.contents.concat(gameData.currentTurn.thrown))
 
-
 		//We should ALWAYS have one handOption available, given how we do not analyze discards,
 		//and an additional tile not in a match shouldn't remove any possibilities,
-		if (withTileAnalysis[0].handOption.concealed && withTileAnalysis[0].diff !== 0) {
+		if (!withTileAnalysis[0]) {
+			throw "Bot Hand is Dead"
+		}
+		else if (withTileAnalysis[0].handOption.concealed && withTileAnalysis[0].diff !== 0) {
 			//The top hand including this tile would be concealed, and it would not be for Mahjong.
 		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {
@@ -231,7 +233,6 @@ function evaluateNextMove() {
 								tilesToPlace.push(item)
 							}
 						})
-						console.log(tilesToPlace)
 
 						if (match.length > 2) {
 							currentHand.contents.forEach((item) => {
@@ -241,8 +242,6 @@ function evaluateNextMove() {
 									}
 								}
 							})
-
-							console.log(tilesToPlace)
 
 							if (tilesToPlace.length === match.length - 1) {
 								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown))
@@ -256,7 +255,7 @@ function evaluateNextMove() {
 								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), true)
 								return true
 							}
-							else {console.warn("Continuing Needs Mahjong")}
+							else {console.warn("Continuing Needs Mahjong")} //Can't really think of when this would trigger?
 						}
 						else {console.warn("Mahj only. Continuing. ")}
 					}

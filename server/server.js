@@ -32,7 +32,7 @@ function onConnection(websocket) {
 
 			console.log('received: ' + JSON.stringify(obj));
 
-			//Admin actions for triggering maintenance. 
+			//Admin actions for triggering maintenance.
 
 			//Example:
 			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in a few minutes to perform a server update. Feel free to continue playing - all games will be restored to where they were before the start of maintenance. ")
@@ -57,7 +57,7 @@ function onConnection(websocket) {
 				}
 
 				if (obj.type === "callServerSave") {
-					return websocket.send(getMessage("displayMessage", {title: "Server Save", body: saveServerState(obj.saveName)}, "error"))
+					return websocket.send(getMessage("displayMessage", {title: "Server Save", body: globalThis.saveServerState(obj.saveName)}, "error"))
 				}
 				else if (obj.type === "messageAllServerClients") {
 					globalThis.serverStateManager.getAllClients().forEach((client) => {

@@ -26,8 +26,10 @@ class Client {
 		this.message = (function message(type, message, status) {
 			if (this.suppressed) {return}
 
+
+			//Also disable room.logFile (approx line 135, startGame.js)
 			/*
-			//Also disable room.logFile (currently line 135, startGame.js)
+			if (!this.lastSent) {this.lastSent = Date.now()}
 			if (message?.isGameOver) {
 				if (this.getRoom().logFileSaveId === this.lastSaveId) {return}
 				else {this.lastSaveId = this.getRoom().logFileSaveId}
@@ -39,20 +41,19 @@ class Client {
 				this.tilesLeft.push(message.wallTiles.length ?? message.wallTiles) //TODO: Some zero might be mahjong, others wall empty. Apply that distinction.
 				this.total++
 
-				setTimeout((function() {
-					console.error(message.wallTiles.length, this.tilesLeft, this.total, this.tilesLeft.reduce((s, t) => s + t) / this.total)
-				}).bind(this))
+				console.error(message.wallTiles.length, this.tilesLeft, this.total, this.tilesLeft.reduce((s, t) => s + t) / this.total)
 
-				if (this.total > 1000) {require("process").exit("Bye!")}
+				if (this.total > 500) {require("process").exit("Bye!")}
 				setTimeout((function() {
 					this.endGame({})
 					this.startGame({type: "roomActionStartGame", settings: this.state.settings})
 				}).bind(this.getRoom()), 300)
 			}
 			else if (type === "roomActionState") {
-				//console.log("Move", message)
 				require("./Bot/handleMessage.js").call(this, {type, message, status})
-				if (Math.random() < 1 && this.getRoom().inGame) {return} //Suppress most messages.
+				 //Suppress most messages. 5 second delay between real messages, so you can actually load the game to analyze.
+				if (Math.random() < 1 && this.getRoom().inGame && Date.now() - this.lastSent < 5000) {return}
+				else {this.lastSent = Date.now()}
 			}*/
 
 			if (!this.websocket) {

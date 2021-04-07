@@ -28,6 +28,14 @@ const StateManager = require("./server/StateManager.js")
 
 globalThis.serverStateManager = new StateManager()
 globalThis.serverStateManager.serverDataDirectory = serverDataDirectory
+
+function saveServerState(filePath) {
+	let outputPath = path.join(serverDataDirectory, filePath + ".server.json")
+	fs.writeFileSync(outputPath, globalThis.serverStateManager.toJSON())
+	return "State saved to " + outputPath
+}
+globalThis.saveServerState = saveServerState
+
 if (process.argv.includes("--loadState")) {
 	let filePath = process.argv[process.argv.indexOf("--loadState") + 1]
 	if (filePath) {
@@ -40,11 +48,6 @@ if (process.argv.includes("--loadState")) {
 const onConnection = require("./server/server.js")
 websocketServer.on('connection', onConnection);
 
-function saveServerState(filePath) {
-	let outputPath = path.join(serverDataDirectory, filePath + ".server.json")
-	fs.writeFileSync(outputPath, globalThis.serverStateManager.toJSON())
-	return "State saved to " + outputPath
-}
 
 process.stdin.on("data", function(data) {
 	let command = data.toString()
