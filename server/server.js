@@ -1,11 +1,12 @@
 const Room = require("./Room.js")
 const Client = require("./Client.js")
 
-let path, fs;
+let path, fs, crypto;
 
 try {
 	path = require("path")
 	fs = require("fs")
+	crypto = require("crypto")
 }
 catch (e) {
 	console.warn(e)

@@ -2,7 +2,6 @@ const fs = require("fs")
 const path = require("path")
 const http = require("http")
 const WebSocket = require('ws');
-const crypto = require('crypto'); //For admin auth.
 
 const hostname = "0.0.0.0"
 const httpport = 7591
