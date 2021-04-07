@@ -7,11 +7,10 @@ function syncContents(syncContents, addAdditionsToPlacematIfOpen = false) {
 	let currentContentsStrings = [];
 	let syncContentsStrings = [];
 
-	console.log(this.contents.length)
 	this.contents.forEach((item) => {
 		currentContentsStrings.push(item.toJSON())
 	})
-	console.log(this.inPlacemat.length)
+
 	this.inPlacemat.forEach((item) => {
 		if (item.evicting) {return}
 		currentContentsStrings.push(item.toJSON())

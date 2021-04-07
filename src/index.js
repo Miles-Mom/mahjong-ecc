@@ -27,18 +27,17 @@ if (document.referrer && document.referrer.includes("android-app://com.mahjong4f
 if (window.Capacitor) {
     try {
         ;((async function() {
-            //This request needs to be a native request, because itunes isn't setting CORS headers properly for capacitor://localhost
-            let latestVersion = 1.2 //Last version without native request module.
-            try {
-                window.HTTP = require('@ionic-native/http').HTTP
+            //Alert for App Updates.
 
-                let req = await HTTP.get("https://itunes.apple.com/lookup?bundleId=com.mahjong4friends.twa", {}, {})
-                let res = await JSON.parse(req.data)
-                latestVersion = res.results[0].version
-            }
-            catch (e) {
-                console.warn("Potential Error fetching latest version code", e)
-            }
+            //iTunes is settings CORS headers, but those headers don't change when the CDN resends the content -
+            //if the CDN serves us, the CORS headers are for whatever origin last issued the request.
+
+            //Fail on Apple's part there. Time to start cache busting. Leave a nice note in case this leaves some weird stuff in logs.
+            //Apple takes up to a day to stop caching anyways, so this is probably a good thing from that perspective. 
+
+            let req = await fetch("https://itunes.apple.com/lookup?bundleId=com.mahjong4friends.twa&YourCDNDoesNotChangeCORSHeadersSoMustCacheBust" + Math.random())
+            let res = await req.json()
+            let latestVersion = res.results[0].version
 
             let deviceInfo = await window.Capacitor.Plugins.Device.getInfo()
             let currentVersion = deviceInfo.appVersion

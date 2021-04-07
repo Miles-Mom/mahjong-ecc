@@ -28,8 +28,7 @@
     "@bubblewrap/cli": "^1.5.0",
     "cordova-plugin-screen-orientation": "^3.0.2",
     "cordova-res": "^0.15.3",
-    "mobile-drag-drop": "^2.3.0-rc.2",
-    "webpack-cli": "^3.3.12"
+    "mobile-drag-drop": "^2.3.0-rc.2"
   },
   "dependencies": {
     "@babel/core": "^7.11.0",
@@ -38,16 +37,14 @@
     "@capacitor/cli": "^2.4.6",
     "@capacitor/core": "^2.4.6",
     "@capacitor/ios": "^2.4.6",
-    "@ionic-native/http": "^5.31.1",
     "babel-loader": "^8.1.0",
-    "cordova-plugin-advanced-http": "^3.1.0",
     "cordova-plugin-file": "^6.0.2",
     "core-js": "^3.6.5",
     "es6-promise-plugin": "^4.2.2",
     "ionic-plugin-deeplinks": "^1.0.22",
     "qrcode-generator": "^1.4.4",
     "seed-random": "^2.2.0",
-    "ws": "^7.3.1",
-    "webpack": "^5.30.0"
+    "webpack": "^5.30.0",
+    "ws": "^7.3.1"
   }
 }

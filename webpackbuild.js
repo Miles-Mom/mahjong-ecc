@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const TerserPlugin = require("terser-webpack-plugin");
 
 //Non-minified build is much faster, but accidental commits with it are possible. We'll build both.
 
@@ -16,6 +17,9 @@ let config = {
 		filename: "[name]",
 	},
 	optimization: {
+		minimizer: [new TerserPlugin({
+	      extractComments: false,
+	    })],
 		minimize: false //Consider using Uglify.js for minification.
 		//https://github.com/mishoo/UglifyJS2/blob/ae67a4985073dcdaa2788c86e576202923514e0d/README.md#uglify-fast-minify-mode
 	},

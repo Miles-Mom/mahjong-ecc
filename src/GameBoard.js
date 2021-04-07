@@ -445,7 +445,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	hintButton.style.display = ""
 	proceedButton.classList.add("shrinkForHintButton")
-	
+
 	if (message?.settings?.disableHints) {
 		hintButton.style.display = "none"
 		proceedButton.classList.remove("shrinkForHintButton")
@@ -479,7 +479,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let userWind;
 	clients.forEach((client) => {
 		if (client.hand) {
-			console.log("User hand stuff")
 			let tempHand = Hand.fromString(client.hand)
 			userHand.syncContents(tempHand.contents,  charlestonStart && message?.currentTurn?.charleston)
 			userWind = tempHand.wind
@@ -507,8 +506,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		compass.setDirectionForUserWind(userWind)
 		endGameButton.innerHTML = "End Game"
 	}
-	console.log(windOrder)
-	console.log(hands)
 
 	clients.forEach((client) => {
 		let windPosition = 0;

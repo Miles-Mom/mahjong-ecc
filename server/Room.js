@@ -636,7 +636,6 @@ class Room {
 				}
 
 				//Schedule the order. It's validity will be checked later.
-				console.log("Scheduling")
 				this.gameData.currentTurn.turnChoices[clientId] = placement
 				this.sendStateToClients()
 			}

@@ -117,7 +117,7 @@ joinOrCreateRoom.appendChild(singlePlayerGame)
 
 let offlineSinglePlayer = document.createElement("button")
 offlineSinglePlayer.id = "offlineSinglePlayer"
-offlineSinglePlayer.innerHTML = "Offline (Single Player - Beta)"
+offlineSinglePlayer.innerHTML = "Offline (Single Player)"
 offlineSinglePlayer.addEventListener("click", function() {
 	stateManager.offlineMode = true //Send to local server.
 

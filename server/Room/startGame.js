@@ -130,8 +130,9 @@ function startGame(obj) {
 		this.state.hostClientId = this.hostClientId
 		this.state.moves = []
 
+		this.logFileSaveId = this.roomId + "-" + Date.now()
 		if (fs) {
-			this.logFile = fs.createWriteStream(path.join(globalThis.serverStateManager.serverDataDirectory, this.roomId + "-" + Date.now() + ".room"))
+			this.logFile = fs.createWriteStream(path.join(globalThis.serverStateManager.serverDataDirectory, this.logFileSaveId + ".room"))
 		}
 
 		this.gameData.discardPile = []

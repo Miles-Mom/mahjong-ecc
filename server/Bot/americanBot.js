@@ -166,15 +166,18 @@ function evaluateNextMove() {
 	else if (gameData.currentTurn.userTurn === this.clientId) {
 		//We need to choose a discard tile.
 		//In American Mahjong, charleston starts automatically, so there is nothing needed to initiate charleston.
-		if (analysis[0].notUsed.length > 0) {
+		if (analysis[0]?.notUsed?.length > 0) {
 			let tile = getTopTiles(analysis, 1)
 			placeTiles(tile)
 		}
-		else if (analysis[0].diff === 0) {
+		else if (analysis[0]?.diff === 0) {
 			placeTiles([], true) //Go Mahjong
 		}
 		else {
-			console.error("Bot hand appears to be dead. Initiating emergency pick. ") //TODO: If we start checking exposed tiles in the future,
+			//Our hand should only be dead if we start checking exposed tiles in the future.
+			//Otherwise, we should never make a move that would make us dead by our detection.
+			console.error("Bot hand appears to be dead. Initiating emergency pick. ")
+			throw "Dead" //Should not happen - if it does, analysis or bot is bugged. Or something else. 
 
 			if (!currentHand.contents.some((tile) => {
 				if (tile instanceof Tile) {
@@ -192,17 +195,19 @@ function evaluateNextMove() {
 		//We need to evaluate if we pick up the thrown tile.
 		//Take another analysis with the additional tile.
 		let withTileAnalysis = utilities.getTileDifferential(cardToUse, currentHand.contents.concat(gameData.currentTurn.thrown))
-		console.log(withTileAnalysis)
-		console.log(withTileAnalysis[0])
 
-		//We should ALWAYS have one handOption available, given how we do not analyze discards.
+
+		//We should ALWAYS have one handOption available, given how we do not analyze discards,
+		//and an additional tile not in a match shouldn't remove any possibilities,
 		if (withTileAnalysis[0].handOption.concealed && withTileAnalysis[0].diff !== 0) {
 			//The top hand including this tile would be concealed, and it would not be for Mahjong.
 		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {
 				if (withTileAnalysisItem.diff < analysis[0].diff) {
-					console.log(withTileAnalysisItem)
 					//Claiming this tile would put us closer to Mahjong.
+
+					//TODO: There are still some issues with hands like 2021 #3, where we need a kong,
+					//but that kong must include at least one joker, or we make our hand dead. (As 5 total are needed, 1 single, 1 kong)
 
 					//Now we need to confirm we actually can claim it.
 					//Jokers will complicate this.
