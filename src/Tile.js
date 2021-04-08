@@ -34,6 +34,14 @@ class Tile {
 			return tileName
 		}).bind(this)
 
+		if (!this.value && (this.type === "flower" || this.type === "season")) {
+			//American Mahjongg - if no value set, pick random.
+			//This should only apply for card generated hands, etc, where the flower/season is generic.
+
+			//We might also want to randomize flower/season, just to be fancy.
+			this.value = Math.ceil(Math.random() * 4)
+		}
+
 		if (config.faceDown) {
 			this.faceDown = true
 			this.imageUrl = "assets/tiles/face-down.png"
@@ -53,6 +61,7 @@ class Tile {
 				//Since Chinese mahjong uses Pretty tiles, this is enough to check.
 				return true
 			}
+			if (tile.type === "joker" && tile.type === this.type) {return true} //Value no-op for jokers.
 			return false
 		}
 

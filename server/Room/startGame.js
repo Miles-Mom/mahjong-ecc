@@ -1,7 +1,7 @@
 const Wall = require("../../src/Wall.js")
 const Hand = require("../../src/Hand.js")
 
-const cards = require("../american/cards.js")
+const cards = require("../american/cards.js") //TODO: These can take a while to load, delaying the room creation (when startGame.js is imported)
 
 let fs;
 let path;
@@ -122,8 +122,6 @@ function startGame(obj) {
 
 			this.state.settings.americanBotDifficulty = Math.max(0, Number(obj?.settings?.americanBotDifficulty))
 			if (isNaN(this.state.settings.americanBotDifficulty)) {this.state.settings.americanBotDifficulty = 50}
-
-			console.log("Bot Difficulty: " + this.state.settings.americanBotDifficulty)
 		}
 		else {throw "Unknown gameStyle"}
 
@@ -132,6 +130,7 @@ function startGame(obj) {
 
 		this.logFileSaveId = this.roomId + "-" + Date.now()
 		if (fs) {
+			//Comment below line out for all bot game testing.
 			this.logFile = fs.createWriteStream(path.join(globalThis.serverStateManager.serverDataDirectory, this.logFileSaveId + ".room"))
 		}
 

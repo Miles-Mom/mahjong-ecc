@@ -247,10 +247,18 @@ function CardSelector() {
 	let select = document.createElement("select")
 	select.style.fontSize = "1.4em"
 
-	;["2021 National Mahjongg League", "2020 National Mahjongg League", "Other Card - Bots Use Random Card"].forEach((value, index) => {
+	let cardOptions = ["2021 National Mahjongg League", "2020 National Mahjongg League"]
+
+	if (window.location.href.includes("marv")) {
+		cardOptions.push({name: "2021 Marvelous (Partial Scoring & Suggestions)", value: "2021 Marvelous Mahjongg"})
+	}
+
+	cardOptions.push("Other Card - Bots Use Random Card")
+
+	cardOptions.forEach((value, index) => {
 		let option = document.createElement("option")
-		option.value = value
-		option.innerHTML = value
+		option.value = value.value || value
+		option.innerHTML = value.name || value
 		select.appendChild(option)
 	})
 

@@ -1,5 +1,6 @@
 const Tile = require("../../src/Tile.js")
 const TileContainer = require("../../src/TileContainer.js")
+const Wall = require("../../src/Wall.js")
 
 //https://stackoverflow.com/a/30551462/10965456
 function permutations(xs) {
@@ -34,6 +35,11 @@ var suitDragonConversion = {
 function getTileDifferential(handOptions, hand) {
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
+
+	if (handOptions.combos) {
+		//A card was passed, instead of an array.
+		handOptions = handOptions.combos
+	}
 
 	let results = []
 
@@ -234,7 +240,7 @@ function getTileDifferential(handOptions, hand) {
 }
 
 
-function outputExpander(combos) {
+function outputExpander(combos, options = {}) {
 	console.time("Expand")
 	let output = []
 
@@ -258,20 +264,26 @@ function outputExpander(combos) {
 
 		//Duplicate checking slows stuff down quite a bit - it is a one time cost, but if it is too slow, it might need
 		//to be optimized even more, to only run on specific combos, etc.
+		if (!combo.skipDuplicateRemoval) {
+			let uniqueCombos = []
+			for (let i=0;i<comboOutput.length;i++) {
+				let combo = comboOutput[i]
+				if (getTileDifferential(uniqueCombos, combo.tiles)[0]?.diff === 0) {
+					duplicatesRemoved++
+				}
+				else {
+					uniqueCombos.push(combo)
+				}
 
-		let uniqueCombos = []
-		for (let i=0;i<comboOutput.length;i++) {
-			let combo = comboOutput[i]
-
-			if (getTileDifferential(uniqueCombos, combo.tiles)[0]?.diff === 0) {
-				duplicatesRemoved++
 			}
-			else {
-				uniqueCombos.push(combo)
-			}
+			output.push(...uniqueCombos)
 		}
-
-		output.push(...uniqueCombos)
+		else {
+			//Marvelous hands easily blow the duplicate remover to pieces. It's quadratic.
+			console.warn("Skipping Duplicate Removal")
+			delete combo.skipDuplicateRemoval
+			output.push(...comboOutput)
+		}
 	})
 	console.timeEnd("Expand")
 	if (duplicatesRemoved) {
@@ -280,5 +292,7 @@ function outputExpander(combos) {
 	return output
 }
 
+let nonJokerTiles = Wall.getNonPrettyTiles(1)
+nonJokerTiles.push(new Tile({type: "flower"}))
 
-module.exports = {createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+module.exports = {nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}

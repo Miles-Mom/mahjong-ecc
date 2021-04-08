@@ -29,8 +29,6 @@ function evaluateNextMove() {
 		}, this.clientId)
 	}).bind(this)
 
-	let cardToUse = gameData.card
-
 	//Bot difficulty settings.
 	//While the max settings really aren't broken - bots can still get locked into impossible hands (dead tiles),
 	//and aren't aware of what others are doing, that is counterbalanced by their superhuman analysis abilities.
@@ -49,18 +47,37 @@ function evaluateNextMove() {
 
 	botDifficultyConfig.averageAnalyzedCharlestonTiles = 3 - (1.5 * (100 - botDifficultyConfig.botDifficulty) / 100) //Bots will be forced to randomly charleston some tiles.
 
-	//Reduce bot card proportion.
-	if (botDifficultyConfig.cardPercentage < 100) {
-		let filterSeedRandom = SeedRandom(this.clientId + room.state.seed) //We need the same random tiles every time, even reloading from state.
-		cardToUse = cardToUse.filter((item, index) => {
-			if (!index) {return true} //Make sure there is always at least one combo - zero combos would crash.
-			return (filterSeedRandom() * 100) < botDifficultyConfig.cardPercentage
-		})
+
+
+	//We'll only filter the card once, and store it for later.
+	//This is extremely cheap normally, but can take a few milliseconds with tons of combos (Marvelous hands)
+	//Easy small speedup. 
+	let cardToUse = this._cardToUse
+	let seed = this.clientId + room.state.seed //We need the same random tiles every time, even reloading from state.
+	if (!cardToUse || cardToUse.seed !== seed) {
+		cardToUse = gameData.card.combos
+
+		let maxHands = 1000 //Marvelous has a huge number of hands. We'll clamp the bots down.
+		botDifficultyConfig.cardPercentage = botDifficultyConfig.cardPercentage / Math.max(1, cardToUse.length / maxHands)
+
+		//Reduce bot card proportion.
+		if (botDifficultyConfig.cardPercentage < 100) {
+			let filterSeedRandom = SeedRandom(seed)
+			cardToUse = cardToUse.filter((item, index) => {
+				if (!index) {return true} //Make sure there is always at least one combo - zero combos would crash.
+				return (filterSeedRandom() * 100) < botDifficultyConfig.cardPercentage
+			})
+		}
+
+		cardToUse.seed = seed
+		this._cardToUse = cardToUse
 	}
 
-	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + Math.random())
 
+	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + Math.random())
+console.time("Analyze")
 	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
+	console.timeEnd("Analyze")
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
 	function getTopTiles(analysis, maxAmount, noJokers = false) {

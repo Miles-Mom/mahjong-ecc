@@ -1,9 +1,11 @@
 let cards = {
 	"2020 National Mahjongg League": require("./2020.js"),
-	"2021 National Mahjongg League": require("./2021.js")
+	"2021 National Mahjongg League": require("./2021.js"),
 }
 
 let cardNames = Object.keys(cards)
+
+cards["2021 Marvelous Mahjongg"] =  require("./marvelous2021.js")
 
 function getRandomCard() {
 	return cards[cardNames[Math.floor(Math.random() * cardNames.length)]]
