@@ -51,12 +51,13 @@ function evaluateNextMove() {
 
 	//We'll only filter the card once, and store it for later.
 	//This is extremely cheap normally, but can take a few milliseconds with tons of combos (Marvelous hands)
-	//Easy small speedup. 
+	//Easy small speedup.
 	let cardToUse = this._cardToUse
 	let seed = this.clientId + room.state.seed //We need the same random tiles every time, even reloading from state.
 	if (!cardToUse || cardToUse.seed !== seed) {
-		cardToUse = gameData.card.combos
 
+		cardToUse = gameData.card.combos
+		
 		let maxHands = 1000 //Marvelous has a huge number of hands. We'll clamp the bots down.
 		botDifficultyConfig.cardPercentage = botDifficultyConfig.cardPercentage / Math.max(1, cardToUse.length / maxHands)
 

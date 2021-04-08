@@ -16,4 +16,7 @@ output = output.concat(require("./2021/singles-and-pairs.js"))
 output = utilities.outputExpander(output)
 
 console.log(output)
-module.exports = output
+module.exports = {
+	combos: output,
+	name: "2021 National Mahjongg League"
+}
