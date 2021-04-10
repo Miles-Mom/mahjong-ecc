@@ -405,13 +405,15 @@ class Room {
 			try {
 				placement = Hand.convertStringsToTiles(obj.message)
 
-				//The very first throw will determine if we charleston or not. Throwing one tile will start the game, throwing 3 will initiate charleston.
 				if (this.state.settings.charleston.length > 0 && this.gameData.charleston === undefined && placement.length !== 1 && hand.wind === "east") {
 					if (placement.length === 3) {
 						this.gameData.charleston = {
 							directions: this.state.settings.charleston.slice(0)
 						}
-						this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0][0].direction + ", then hit Proceed. " , "success")
+
+						let direction = this.gameData.charleston.directions[0][0].direction
+						this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + direction + ", then hit Proceed. " , "success")
+						this.messageAll([clientId], "roomActionGameplayAlert", "The first Charleston pass is " + direction , "success")
 					}
 					else if (!obj.mahjong) {
 						return client.message(obj.type, "The very first throw must be either 1 tile, to initiate the game, or 3 tiles, to initiate charleston. ", "error")

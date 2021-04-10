@@ -51,8 +51,11 @@ class Notification {
 }
 
 let previousMessagePromise = new Promise((resolve) =>{resolve()});
-let counter = 0
-let maxCounter = 0 //We want to adjust to the average load somewhat.
+
+let counters = {
+	messages: 0,
+	optionalMessages: 0
+}
 
 class BlocklessAlert {
 	constructor(messageText, duration = 3200, config = {}) {
@@ -67,27 +70,34 @@ class BlocklessAlert {
 
 		let onStart = previousMessagePromise
 		previousMessagePromise = new Promise((resolve) => {
-			counter++
-			maxCounter = Math.max(counter, maxCounter)
+			counters.messages++
+			counters.optionalMessages += !!config.optional
+
+			function undoCounters(optionalTriggered = false) {
+				counters.messages--
+				counters.optionalMessages -= !!config.optional - optionalTriggered
+			}
+
 			previousMessagePromise.then(() => {
-				const triggerLevel = 6
-				if (maxCounter > triggerLevel && config.optional) {
+				const triggerLevel = 2 //More than 2, so 3 optional messages waiting. Once this threshold is exceeded once,
+				//we don't display more optional messages.
+				if (counters.optionalMessages > triggerLevel && config.optional) {
 					//Skip
 					console.log("Skipping optional message due to time. ")
-					counter--
+					undoCounters(true)
 					return resolve()
 				}
 
-				console.log(counter + " messages remaining to be posted. ")
+				console.log(`${counters.messages} messages remaining to be posted (${counters.optionalMessages} optional)`)
 				//Speed up alerts to eat through queue - if maxCounter exceeds triggerLevel, message volume is reduced, so we stop factoring in maxCounter
-				let newDuration = duration / Math.min(2.5, (Math.max(1, ((counter + ((maxCounter > triggerLevel)?counter:maxCounter)) / 2) ** 0.7) || 1)) //2.5x speedup max.
+				let newDuration = duration / Math.min(2.5, (Math.max(1, counters ** 0.7) || 1)) //2.5x speedup max.
 				console.log(`Adjusting duration from ${duration} to ${newDuration}`)
 				duration = newDuration
 				cover.style.animation = "fadeInAndOut " + duration + "ms ease-in"
 				cover.style.display = ""
 				setTimeout(function() {
 					cover.remove()
-					counter--
+					undoCounters()
 					resolve()
 				}, duration)
 			})

@@ -228,13 +228,16 @@ function startGame(obj) {
 			this.logFile.write(JSON.stringify(this.state) + "\n")
 		}
 
-		//Message East about how to start.
+		let direction = this.state.settings.charleston[0][0].direction
+
 		if (this.state.settings.gameStyle === "chinese") {
-			this.setInstructions(this.gameData.currentTurn.userTurn, "As East wind, you get to make the first throw. Select one tile and press Proceed.\n\nTo initiate a Charleston, select 3 tiles and hit Proceed.")
+			//Message East about how to start.
+			this.setInstructions(this.gameData.currentTurn.userTurn, `As East wind, you get to make the first throw. Select one tile and press Proceed.\n\nTo initiate a Charleston (first pass ${direction}), select 3 tiles and hit Proceed.`)
 			this.setAllInstructions([this.gameData.currentTurn.userTurn], "Waiting on East Wind to make a play. ")
 		}
 		else if (this.state.settings.gameStyle === "american") {
-			this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + this.gameData.charleston.directions[0][0].direction + ", then hit Proceed. " , "success")
+			this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + direction + ", then hit Proceed. " , "success")
+			this.messageAll([], "roomActionGameplayAlert", "The first Charleston pass is " + direction , "success")
 		}
 
 		this.sendStateToClients()
