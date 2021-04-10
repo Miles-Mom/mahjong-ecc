@@ -33,7 +33,7 @@ if (window.Capacitor) {
             //if the CDN serves us, the CORS headers are for whatever origin last issued the request.
 
             //Fail on Apple's part there. Time to start cache busting. Leave a nice note in case this leaves some weird stuff in logs.
-            //Apple takes up to a day to stop caching anyways, so this is probably a good thing from that perspective. 
+            //Apple takes up to a day to stop caching anyways, so this is probably a good thing from that perspective.
 
             let req = await fetch("https://itunes.apple.com/lookup?bundleId=com.mahjong4friends.twa&YourCDNDoesNotChangeCORSHeadersSoMustCacheBust" + Math.random())
             let res = await req.json()
@@ -68,15 +68,7 @@ sizes.forEach((size) => {
 const StateManager = require("./StateManager.js")
 
 //Mobile browsers use the touch API - desktop is drag and drop. We'll use a polyfill so we don't have to implement both.
-let mobile_drag_drop_polyfill = require("mobile-drag-drop").polyfill
-// optional import of scroll behaviour
-import {scrollBehaviourDragImageTranslateOverride} from "mobile-drag-drop/scroll-behaviour";
-// options are optional ;)
-mobile_drag_drop_polyfill({
-    // use this to make use of the scroll behaviour
-    dragImageTranslateOverride: scrollBehaviourDragImageTranslateOverride
-});
-
+require("drag-drop-touch")
 
 
 let url = new URL(window.location.origin + window.location.pathname)
