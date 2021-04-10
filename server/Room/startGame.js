@@ -1,7 +1,7 @@
 const Wall = require("../../src/Wall.js")
 const Hand = require("../../src/Hand.js")
 
-const cards = require("../american/cards.js") //TODO: These can take a while to load, delaying the room creation (when startGame.js is imported)
+const cards = require("../american/cards.js")
 
 let fs;
 let path;
