@@ -283,7 +283,7 @@ window.stateManager.onGameplayAlert = function(obj) {
 	}
 	else if (obj.message.includes("mahjong")) {
 		sound.volume = 1
-		urls = ["tiles-dropping-table.mp3"]
+		//urls = ["tiles-dropping-table.mp3"]
 	}
 
 	if (urls.length > 0) {
