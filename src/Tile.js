@@ -76,7 +76,8 @@ class Tile {
 
 	getImageUrl(options = {}) {
 		//TODO: Fix all callers so that this mess isn't needed.
-		options.americanTiles = options.americanTiles ?? globalThis.document?.querySelector("#gameBoard")?.classList?.contains("american")
+		//Remove Capacitor specific code when asset updates go out. 
+		options.americanTiles = options.americanTiles ?? (globalThis.document?.querySelector("#gameBoard")?.classList?.contains("american") && !globalThis.Capacitor)
 
 		if (this.faceDown) {
 			return "assets/tiles/face-down.png"
