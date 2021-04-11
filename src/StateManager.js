@@ -93,12 +93,12 @@ class StateManager {
 
 			let fakeSocket = new FakeWebsocket()
 
+			const ServerStateManager = require("../server/StateManager.js")
+			globalThis.serverStateManager = new ServerStateManager()
+
 			this.sendMessage = async function(message) {
 				if (this.offlineMode) {
 					if (!this.localServer) {
-						const ServerStateManager = require("../server/StateManager.js")
-						globalThis.serverStateManager = new ServerStateManager()
-
 						this.localServer = require("../server/server.js")
 						console.log(this.localServer)
 

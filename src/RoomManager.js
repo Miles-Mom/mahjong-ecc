@@ -1,8 +1,8 @@
 const Popups = require("./Popups.js")
 const SettingsMenu = require("./RoomManager/SettingsMenu.js")
+const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
 
 const QRCode = require("qrcode-generator")
-
 //Allow the user to join and create rooms.
 let roomManager = document.createElement("div")
 roomManager.id = "roomManager"
@@ -121,8 +121,7 @@ offlineSinglePlayer.innerHTML = "Offline (Single Player)"
 offlineSinglePlayer.addEventListener("click", function() {
 	stateManager.offlineMode = true //Send to local server.
 
-	let roomId = roomIdInput.value.trim() || ("sp-" + Math.floor(Math.random() * 1e10)) //We need to stop depending on randomness - collisions are possible.
-	//Websockets guarantees delivery order, so we should be safe here, unless any calls error.
+	let roomId = "Offline"
 
 	let nickname = nicknameInput.value || "Player 1"
 
@@ -134,6 +133,84 @@ offlineSinglePlayer.addEventListener("click", function() {
 joinOrCreateRoom.appendChild(offlineSinglePlayer)
 
 
+//Save offline games.
+const saveKey = "save0.server.json"
+
+let previouslySaved; //When we have zero rooms, we need to detect if the room was closed, or if the page was reloaded.
+async function saveOfflineGame() {
+	if (serverStateManager.getAllRooms().length === 0) {
+		//Since previouslySaved is cleared on reloads, if it is set, we were currently writing the saved game.
+		//If that game no longer exists (room closed), there is no game we should save.
+		if (previouslySaved) {
+			console.error("Deleting")
+			await deleteSave(saveKey)
+		}
+		return //No rooms to save.
+	}
+
+	let toSave = serverStateManager.toJSON()
+	let currentlySaved = await readSave(saveKey)
+
+	previouslySaved = true //Set previouslySaved. The save was written while this tab was open.
+
+	if (toSave !== currentlySaved) {
+		console.log(`Saving Game (${toSave.length} characters)`)
+		await writeSave(saveKey, toSave)
+	}
+}
+
+try {
+	//Shouldn't error.
+	readSave(saveKey).then((res) => {
+		if (res) {
+			//Alert the user about the save.
+
+			let elem = new DocumentFragment() //We want the dismiss button to be on the same line, so use a fake container.
+			let popup;
+
+			let p = document.createElement("p")
+			p.innerHTML = "You have a saved offline game - you can resume it now if you would like. If you start another offline game, the save will be overwritten. "
+			p.id = "messageText"
+			elem.appendChild(p)
+
+			let resumeButton = document.createElement("button")
+			resumeButton.innerHTML = "Resume"
+			resumeButton.addEventListener("click", function() {
+				serverStateManager.init(res)
+				window.clientId = serverStateManager.getAllClients().find((client) => {return !client.isBot}).clientId
+				stateManager.offlineMode = true
+				stateManager.getCurrentRoom()
+				popup.dismiss()
+			})
+			resumeButton.id = "resumeSaveNowButton"
+			elem.appendChild(resumeButton)
+
+			let deleteButton = document.createElement("button")
+			deleteButton.innerHTML = "Delete"
+			deleteButton.addEventListener("click", function() {
+				deleteSave(saveKey)
+				popup.dismiss()
+			})
+			deleteButton.id = "deleteSaveNowButton"
+			elem.appendChild(deleteButton)
+
+			popup = new Popups.Notification("Saved Offline Game", elem)
+			popup.show()
+		}
+	})
+}
+catch (e) {
+	console.error(e)
+}
+
+setInterval(saveOfflineGame, 8000) //Save game relatively frequently
+window.onbeforeunload = function() {saveOfflineGame()} //This is async, so it might not actually finish.
+if (window.Capacitor) {
+	//Save when app is closed, etc.
+	Capacitor?.Plugins?.App?.addListener("appStateChange", function(event) {
+		if (event.isActive === false) {saveOfflineGame()}
+	})
+}
 
 let connectionStatus = document.createElement("p")
 connectionStatus.id = "connectionStatus"
@@ -151,15 +228,6 @@ window.setConnectionStatus({connected: false})
 
 
 //Inform user to use landscape.
-if (window.Capacitor) {
-    try {
-		//This shouldn't be needed on iOS when build settings are set to landscape.
-		//This doesn't run on the Android TWA anyways.
-        window.screen.orientation.lock('landscape');
-    }
-    catch (e) {console.error(e)}
-}
-
 let screenRotationAlert = document.createElement("p")
 screenRotationAlert.id = "screenRotationAlert"
 screenRotationAlert.innerHTML = "Rotating your screen to Landscape mode is recommended. "

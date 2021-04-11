@@ -73,6 +73,14 @@ class StateManager {
 			return arr
 		}
 
+		this.getAllRooms = function() {
+			let arr = []
+			for (let roomId in rooms) {
+				arr.push(rooms[roomId])
+			}
+			return arr
+		}
+
 		this.init = (function fromJSON(str) {
 			//Load clients and rooms from a saved state.
 			console.time("Initializing server state... ")

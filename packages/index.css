@@ -199,10 +199,23 @@
 	padding: 10px;
 }
 
-#roomManager #startGameButton, #roomManager #addBotButton  {
+#roomManager #startGameButton, #roomManager #addBotButton, #deleteSaveNowButton  {
 	margin-left: 1vw;
 	margin-left: calc(var(--vw) * 1);
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
+}
+
+#deleteSaveNowButton, #resumeSaveNowButton {
+	border-radius: 250000px;
+	font-size: 2em;
+	margin: 0;
+	margin-top: 2vh;
+	margin-top: calc(var(--vh) * 2);
+	margin-bottom: 1.5vh;
+	margin-bottom: calc(var(--vh) * 1.5);
+	border: 2px solid black;
+	padding: 5px 20px 5px 20px;
+	margin-top: 0.8em;
 }
 
 #closeRoomButton {
@@ -211,7 +224,7 @@
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 
-#leaveRoomButton {
+#leaveRoomButton, #resumeSaveNowButton {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
@@ -832,8 +845,8 @@ This means that something using bottom is off the page - hence we must use top. 
 #errorPopup {
 	min-height: 25vh;
 	min-height: calc(var(--vh) * 25);
-	max-width: 50vw;
-	max-width: calc(var(--vw) * 50);
+	max-width: 60vw;
+	max-width: calc(var(--vw) * 60);
 	background-color: #368a36;
 	border: 5px solid #ffbd17;
 	border-radius: 1vh;
