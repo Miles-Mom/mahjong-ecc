@@ -297,7 +297,7 @@ class Hand {
 					elem.className = classForFirst
 				}
 				if (tile) {
-					elem.src = tile.imageUrl
+					elem.src = tile.getImageUrl()
 					elem.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 					elem.draggable = true //Is this even neccessary? It wasn't set earlier, yet it was working fine. Do browsers just assume or something?
 					//Both work. Using i is faster and simpler.
@@ -389,7 +389,7 @@ class Hand {
 				let drawTile = (function(tile, indexInGroup) {
 
 					let elem = document.createElement("img")
-					elem.src = tile.imageUrl
+					elem.src = tile.getImageUrl()
 					elem.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 
 					//Group tiles in a match together.

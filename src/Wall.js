@@ -101,7 +101,7 @@ class Wall {
 		for (let i=0;i<tilesRemaining.length;i++) {
 			let tile = tilesRemaining[i]
 			let tileImage = document.createElement("img")
-			tileImage.src = tile.imageUrl
+			tileImage.src = tile.getImageUrl()
 			tileImage.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 			div.appendChild(tileImage)
 		}

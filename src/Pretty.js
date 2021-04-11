@@ -23,8 +23,6 @@ class Pretty {
 
 		this.getPoints = function() {return 4}
 
-		this.imageUrl = "assets/tiles/" + config.seasonOrFlower + "s" + "/" + config.value + ".png"
-
 		this.toJSON = (function() {
 			let obj = {}
 			obj.class = "Pretty"
@@ -37,6 +35,10 @@ class Pretty {
 		this.isSequence = false
 		this.isPongOrKong = false
 		this.isPair = false
+	}
+
+	getImageUrl() {
+		return "assets/tiles/" + this.seasonOrFlower + "s" + "/" + this.value + ".png"
 	}
 
 	static fromJSON(str) {

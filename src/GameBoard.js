@@ -238,7 +238,7 @@ hintButton.addEventListener("click", function() {
 
 						item.handOption.tiles.flat().forEach((tile) => {
 							let img = document.createElement("img")
-							img.src = tile.imageUrl
+							img.src = tile.getImageUrl()
 							tileRow.appendChild(img)
 						})
 					}
@@ -383,7 +383,7 @@ function renderDiscardPile(tileStrings) {
 
 	tiles.forEach((tile) => {
 		let img = document.createElement("img")
-		img.src = tile.imageUrl
+		img.src = tile.getImageUrl()
 		img.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
 		discardPile.appendChild(img)
 	})

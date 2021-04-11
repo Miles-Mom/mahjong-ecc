@@ -42,16 +42,7 @@ class Tile {
 			this.value = Math.ceil(Math.random() * 4)
 		}
 
-		if (config.faceDown) {
-			this.faceDown = true
-			this.imageUrl = "assets/tiles/face-down.png"
-		}
-		else if (this.type === "joker") {
-			this.imageUrl = "assets/tiles/joker.png"
-		}
-		else {
-			this.imageUrl = "assets/tiles/" + this.type + "s" + "/" + this.value + ".png"
-		}
+		if (config.faceDown) {this.faceDown = true}
 
 		this.matches = function(tile) {
 			if (this.faceDown) {return false}
@@ -81,6 +72,24 @@ class Tile {
 		this.isSequence = false
 		this.isPongOrKong = false
 		this.isPair = false
+	}
+
+	getImageUrl(options = {}) {
+		//TODO: Fix all callers so that this mess isn't needed.
+		options.americanTiles = options.americanTiles ?? globalThis.document?.querySelector("#gameBoard")?.classList?.contains("american")
+
+		if (this.faceDown) {
+			return "assets/tiles/face-down.png"
+		}
+		else if (this.type === "joker") {
+		 	return "assets/tiles/joker.png"
+		}
+		else if ((this.type === "bamboo" || this.type === "circle") && options.americanTiles) {
+			return "assets/tiles/" + this.type + "s" + "/numbered/" + this.value + ".png"
+		}
+		else {
+			return "assets/tiles/" + this.type + "s" + "/" + this.value + ".png"
+		}
 	}
 
 	static fromJSON(str) {
