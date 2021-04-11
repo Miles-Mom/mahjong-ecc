@@ -12,33 +12,7 @@ self.addEventListener("activate", async function() {
 	let cache = await openCache();
 	let arr = [
 		registration.scope,
-		"packages/index.js",
-		"packages/index.css",
-		"assets/edit.svg",
-		"assets/exit-full-screen.svg",
-		"assets/go-full-screen.svg",
-		"assets/tiles/joker.png",
-	]
-
-	;"north east south west".split(" ").forEach((wind) => {
-		arr.push(`assets/compass-${wind}.svg`)
-		arr.push(`assets/tiles/winds/${wind}.png`)
-	})
-
-	;[1,2,3,4].forEach((num) => {
-		arr.push(`assets/tiles/flowers/${num}.png`)
-		arr.push(`assets/tiles/seasons/${num}.png`)
-	})
-
-	;"red green white".split(" ").forEach((dragon) => {
-		arr.push(`assets/tiles/dragons/${dragon}.png`)
-	})
-
-	;[1,2,3,4,5,6,7,8,9].forEach((num) => {
-		arr.push(`assets/tiles/circles/${num}.png`)
-		arr.push(`assets/tiles/bamboos/${num}.png`)
-		arr.push(`assets/tiles/characters/${num}.png`)
-	})
+	].concat(require("./neededOfflineAssets.js"))
 
 	arr.forEach((item) => {
 		cache.add(item).catch(function(e) {console.log(item, e)})
