@@ -118,8 +118,11 @@ function setVisibleAreaHeight() {
 
 window.addEventListener('resize', setVisibleAreaHeight)
 window.addEventListener('orientationchange', setVisibleAreaHeight)
-
 setVisibleAreaHeight()
+
+//We are probably being hit by a race condition where the JavaScript can load before the CSS,
+//causing resizing to be intermittent. This should fix it.
+document.body.addEventListener("load", setVisibleAreaHeight)
 
 //Otherwise Safari will scroll the page when the user drags tiles.
 //It's possible that we need feature detection for passive listeners, as it may be misinterpreted by older browsers, however I currently observe no side effects.
