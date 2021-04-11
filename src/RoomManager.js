@@ -138,7 +138,7 @@ const saveKey = "save0.server.json"
 
 let previouslySaved; //When we have zero rooms, we need to detect if the room was closed, or if the page was reloaded.
 async function saveOfflineGame() {
-	if (serverStateManager.getAllRooms().length === 0) {
+	if (serverStateManager.getAllRoomIds().length === 0) {
 		//Since previouslySaved is cleared on reloads, if it is set, we were currently writing the saved game.
 		//If that game no longer exists (room closed), there is no game we should save.
 		if (previouslySaved) {

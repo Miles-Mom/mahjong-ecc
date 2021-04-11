@@ -14,8 +14,10 @@ catch (e) {console.warn(e)}
 class StateManager {
 	constructor(rooms = {}, clients = {}) {
 
+		let originalRooms = rooms
+
 		//We'll trim all leading and trailing spaces for roomIds.
-		rooms = new Proxy(rooms, {
+		rooms = new Proxy(originalRooms, {
 			get: function(obj, prop) {
 				//Since values are trimmed when added, this is unless we loaded from a saved state.
 				let value = obj[prop]
@@ -73,12 +75,8 @@ class StateManager {
 			return arr
 		}
 
-		this.getAllRooms = function() {
-			let arr = []
-			for (let roomId in rooms) {
-				arr.push(rooms[roomId])
-			}
-			return arr
+		this.getAllRoomIds = function() {
+			return Object.keys(originalRooms)
 		}
 
 		this.init = (function fromJSON(str) {

@@ -86,15 +86,16 @@ class StateManager {
 				}
 
 				send(message) {
-					console.log(message)
 					onmessage({data: message})
 				}
 			}
 
 			let fakeSocket = new FakeWebsocket()
 
-			const ServerStateManager = require("../server/StateManager.js")
-			globalThis.serverStateManager = new ServerStateManager()
+			if (!globalThis.serverStateManager) {
+				const ServerStateManager = require("../server/StateManager.js")
+				globalThis.serverStateManager = new ServerStateManager()
+			}
 
 			this.sendMessage = async function(message) {
 				if (this.offlineMode) {
