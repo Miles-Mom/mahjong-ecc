@@ -18,6 +18,8 @@ for (let i=1;i<=1;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 }
+await new Promise((r,j) => {setTimeout(r,50)});
+
 
 for (let i=2;i<=2;i++) {
 	url = "/assets/tiles/circles/" + i + ".png"
@@ -36,6 +38,7 @@ for (let i=2;i<=2;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 }
+await new Promise((r,j) => {setTimeout(r,50)});
 
 for (let i=3;i<=3;i++) {
 	url = "/assets/tiles/circles/" + i + ".png"
@@ -54,6 +57,7 @@ for (let i=3;i<=3;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 }
+await new Promise((r,j) => {setTimeout(r,50)});
 
 
 for (let i=4;i<=5;i++) {
@@ -73,6 +77,7 @@ for (let i=4;i<=5;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 }
+await new Promise((r,j) => {setTimeout(r,50)});
 
 [6].forEach((i) => {
 	url = "/assets/tiles/circles/" + i + ".png"
@@ -91,6 +96,7 @@ for (let i=4;i<=5;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 for (let i=7;i<=7;i++) {
 	url = "/assets/tiles/circles/" + i + ".png"
@@ -109,6 +115,7 @@ for (let i=7;i<=7;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 }
+await new Promise((r,j) => {setTimeout(r,50)});
 
 [8].forEach((i) => {
 	url = "/assets/tiles/circles/" + i + ".png"
@@ -127,6 +134,7 @@ for (let i=7;i<=7;i++) {
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 ;[9].forEach((i) => {
 	url = "/assets/tiles/circles/" + i + ".png"

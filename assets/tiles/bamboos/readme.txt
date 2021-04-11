@@ -1,3 +1,4 @@
+//basic-1 designed by me
 //These files have been edited to include numbers. The code used to edit them is below: (You might need to run it twice if the images don't load properly the first time)
 
 ;[1].forEach((i) => {
@@ -17,6 +18,7 @@
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 
 ;[2,3,7].forEach((i) => {
@@ -36,6 +38,7 @@
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 
 ;[4,5].forEach((i) => {
@@ -55,6 +58,7 @@
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 
 ;[6].forEach((i) => {
@@ -74,6 +78,7 @@
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 
 ;[8].forEach((i) => {
@@ -93,6 +98,7 @@
 	img.src = url
 	//document.body.appendChild(img)
 })
+await new Promise((r,j) => {setTimeout(r,50)});
 
 ;[9].forEach((i) => {
 	url = "/assets/tiles/bamboos/" + i + ".png"

@@ -75,17 +75,11 @@ class Tile {
 	}
 
 	getImageUrl(options = {}) {
-		//TODO: Fix all callers so that this mess isn't needed.
-		options.americanTiles = options.americanTiles ?? globalThis.document?.querySelector("#gameBoard")?.classList?.contains("american")
-
 		if (this.faceDown) {
 			return "assets/tiles/face-down.png"
 		}
 		else if (this.type === "joker") {
 		 	return "assets/tiles/joker.png"
-		}
-		else if ((this.type === "bamboo" || this.type === "circle") && options.americanTiles) {
-			return "assets/tiles/" + this.type + "s" + "/numbered/" + this.value + ".png"
 		}
 		else {
 			return "assets/tiles/" + this.type + "s" + "/" + this.value + ".png"
