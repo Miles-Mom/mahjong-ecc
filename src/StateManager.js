@@ -55,10 +55,6 @@ class StateManager {
 				if (popup) {popup.dismiss();popup = null}
 			})
 
-			this.websocket.addEventListener("error", (async function(e) {
-				console.error(e)
-			}).bind(this))
-
 			//Error events also result in a close, so we end up with exponential blowup if reconnect on both. We'll only reconnect on close.
 			this.websocket.addEventListener("close", (async function(e) {
 				if (window.setConnectionStatus) {window.setConnectionStatus({connected: false})}

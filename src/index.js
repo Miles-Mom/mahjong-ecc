@@ -102,18 +102,23 @@ let gameBoard = require("./GameBoard.js")
 //See https://nicolas-hoizey.com/articles/2015/02/18/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers/
 //We will use CSS variables to counteract this bug.
 function setVisibleAreaHeight() {
-	document.documentElement.style.setProperty('--vh', `${window.innerHeight/100}px`)
-    document.documentElement.style.setProperty('--vw', `${window.innerWidth/100}px`)
+
+
+    let width = document.documentElement.clientWidth
+    let height = document.documentElement.clientHeight
+
+	document.documentElement.style.setProperty('--vh', `${height/100}px`)
+    document.documentElement.style.setProperty('--vw', `${width/100}px`)
 
     //Add some margin to handle the notch.
 
     let pxLeft = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sal"))
     pxLeft -= 10 //Ignore the small safe area decrease caused by rounded corners.
-    document.documentElement.style.setProperty('--shiftPercentageLeft', `${Math.max(0, pxLeft/window.innerWidth)}`)
+    document.documentElement.style.setProperty('--shiftPercentageLeft', `${Math.max(0, pxLeft/width)}`)
 
     let pxRight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sar"))
     pxRight -= 10 //Ignore the small safe area decrease caused by rounded corners.
-    document.documentElement.style.setProperty('--shiftPercentageRight', `${Math.max(0, pxRight/window.innerWidth)}`)
+    document.documentElement.style.setProperty('--shiftPercentageRight', `${Math.max(0, pxRight/width)}`)
 }
 
 window.addEventListener('resize', setVisibleAreaHeight)
