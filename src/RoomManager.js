@@ -272,9 +272,7 @@ leaveRoomButton.id = "leaveRoomButton"
 inRoomContainer.appendChild(leaveRoomButton)
 
 leaveRoomButton.addEventListener("click", function() {
-	if (confirm("Are you sure you want to leave this room?")) {
-		window.stateManager.leaveRoom(window.stateManager.roomId)
-	}
+	window.stateManager.leaveRoom(window.stateManager.roomId)
 })
 
 
@@ -285,9 +283,7 @@ closeRoomButton.style.display = "none"
 inRoomContainer.appendChild(closeRoomButton)
 
 closeRoomButton.addEventListener("click", function() {
-	if (confirm("Are you sure you want to close this room?")) {
-		window.stateManager.closeRoom(window.stateManager.roomId)
-	}
+	window.stateManager.closeRoom(window.stateManager.roomId)
 })
 
 let startGameButton = document.createElement("button")
@@ -656,9 +652,11 @@ window.stateManager.onCreateRoom = function(obj) {
 
 window.stateManager.onLeaveRoom = function(obj) {
 	exitRoom()
-	//We left the room. Change clientId.
-	const StateManager = require("./StateManager.js")
-	StateManager.setClientId(StateManager.createNewClientId())
+	if (stateManager.offlineMode) {
+		//If we resumed an offline game from an online game, go back to the online game.
+		stateManager.offlineMode = false
+		stateManager.getCurrentRoom()
+	}
 	//Don't show somebody that they left the room. Just exit.
 	//Don't show the host that they closed the room. Just exit.
 	if (obj.message !== "You closed the room. " && obj.message !== "You left the room. ") {

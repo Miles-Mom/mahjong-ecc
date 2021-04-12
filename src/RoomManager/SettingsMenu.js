@@ -247,11 +247,14 @@ function CardSelector() {
 	let select = document.createElement("select")
 	select.style.fontSize = "1.4em"
 
-	let cardOptions = ["2021 National Mahjongg League", "2020 National Mahjongg League"]
-
-	if (window.location.href.includes("marv")) {
-		cardOptions.push({name: "2021 Marvelous (Partial Scoring & Suggestions)", value: "2021 Marvelous Mahjongg"})
-	}
+	let cardOptions = [
+		"2021 National Mahjongg League",
+		"2020 National Mahjongg League",
+		{
+			name: "2021 Marvelous (Partial Scoring & Suggestions)",
+			value: "2021 Marvelous Mahjongg"
+		}
+	]
 
 	cardOptions.push("Other Card - Bots Use Random Card")
 
