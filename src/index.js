@@ -104,8 +104,8 @@ let gameBoard = require("./GameBoard.js")
 function setVisibleAreaHeight() {
 
 
-    let width = document.documentElement.clientWidth
-    let height = document.documentElement.clientHeight
+    let width = Math.max(document.documentElement.clientWidth, window.innerWidth)
+    let height = Math.max(document.documentElement.clientHeight, window.innerHeight)
 
 	document.documentElement.style.setProperty('--vh', `${height/100}px`)
     document.documentElement.style.setProperty('--vw', `${width/100}px`)

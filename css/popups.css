@@ -7,6 +7,9 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding-left: calc(100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-right: calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 #errorPopup {
@@ -79,6 +82,9 @@
 	z-index: 98;
 	opacity: 0;
 	pointer-events: none;
+	padding-left: calc(100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-right: calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 .blocklessAlertCover p {

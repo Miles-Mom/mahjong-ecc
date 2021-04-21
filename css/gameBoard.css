@@ -16,6 +16,8 @@
 	width: 10.52vh;
 	height: 100vh;
 	background-color: #4c3329;
+	padding-left: calc(1px + 100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 #rightHand {
@@ -26,6 +28,8 @@
 	width: 10.52vh;
 	height: 100vh;
 	background-color: #4c3329;
+	transform: translateX(calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling)));
+	padding-right: calc(1px + 100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
 }
 
 @keyframes goToCorrectLocation {

@@ -7,16 +7,18 @@
 	z-index: 10;
 	background-color: #26a221;
 	text-align: center;
+	padding-left: calc(100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-left: calc(calc(var(--vw) * 100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-right: calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	padding-right: calc(calc(var(--vw) * 100) * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
+	transform: translateX(calc(calc(var(--vw) * -100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 #roomManager #mahjongHeading, #roomManager #fourFriendsHeading {
 	font-size: 3em;
 	color: #ffbd17;
 	display: inline-block;
-}
-
-#roomManager #heading {
-	background-color: #24911e;
 }
 
 #roomManager #fourFriendsHeading {
@@ -102,7 +104,6 @@
 #roomManager #inRoomContainer {
 	min-height: 40vh;
 	min-height: calc(var(--vh) * 40);
-	background-color: #2aab24;
 }
 
 #roomManager #currentRoom {
@@ -307,6 +308,10 @@
 	height: 100vh;
 	height: calc(var(--vh) * 100);
 	background-color: #4c3329;
+	padding-left: calc(1px + 100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-left: calc(1px + calc(var(--vw) * 100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
+	transform: translateX(calc(calc(var(--vw) * -100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 #rightHand {
@@ -320,6 +325,10 @@
 	height: 100vh;
 	height: calc(var(--vh) * 100);
 	background-color: #4c3329;
+	transform: translateX(calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling)));
+	transform: translateX(calc(calc(var(--vw) * 100) * var(--shiftPercentageRight) * var(--counterTranslationScaling)));
+	padding-right: calc(1px + 100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	padding-right: calc(1px + calc(var(--vw) * 100) * var(--shiftPercentageRight) * var(--counterTranslationScaling));
 }
 
 @keyframes goToCorrectLocation {
@@ -840,6 +849,12 @@ This means that something using bottom is off the page - hence we must use top. 
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding-left: calc(100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-left: calc(calc(var(--vw) * 100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-right: calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	padding-right: calc(calc(var(--vw) * 100) * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
+	transform: translateX(calc(calc(var(--vw) * -100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 #errorPopup {
@@ -921,6 +936,12 @@ This means that something using bottom is off the page - hence we must use top. 
 	z-index: 98;
 	opacity: 0;
 	pointer-events: none;
+	padding-left: calc(100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-left: calc(calc(var(--vw) * 100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-right: calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	padding-right: calc(calc(var(--vw) * 100) * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
+	transform: translateX(calc(calc(var(--vw) * -100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 .blocklessAlertCover p {
@@ -962,6 +983,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	--sal: env(safe-area-inset-left);
 
 	--negativeMarginMultiplier: 1; /*This is adjusted for tile grouping*/
+	--counterTranslationScaling: calc(1/(1 - var(--shiftPercentageRight) - var(--shiftPercentageLeft))); /*Translate is processed AFTER scale, so we must multiply the translation to counteract*/
 }
 
 html, body {
@@ -971,14 +993,7 @@ html, body {
 	height: calc(var(--vh) * 100);
 	margin: 0;
 	padding: 0;
-}
-
-html {
 	background-color: black;
-}
-
-body {
-	background-color: white;
 }
 
 body {
@@ -986,6 +1001,6 @@ body {
 	/*We need to translate slightly further, as the scale reduces the size from both sides evenly. */
 	/*Translate is processed AFTER scale, so we must multiply the translation to counteract*/
 	transform: scaleX(calc(1 - var(--shiftPercentageRight) - var(--shiftPercentageLeft)))
-		translateX(calc(50vw * (var(--shiftPercentageLeft) - var(--shiftPercentageRight)) / (1 - var(--shiftPercentageRight) - var(--shiftPercentageLeft))));
-		translateX(calc(calc(var(--vw) * 50) * (var(--shiftPercentageLeft) - var(--shiftPercentageRight)) / (1 - var(--shiftPercentageRight) - var(--shiftPercentageLeft))));
+		translateX(calc(50vw * (var(--shiftPercentageLeft) - var(--shiftPercentageRight)) * var(--counterTranslationScaling)));
+		translateX(calc(calc(var(--vw) * 50) * (var(--shiftPercentageLeft) - var(--shiftPercentageRight)) * var(--counterTranslationScaling)));
 }

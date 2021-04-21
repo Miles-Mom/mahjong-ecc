@@ -5,16 +5,15 @@
 	z-index: 10;
 	background-color: #26a221;
 	text-align: center;
+	padding-left: calc(100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling));
+	padding-right: calc(100vw * var(--shiftPercentageRight) * var(--counterTranslationScaling));
+	transform: translateX(calc(-100vw * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
 #roomManager #mahjongHeading, #roomManager #fourFriendsHeading {
 	font-size: 3em;
 	color: #ffbd17;
 	display: inline-block;
-}
-
-#roomManager #heading {
-	background-color: #24911e;
 }
 
 #roomManager #fourFriendsHeading {
@@ -91,7 +90,6 @@
 
 #roomManager #inRoomContainer {
 	min-height: 40vh;
-	background-color: #2aab24;
 }
 
 #roomManager #currentRoom {
