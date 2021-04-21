@@ -110,15 +110,19 @@ function setVisibleAreaHeight() {
 	document.documentElement.style.setProperty('--vh', `${height/100}px`)
     document.documentElement.style.setProperty('--vw', `${width/100}px`)
 
-    //Add some margin to handle the notch.
+    //Configure notch for screenshotting. params.get returns null, which evaluates to zero, if the param is not defined.
+    let params = new URLSearchParams(window.location.hash.slice(1))
+    let minLeft = Number(params.get("shiftPercentageLeft"))
+    let minRight = Number(params.get("shiftPercentageRight"))
 
+    //Add some margin to handle the notch. 
     let pxLeft = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sal"))
     pxLeft -= 10 //Ignore the small safe area decrease caused by rounded corners.
-    document.documentElement.style.setProperty('--shiftPercentageLeft', `${Math.max(0, pxLeft/width)}`)
+    document.documentElement.style.setProperty('--shiftPercentageLeft', `${Math.max(minLeft, pxLeft/width)}`)
 
     let pxRight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sar"))
     pxRight -= 10 //Ignore the small safe area decrease caused by rounded corners.
-    document.documentElement.style.setProperty('--shiftPercentageRight', `${Math.max(0, pxRight/width)}`)
+    document.documentElement.style.setProperty('--shiftPercentageRight', `${Math.max(minRight, pxRight/width)}`)
 }
 
 window.addEventListener('resize', setVisibleAreaHeight)
