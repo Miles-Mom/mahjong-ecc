@@ -108,12 +108,9 @@ class Wall {
 
 		if (tilesRemaining.length === 0) {return} //Don't write "0" to the screen.
 		//Write the number of tiles that remain.
-		let digits = String(tilesRemaining.length).split("")
-		digits.forEach((digit) => {
-			let elem = document.createElement("p")
-			elem.innerHTML = digit
-			div.appendChild(elem)
-		})
+		let elem = document.createElement("p")
+		elem.innerHTML = tilesRemaining.length
+		div.appendChild(elem)
 	}
 
 	static fromJSON(str) {
