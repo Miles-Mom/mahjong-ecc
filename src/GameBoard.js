@@ -354,7 +354,6 @@ newGameNoLobbyButton.addEventListener("click", function() {
 
 let goMahjongButton = document.createElement("button")
 goMahjongButton.id = "goMahjongButton"
-goMahjongButton.innerHTML = "Mahjong"
 gameBoard.appendChild(goMahjongButton)
 
 goMahjongButton.addEventListener("click", function() {
@@ -430,6 +429,7 @@ let showSpectating = true
 //game start in american mahjong from filling the placemat with the first 3 tiles in the hand (as the entire hand changed)
 let charlestonStart = false;
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
+	goMahjongButton.innerHTML = "Mahjong"
 	if (window.stateManager.isHost) {
 		newGameNoLobbyButton.style.display = ""
 	}
@@ -585,7 +585,13 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	}
 	else {proceedButton.classList.remove("scaleAnimation")}
 
-	if (message.isGameOver) {proceedButton.innerHTML = "View Scores"}
+	if (message.isGameOver) {
+		//Enable proceedButton and goMahjongButton as View Scores
+		proceedButton.innerHTML = "View Scores"
+		proceedButton.disabled = ""
+		goMahjongButton.innerHTML = "Scores"
+		goMahjongButton.disabled = ""
+	}
 })
 
 proceedButton.addEventListener("click", function() {

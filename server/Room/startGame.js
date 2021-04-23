@@ -30,10 +30,10 @@ function startGame(obj) {
 		this.state.settings.charleston = [
 			[
 				{
-					direction: "across",
+					direction: "right",
 				},
 				{
-					direction: "right",
+					direction: "across",
 				},
 				{
 					direction: "left",

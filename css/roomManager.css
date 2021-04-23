@@ -54,31 +54,35 @@
 	margin-top: 2vh;
 }
 
-#joinRoom, #createRoom, #singlePlayerGame, #offlineSinglePlayer{
+#joinRoom, #createRoom, #singlePlayerGame, #offlineSinglePlayer, #uploadSaveButton {
 	min-width: 150px;
 	border-radius: 3.5vh;
 	font-size: 2em;
 	padding: 10px;
 }
 
-#joinRoom, #offlineSinglePlayer {
+#joinRoom {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
+#uploadSaveButton {
+	background: linear-gradient(45deg, #ffe304, #ffcb00, #ffafa0);
+}
+
+#uploadSaveButton, #offlineSinglePlayer {
+	margin-top: 5px;
+}
+
 #roomManager #createRoom {
-	margin-left: 1vw;
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#offlineSinglePlayer {
-	margin-left: 1vw;
-	background: linear-gradient(45deg, #b895ea, #899dfa, #4790ff);
+#offlineSinglePlayer, #downloadSaveNowButton {
+	background: linear-gradient(45deg, #ccadf8, #96a6ee, #8fc6f6);
 }
 
 #roomManager #singlePlayerGame {
 	background: linear-gradient(45deg, #d18e5f, #dfd31d, #779fff);
-	min-width: 300px;
-	margin-top: 10px;
 }
 
 
@@ -178,18 +182,17 @@
 	cursor: pointer;
 }
 
-#roomManager #startGameButton, #roomManager #addBotButton, #roomManager #leaveRoomButton, #roomManager #closeRoomButton {
+#startGameButton, #addBotButton, #leaveRoomButton, #closeRoomButton {
 	font-size: 1.5em;
 	border-radius: 250000px;
 	padding: 10px;
 }
 
 #roomManager #startGameButton, #roomManager #addBotButton, #deleteSaveNowButton  {
-	margin-left: 1vw;
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#deleteSaveNowButton, #resumeSaveNowButton {
+#deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton {
 	border-radius: 250000px;
 	font-size: 2em;
 	margin: 0;
@@ -201,7 +204,6 @@
 }
 
 #closeRoomButton {
-	margin-left: 1vw;
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 

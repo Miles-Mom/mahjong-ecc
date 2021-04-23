@@ -430,7 +430,10 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					try {
 						hand.remove(this.gameData.currentTurn.thrown)
 					}
-					catch (e) {console.log("Unable to remove. Appears Naked Mahjong Successful")}
+					catch (e) {
+						console.log("Unable to remove. Appears Naked Mahjong Successful")
+						utilized = true
+					}
 				}
 				else {
 					console.error("No known operation to perform when processing turn. ")

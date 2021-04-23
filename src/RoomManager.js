@@ -95,7 +95,6 @@ createRoom.addEventListener("click", function() {
 })
 joinOrCreateRoom.appendChild(createRoom)
 
-joinOrCreateRoom.appendChild(document.createElement("br"))
 let singlePlayerGame = document.createElement("button")
 singlePlayerGame.id = "singlePlayerGame"
 singlePlayerGame.innerHTML = "Single Player"
@@ -114,6 +113,8 @@ singlePlayerGame.addEventListener("click", function() {
 })
 joinOrCreateRoom.appendChild(singlePlayerGame)
 
+let br = document.createElement("br")
+joinOrCreateRoom.appendChild(br)
 
 let offlineSinglePlayer = document.createElement("button")
 offlineSinglePlayer.id = "offlineSinglePlayer"
@@ -132,6 +133,48 @@ offlineSinglePlayer.addEventListener("click", function() {
 })
 joinOrCreateRoom.appendChild(offlineSinglePlayer)
 
+function resumeOfflineGame(saveText) {
+	serverStateManager.init(saveText)
+	//Set our clientId to the offline mode clientId. Note that clientId should be static now.
+	window.clientId = serverStateManager.getAllClients().find((client) => {return !client.isBot}).clientId
+	stateManager.offlineMode = true
+	stateManager.getCurrentRoom()
+}
+
+let uploadSaveButton = document.createElement("button")
+uploadSaveButton.innerHTML = "Upload Offline Save"
+uploadSaveButton.id = "uploadSaveButton"
+joinOrCreateRoom.appendChild(uploadSaveButton)
+
+//Dummy file input.
+let fileInput = document.createElement("input")
+fileInput.style.display = "none"
+fileInput.type = "file"
+fileInput.accept = "application/json"
+fileInput.addEventListener("change", async function() {
+	let file = fileInput.files[0]
+	if (file) {
+		let reader = new FileReader()
+		await new Promise((r, j) => {
+			reader.onload = r
+			reader.onerror = j
+			reader.readAsText(file)
+		})
+		let text = reader.result
+		try {
+			resumeOfflineGame(text)
+		}
+		catch (e) {
+			console.error(e)
+			alert("Error loading save. Please make sure you selected the correct file. ")
+		}
+	}
+})
+document.body.appendChild(fileInput)
+
+uploadSaveButton.addEventListener("click", function() {
+	fileInput.click()
+})
 
 //Save offline games.
 const saveKey = "save0.server.json"
@@ -164,26 +207,42 @@ try {
 	readSave(saveKey).then((res) => {
 		if (res) {
 			//Alert the user about the save.
-
 			let elem = new DocumentFragment() //We want the dismiss button to be on the same line, so use a fake container.
 			let popup;
 
 			let p = document.createElement("p")
-			p.innerHTML = "You have a saved offline game - you can resume it now if you would like. If you start another offline game, the save will be overwritten. "
+			p.innerHTML = "If you start another <strong><i>offline</i></strong> game, your save will be overwritten. You can optionally download this save to share with other devices or play later. "
 			p.id = "messageText"
 			elem.appendChild(p)
 
 			let resumeButton = document.createElement("button")
 			resumeButton.innerHTML = "Resume"
 			resumeButton.addEventListener("click", function() {
-				serverStateManager.init(res)
-				window.clientId = serverStateManager.getAllClients().find((client) => {return !client.isBot}).clientId
-				stateManager.offlineMode = true
-				stateManager.getCurrentRoom()
+				resumeOfflineGame(res)
 				popup.dismiss()
 			})
 			resumeButton.id = "resumeSaveNowButton"
 			elem.appendChild(resumeButton)
+
+			let downloadButton = document.createElement("button")
+			downloadButton.innerHTML = "Download"
+			downloadButton.addEventListener("click", function() {
+				var elem = document.createElement('a');
+			    elem.download = "mahjong4friends.server.json"
+
+				let blob = new Blob([res], {type: "application/json"})
+				let url = URL.createObjectURL(blob)
+
+				elem.href = url
+
+			    document.body.appendChild(elem);
+			    elem.click();
+			    elem.remove()
+
+				URL.revokeObjectURL(url)
+			})
+			downloadButton.id = "downloadSaveNowButton"
+			elem.appendChild(downloadButton)
 
 			let deleteButton = document.createElement("button")
 			deleteButton.innerHTML = "Delete"
@@ -264,7 +323,6 @@ inRoomContainer.appendChild(playerCount)
 let playerView = document.createElement("div")
 playerView.id = "playerView"
 inRoomContainer.appendChild(playerView)
-
 
 let leaveRoomButton = document.createElement("button")
 leaveRoomButton.innerHTML = "Leave Room"
