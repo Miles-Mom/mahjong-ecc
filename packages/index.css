@@ -210,13 +210,12 @@
 	border-radius: 250000px;
 	font-size: 2em;
 	margin: 0;
-	margin-top: 2vh;
-	margin-top: calc(var(--vh) * 2);
+	margin-top: 1vh;
+	margin-top: calc(var(--vh) * 1);
 	margin-bottom: 1.5vh;
 	margin-bottom: calc(var(--vh) * 1.5);
 	border: 2px solid black;
 	padding: 5px 20px 5px 20px;
-	margin-top: 0.8em;
 }
 
 #closeRoomButton {
@@ -674,13 +673,14 @@ This means that something using bottom is off the page - hence we must use top. 
 	color: black;
 	display: inline-block;
 	width: 100%;
-	max-height: 35vh;
-	max-height: calc(var(--vh) * 35);
+	max-height: 40vh;
+	max-height: calc(var(--vh) * 40);
 	overflow: scroll;
 }
 
 .suggestedHandsTable img {
-	max-width: calc(100% / 14);
+	width: calc(100% / 14);
+	max-width: 64px; /*Don't let it get too huge. */
 	padding-bottom: 10px;
 	border-bottom: 1px solid black;
 }
@@ -858,8 +858,8 @@ This means that something using bottom is off the page - hence we must use top. 
 #errorPopup {
 	min-height: 25vh;
 	min-height: calc(var(--vh) * 25);
-	max-width: 60vw;
-	max-width: calc(var(--vw) * 60);
+	max-width: 72vw;
+	max-width: calc(var(--vw) * 72);
 	background-color: #368a36;
 	border: 5px solid #ffbd17;
 	border-radius: 1vh;
@@ -887,14 +887,13 @@ This means that something using bottom is off the page - hence we must use top. 
 #errorPopup #dismissButton {
 	border-radius: 250000px;
 	font-size: 2em;
-	margin-top: 2vh;
-	margin-top: calc(var(--vh) * 2);
+	margin-top: 1vh;
+	margin-top: calc(var(--vh) * 1);
 	margin-bottom: 1.5vh;
 	margin-bottom: calc(var(--vh) * 1.5);
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 	border: 2px solid black;
 	padding: 5px 20px 5px 20px;
-	margin-top: 0.8em;
 }
 
 

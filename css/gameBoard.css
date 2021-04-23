@@ -305,12 +305,13 @@ This means that something using bottom is off the page - hence we must use top. 
 	color: black;
 	display: inline-block;
 	width: 100%;
-	max-height: 35vh;
+	max-height: 40vh;
 	overflow: scroll;
 }
 
 .suggestedHandsTable img {
-	max-width: calc(100% / 14);
+	width: calc(100% / 14);
+	max-width: 64px; /*Don't let it get too huge. */
 	padding-bottom: 10px;
 	border-bottom: 1px solid black;
 }

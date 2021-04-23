@@ -14,7 +14,7 @@
 
 #errorPopup {
 	min-height: 25vh;
-	max-width: 60vw;
+	max-width: 72vw;
 	background-color: #368a36;
 	border: 5px solid #ffbd17;
 	border-radius: 1vh;
@@ -40,12 +40,11 @@
 #errorPopup #dismissButton {
 	border-radius: 250000px;
 	font-size: 2em;
-	margin-top: 2vh;
+	margin-top: 1vh;
 	margin-bottom: 1.5vh;
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 	border: 2px solid black;
 	padding: 5px 20px 5px 20px;
-	margin-top: 0.8em;
 }
 
 
