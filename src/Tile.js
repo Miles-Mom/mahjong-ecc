@@ -45,7 +45,7 @@ class Tile {
 		if (config.faceDown) {this.faceDown = true}
 
 		this.matches = function(tile) {
-			if (this.faceDown) {return false}
+			if (this.faceDown || !tile) {return false}
 			if (tile instanceof Tile && tile.type === this.type && tile.value === this.value) {return true}
 			if (["flower", "season"].includes(this.type) && ["flower", "season"].includes(tile.type)) {
 				//For American Mahjong - all flowers and seasons are identical.

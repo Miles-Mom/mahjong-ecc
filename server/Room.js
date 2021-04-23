@@ -141,18 +141,22 @@ class Room {
 			}
 		}
 
-		this.goMahjong = (function goMahjong(clientId, drewOwnTile = false, override = false) {
+		this.goMahjong = (function goMahjong(clientId, options = {}) {
+			//options.drewOwnTile
+			//options.override
+			//options.tileToExpose - passed to isMahjong
+
 			//First, verify the user can go mahjong.
 			let client = globalThis.serverStateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
 			//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
 			//the scoring will now be correct, not incorrect)
-			let isMahjong = hand.isMahjong(override?4:this.state.settings.maximumSequences)
+			let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {tileToExpose: options.tileToExpose})
 			if (isMahjong instanceof Hand) {
 				hand.contents = isMahjong.contents //Autocomplete the mahjong.
 			}
 
-			if (!isMahjong && !override && this.state.settings.gameStyle !== "american") {
+			if (!isMahjong && !options.override && this.state.settings.gameStyle !== "american") {
 				return client.message("roomActionPlaceTiles", "Unable to go mahjong with this hand. If you play by different rules, try again to override. ", "error")
 			}
 
@@ -169,7 +173,7 @@ class Room {
 			this.setAllInstructions([this.hostClientId], client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 			this.setInstructions(this.hostClientId, client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 
-			this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, drewOwnTile)}, "success")
+			this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options.drewOwnTile)}, "success")
 			this.sendStateToClients()
 		}).bind(this)
 
@@ -595,7 +599,7 @@ class Room {
 					}
 				}
 				else if (obj.mahjong) {
-					this.goMahjong(clientId, !this.gameData.previousTurnPickedUp, placerMahjongOverride)
+					this.goMahjong(clientId, {drewOwnTile: !this.gameData.previousTurnPickedUp, override: placerMahjongOverride})
 					if (globalThis.serverStateManager.getClient(clientId).isBot) {
 						console.log("Bots are not allowed to obtain override power")
 					}
