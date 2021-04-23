@@ -86,7 +86,7 @@ class Room {
 		this.addBot = (require("./Room/addBot.js")).bind(this)
 
 		let lastSummary;
-		this.getSummary = (function(mahjongClientId, drewOwnTile) {
+		this.getSummary = (function(mahjongClientId, options = {}) {
 			let summary = []
 
 			for (let id in this.gameData.playerHands) {
@@ -112,7 +112,7 @@ class Room {
 						})
 					}
 					else {
-						points = hand.score({isMahjong: true, drewOwnTile})
+						points = hand.score({isMahjong: true, drewOwnTile: options.drewOwnTile})
 					}
 				}
 				if (this.state.settings.gameStyle === "chinese") {
@@ -120,10 +120,13 @@ class Room {
 				}
 
 				if (id === mahjongClientId) {
-					item += " (Mahjong)" + (drewOwnTile?" - Drew Mahjong Tile":"")
+					item += " (Mahjong)" + (options.drewOwnTile?" - Drew Mahjong Tile":"") + (options.thrownTile?" - Mahjong with " + options.thrownTile.getTileName(this.state.settings.gameStyle):"")
 					summary.splice(0, 0, item) //Insert at the start.
 				}
 				else {
+					if (id === this.gameData.currentTurn.userTurn) {
+						item += " (Threw Last Tile)"
+					}
 					summary.push(item)
 				}
 			}
@@ -142,16 +145,17 @@ class Room {
 		}
 
 		this.goMahjong = (function goMahjong(clientId, options = {}) {
+			console.error(options)
 			//options.drewOwnTile
 			//options.override
-			//options.tileToExpose - passed to isMahjong
+			//options.thrownTile
 
 			//First, verify the user can go mahjong.
 			let client = globalThis.serverStateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
 			//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
 			//the scoring will now be correct, not incorrect)
-			let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {tileToExpose: options.tileToExpose})
+			let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: options.thrownTile})
 			if (isMahjong instanceof Hand) {
 				hand.contents = isMahjong.contents //Autocomplete the mahjong.
 			}
@@ -173,7 +177,7 @@ class Room {
 			this.setAllInstructions([this.hostClientId], client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 			this.setInstructions(this.hostClientId, client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 
-			this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options.drewOwnTile)}, "success")
+			this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options)}, "success")
 			this.sendStateToClients()
 		}).bind(this)
 

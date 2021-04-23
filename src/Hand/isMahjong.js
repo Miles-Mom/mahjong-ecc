@@ -6,7 +6,8 @@ const Tile = require("../Tile.js")
 const Hand = require("../Hand.js")
 
 function isMahjong(maximumSequences = 4, options = {}) {
-	//options.tileToExpose:
+	//options.thrownTile:
+	console.log(options)
 	//Tile whose match/sequence must be exposed.
 	//Used for autocompleting mahjongs, to make sure we don't give the wrong point valuation.
 
@@ -126,13 +127,13 @@ function isMahjong(maximumSequences = 4, options = {}) {
 	//TODO: Now that we support stacked sequences, we could have multiple valid winning hands. We should handle this, and return all valid hands.
 	//Either that, or pick highest value.
 
-	//TODO: Also, right now options.tileToExpose matching might apply to a pair/pong when it could be applied to a sequence.
+	//TODO: Also, right now options.thrownTile matching might apply to a pair/pong when it could be applied to a sequence.
 	combos:
 	for (let i=0;i<combinations.length;i++) {
 		let combo = combinations[i]
 		let localTestHand = new Hand()
 		localTestHand.contents = testingHand.contents.slice(0)
-		let stillNeedToExposeTile = !!options.tileToExpose
+		let stillNeedToExposeTile = !!options.thrownTile
 		for (let i=0;i<combo.length;i++) {
 			let item = combo[i]
 			if (item instanceof Tile) {
@@ -140,7 +141,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 					continue combos; //Continue outer loop
 				}
 				let match = new Match({type: item.type, value: item.value, exposed: false, amount: 3})
-				if (stillNeedToExposeTile && item.matches(options.tileToExpose)) {
+				if (stillNeedToExposeTile && item.matches(options.thrownTile)) {
 					match.exposed = true
 					stillNeedToExposeTile = false
 				}
@@ -150,7 +151,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 				if (!localTestHand.removeTilesFromHand(item)) {
 					continue combos; //Continue outer loop
 				}
-				if (stillNeedToExposeTile && item.tiles.some((tile) => {return tile.matches(options.tileToExpose)})) {
+				if (stillNeedToExposeTile && item.tiles.some((tile) => {return tile.matches(options.thrownTile)})) {
 					item.exposed = true
 					stillNeedToExposeTile = false
 				}
@@ -165,7 +166,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 		else {
 			if (pairs === 0) {
 				let match = new Match({type: tile.type, value: tile.value, exposed: false, amount: 2})
-				if (stillNeedToExposeTile && tile.matches(options.tileToExpose)) {
+				if (stillNeedToExposeTile && tile.matches(options.thrownTile)) {
 					match.exposed = true
 					stillNeedToExposeTile = false
 				}
