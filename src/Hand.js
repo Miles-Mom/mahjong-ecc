@@ -335,11 +335,6 @@ class Hand {
 		this.renderTiles = (function(displayElevated) {
 			if (!this.handToRender) {throw "Unable to render hand. You must pass config.handToRender to the constructor. "}
 
-			while (this.handToRender.firstChild) {this.handToRender.firstChild.remove()} //Delete everything currently rendered in the hand.
-			if (this.handForExposed) {
-				while (this.handForExposed.firstChild) {this.handForExposed.firstChild.remove()} //Delete everything currently rendered in the hand.
-			}
-
 			if (typeof displayElevated === "string") {displayElevated = Tile.fromJSON(displayElevated)}
 
 			let unexposedTiles = []
@@ -385,6 +380,21 @@ class Hand {
 			}
 
 			let drawTiles = (function drawTiles(tiles, type, applyColorShading = false) {
+				//TODO: If flashing remains a problem, instead of deleting the entire hand and redrawing, try replacing each item individually.
+				//Ideally we wouldn't replace if not needed, but that doesn't seem easy to implement, and would likely be buggy with matches, etc.
+
+				if (type === "exposed") {
+					if (this.handForExposed) {
+						while (this.handForExposed.firstChild) {this.handForExposed.firstChild.remove()} //Delete everything currently rendered in the hand.
+					}
+					else {
+						while (this.handToRender.firstChild) {this.handToRender.firstChild.remove()}
+					}
+				}
+
+				//Check that there is an exposed hand, since we draw the exposed tiles before unexposed, and we don't want to clear them. 
+				while (type === "unexposed" && this.handToRender.firstChild && this.handForExposed) {this.handToRender.firstChild.remove()} //Delete everything currently rendered in the hand.
+
 
 				let drawTile = (function(tile, indexInGroup) {
 
