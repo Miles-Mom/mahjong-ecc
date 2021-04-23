@@ -145,7 +145,6 @@ class Room {
 		}
 
 		this.goMahjong = (function goMahjong(clientId, options = {}) {
-			console.error(options)
 			//options.drewOwnTile
 			//options.override
 			//options.thrownTile

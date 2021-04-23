@@ -342,7 +342,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							placement.exposed = true
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a sequence of " + placement.tiles[0].type + "s" , {clientId, speech: "Chow"})
 							if (placement.mahjong) {
-								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), tileToExpose: this.gameData.currentTurn.thrown})
+								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
 							}
 							this.gameData.currentTurn.userTurn = clientId
 						}
@@ -367,7 +367,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							let matchType = [,,"pair","pong","kong"][placement.amount]
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: matchType})
 							if (placement.mahjong) {
-								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), tileToExpose: this.gameData.currentTurn.thrown})
+								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
 							}
 							if (placement.amount === 4) {
 								//Draw them another tile.
@@ -407,7 +407,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							}
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchInfo , {clientId, speech: "I'll take that"})
 							if (placement.mahjong) {
-								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), tileToExpose: this.gameData.currentTurn.thrown})
+								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
 							}
 							this.gameData.currentTurn.userTurn = clientId
 						}
@@ -426,7 +426,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					//This should be fixed, or scores might be slightly off.
 					console.log("Attempting Naked Mahjong")
 					hand.add(this.gameData.currentTurn.thrown)
-					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), tileToExpose: this.gameData.currentTurn.thrown})
+					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
 					try {
 						hand.remove(this.gameData.currentTurn.thrown)
 					}
