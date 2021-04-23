@@ -26,7 +26,7 @@ function startGame(obj) {
 		this.messageAll([], obj.type, "Game Started", "success")
 
 		//Set settings
-		//TODO: This is probably the best default. We want a setting.
+		//TODO: The charleston setting array is modified, so the settings is useless, as after the charleston, it is an empty array. 
 		this.state.settings.charleston = [
 			[
 				{
