@@ -7,7 +7,6 @@ const Hand = require("../Hand.js")
 
 function isMahjong(maximumSequences = 4, options = {}) {
 	//options.thrownTile:
-	console.log(options)
 	//Tile whose match/sequence must be exposed.
 	//Used for autocompleting mahjongs, to make sure we don't give the wrong point valuation.
 

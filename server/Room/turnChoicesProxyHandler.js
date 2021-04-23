@@ -297,7 +297,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 		}
 	}
 	else {
-		this.gameData.previousTurnPickedUp = true //Used for in-hand mahjong detection.
+		this.gameData.previousTurnPickedUp = this.gameData.currentTurn.thrown //Used for in-hand mahjong detection.
+		this.gameData.previousTurnThrower = this.gameData.currentTurn.userTurn
 
 		//Handle this turn, and begin the next one.
 		let priorityList = []
@@ -342,7 +343,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							placement.exposed = true
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a sequence of " + placement.tiles[0].type + "s" , {clientId, speech: "Chow"})
 							if (placement.mahjong) {
-								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
+								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
 							}
 							this.gameData.currentTurn.userTurn = clientId
 						}
@@ -367,7 +368,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							let matchType = [,,"pair","pong","kong"][placement.amount]
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: matchType})
 							if (placement.mahjong) {
-								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
+								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
 							}
 							if (placement.amount === 4) {
 								//Draw them another tile.
@@ -407,7 +408,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							}
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed a " + matchInfo , {clientId, speech: "I'll take that"})
 							if (placement.mahjong) {
-								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
+								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
 							}
 							this.gameData.currentTurn.userTurn = clientId
 						}
@@ -426,7 +427,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					//This should be fixed, or scores might be slightly off.
 					console.log("Attempting Naked Mahjong")
 					hand.add(this.gameData.currentTurn.thrown)
-					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), thrownTile: this.gameData.currentTurn.thrown})
+					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
 					try {
 						hand.remove(this.gameData.currentTurn.thrown)
 					}
@@ -443,7 +444,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 		}
 
 		if (utilized === false) {
-			this.gameData.previousTurnPickedUp = false
+			this.gameData.previousTurnThrower = this.gameData.previousTurnPickedUp = undefined
 
 			//Shift to next player, draw them a tile.
 			let nextWind = windOrder[(windOrder.indexOf(this.gameData.playerHands[this.gameData.currentTurn.userTurn].wind) + 1)%4]

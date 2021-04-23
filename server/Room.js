@@ -112,7 +112,7 @@ class Room {
 						})
 					}
 					else {
-						points = hand.score({isMahjong: true, drewOwnTile: options.drewOwnTile})
+						points = hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
 					}
 				}
 				if (this.state.settings.gameStyle === "chinese") {
@@ -120,11 +120,11 @@ class Room {
 				}
 
 				if (id === mahjongClientId) {
-					item += " (Mahjong)" + (options.drewOwnTile?" - Drew Mahjong Tile":"") + (options.thrownTile?" - Mahjong with " + options.thrownTile.getTileName(this.state.settings.gameStyle):"")
+					item += " (Mahjong)" + (!this.gameData.previousTurnPickedUp?" - Drew Mahjong Tile":"") + (this.gameData.previousTurnPickedUp?" - Mahjong with " + this.gameData.previousTurnPickedUp.getTileName(this.state.settings.gameStyle):"")
 					summary.splice(0, 0, item) //Insert at the start.
 				}
 				else {
-					if (id === this.gameData.currentTurn.userTurn) {
+					if (id === this.gameData.previousTurnThrower) {
 						item += " (Threw Last Tile)"
 					}
 					summary.push(item)
@@ -145,16 +145,14 @@ class Room {
 		}
 
 		this.goMahjong = (function goMahjong(clientId, options = {}) {
-			//options.drewOwnTile
 			//options.override
-			//options.thrownTile
 
 			//First, verify the user can go mahjong.
 			let client = globalThis.serverStateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
 			//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
 			//the scoring will now be correct, not incorrect)
-			let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: options.thrownTile})
+			let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: this.gameData.previousTurnPickedUp})
 			if (isMahjong instanceof Hand) {
 				hand.contents = isMahjong.contents //Autocomplete the mahjong.
 			}
