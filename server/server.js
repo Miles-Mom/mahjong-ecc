@@ -36,10 +36,9 @@ function onConnection(websocket) {
 			//Admin actions for triggering maintenance.
 
 			//Example:
-			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in a few minutes to perform a server update. Feel free to continue playing - all games will be restored to where they were before the start of maintenance. ")
+			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends will be entering maintenance in a few minutes to perform a server update. Offline games will not be affected. Online games will be unavailable for about 60 seconds. Feel free to continue playing online - we will attempt to restore all games after the update")
 
 			//stateManager.callServerSave(password, "update")
-			//stateManager.messageAllServerClients(password, "Server Update", "Mahjong 4 Friends is shutting down to perform a server update. \nIf all goes well, your current game should resume within a minute. ")
 
 			//Then apply the update, and start the server loading from the state.
 			//That should probably be done by editing crontab before reboot, then editing back.

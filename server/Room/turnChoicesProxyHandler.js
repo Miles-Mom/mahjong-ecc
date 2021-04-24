@@ -167,7 +167,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 					//Allow, and don't force mahjong.
 				}
 				else {
-					placement.mahjong = true //The specified action can only be accomplished through mahjong.
+					obj[key].mahjong = true //The specified action can only be accomplished through mahjong.
 				}
 			}
 			priority = 104 - getBackwardsDistance(placerWind, throwerWind)

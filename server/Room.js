@@ -385,6 +385,8 @@ class Room {
 		this.onPlace = (function(obj, clientId) {
 			//Obj.message - a Tile, Match, or Sequence
 			let move = [obj, clientId]
+			//TODO: Now that bot moves should be deterministic, we no longer need to store the moves the bots made.
+			//For American Mahjong, it probably still makes sense as it can take a bit of time to analyze the card. 
 			this.state.moves.push(move)
 			if (this.logFile) {
 				try {
