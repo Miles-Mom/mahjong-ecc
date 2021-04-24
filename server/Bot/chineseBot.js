@@ -27,6 +27,11 @@ function evaluateNextMove() {
 
 	if (currentHand.isMahjong(room.state.settings.maximumSequences)) {return placeTiles()} //Go mahjong.
 
+	let seed = this.clientId + room.state.seed //We need the same random tiles every time, even reloading from state.
+	//Deterministic RNG
+	let turnSeed = seed + room?.gameData?.wall?.tiles?.[0]
+	let turnSeededRng = SeedRandom(turnSeed)
+
 	function computeHandBreakdown(tiles, userWind, customConfig = {}) {
 		tiles = tiles.filter((item) => {return !(item instanceof Pretty)})
 
@@ -54,16 +59,15 @@ function evaluateNextMove() {
 			breakdown[type].push(tile)
 		})
 
-		//For .sort
-		function getValue(item) {
-			if (item instanceof Tile) {return Math.random()} //We want the tiles to be randomly ordered. This is far from perfect, but should help move them slightly.
-			return item.amount
-		}
-
 		function prepForSelection(arr) {
-			arr.sort((a, b) => {
-				return getValue(a) - getValue(b)
+			arr.forEach((item) => {
+				if (item instanceof Tile) {item.sortValue = turnSeededRng()} //We want the tiles (not matches) to be randomly ordered.
+				item.sortValue = item.amount
 			})
+			arr.sort((a, b) => {
+				return a.sortValue - b.sortValue
+			})
+			arr.forEach((item) => {delete item.sortValue})
 			arr = arr.filter((a) => {
 				if (!a.isGenerated && a instanceof Match) {return false}
 				else {

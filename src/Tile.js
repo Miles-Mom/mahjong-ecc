@@ -36,7 +36,7 @@ class Tile {
 
 		if (!this.value && (this.type === "flower" || this.type === "season")) {
 			//American Mahjongg - if no value set, pick random.
-			//This should only apply for card generated hands, etc, where the flower/season is generic.
+			//This should only apply for card generated hands (ex, Suggested Hands), where there is no preset value.
 
 			//We might also want to randomize flower/season, just to be fancy.
 			this.value = Math.ceil(Math.random() * 4)

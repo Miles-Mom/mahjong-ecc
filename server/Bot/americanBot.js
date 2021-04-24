@@ -51,8 +51,6 @@ function evaluateNextMove() {
 	//We'll only filter the card once, and store it for later.
 	//This is extremely cheap normally, but can take a few milliseconds with tons of combos (Marvelous hands)
 	//Easy small speedup.
-
-	//TODO: This memory use could be bad.
 	let cardToUse = this._cardToUse
 	let seed = this.clientId + room.state.seed //We need the same random tiles every time, even reloading from state.
 	if (!cardToUse || cardToUse.seed !== seed) {
@@ -73,10 +71,20 @@ function evaluateNextMove() {
 
 		cardToUse.seed = seed
 		this._cardToUse = cardToUse
+
+		setTimeout((function() {
+			//Clear this._cardToUse after an hour - should help free a bit of memory.
+			delete this._cardToUse
+		}).bind(this), 1000 * 60 * 60)
 	}
 
+	//Deterministic RNG
+	let turnSeed = seed + room?.gameData?.wall?.tiles?.[0]
+	let turnSeededRng = SeedRandom(turnSeed)
+	console.log(turnSeed)
 
-	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + Math.random())
+
+	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + turnSeededRng())
 console.time("Analyze")
 	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
 	console.timeEnd("Analyze")
@@ -134,7 +142,7 @@ console.time("Analyze")
 		//In that case, we'll eliminate some. This is currently done at random.
 
 		while (maxAmount < toThrow.length) {
-			toThrow.splice(Math.floor(Math.random() * toThrow.length), 1)
+			toThrow.splice(Math.floor(turnSeededRng() * toThrow.length), 1)
 		}
 
 		return toThrow
@@ -166,7 +174,7 @@ console.time("Analyze")
 
 			//Pick randomly from remaining tiles until we have 3 tiles to pass.
 			while (passing.length < 3) {
-				let removed = currentHand.contents[Math.floor(Math.random() * currentHand.contents.length)] //Random pick.
+				let removed = currentHand.contents[Math.floor(turnSeededRng() * currentHand.contents.length)] //Random pick.
 				if (removed.type === "joker") {continue} //This should never get stuck, as there are only 8 jokers, and we are in charleston.
 
 				passing.push(removed)
