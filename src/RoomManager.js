@@ -323,7 +323,8 @@ catch (e) {
 	console.error(e)
 }
 
-setInterval(saveOfflineGame, 8000) //Save game relatively frequently
+window.saveOfflineGame = saveOfflineGame //The sync button calls this on iOS. 
+setInterval(saveOfflineGame, 5000) //Save game relatively frequently
 window.onbeforeunload = function() {saveOfflineGame()} //This is async, so it might not actually finish.
 if (window.Capacitor) {
 	//Save when app is closed, etc.

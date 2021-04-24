@@ -97,7 +97,14 @@ syncButton.id = "syncButton"
 syncButton.title = "Sync (Reload)"
 gameBoard.appendChild(syncButton)
 
-syncButton.addEventListener("click", function() {
+syncButton.addEventListener("click", async function() {
+	try {
+		await new Promise((r, j) => {
+			window.saveOfflineGame().then(r)
+			setTimeout(j, 500, "Ran Out Of Time to Save")
+		})
+	}
+	catch (e) {console.error(e)}
 	window.location.reload()
 })
 
