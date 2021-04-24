@@ -423,19 +423,11 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				}
 				else if (placement.mahjong) {
 					//Attempt a naked mahjong - user didn't provide what to do.
-					//TODO: BUG! Naked Mahjong may result in some placements being considered in-hand when they are not!
-					//This should be fixed, or scores might be slightly off.
 					console.log("Attempting Naked Mahjong")
 					hand.add(this.gameData.currentTurn.thrown)
 					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
-					try {
-						hand.remove(this.gameData.currentTurn.thrown)
-					}
-					catch (e) {
-						console.log("Unable to remove. Appears Naked Mahjong Successful")
-						utilized = true
-						this.gameData.currentTurn.userTurn = clientId
-					}
+					utilized = true
+					this.gameData.currentTurn.userTurn = clientId
 				}
 				else {
 					console.error("No known operation to perform when processing turn. ")

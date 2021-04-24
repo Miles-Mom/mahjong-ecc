@@ -102,8 +102,6 @@ let gameBoard = require("./GameBoard.js")
 //See https://nicolas-hoizey.com/articles/2015/02/18/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers/
 //We will use CSS variables to counteract this bug.
 function setVisibleAreaHeight() {
-
-
     let width = Math.max(document.documentElement.clientWidth, window.innerWidth)
     let height = Math.max(document.documentElement.clientHeight, window.innerHeight)
 
@@ -115,7 +113,7 @@ function setVisibleAreaHeight() {
     let minLeft = Number(params.get("shiftPercentageLeft"))
     let minRight = Number(params.get("shiftPercentageRight"))
 
-    //Add some margin to handle the notch. 
+    //Add some margin to handle the notch.
     let pxLeft = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sal"))
     pxLeft -= 10 //Ignore the small safe area decrease caused by rounded corners.
     document.documentElement.style.setProperty('--shiftPercentageLeft', `${Math.max(minLeft, pxLeft/width)}`)

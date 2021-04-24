@@ -342,7 +342,24 @@ endGameButton.addEventListener("click", function() {
 		|| !shouldConfirm
 		|| confirm("Are you absolutely sure you want to end the game?")
 	) {
+		let lastMessage = stateManager.lastState.message
 		window.stateManager.endGame()
+
+		try {
+			if (window.Capacitor) {
+				console.log("Analyzing")
+				//We will only prompt if this specific user went mahjong.
+				if (
+					lastMessage.currentTurn.userTurn === window.clientId
+					&& lastMessage.isGameOver
+					&& lastMessage.instructions.includes("mahjong")
+				) {
+					console.log("Calling")
+					AppRate.promptForRating(true)
+				}
+			}
+		}
+		catch (e) {console.error(e)}
 	}
 })
 
