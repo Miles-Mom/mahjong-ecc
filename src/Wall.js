@@ -8,6 +8,10 @@ class Wall {
 			return this.tiles.pop()
 		}
 
+		this.readFirst = function() {
+			return this.tiles[this.tiles.length - 1]
+		}
+
 		this.tiles = []
 
 		//Time to add the tiles to the deck...

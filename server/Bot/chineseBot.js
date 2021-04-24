@@ -31,7 +31,7 @@ function evaluateNextMove() {
 
 	let seed = this.clientId + room.state.seed //We need the same random tiles every time, even reloading from state.
 	//Deterministic RNG
-	let turnSeed = seed + room?.gameData?.wall?.tiles?.[0]
+	let turnSeed = seed + room?.gameData?.wall?.readFirst()?.getTileName()
 	let turnSeededRng = SeedRandom(turnSeed)
 
 	function computeHandBreakdown(tiles, userWind, customConfig = {}) {

@@ -79,7 +79,7 @@ function evaluateNextMove() {
 	}
 
 	//Deterministic RNG
-	let turnSeed = seed + room?.gameData?.wall?.tiles?.[0]
+	let turnSeed = seed + room?.gameData?.wall?.readFirst()?.getTileName()
 	let turnSeededRng = SeedRandom(turnSeed)
 	console.log(turnSeed)
 
