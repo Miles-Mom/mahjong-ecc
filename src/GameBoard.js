@@ -362,7 +362,7 @@ endGameButton.addEventListener("click", function() {
 					&& lastMessage.instructions.includes("mahjong")
 				) {
 					console.log("Calling")
-					AppRate.promptForRating(true)
+					AppRate.promptForRating(false)
 				}
 			}
 		}
