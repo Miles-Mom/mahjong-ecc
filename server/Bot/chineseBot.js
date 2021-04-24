@@ -3,6 +3,8 @@ const Hand = require("../../src/Hand.js")
 const Match = require("../../src/Match.js")
 const Pretty = require("../../src/Pretty.js")
 
+const SeedRandom = require("seed-random")
+
 function evaluateNextMove() {
 	let room = this.getRoom()
 
