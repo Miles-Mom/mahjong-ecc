@@ -17,11 +17,11 @@ async function readSave(path) {
 	}
 }
 
-async function writeSave(path, text) {
+async function writeSave(path, text, directory = "DATA") {
 	if (window.Capacitor) {
-		Capacitor.Plugins.Filesystem.writeFile({
+		return await Capacitor.Plugins.Filesystem.writeFile({
 			path,
-			directory: "DATA",
+			directory,
 			data: text,
 			recursive: true,
 			encoding: "utf8"

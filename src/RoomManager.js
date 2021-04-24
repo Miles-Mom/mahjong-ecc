@@ -5,6 +5,7 @@ const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
 const QRCode = require("qrcode-generator")
 
 if (window.Capacitor) {
+	//Configure AppRate plugin.
 	try {
 		AppRate.setPreferences({
 			displayAppName: 'Mahjong 4 Friends',
@@ -275,20 +276,31 @@ try {
 
 			let downloadButton = document.createElement("button")
 			downloadButton.innerHTML = "Download"
-			downloadButton.addEventListener("click", function() {
-				var elem = document.createElement('a');
-			    elem.download = "mahjong4friends.server.json"
+			downloadButton.addEventListener("click", async function() {
+				let downloadName = "mahjong4friends.server.json"
+				if (window.Capacitor) {
+					//iOS Capacitor doesn't support link downloads. Use share menu.
+					let saveInfo = await writeSave(downloadName, res, "CACHE")
+					await Capacitor.Plugins.Share.share({
+						title: downloadName,
+						url: saveInfo.uri
+					})
+				}
+				else {
+					var elem = document.createElement('a');
+					elem.download = downloadName
 
-				let blob = new Blob([res], {type: "application/json"})
-				let url = URL.createObjectURL(blob)
+					let blob = new Blob([res], {type: "application/json"})
+					let url = URL.createObjectURL(blob)
 
-				elem.href = url
+					elem.href = url
 
-			    document.body.appendChild(elem);
-			    elem.click();
-			    elem.remove()
+					document.body.appendChild(elem);
+					elem.click();
+					elem.remove()
 
-				URL.revokeObjectURL(url)
+					URL.revokeObjectURL(url)
+				}
 			})
 			downloadButton.id = "downloadSaveNowButton"
 			elem.appendChild(downloadButton)
