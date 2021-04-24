@@ -26,7 +26,7 @@ function startGame(obj) {
 		this.messageAll([], obj.type, "Game Started", "success")
 
 		//Set settings
-		//TODO: The charleston setting array is modified, so the settings is useless, as after the charleston, it is an empty array. 
+		//TODO: The charleston setting array is modified, so the settings is useless, as after the charleston, it is an empty array.
 		this.state.settings.charleston = [
 			[
 				{
@@ -129,8 +129,7 @@ function startGame(obj) {
 		this.state.moves = []
 
 		this.logFileSaveId = this.roomId + "-" + Date.now()
-		if (fs) {
-			//Comment below line out for all bot game testing.
+		if (fs && !globalThis.avoidFSWrites) {
 			this.logFile = fs.createWriteStream(path.join(globalThis.serverStateManager.serverDataDirectory, this.logFileSaveId + ".room"))
 		}
 

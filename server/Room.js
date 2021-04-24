@@ -575,29 +575,24 @@ class Room {
 						return client.message(obj.type, "You can't place a tile you do not possess - try reloading the page or restarting the app", "error")
 					}
 				}
-				else if (placement instanceof Match) {
-					if (placement.amount === 4) {
-						if (obj.mahjong) {
-							return client.message(obj.type, "You can't go mahjong while placing a kong. ", "error")
-						}
-						if (hand.removeMatchingTilesFromHand(placement.getComponentTile(), 4)) {
-							//Place Kong. Turn remains the same, thrown false.
-							hand.contents.push(placement)
-							//This must be an in hand kong, therefore we do not expose, although in hand kongs will be shown.
-							placement.exposed = false
-							//Draw them another tile.
-							this.drawTile(clientId)
-							this.sendStateToClients()
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed an in-hand kong of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: "kong"})
-							console.log("Kong")
-
-						}
-						else {
-							return client.message(obj.type, "You can't place tiles you do not possess - try reloading the page or restarting the app", "error")
-						}
+				else if (placement instanceof Match && placement.amount === 4) {
+					if (obj.mahjong) {
+						return client.message(obj.type, "You can't go mahjong while placing a kong. ", "error")
+					}
+					if (hand.removeMatchingTilesFromHand(placement.getComponentTile(), 4)) {
+						//Place Kong. Turn remains the same, thrown false.
+						hand.contents.push(placement)
+						//This must be an in hand kong, therefore we do not expose, although in hand kongs will be shown.
+						placement.exposed = false
+						//Draw them another tile.
+						this.drawTile(clientId)
+						this.sendStateToClients()
+						this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed an in-hand kong of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: "kong"})
+						console.log("Kong")
+						return
 					}
 					else {
-						return client.message(obj.type, "Can't expose in hand pong, sequence, or pair. This can only be done via mahjong.", "error")
+						return client.message(obj.type, "You can't place tiles you do not possess - try reloading the page or restarting the app", "error")
 					}
 				}
 				else if (obj.mahjong) {
@@ -608,6 +603,9 @@ class Room {
 					else {
 						placerMahjongOverride = true
 					}
+				}
+				else if (!obj.mahjong && placement instanceof Match || placement instanceof Sequence) {
+					return client.message(obj.type, "Can't expose in hand pong, sequence, or pair, except for mahjong.", "error")
 				}
 				else {
 					//TODO: This triggers attempting to place an in hand sequence. This is the wrong error message, although it is an error.

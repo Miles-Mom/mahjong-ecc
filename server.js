@@ -6,8 +6,15 @@ const WebSocket = require('ws');
 const hostname = "0.0.0.0"
 const httpport = 7591
 
-const serverDataDirectory = path.join(__dirname, "server", "data")
+let serverDataDirectory = path.join(__dirname, "server", "data")
+
+if (process.argv.includes("--serverDataDirectory")) {
+	serverDataDirectory = process.argv[process.argv.indexOf("--serverDataDirectory") + 1]
+}
+
 if (!fs.existsSync(serverDataDirectory)) {fs.mkdirSync(serverDataDirectory, {recursive: true})}
+
+if (process.argv.includes("--avoidFSWrites")) {globalThis.avoidFSWrites = true}
 
 const httpserver = http.createServer();
 const websocketServer = new WebSocket.Server({

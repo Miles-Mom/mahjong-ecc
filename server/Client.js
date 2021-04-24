@@ -27,8 +27,8 @@ class Client {
 			if (this.suppressed) {return}
 
 
-			//Also disable room.logFile (approx line 135, startGame.js)
 			/*
+			globalThis.avoidFSWrites = true
 			if (!this.lastSent) {this.lastSent = Date.now()}
 			if (message?.isGameOver) {
 				if (this.getRoom().logFileSaveId === this.lastSaveId) {return}
