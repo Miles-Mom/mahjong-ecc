@@ -192,6 +192,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 	//Obj is the turnChoices object.
 
 	if (this.gameData.charleston) {
+		this.sendStateToClients() //The last client needs to have the tiles taken out of their hand. We could technically send this state update only to them. 
 		let playerHands = []
 		let placements = []
 		for (let clientId in this.gameData.playerHands) {
