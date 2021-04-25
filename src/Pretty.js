@@ -37,6 +37,8 @@ class Pretty {
 		this.isPair = false
 	}
 
+	getTileValue() {return this.value || 0}
+
 	getImageUrl() {
 		return "assets/tiles/" + this.seasonOrFlower + "s" + "/" + this.value + ".png"
 	}

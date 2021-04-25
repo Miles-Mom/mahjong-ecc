@@ -90,9 +90,10 @@ class Match {
 		this.isSequence = false
 	}
 
+	getTileValue() {return this.getComponentTile().getTileValue()}
+
 	static isValidMatch(tiles) {
 		//Confirm that the tiles all match.
-		//Note that if two tiles are equal, that means they are the same tile, just referenced twice. That is not a valid match, however we currently do not check for that.
 		for (let i=0;i<tiles.length;i++) {
 			if (!tiles[0].matches(tiles[i])) {return false}
 		}

@@ -176,7 +176,7 @@ class Room {
 						}
 					}
 				}
-				else if (this.state.settings.gameStyle === "american") {
+				else if (this.state.settings.gameStyle === "american" && mahjongClientId) {
 					let playerMultiplier = 1
 
 					if (id === this.gameData.previousTurnThrower) {
@@ -184,7 +184,7 @@ class Room {
 						playerMultiplier *= 2
 					}
 
-					//Pay mahjong player their points.
+					//Pay mahjong player (already checked that one exists) their points.
 					res[id].netpoints -= res[mahjongClientId].points * playerMultiplier
 					res[mahjongClientId].netpoints += res[mahjongClientId].points * playerMultiplier
 				}

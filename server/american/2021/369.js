@@ -61,7 +61,7 @@ module.exports = [
 			let newArr = []
 			tiles.push(newArr)
 
-			newArr.push(createTiles({type: "flower", value: "4", amount: 5})) //Value is no-op here.
+			newArr.push(createTiles({type: "flower", amount: 5}))
 
 			newArr.push(createTiles({type: suit, value: 3, amount: 2}))
 			newArr.push(createTiles({type: suit, value: 6, amount: 3}))
@@ -99,7 +99,7 @@ module.exports = [
 			let newArr = []
 			tiles.push(newArr)
 
-			newArr.push(createTiles({type: "flower", value: "4", amount: 2})) //Value is no-op here.
+			newArr.push(createTiles({type: "flower", amount: 2}))
 
 			newArr.push(createTiles({type: suit, value: 3, amount: 4}))
 			newArr.push(createTiles({type: suit, value: 6, amount: 4}))
@@ -111,7 +111,7 @@ module.exports = [
 			let newArr = []
 			tiles.push(newArr)
 
-			newArr.push(createTiles({type: "flower", value: "4", amount: 2})) //Value is no-op here.
+			newArr.push(createTiles({type: "flower", amount: 2}))
 
 			newArr.push(createTiles({type: suitOrder[0], value: 3, amount: 4}))
 			newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 4}))

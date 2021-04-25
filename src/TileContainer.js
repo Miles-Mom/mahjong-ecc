@@ -2,31 +2,18 @@ const Tile = require("./Tile.js")
 
 class TileContainer {
 	constructor(config = {}) {
-		this.isDouble = function(userWind) {return false}
-		this.getPoints = function() {return 0}
-
 		if (!config.tiles instanceof Array) {throw "config.tiles must be an array of Tiles"}
 
 		this.tiles = config.tiles
-
-		this.exposed = true
-		this.isSequence = false
-		this.isPongOrKong = false
-		this.isPair = false
-
-		this.toJSON = (function() {
-			let obj = {}
-			obj.class = "TileContainer"
-			obj.exposed = this.exposed
-			obj.tiles = this.tiles
-
-			return JSON.stringify(obj)
-		}).bind(this)
 	}
 
-	static findNonJoker(tiles) {
-		return tiles.find((tile) => {return tile.type !== "joker"})
-	}
+	isDouble(userWind) {return false}
+	getPoints() {return 0}
+
+	exposed = true
+	isSequence = false
+	isPongOrKong = false
+	isPair = false
 
 	isValidMatch(allowJokers = false) {
 		//Confirm that the tiles all match.
@@ -45,6 +32,19 @@ class TileContainer {
 
 	static isValidMatch(tiles, allowJokers) {
 		return new TileContainer({tiles}).isValidMatch(allowJokers)
+	}
+
+	static findNonJoker(tiles) {
+		return tiles.find((tile) => {return tile.type !== "joker"})
+	}
+
+	toJSON() {
+		let obj = {}
+		obj.class = "TileContainer"
+		obj.exposed = this.exposed
+		obj.tiles = this.tiles
+
+		return JSON.stringify(obj)
 	}
 
 	static fromJSON(str) {

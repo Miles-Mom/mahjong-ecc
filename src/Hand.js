@@ -39,14 +39,14 @@ class Hand {
 			//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
 			let newItemScore;
 			if (obj instanceof Sequence) {
-				newItemScore = Hand.getTileValue(obj.tiles[0]) //Use value of first tile in sequence.
+				newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in sequence.
 			}
 			else if (obj instanceof TileContainer) {
 				//Same as sequence for now - use first tile.
-				newItemScore = Hand.getTileValue(obj.tiles[0]) //Use value of first tile in sequence.
+				newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in TileContainer.
 			}
 			else {
-				newItemScore = Hand.getTileValue(obj)
+				newItemScore = obj.getTileValue()
 			}
 
 			for (let i=0;i<this.contents.length;i++) {
@@ -60,7 +60,7 @@ class Hand {
 					//Use the first tile in container.
 					currentItem = currentItem.tiles[0]
 				}
-				let currentScore = Hand.getTileValue(currentItem) //Value of the tile in that position
+				let currentScore = currentItem.getTileValue() //Value of the tile in that position
 
 				if (newItemScore < currentScore) {
 					this.contents.splice(i, 0, obj)
@@ -501,26 +501,9 @@ class Hand {
 		}).bind(this)
 	}
 
-	static getTileValue(tile) {
-		//The greater the value, the further to the right we place the tile.
-		let tileValue = 0
-
-		tileValue += 100 * ["pretty", "flower", "season", "circle", "bamboo", "character", "wind", "dragon", "joker"].findIndex((suit) => {return tile.type === suit})
-
-		if (typeof tile.value === "number") {tileValue += tile.value}
-		else if (tile.type === "wind") {
-			tileValue += 10 * ["north", "east", "south", "west"].findIndex((value) => {return tile.value === value})
-		}
-		else if (tile.type === "dragon") {
-			tileValue += 10 * ["red", "green", "white"].findIndex((value) => {return tile.value === value})
-		}
-		else if (!tile.faceDown && tile.type !== "joker") {console.error("Couldn't fully calculate value for " + tile)}
-		return tileValue
-	}
-
 	static sortTiles(tiles) {
 		return tiles.sort(function (tile1, tile2) {
-			return Hand.getTileValue(tile1) - Hand.getTileValue(tile2)
+			return tile1.getTileValue() - tile2.getTileValue()
 		})
 	}
 

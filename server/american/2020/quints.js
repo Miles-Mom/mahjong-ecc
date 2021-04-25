@@ -12,7 +12,7 @@ module.exports = [
 
 					newArr.push(createTiles({type: "dragon", value: dragon, amount: 4}))
 					newArr.push(createTiles({type: suit, value: offset, amount: 5}))
-					newArr.push(createTiles({type: "flower", value: "4", amount: 5})) //Value is no-op here.
+					newArr.push(createTiles({type: "flower", amount: 5}))
 				})
 			})
 		})

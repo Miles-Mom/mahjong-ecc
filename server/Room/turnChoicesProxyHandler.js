@@ -323,7 +323,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 				let placement = obj[clientId]
 				let hand = this.gameData.playerHands[clientId]
-console.log(placement)
+
 				//If placement succeeds, switch userTurn
 				if (placement instanceof Sequence) {
 					//Confirm that the sequence uses the thrown tile.
