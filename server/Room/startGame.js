@@ -182,7 +182,7 @@ function startGame(obj) {
 		})
 
 		//Place bots based on alphabetically ordered clientIds.
-		clientIds = clientIds.sort()
+		clientIds = clientIds.slice(0, 4).sort()
 		botNames = botNames.sort()
 
 		let userWindIndex = winds2.indexOf(windAssignments[clientIds[0]])
