@@ -230,11 +230,136 @@ uploadSaveButton.addEventListener("click", function() {
 	let popup;
 
 	let p = document.createElement("p")
-	p.innerHTML = "You can upload a save file from your device, or use one of ours, guaranteed to be possible with specific hands: "
+	p.innerHTML = "You can upload a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
 	p.id = "messageText"
 	elem.appendChild(p)
 
-	
+	function addColumn(row, text) {
+		let sectionNameColumn = document.createElement("td")
+		sectionNameColumn.innerHTML = `<span>${text}</span>`
+		row.appendChild(sectionNameColumn)
+	}
+
+	let tableContainer = document.createElement("div")
+	tableContainer.className = "guaranteedHandsTableContainer"
+	tableContainer.innerHTML = "Loading Guaranteed Hands..."
+	elem.appendChild(tableContainer)
+
+	;((async function() {
+		let obj;
+		try {
+			let req = await fetch("guaranteedHands.json")
+			obj = await req.json()
+			console.log(obj)
+		}
+		catch (e) {
+			tableContainer.innerHTML = "Error Loading Guaranteed Hands..."
+			return
+		}
+
+		let table = document.createElement("table")
+		table.className = "guaranteedHandsTable"
+		tableContainer.innerHTML = ""
+		tableContainer.appendChild(table)
+
+		let header = document.createElement("tr")
+		table.appendChild(header)
+		addColumn(header, "Card")
+		addColumn(header, "Section")
+		addColumn(header, "Option")
+		addColumn(header, "Save")
+
+		Object.keys(obj).forEach((cardName) => {
+			//We can display all cards and options at once right now.
+
+			let card = obj[cardName]
+			let baseRows = [`${cardName.replace("National Mahjongg League", "NMJL")}`]
+
+			Object.keys(card).forEach((sectionName) => {
+				let section = card[sectionName]
+				let row = document.createElement("tr")
+				row.className = "sectionRow"
+				table.appendChild(row)
+
+				baseRows.push(`${sectionName}`)
+				baseRows.forEach((text) => {
+					addColumn(row, text)
+				})
+				addColumn(row, `${Object.keys(section).length} hands`)
+				addColumn(row, "")
+
+				let cachedBaseRows = baseRows.slice(0)
+				let expansion = [];
+				row.addEventListener("click", function() {
+					if (expansion[0]) {
+						while (expansion[0]) {expansion.pop().remove()}
+					}
+					else {
+						let insertBefore = row.nextSibling
+						Object.keys(section).forEach((itemName) => {
+							let saves = section[itemName]
+
+							let savesRow = document.createElement("tr")
+							savesRow.className = "savesRow"
+							table.insertBefore(savesRow, insertBefore)
+
+							let baseRows = cachedBaseRows
+							baseRows.push(`Hand #${itemName}`)
+							baseRows.forEach((text, index) => {
+								addColumn(savesRow, text)
+							})
+							addColumn(savesRow, `${Object.keys(saves).length} saves`)
+
+							expansion.push(savesRow)
+
+							let cachedBaseRows2 = baseRows.slice(0);
+							let savesExpansion = []
+							savesRow.addEventListener("click", function() {
+								if (savesExpansion[0]) {
+									while (savesExpansion[0]) {savesExpansion.pop().remove()}
+								}
+								else {
+									let insertBefore = savesRow.nextSibling
+									Object.keys(saves).forEach((saveName) => {
+										let save = saves[saveName]
+
+										let saveRow = document.createElement("tr")
+										saveRow.className = "saveRow"
+										table.insertBefore(saveRow, insertBefore)
+
+										let baseRows = cachedBaseRows2
+										baseRows.forEach((text) => {
+											addColumn(saveRow, text)
+										})
+										addColumn(saveRow, `Save #${saveName} (${Math.round(save/1000)}kB)`)
+										saveRow.addEventListener("click", async function() {
+											let baseUrl = window.location.href
+											if (window.Capacitor) {
+												baseUrl = "https://mahjong4friends.com/"
+											}
+											baseUrl += encodeURI(`server/guaranteed/${cardName}/${sectionName}/${itemName}/${saveName}.server.json`)
+											console.log(baseUrl)
+											let req = await fetch(baseUrl)
+											let text = await req.text()
+											console.log(text)
+											resumeOfflineGame(text)
+											//TODO: We need to create a revert menu and open it.
+										})
+
+										savesExpansion.push(saveRow)
+										expansion.push(saveRow)
+									})
+								}
+							})
+
+							baseRows.pop()
+						})
+					}
+				})
+				baseRows.pop()
+			})
+		})
+	})())
 
 	let uploadFromDevice = document.createElement("button")
 	uploadFromDevice.innerHTML = "Upload From Device"

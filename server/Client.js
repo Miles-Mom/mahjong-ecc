@@ -26,11 +26,16 @@ class Client {
 		this.message = (function message(type, message, status) {
 			if (this.suppressed) {return}
 
-			//The bot client is only used for development testing and generating guaranteed hands. 
+			//The bot client is only used for development testing and generating guaranteed hands.
 			if (globalThis.runBotClientAutoPlay) {
 				//Remember to pass --avoidFSWrites to the server
-				const fs = require("fs")
-				const path = require("path")
+				let fs, path;
+				try {
+					fs = require("fs")
+					path = require("path")
+				}
+				catch (e) {console.warn(e)}
+
 				if (!this.lastSent) {this.lastSent = Date.now()}
 				if (message?.isGameOver) {
 					if (this.getRoom().logFileSaveId === this.lastSaveId) {return}
@@ -50,7 +55,7 @@ class Client {
 					let weWon = game.mahjongPlayer === this.clientId
 					game.weWon = weWon
 
-					let guaranteedDir = path.join(globalThis.serverStateManager.serverDataDirectory, "guaranteed")
+					let guaranteedDir = path.join(globalThis.serverStateManager.serverDataDirectory, this.getRoom().gameData.card.name)
 					if (!fs.existsSync(guaranteedDir)) {fs.mkdirSync(guaranteedDir, {recursive: true})}
 
 					if (weWon) {
@@ -67,8 +72,8 @@ class Client {
 							if (!fs.existsSync(outputDir)) {fs.mkdirSync(outputDir, {recursive: true})}
 
 							for (let i=1;true;i++) {
+								//TODO: Is there a good way to speed this up? I don't think it's a problem, but checking hundreds of paths might be slow.
 								let writePath = path.join(outputDir, i + ".server.json")
-								console.log(writePath)
 								if (!fs.existsSync(writePath)) {
 									fs.writeFileSync(writePath, globalThis.serverStateManager.toJSON())
 									break;
@@ -84,7 +89,7 @@ class Client {
 					fs.appendFileSync(logFile, "Win Percentage: " + ((this.games.slice(1).reduce((total, item) => {return total + Number(item.weWon)}, 0)) / (this.games.length - 1)) + "\n")
 					fs.appendFileSync(logFile, "Any Win Percentage: " + ((this.games.slice(1).reduce((total, item) => {return total + Number(!!item.mahjongPlayer)}, 0)) / (this.games.length - 1)) + "\n")
 
-					if (this.games.length > 500) {
+					if (this.games.length > (globalThis.simulatedGamesToRun || 500)) {
 						console.error(this.games) //Stop running and log games.
 					}
 					else {
@@ -116,6 +121,9 @@ class Client {
 					}
 
 					return require("./Bot/handleMessage.js").call(this, {type, message, status, botConfig: {botDifficulty: 100}})
+				}
+				else if (type === "roomActionGameplayAlert") {
+					return;
 				}
 			}
 			//End of bot client code.

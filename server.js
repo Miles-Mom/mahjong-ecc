@@ -3,6 +3,8 @@ const path = require("path")
 const http = require("http")
 const WebSocket = require('ws');
 
+const findAllGuaranteed = require("./server/findAllGuaranteed.js")
+
 const hostname = "0.0.0.0"
 const httpport = 7591
 
@@ -14,10 +16,20 @@ if (process.argv.includes("--serverDataDirectory")) {
 
 if (!fs.existsSync(serverDataDirectory)) {fs.mkdirSync(serverDataDirectory, {recursive: true})}
 
+try {
+	fs.writeFileSync(path.join(__dirname, "guaranteedHands.json"), JSON.stringify(findAllGuaranteed()))
+}
+catch (e) {
+	console.error(e)
+}
+
 if (process.argv.includes("--avoidFSWrites")) {globalThis.avoidFSWrites = true}
 
 if (process.argv.includes("--runBotClientAutoPlay")) {globalThis.runBotClientAutoPlay = true}
 
+if (process.argv.includes("--simulatedGamesToRun")) {
+	globalThis.simulatedGamesToRun = Number(process.argv[process.argv.indexOf("--simulatedGamesToRun") + 1])
+}
 
 const httpserver = http.createServer();
 const websocketServer = new WebSocket.Server({

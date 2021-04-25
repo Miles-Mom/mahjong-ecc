@@ -392,7 +392,7 @@ class Hand {
 					}
 				}
 
-				//Check that there is an exposed hand, since we draw the exposed tiles before unexposed, and we don't want to clear them. 
+				//Check that there is an exposed hand, since we draw the exposed tiles before unexposed, and we don't want to clear them.
 				while (type === "unexposed" && this.handToRender.firstChild && this.handForExposed) {this.handToRender.firstChild.remove()} //Delete everything currently rendered in the hand.
 
 

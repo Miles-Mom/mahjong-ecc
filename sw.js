@@ -27,10 +27,12 @@ self.addEventListener('fetch', async function(event) {
 		let network;
 		try {
 			network = await fetch(event.request)
-			try {
-				cache.put(url, network.clone())
+			if (!url.includes("guaranteed")) {
+				try {
+					cache.put(url, network.clone())
+				}
+				catch (e) {console.error(e)}
 			}
-			catch (e) {console.error(e)}
 			return network
 		}
 		catch (e) {

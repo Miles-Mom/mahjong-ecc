@@ -6,3 +6,5 @@ capacitorDir
 !resources/ios/
 resources/ios/icon
 resources/ios/splash
+server/guaranteed
+guaranteedHands.json
