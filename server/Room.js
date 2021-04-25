@@ -110,14 +110,26 @@ class Room {
 				}
 				else if (this.state.settings.gameStyle === "american") {
 					if (id === mahjongClientId) {
-						let hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
-
-						if (hands[0].diff === 0) {
+						let hands, maxPossibleJokers;
+						try {
+							//We don't want to crash if the hand is dead.
+							hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
+							maxPossibleJokers = americanUtilities.getTileDifferential([hands[0].handOption], [])[0].canFillJoker.length
+						}
+						catch (e) {
+							console.error(e)
+						}
+						if (hands?.[0]?.diff === 0) {
 							let handOption = hands[0].handOption
 							res[id].points += handOption.score
 
-							//TODO: Double no jokers, except on Singles and Pairs (where jokers can't be used at all).
 							res[id].text += " - " + handOption.section + " #" + (handOption.cardIndex + 1) + `, ${res[id].points} points`
+
+							//Double for no jokers, except where jokers can't be used (like for Singles and Pairs)
+							if (hands[0].jokerCount === 0 && maxPossibleJokers > 0) {
+								res[id].points *= 2
+								res[id].text += " - No Jokers (Double)"
+							}
 						}
 						else {
 							res[id].text += " - Unable to Score"
