@@ -16,7 +16,7 @@ function score(config = {}) {
 			[4,3,2].forEach(((amount) => {
 				if (!(match instanceof Tile)) {return} //Already matched.
 				if (this.removeMatchingTilesFromHand(match, amount)) {
-					i-- //Counteract position shifting. 
+					i-- //Counteract position shifting.
 					match = new Match({amount, type: match.type, value: match.value, exposed: false})
 				}
 			}).bind(this))
@@ -30,7 +30,7 @@ function score(config = {}) {
 	if (config.isMahjong) {
 		score += 20
 		if (config.drewOwnTile) {
-			score += 10
+			score += 2
 		}
 		if (!sequences) {
 			score += 10
