@@ -358,7 +358,7 @@ endGameButton.addEventListener("click", function() {
 				//We will only prompt if this specific user went mahjong.
 				if (
 					lastMessage.currentTurn.userTurn === window.clientId
-					&& lastMessage.isGameOver === 1 //Mahjong only, not wall empty. 
+					&& lastMessage.isGameOver === 1 //Mahjong only, not wall empty.
 				) {
 					console.log("Calling")
 					AppRate.promptForRating(false)
@@ -556,6 +556,9 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	hands.forEach((hand) => {hand.renderTiles(message?.currentTurn?.lastDrawn)}) //lastDrawn only affects unexposed tiles, so there isn't a problem passing it to all.
 	swapJokerButton.disabled = ""
+
+	userHand.setEvictingThrownTile() //Clear evictingThrownTile
+
 	if (message.currentTurn?.playersReady?.length > 0) {
 		//The person has thrown their tile. Waiting on players to ready.
 		let clientIdReady = message.currentTurn.playersReady.includes(window.clientId)
@@ -569,11 +572,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			//You have 13 tiles. Mahjong impossible.
 			goMahjongButton.disabled = "disabled"
 		}
-		if (message.currentTurn.userTurn !== clientId) {
+		if (message.currentTurn.userTurn !== clientId && message.currentTurn.thrown) {
 			userHand.setEvictingThrownTile(Tile.fromJSON(message.currentTurn.thrown))
-		}
-		else {
-			userHand.setEvictingThrownTile() //Clear evictingThrownTile
 		}
 		userHand.renderPlacemat("")
 	}
@@ -581,9 +581,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		proceedButton.disabled = ""
 		goMahjongButton.disabled = ""
 		proceedButton.innerHTML = "Proceed"
-		userHand.setEvictingThrownTile() //Clear evictingThrownTile
-		//The person has not yet thrown a tile.
 
+		//The person has not yet thrown a tile.
 		if (message.currentTurn.charleston) {
 			//TODO: Not sure if East wind is allowed to go Mahjong during a charleston. As of now, Room.js will treat mahjong just like place tiles during charleston,
 			//so we'll disable the option
@@ -595,6 +594,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			swapJokerButton.disabled = ""
 		}
 		else {
+			userHand.renderPlacemat("") //Not sure if this is needed, but it isn't harming anything.
 			swapJokerButton.disabled = "disabled"
 			if (!message.currentTurn.charleston) {
 				proceedButton.disabled = "disabled"
