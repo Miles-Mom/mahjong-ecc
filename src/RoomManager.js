@@ -230,10 +230,12 @@ uploadSaveButton.addEventListener("click", function() {
 	let popup;
 
 	let p = document.createElement("p")
-	p.innerHTML = "You can upload a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
+	//p.innerHTML = "You can upload a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
+	p.innerHTML = "You can upload a save file from your device to load that game: "
 	p.id = "messageText"
 	elem.appendChild(p)
 
+/*
 	function addColumn(row, text) {
 		let sectionNameColumn = document.createElement("td")
 		sectionNameColumn.innerHTML = `<span>${text}</span>`
@@ -365,6 +367,7 @@ uploadSaveButton.addEventListener("click", function() {
 			})
 		})
 	})())
+*/
 
 	let uploadFromDevice = document.createElement("button")
 	uploadFromDevice.innerHTML = "Upload From Device"
