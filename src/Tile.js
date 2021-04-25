@@ -47,12 +47,13 @@ class Tile {
 		this.matches = function(tile) {
 			if (this.faceDown || !tile) {return false}
 			if (tile instanceof Tile && tile.type === this.type && tile.value === this.value) {return true}
-			if (["flower", "season"].includes(this.type) && ["flower", "season"].includes(tile.type)) {
+			if (this.type === "joker" && tile.type === this.type) {return true} //Value no-op for jokers.
+			if (
 				//For American Mahjong - all flowers and seasons are identical.
-				//Since Chinese mahjong uses Pretty tiles, this is enough to check.
-				return true
-			}
-			if (tile.type === "joker" && tile.type === this.type) {return true} //Value no-op for jokers.
+				//Since Chinese mahjong uses Prettys, not flower/season Tiles this is enough to check.
+				(this.type === "flower" || this.type === "season")
+				&& (tile.type === "flower" || tile.type === "season")
+			) {return true}
 			return false
 		}
 
