@@ -7,7 +7,7 @@ const utilities = require("../american/utilities.js")
 
 const SeedRandom = require("seed-random")
 
-function evaluateNextMove() {
+function evaluateNextMove({botConfig}) {
 	let room = this.getRoom()
 
 	if (room.inGame === false) {return} //Nothing for us to do not in a game.
@@ -33,7 +33,7 @@ function evaluateNextMove() {
 	//and aren't aware of what others are doing, that is counterbalanced by their superhuman analysis abilities.
 	//Since in single player modes, people want to win quite a bit of the time, we're going to balance it out a bit more.
 	let botDifficultyConfig = {
-		botDifficulty: room.state.settings.americanBotDifficulty
+		botDifficulty: botConfig.botDifficulty ?? room.state.settings.americanBotDifficulty
 	}
 
 	let expo = 50
@@ -81,13 +81,9 @@ function evaluateNextMove() {
 	//Deterministic RNG
 	let turnSeed = seed + room?.gameData?.wall?.readFirst()?.getTileName()
 	let turnSeededRng = SeedRandom(turnSeed)
-	console.log(turnSeed)
-
 
 	let allowedAnalysisTiles = Math.floor(botDifficultyConfig.averageAnalyzedCharlestonTiles + turnSeededRng())
-console.time("Analyze")
 	let analysis = utilities.getTileDifferential(cardToUse, currentHand.contents)
-	console.timeEnd("Analyze")
 
 	//Find tiles not used in any of the top combos if possible - that way we don't sabotage our next best options.
 	function getTopTiles(analysis, maxAmount, noJokers = false) {
@@ -248,10 +244,7 @@ console.time("Analyze")
 						}
 					})
 
-					console.warn("Want Tile")
 					if (match) {
-						console.log(match)
-
 						let tilesToPlace = []
 
 						//If this tile is beneficial, we shouldn't have enough of it, so don't need to check against match length here.
@@ -274,17 +267,17 @@ console.time("Analyze")
 								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown))
 								return true
 							}
-							else {console.warn("Continuing")}
+							else {} //Nothing we can do - we can't pick it up.
 						}
 						else if (withTileAnalysisItem.diff === 0) {
-							//Can only pick up for Mahjong.
+							//Can always pick up for Mahjong.
 							if (tilesToPlace.length === match.length - 1) {
 								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), true)
 								return true
 							}
 							else {console.warn("Continuing Needs Mahjong")} //Can't really think of when this would trigger?
 						}
-						else {console.warn("Mahj only. Continuing. ")}
+						else {} //We want this tile, but can only pick it up for mahjong - ex, pair or single tile.
 					}
 					else {
 						console.warn(gameData.currentTurn.thrown, currentHand.contents, analysis[0], withTileAnalysisItem)

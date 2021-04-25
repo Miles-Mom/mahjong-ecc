@@ -358,8 +358,7 @@ endGameButton.addEventListener("click", function() {
 				//We will only prompt if this specific user went mahjong.
 				if (
 					lastMessage.currentTurn.userTurn === window.clientId
-					&& lastMessage.isGameOver
-					&& lastMessage.instructions.includes("mahjong")
+					&& lastMessage.isGameOver === 1 //Mahjong only, not wall empty. 
 				) {
 					console.log("Calling")
 					AppRate.promptForRating(false)

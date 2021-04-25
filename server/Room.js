@@ -162,6 +162,7 @@ class Room {
 			}
 
 			//The game is over.
+			this.gameData.currentTurn.userTurn = clientId
 			this.gameData.isMahjong = true
 
 			this.sendStateToClients()
@@ -207,7 +208,14 @@ class Room {
 				}
 			}
 
-			state.isGameOver = this?.gameData?.isMahjong || this?.gameData?.wall?.isEmpty
+			state.isGameOver = 0
+			if (this?.gameData?.isMahjong) {
+				state.isGameOver = 1
+			}
+			else if (this?.gameData?.wall?.isEmpty) {
+				state.isGameOver = 2
+			}
+
 			state.settings = this.state.settings
 
 			state.instructions = this?.gameData?.instructions?.[requestingClientId] || ""
@@ -386,7 +394,7 @@ class Room {
 			//Obj.message - a Tile, Match, or Sequence
 			let move = [obj, clientId]
 			//TODO: Now that bot moves should be deterministic, we no longer need to store the moves the bots made.
-			//For American Mahjong, it probably still makes sense as it can take a bit of time to analyze the card. 
+			//For American Mahjong, it probably still makes sense as it can take a bit of time to analyze the card.
 			this.state.moves.push(move)
 			if (this.logFile) {
 				try {

@@ -186,13 +186,15 @@ joinOrCreateRoom.appendChild(offlineSinglePlayer)
 function resumeOfflineGame(saveText) {
 	serverStateManager.init(saveText)
 	//Set our clientId to the offline mode clientId. Note that clientId should be static now.
-	window.clientId = serverStateManager.getAllClients().find((client) => {return !client.isBot}).clientId
+	window.clientId = serverStateManager.getRoom("Offline").clientIds.find((clientId) => {
+		if (!serverStateManager.getClient(clientId).isBot) {return clientId}
+	})
 	stateManager.offlineMode = true
 	stateManager.getCurrentRoom()
 }
 
 let uploadSaveButton = document.createElement("button")
-uploadSaveButton.innerHTML = "Upload Offline Save"
+uploadSaveButton.innerHTML = "Use Save File (Offline)"
 uploadSaveButton.id = "uploadSaveButton"
 joinOrCreateRoom.appendChild(uploadSaveButton)
 
@@ -223,7 +225,27 @@ fileInput.addEventListener("change", async function() {
 document.body.appendChild(fileInput)
 
 uploadSaveButton.addEventListener("click", function() {
-	fileInput.click()
+	//Alert the user about the save.
+	let elem = new DocumentFragment() //We want the dismiss button to be on the same line, so use a fake container.
+	let popup;
+
+	let p = document.createElement("p")
+	p.innerHTML = "You can upload a save file from your device, or use one of ours, guaranteed to be possible with specific hands: "
+	p.id = "messageText"
+	elem.appendChild(p)
+
+	
+
+	let uploadFromDevice = document.createElement("button")
+	uploadFromDevice.innerHTML = "Upload From Device"
+	uploadFromDevice.addEventListener("click", function() {
+		fileInput.click()
+	})
+	uploadFromDevice.id = "resumeSaveNowButton"
+	elem.appendChild(uploadFromDevice)
+
+	popup = new Popups.Notification("Select Save File", elem)
+	popup.show()
 })
 
 //Save offline games.
@@ -323,7 +345,7 @@ catch (e) {
 	console.error(e)
 }
 
-window.saveOfflineGame = saveOfflineGame //The sync button calls this on iOS. 
+window.saveOfflineGame = saveOfflineGame //The sync button calls this on iOS.
 setInterval(saveOfflineGame, 5000) //Save game relatively frequently
 window.onbeforeunload = function() {saveOfflineGame()} //This is async, so it might not actually finish.
 if (window.Capacitor) {

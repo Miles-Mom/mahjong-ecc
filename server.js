@@ -16,6 +16,9 @@ if (!fs.existsSync(serverDataDirectory)) {fs.mkdirSync(serverDataDirectory, {rec
 
 if (process.argv.includes("--avoidFSWrites")) {globalThis.avoidFSWrites = true}
 
+if (process.argv.includes("--runBotClientAutoPlay")) {globalThis.runBotClientAutoPlay = true}
+
+
 const httpserver = http.createServer();
 const websocketServer = new WebSocket.Server({
 	server: httpserver,

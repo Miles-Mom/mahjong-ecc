@@ -324,7 +324,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				let hand = this.gameData.playerHands[clientId]
 
 				//If placement succeeds, switch userTurn
-				console.log(placement)
 				if (placement instanceof Sequence) {
 					//Confirm that the sequence uses the thrown tile.
 					let valid = false
@@ -427,7 +426,6 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					hand.add(this.gameData.currentTurn.thrown)
 					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
 					utilized = true
-					this.gameData.currentTurn.userTurn = clientId
 				}
 				else {
 					console.error("No known operation to perform when processing turn. ")

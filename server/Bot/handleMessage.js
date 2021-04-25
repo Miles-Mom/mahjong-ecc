@@ -1,7 +1,7 @@
 let evaluateNextMoveChinese = require("./chineseBot.js")
 let evaluateNextMoveAmerican = require("./americanBot.js")
 
-function handleMessage({type, message, status}) {
+function handleMessage({type, message, status, botConfig = {}},) {
 	if (type === "roomActionState") {
 		//This should be the only type of message we need to listen to.
 
@@ -15,10 +15,10 @@ function handleMessage({type, message, status}) {
 
 		try {
 			if (this.getRoom()?.state?.settings?.gameStyle === "american") {
-				evaluateNextMoveAmerican.call(this)
+				evaluateNextMoveAmerican.call(this, {botConfig})
 			}
 			else {
-				evaluateNextMoveChinese.call(this)
+				evaluateNextMoveChinese.call(this, {botConfig})
 			}
 		}
 		catch (e) {
