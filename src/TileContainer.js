@@ -15,13 +15,13 @@ class TileContainer {
 	isPongOrKong = false
 	isPair = false
 
-	isValidMatch(allowJokers = false) {
+	static isValidMatch(tiles, allowJokers = false) {
 		//Confirm that the tiles all match.
-		let validationTile = TileContainer.findNonJoker(this.tiles)
+		let validationTile = TileContainer.findNonJoker(tiles)
 
 		if (!validationTile) {return false}
 
-		if (this.tiles.every((tile) => {
+		if (tiles.every((tile) => {
 			if (
 				tile.matches(validationTile)
 				|| (allowJokers && tile.type === "joker")
@@ -30,8 +30,8 @@ class TileContainer {
 		else {return false}
 	}
 
-	static isValidMatch(tiles, allowJokers) {
-		return new TileContainer({tiles}).isValidMatch(allowJokers)
+	isValidMatch(allowJokers = false) {
+		return TileContainer.isValidMatch(this.tiles, allowJokers)
 	}
 
 	static findNonJoker(tiles) {
