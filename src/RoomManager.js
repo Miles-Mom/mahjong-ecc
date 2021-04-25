@@ -271,7 +271,6 @@ uploadSaveButton.addEventListener("click", function() {
 
 		Object.keys(obj).forEach((cardName) => {
 			//We can display all cards and options at once right now.
-
 			let card = obj[cardName]
 			let baseRows = [`${cardName.replace("National Mahjongg League", "NMJL")}`]
 
@@ -339,11 +338,17 @@ uploadSaveButton.addEventListener("click", function() {
 											}
 											baseUrl += encodeURI(`server/guaranteed/${cardName}/${sectionName}/${itemName}/${saveName}.server.json`)
 											console.log(baseUrl)
-											let req = await fetch(baseUrl)
-											let text = await req.text()
-											console.log(text)
-											resumeOfflineGame(text)
-											//TODO: We need to create a revert menu and open it.
+											try {
+												let req = await fetch(baseUrl)
+												let text = await req.text()
+												console.log(text)
+												resumeOfflineGame(text)
+												//TODO: We need to create a revert menu and open it.
+											}
+											catch (e) {
+												console.error(e)
+												alert("Error Downloading Save File")
+											}
 										})
 
 										savesExpansion.push(saveRow)

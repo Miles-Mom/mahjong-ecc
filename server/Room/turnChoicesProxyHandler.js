@@ -192,7 +192,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 	//Obj is the turnChoices object.
 
 	if (this.gameData.charleston) {
-		this.sendStateToClients() //The last client needs to have the tiles taken out of their hand. We could technically send this state update only to them. 
+		this.sendStateToClients() //The last client needs to have the tiles taken out of their hand. We could technically send this state update only to them.
 		let playerHands = []
 		let placements = []
 		for (let clientId in this.gameData.playerHands) {
@@ -323,7 +323,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 				let placement = obj[clientId]
 				let hand = this.gameData.playerHands[clientId]
-
+console.log(placement)
 				//If placement succeeds, switch userTurn
 				if (placement instanceof Sequence) {
 					//Confirm that the sequence uses the thrown tile.
@@ -385,7 +385,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 						client.message("roomActionPlaceTiles", "Are you trying to hack? You must use the thrown tile when attempting to place off turn. ", "error")
 					}
 				}
-				else if (placement instanceof TileContainer) {
+				else if (placement instanceof TileContainer && placement.tiles.length > 1) {
 					//Confirm that the TileContainer uses the thrown tile.
 					let valid = false
 					placement.tiles.forEach((tile) => {

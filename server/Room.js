@@ -89,48 +89,106 @@ class Room {
 		this.getSummary = (function(mahjongClientId, options = {}) {
 			let summary = []
 
+			let res = {}
+
 			for (let id in this.gameData.playerHands) {
 				let hand = this.gameData.playerHands[id]
 
-				let item = ""
-				item += globalThis.serverStateManager.getClient(id).getNickname()
-				item += ": "
-				item += hand.wind
+				res[id] = {netpoints: 0, points: 0}
 
-				let points = hand.score()
-				if (id === mahjongClientId) {
-					if (this.state.settings.gameStyle === "american") {
-						let hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
+				res[id].text = globalThis.serverStateManager.getClient(id).getNickname() + ": " + hand.wind
 
-						hands.forEach((hand, index) => {
-							if (hand.diff === 0) {
-								item += ", "
-
-								let handOption = hand.handOption
-								item += handOption.score + " points - " + handOption.section + " #" + (handOption.cardIndex + 1)
-							}
-						})
+				if (this.state.settings.gameStyle === "chinese") {
+					if (hand.wind === "east") {res[id].text += " (pay(s) double)"}
+					if (id === mahjongClientId) {
+						res[id].points += hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
 					}
 					else {
-						points = hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
+						res[id].points += hand.score()
 					}
+					res[id].text += `, ${res[id].points} points`
 				}
-				if (this.state.settings.gameStyle === "chinese") {
-					item += ", " + points + " points"
+				else if (this.state.settings.gameStyle === "american") {
+					if (id === mahjongClientId) {
+						let hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
+
+						if (hands[0].diff === 0) {
+							let handOption = hands[0].handOption
+							res[id].points += handOption.score
+
+							//TODO: Double no jokers, except on Singles and Pairs (where jokers can't be used at all).
+							res[id].text += " - " + handOption.section + " #" + (handOption.cardIndex + 1) + `, ${res[id].points} points`
+						}
+						else {
+							res[id].text += " - Unable to Score"
+						}
+					}
 				}
 
 				if (id === mahjongClientId) {
-					item += " (Mahjong)" + (!this.gameData.previousTurnPickedUp?" - Drew Mahjong Tile":"") + (this.gameData.previousTurnPickedUp?" - Mahjong with " + this.gameData.previousTurnPickedUp.getTileName(this.state.settings.gameStyle):"")
-					summary.splice(0, 0, item) //Insert at the start.
-				}
-				else {
-					if (id === this.gameData.previousTurnThrower) {
-						item += " (Threw Last Tile)"
+					res[id].text += " - Mahjong"
+
+					if (!this.gameData.previousTurnPickedUp) {
+						res[id].text += " - Drew Own Tile"
+						if (this.state.settings.gameStyle === "american") {
+							res[id].text += " (double)"
+							res[id].points *= 2 //Drawing own tile is a double.
+						}
 					}
-					summary.push(item)
+					else {
+						res[id].text += " - With " + this.gameData.previousTurnPickedUp.getTileName(this.state.settings.gameStyle)
+					}
 				}
 			}
-			lastSummary = summary.join("\n")
+
+
+			for (let id in this.gameData.playerHands) {
+				if (this.state.settings.gameStyle === "chinese") {
+					if (id === this.gameData.previousTurnThrower) {
+						res[id].text += " - Threw Last Tile"
+					}
+
+					//We can simply iterate twice - we pay them, then they pay us.
+					for (let opponentId in this.gameData.playerHands) {
+						let playerMultiplier = 1
+
+						//Everything with East is doubled.
+						if (this.gameData.playerHands[id].wind === "east" || this.gameData.playerHands[opponentId].wind === "east") {
+							playerMultiplier *= 2
+						}
+
+						//We only pay if we are not Mahjong
+						if (id !== mahjongClientId) {
+							res[id].netpoints -= res[opponentId].points * playerMultiplier
+							res[opponentId].netpoints += res[opponentId].points * playerMultiplier
+						}
+					}
+				}
+				else if (this.state.settings.gameStyle === "american") {
+					let playerMultiplier = 1
+
+					if (id === this.gameData.previousTurnThrower) {
+						res[id].text += " - Threw Last Tile (Pay Double)"
+						playerMultiplier *= 2
+					}
+
+					//Pay mahjong player their points.
+					res[id].netpoints -= res[mahjongClientId].points * playerMultiplier
+					res[mahjongClientId].netpoints += res[mahjongClientId].points * playerMultiplier
+				}
+				if (id !== mahjongClientId) {
+					summary.push(res[id])
+				}
+				else {
+					summary.splice(0, 0, res[id]) //Insert at end.
+				}
+			}
+
+			for (let id in this.gameData.playerHands) {
+				res[id].text += " (Net " + (res[id].netpoints > 0?"+":"") + res[id].netpoints + " points)"
+			}
+
+			lastSummary = summary.map((item) => {return item.text}).join("\n")
 			return lastSummary;
 		}).bind(this)
 
@@ -150,15 +208,20 @@ class Room {
 			//First, verify the user can go mahjong.
 			let client = globalThis.serverStateManager.getClient(clientId)
 			let hand = this.gameData.playerHands[clientId]
-			//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
-			//the scoring will now be correct, not incorrect)
-			let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: this.gameData.previousTurnPickedUp})
-			if (isMahjong instanceof Hand) {
-				hand.contents = isMahjong.contents //Autocomplete the mahjong.
-			}
 
-			if (!isMahjong && !options.override && this.state.settings.gameStyle !== "american") {
-				return client.message("roomActionPlaceTiles", "Unable to go mahjong with this hand. If you play by different rules, try again to override. ", "error")
+			if (this.state.settings.gameStyle === "chinese") {
+				//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
+				//the scoring will now be correct, not incorrect)
+				let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: this.gameData.previousTurnPickedUp})
+				if (isMahjong instanceof Hand) {
+					hand.contents = isMahjong.contents //Autocomplete the mahjong.
+				}
+				if (!isMahjong && !options.override) {
+					return client.message("roomActionPlaceTiles", "Unable to go mahjong with this hand. If you play by different rules, try again to override. ", "error")
+				}
+			}
+			else if (this.state.settings.gameStyle === "american") {
+
 			}
 
 			//The game is over.
