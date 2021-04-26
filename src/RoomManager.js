@@ -352,7 +352,7 @@ uploadSaveButton.addEventListener("click", function() {
 
 	let uploadFromDevice = document.createElement("button")
 	uploadFromDevice.innerHTML = "Upload From Device"
-	fileInput.onchange = async function() {
+	fileInput.oninput = async function() {
 		let file = fileInput.files[0]
 		if (file) {
 			let reader = new FileReader()
@@ -365,6 +365,8 @@ uploadSaveButton.addEventListener("click", function() {
 			try {
 				resumeOfflineGame(text)
 				popup.dismiss()
+				//Reset any selected files - if the user uploads the same file twice, we should load it twice. (they may have closed the game the first time) 
+				fileInput.value = ""
 			}
 			catch (e) {
 				console.error(e)
