@@ -116,12 +116,17 @@ class Room {
 			}
 		}
 
-		this.revertState = (function(moveCount) {
-			//Reverts state, removing moveCount moves
-			//TODO: We probably want to save state here. Can we simply change the save ID or something?
-			if (moveCount < 1) {return} //Block revert by zero or negative numbers.
+		this.revertState = (function(client, turnNumber) {
+			//Reverts state, returning to turn turnNumber
+			turnNumber = Number(turnNumber)
+			if (isNaN(turnNumber) || turnNumber < 0) {
+				return client.message("roomActionGameplayAlert", "Revert Error: Invalid Revert turnNumber", "success")
+			}
+
+			this.messageAll([], "roomActionGameplayAlert", `${client.getNickname()} reverted to move ${turnNumber} (${this.state.moves.length - 1 - turnNumber} moves)`)
+
 			globalThis.serverStateManager.deleteRoom(this.roomId)
-			this.state.moves = this.state.moves.slice(0, -moveCount)
+			this.state.moves = this.state.moves.slice(0, turnNumber)
 			let room = new Room(this.roomId, this.state)
 			globalThis.serverStateManager.createRoom(this.roomId, room)
 			room.init()
@@ -350,7 +355,7 @@ class Room {
 						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile.
 						if (!obj.swapJoker || obj.swapJoker === true) {
 							let tileName = placement.getTileName(this.state.settings.gameStyle)
-							let discardMessage = client.getNickname() + " has thrown a " + tileName
+							let discardMessage = client.getNickname() + " threw a " + tileName
 							//We're also going to check if the discarder is calling.
 							let durationMultiplier = 1;
 							if (this.state.settings.checkForCalling && !hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
@@ -364,8 +369,12 @@ class Room {
 							delete this.lastDrawn
 							this.gameData.currentTurn.turnChoices[clientId] = "Next"
 							placerMahjongOverride = false
+
 							this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
 							this.setAllInstructions([clientId], discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
+
+							client.addMessageToHistory(discardMessage) //Make discards appear in history menu.
+
 							this.sendStateToClients()
 						}
 					}

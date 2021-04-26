@@ -23,7 +23,12 @@ function drawTile(clientId, doNotMessage = false) {
 	let client = globalThis.serverStateManager.getClient(clientId)
 	if (!doNotMessage) {
 		this.lastDrawn = tile
-		this.setInstructions(client.clientId, "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.getTileName(this.state.settings.gameStyle)) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
+
+		let drawMessage = "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.getTileName(this.state.settings.gameStyle))
+
+		this.setInstructions(client.clientId, drawMessage + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
+		client.addMessageToHistory(drawMessage) //Make draws appear in history menu.
+
 		if (pretty > 0) {
 			this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " drew " + ((pretty === 1)?"a pretty!":pretty + " prettys!"), {clientId, speech: "I'm pretty!"})
 		}

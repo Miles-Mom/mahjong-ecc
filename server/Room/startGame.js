@@ -236,7 +236,7 @@ function startGame(obj) {
 		}
 		else if (this.state.settings.gameStyle === "american") {
 			this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + direction + ", then hit Proceed. " , "success")
-			this.messageAll([], "roomActionGameplayAlert", "The first Charleston pass is " + direction , "success")
+			this.messageAll([], "roomActionGameplayAlert", "The first pass is " + direction , "success")
 		}
 
 		this.sendStateToClients()

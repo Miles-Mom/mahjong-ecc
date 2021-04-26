@@ -40,6 +40,9 @@ class StateManager {
 			else if (obj.type === "roomActionGameplayAlert") {
 				if (this.onGameplayAlert instanceof Function) {this.onGameplayAlert(obj)}
 			}
+			else if (obj.type === "roomActionGetMessageHistory") {
+				if (this.onGetMessageHistory instanceof Function) {this.onGetMessageHistory(obj)}
+			}
 			else {
 				console.log("Unknown Type " + obj.type)
 			}
@@ -220,10 +223,22 @@ class StateManager {
 			}))
 		}).bind(this)
 
-		this.revertState = (function(turns) {
+		this.getMessageHistory = (function() {
+			//Get our room.
+			this.sendMessage(JSON.stringify({
+				"type": "roomActionGetMessageHistory",
+				clientId: window.clientId
+			}))
+
+			return new Promise((resolve) => {
+				this.onGetMessageHistory = resolve
+			})
+		}).bind(this)
+
+		this.revertState = (function(turnNumber) {
 			this.sendMessage(JSON.stringify({
 				type: "roomActionRevertState",
-				message: turns,
+				message: turnNumber,
 				clientId: window.clientId
 			}))
 		}).bind(this)

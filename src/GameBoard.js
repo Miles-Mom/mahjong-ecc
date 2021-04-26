@@ -125,14 +125,43 @@ gameBoard.appendChild(tilePlacemat)
 
 let revertStateButton = document.createElement("button")
 revertStateButton.id = "revertStateButton"
-revertStateButton.innerHTML = "Revert"
+revertStateButton.innerHTML = "History"
 gameBoard.appendChild(revertStateButton)
 
 revertStateButton.addEventListener("click", function() {
-	let res = prompt("How many moves (4 moves per turn) would you like to revert? You can always revert more if needed, but can't undo a revert. ")
-	if (res !== null && confirm("Are you sure you would like to revert the game state? Other players will be notified, so you should clear the revert with them. ")) {
-		window.stateManager.revertState(res)
-	}
+	let elem = document.createElement("div")
+	let p = document.createElement("p")
+	p.innerHTML = "Loading Game History... (This should only take a second or two - otherwise, close menu and try again)"
+	elem.appendChild(p)
+
+	let popup;
+
+	stateManager.getMessageHistory().then((obj) => {
+		let messageHistory = obj.message
+		p.innerHTML = "Click to reset the game back in history: "
+
+		let buttonContainer = document.createElement("div")
+		buttonContainer.className = "historyMenuButtonContainer"
+		elem.appendChild(buttonContainer)
+
+		messageHistory.forEach((move) => {
+			let btn = document.createElement("button")
+			btn.innerHTML = `Move ${move.move} - ${move.message}`
+
+			buttonContainer.appendChild(btn)
+			btn.addEventListener("click", function() {
+				if (confirm(`Are you sure you would like to revert the game state to move ${move.move}? This will affect ALL players, and can't be undone!`)) {
+					window.stateManager.revertState(move.move)
+					popup.dismiss()
+				}
+			})
+		})
+
+		buttonContainer.scrollTo(0, 999999) //Scroll to the bottom.
+	})
+
+	popup = new Popups.Notification("History", elem)
+	popup.show()
 })
 
 let swapJokerButton = document.createElement("button")
@@ -169,7 +198,6 @@ swapJokerButton.addEventListener("click", function() {
 
 	popup = new Popups.Notification("Swap Tile For Joker", elem)
 	popup.show()
-
 })
 
 

@@ -5,6 +5,9 @@ function onIncomingMessage(clientId, obj) {
 	if (obj.type === "roomActionLeaveRoom") {
 		return this.removeClient(clientId)
 	}
+	if (obj.type === "roomActionGetMessageHistory") {
+		return client.message(obj.type, client.messageHistory)
+	}
 	else if (obj.type === "roomActionKickFromRoom") {
 		//Only the host can kick, and only if the game has not started.
 		if (!isHost) {
@@ -75,11 +78,8 @@ function onIncomingMessage(clientId, obj) {
 		if (this.clientIds.indexOf(clientId) > 3) {
 			return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
 		}
-		if (!isNaN(obj.message)) {
-			this.messageAll([], "roomActionGameplayAlert", client.getNickname() + " is reverting the state " + Number(obj.message) + " moves. ", "success" )
-			return this.revertState(Number(obj.message))
-		}
-		return client.message("roomActionGameplayAlert", "Invalid Reversion Amount", "error")
+		//revertState takes client, as it needs to get the name of the person reverting to notify other players. 
+		return this.revertState(client, obj.message)
 	}
 	else if (obj.type === "roomActionState") {
 		return client.message(obj.type, this.getState(clientId), "success")

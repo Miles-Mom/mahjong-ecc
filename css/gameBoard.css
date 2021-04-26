@@ -422,6 +422,16 @@ This means that something using bottom is off the page - hence we must use top. 
 	display: block;
 }
 
+.historyMenuButtonContainer {
+	max-height: 35vh;
+	overflow: scroll;
+}
+
+.historyMenuButtonContainer button {
+	font-size: inherit;
+	width: 100%;
+}
+
 #gameBoard {
 	position: absolute;
 	width: 100vw;

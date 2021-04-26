@@ -280,18 +280,25 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		let nextDirection = this.gameData.charleston.directions[0]?.[0]
 		if (nextDirection) {
-			this.messageAll([], "roomActionGameplayAlert", "The next Charleston pass is " + nextDirection.direction , "success")
 			if (nextDirection.allAgree) {
+				this.messageAll([], "roomActionGameplayAlert", "Round vote - passing " + nextDirection.direction, "success")
 				this.setAllInstructions([], "Round Vote - Pass 3 tiles " + nextDirection.direction + " for another Charleston round. Pass 0 to block it. Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
 			}
 			else if (nextDirection.blind) {
-				this.setAllInstructions([], "Optional Charleston Pass - Pass 0-3 tiles " + nextDirection.direction + ". Tap tiles to add/remove from placemat. Hit Proceed when ready. " , "success")
+				let term = "Blind"
+				if (nextDirection.direction === "across") {
+					term = "Courtesy"
+				}
+				this.messageAll([], "roomActionGameplayAlert", `The next pass is ${term.toLowerCase()} ${nextDirection.direction}` , "success")
+				this.setAllInstructions([], `${term} Pass - Pass 0-3 tiles ${nextDirection.direction} ${(term === "Blind")?"in order of preference":""}. Tap tiles to add/remove from placemat. Hit Proceed when ready.` , "success")
 			}
 			else {
-				this.setAllInstructions([], "The next Charleston pass is " + nextDirection.direction + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
+				this.messageAll([], "roomActionGameplayAlert", "The next pass is " + nextDirection.direction , "success")
+				this.setAllInstructions([], "The next pass is " + nextDirection.direction + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
 			}
 		}
 		else {
+			this.messageAll([], "roomActionGameplayAlert", "The Charleston is Over", "success")
 			this.setInstructions(this.gameData.currentTurn.userTurn, "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
 			this.setAllInstructions([this.gameData.currentTurn.userTurn], "The Charleston is over. Waiting on East Wind to make a play. ")
 			this.gameData.charleston = false //The charleston is over.
