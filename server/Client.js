@@ -5,6 +5,8 @@ class Client {
 		this.clientId = clientId
 		this.nickname = clientId.slice(0,7)
 		this.websocket = websocket
+
+		this.clearMessageHistory()
 	}
 
 	message(type, message, status) {
@@ -15,7 +17,6 @@ class Client {
 
 		if (type === "roomActionStartGame") {
 			this.clearMessageHistory()
-			this.addMessageToHistory("Game Started")
 		}
 
 		if (this.suppressed) {return}
@@ -139,9 +140,9 @@ class Client {
 		}
 	}
 
-	messageHistory = []
 	clearMessageHistory() {
 		this.messageHistory = []
+		this.messageHistory.push({message: "Game Started", move: 0})
 	}
 	addMessageToHistory(message) {
 		this.messageHistory.push({message, move: this?.getRoom()?.state?.moves?.length})
