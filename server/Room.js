@@ -5,7 +5,6 @@ const Match = require("../src/Match.js")
 const Pretty = require("../src/Pretty.js")
 const Sequence = require("../src/Sequence.js")
 const TileContainer = require("../src/TileContainer.js")
-const americanUtilities = require("./american/utilities.js")
 
 class Room {
 	constructor(roomId, state = {}) {
@@ -110,30 +109,11 @@ class Room {
 				}
 				else if (this.state.settings.gameStyle === "american") {
 					if (id === mahjongClientId) {
-						let hands, maxPossibleJokers;
-						try {
-							//We don't want to crash if the hand is dead.
-							hands = americanUtilities.getTileDifferential(this.gameData.card, hand.contents)
-							maxPossibleJokers = americanUtilities.getTileDifferential([hands[0].handOption], [])[0].canFillJoker.length
-						}
-						catch (e) {
-							console.error(e)
-						}
-						if (hands?.[0]?.diff === 0) {
-							let handOption = hands[0].handOption
-							res[id].points += handOption.score
+						let score = hand.score({type: "american", card: this.gameData.card})
 
-							res[id].text += " - " + handOption.section + " #" + (handOption.cardIndex + 1) + `, ${res[id].points} points`
-
-							//Double for no jokers, except where jokers can't be used (like for Singles and Pairs)
-							if (hands[0].jokerCount === 0 && maxPossibleJokers > 0) {
-								res[id].points *= 2
-								res[id].text += " - No Jokers (Double)"
-							}
-						}
-						else {
-							res[id].text += " - Unable to Score"
-						}
+						res[id].points += score.score
+						res[id].text += ` - ${score.handName}, ${res[id].points} points`
+						res[id].text += score.noJokers?" - No Jokers (Double)":""
 					}
 				}
 
