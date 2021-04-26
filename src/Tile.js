@@ -67,7 +67,7 @@ class Tile {
 			//Since Chinese mahjong uses Prettys, not flower/season Tiles this is enough to check.
 			(this.type === "flower" || this.type === "season")
 			&& (tile.type === "flower" || tile.type === "season")
-		) {return true}
+		) {return 2} //We'll return a 2 to indicate that the tile is identical in gameplay, but not visually. 
 		return false
 	}
 

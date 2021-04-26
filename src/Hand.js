@@ -143,7 +143,8 @@ class Hand {
 		}).bind(this)
 
 		this.removeMatchingTile = (function(obj) {
-			//Removes a Tile that matches the object passed, although may not be the same objet.
+			//Removes a Tile that matches the object passed, although may not be the same object.
+
 			if (!obj instanceof Tile) {throw "removeMatchingTile only supports Tiles"}
 			if (this.inPlacemat.length > 0) {console.warn("Hand.removeMatchingTile is intended for server side use only. ")}
 			if (this.contents.some(((item, index) => {
@@ -260,10 +261,20 @@ class Hand {
 			let indexes = []
 			tiles.forEach((tile, index) => {
 				if (!(tile instanceof Tile)) {throw "Your Sequence or Array contains non-tiles. "}
+
 				for (let i=this.contents.length-1;i>=0;i--) {
-					if (tile.matches(this.contents[i]) && !indexes.includes(i)) {
-						indexes[index] = i
-						return
+					let matchResult = tile.matches(this.contents[i])
+
+					if (!indexes.includes(i)) {
+						if (matchResult === 2) {
+							//Non-exact match (like a 1 flower vs 4 season - same in gameplay, not visually)
+							//We will prefer exact matches, but accept non exact ones.
+							indexes[index] = i
+						}
+						else if (matchResult) {
+							indexes[index] = i
+							return
+						}
 					}
 				}
 			})
