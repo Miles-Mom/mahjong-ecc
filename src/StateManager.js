@@ -63,17 +63,17 @@ class StateManager {
 				if (window.setConnectionStatus) {window.setConnectionStatus({connected: false})}
 				console.warn(e)
 				if (e.code !== 1000) {
+					if (stateManager.offlineMode === false) {
+						if (popup) {popup.dismiss();popup = null}
+						popup = new Popups.MessageBar("You Disconnected from the Server. Attempting to Reconnect...")
+						popup.show(8000)
+					}
+
 					//If not a normal closure, reestablish and sync.
 					await new Promise((resolve, reject) => {setTimeout(resolve, 1000)}) //1 second delay on reconnects.
 					this.createWebsocket()
 					if (!stateManager.offlineMode) {
 						this.getCurrentRoom() //Syncs state.
-					}
-
-					if (stateManager.offlineMode === false) {
-						if (popup) {popup.dismiss();popup = null}
-						popup = new Popups.MessageBar("You Disconnected from the Server. Attempting to Reconnect...")
-						popup.show(8000)
 					}
 				}
 			}).bind(this))
@@ -354,6 +354,7 @@ class StateManager {
 			this.isHost = obj.message.isHost
 
 			if (this.inGame === false && obj.message.inGame === true) {
+				if (stateManager.offlineMode === undefined) {stateManager.offlineMode = false}
 				onStartGame({status: "success", message: "State Sync"})
 			}
 			else if (this.inGame === true && obj.message.inGame === false) {
