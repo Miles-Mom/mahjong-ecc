@@ -203,25 +203,6 @@ let fileInput = document.createElement("input")
 fileInput.style.display = "none"
 fileInput.type = "file"
 fileInput.accept = "application/json"
-fileInput.addEventListener("change", async function() {
-	let file = fileInput.files[0]
-	if (file) {
-		let reader = new FileReader()
-		await new Promise((r, j) => {
-			reader.onload = r
-			reader.onerror = j
-			reader.readAsText(file)
-		})
-		let text = reader.result
-		try {
-			resumeOfflineGame(text)
-		}
-		catch (e) {
-			console.error(e)
-			alert("Error loading save. Please make sure you selected the correct file. ")
-		}
-	}
-})
 document.body.appendChild(fileInput)
 
 uploadSaveButton.addEventListener("click", function() {
@@ -371,6 +352,26 @@ uploadSaveButton.addEventListener("click", function() {
 
 	let uploadFromDevice = document.createElement("button")
 	uploadFromDevice.innerHTML = "Upload From Device"
+	fileInput.onchange = async function() {
+		let file = fileInput.files[0]
+		if (file) {
+			let reader = new FileReader()
+			await new Promise((r, j) => {
+				reader.onload = r
+				reader.onerror = j
+				reader.readAsText(file)
+			})
+			let text = reader.result
+			try {
+				resumeOfflineGame(text)
+				popup.dismiss()
+			}
+			catch (e) {
+				console.error(e)
+				alert("Error loading save. Please make sure you selected the correct file. ")
+			}
+		}
+	}
 	uploadFromDevice.addEventListener("click", function() {
 		fileInput.click()
 	})
