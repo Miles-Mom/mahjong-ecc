@@ -8,13 +8,14 @@ class Client {
 	}
 
 	message(type, message, status) {
-		//Add these to message history so that we can revert based on them. 
+		//Add these to message history so that we can revert based on them.
 		if (type === "roomActionGameplayAlert") {
 			this.addMessageToHistory(message)
 		}
 
 		if (type === "roomActionStartGame") {
 			this.clearMessageHistory()
+			this.addMessageToHistory("Game Started")
 		}
 
 		if (this.suppressed) {return}
