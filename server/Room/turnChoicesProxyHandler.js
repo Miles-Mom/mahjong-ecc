@@ -39,7 +39,8 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			return false
 		}
 
-		if (this.gameData.charleston.directions[0][0].allAgree) {
+		let passInfo = this.gameData.charleston.directions[0][0]
+		if (passInfo.allAgree) {
 			if (![0,3].includes(obj[key].length)) {
 				client.message("roomActionPlaceTiles", "Pass zero tiles (press proceed on nothing) to veto this round. Pass three tiles to vote in favor. ", "error")
 				return false
@@ -54,9 +55,19 @@ function getPriority(obj, key, exemptFromChecks = false) {
 				return true
 			}
 		}
-		else if (this.gameData.charleston.directions[0][0].blind) {
+		else if (passInfo.blind) {
 			//We probably want to notify the player across how many tiles are being passed,
 			//or short circuit them if no tiles are passed.
+			if (passInfo.direction === "across") {
+				//Courtesy pass. Can be any amount.
+			}
+			else {
+				//Our code allows passing zero, but rules don't. Block it.
+				if (obj[key].length < 1) {
+					client.message("roomActionPlaceTiles", "You must pass at least one tile during the blind pass. ", "error")
+					return false
+				}
+			}
 		}
 		else if (obj[key].length !== 3) {
 			client.message("roomActionPlaceTiles", "This Charleston round requires exactly three tiles. ", "error")
@@ -290,7 +301,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					term = "Courtesy"
 				}
 				this.messageAll([], "roomActionGameplayAlert", `The next pass is ${term.toLowerCase()} ${nextDirection.direction}` , "success")
-				this.setAllInstructions([], `${term} Pass - Pass 0-3 tiles ${nextDirection.direction} ${(term === "Blind")?"in order of preference":""}. Tap tiles to add/remove from placemat. Hit Proceed when ready.` , "success")
+				this.setAllInstructions([], `${term} Pass - Pass ${(term==="Blind")?1:0}-3 tiles ${nextDirection.direction} ${(term === "Blind")?"in order of preference":""}. Tap tiles to add/remove from placemat. Hit Proceed when ready.` , "success")
 			}
 			else {
 				this.messageAll([], "roomActionGameplayAlert", "The next pass is " + nextDirection.direction , "success")
