@@ -134,17 +134,18 @@ revertStateButton.addEventListener("click", function() {
 	p.innerHTML = "Loading Game History... (This should only take a second or two - otherwise, close menu and try again)"
 	elem.appendChild(p)
 
-	let popup;
+	let popup = new Popups.Notification("History", elem)
+	popup.show()
 
 	stateManager.getMessageHistory().then((obj) => {
-		let messageHistory = obj.message
+		let history = obj.message
 		p.innerHTML = "Click to reset the game back in history: "
 
 		let buttonContainer = document.createElement("div")
 		buttonContainer.className = "historyMenuButtonContainer"
 		elem.appendChild(buttonContainer)
 
-		messageHistory.forEach((move) => {
+		history.forEach((move) => {
 			let btn = document.createElement("button")
 			btn.innerHTML = `Move ${move.move} - ${move.message}`
 
@@ -159,9 +160,6 @@ revertStateButton.addEventListener("click", function() {
 
 		buttonContainer.scrollTo(0, 999999) //Scroll to the bottom.
 	})
-
-	popup = new Popups.Notification("History", elem)
-	popup.show()
 })
 
 let swapJokerButton = document.createElement("button")
