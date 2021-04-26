@@ -35,6 +35,7 @@ class Room {
 			})
 		}).bind(this)
 
+
 		let _hostClientId;
 		Object.defineProperty(this, "hostClientId", {
 			set: function(id) {
@@ -84,156 +85,36 @@ class Room {
 		this.startGame = (require("./Room/startGame.js")).bind(this)
 		this.addBot = (require("./Room/addBot.js")).bind(this)
 
-		let lastSummary;
-		this.getSummary = (function(mahjongClientId, options = {}) {
-			let summary = []
+		//Directs incoming message to the proper handlers, in some cases applying checks.
+		this.onIncomingMessage = (require("./Room/onIncomingMessage.js")).bind(this)
 
-			let res = {}
+		//Generates summary for game end.
+		this.getSummary = (require("./Room/getSummary.js")).bind(this)
 
-			for (let id in this.gameData.playerHands) {
-				let hand = this.gameData.playerHands[id]
+		this.turnChoicesProxyHandler = {
+			set: (require("./Room/turnChoicesProxyHandler.js")).bind(this)
+		}
 
-				res[id] = {netpoints: 0, points: 0}
+		//Creates state visible to a specific client. Used by room.sendStateToClients
+		this.getState = (require("./Room/getState.js")).bind(this)
 
-				res[id].text = globalThis.serverStateManager.getClient(id).getNickname() + ": " + hand.wind
+		//For kicking players and leaving the room.
+		this.removeClient = (require("./Room/removeClient.js")).bind(this)
 
-				if (this.state.settings.gameStyle === "chinese") {
-					if (hand.wind === "east") {res[id].text += " (pay(s) double)"}
-					if (id === mahjongClientId) {
-						res[id].points += hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
-					}
-					else {
-						res[id].points += hand.score()
-					}
-					res[id].text += `, ${res[id].points} points`
-				}
-				else if (this.state.settings.gameStyle === "american") {
-					if (id === mahjongClientId) {
-						let score = hand.score({type: "american", card: this.gameData.card})
-
-						res[id].points += score.score
-						res[id].text += ` - ${score.handName}, ${res[id].points} points`
-						res[id].text += score.noJokers?" - No Jokers (Double)":""
-					}
-				}
-
-				if (id === mahjongClientId) {
-					res[id].text += " - Mahjong"
-
-					if (!this.gameData.previousTurnPickedUp) {
-						res[id].text += " - Drew Own Tile"
-						if (this.state.settings.gameStyle === "american") {
-							res[id].text += " (double)"
-							res[id].points *= 2 //Drawing own tile is a double.
-						}
-					}
-					else {
-						res[id].text += " - With " + this.gameData.previousTurnPickedUp.getTileName(this.state.settings.gameStyle)
-					}
-				}
-			}
+		this.drawTile = (require("./Room/drawTile.js")).bind(this)
+		this.goMahjong = (require("./Room/goMahjong.js")).bind(this)
 
 
-			for (let id in this.gameData.playerHands) {
-				if (this.state.settings.gameStyle === "chinese") {
-					if (id === this.gameData.previousTurnThrower) {
-						res[id].text += " - Threw Last Tile"
-					}
-
-					//We can simply iterate twice - we pay them, then they pay us.
-					for (let opponentId in this.gameData.playerHands) {
-						let playerMultiplier = 1
-
-						//Everything with East is doubled.
-						if (this.gameData.playerHands[id].wind === "east" || this.gameData.playerHands[opponentId].wind === "east") {
-							playerMultiplier *= 2
-						}
-
-						//We only pay if we are not Mahjong
-						if (id !== mahjongClientId) {
-							res[id].netpoints -= res[opponentId].points * playerMultiplier
-							res[opponentId].netpoints += res[opponentId].points * playerMultiplier
-						}
-					}
-				}
-				else if (this.state.settings.gameStyle === "american" && mahjongClientId) {
-					let playerMultiplier = 1
-
-					if (id === this.gameData.previousTurnThrower) {
-						res[id].text += " - Threw Last Tile (Pay Double)"
-						playerMultiplier *= 2
-					}
-
-					//Pay mahjong player (already checked that one exists) their points.
-					res[id].netpoints -= res[mahjongClientId].points * playerMultiplier
-					res[mahjongClientId].netpoints += res[mahjongClientId].points * playerMultiplier
-				}
-				if (id !== mahjongClientId) {
-					summary.push(res[id])
-				}
-				else {
-					summary.splice(0, 0, res[id]) //Insert at end.
-				}
-			}
-
-			for (let id in this.gameData.playerHands) {
-				res[id].text += " (Net " + (res[id].netpoints > 0?"+":"") + res[id].netpoints + " points)"
-			}
-
-			lastSummary = summary.map((item) => {return item.text}).join("\n")
-			return lastSummary;
-		}).bind(this)
-
-		let shouldRotateWinds = true
+		//We don't want to rotate until the game is actually ended - otherwise, we mess up state if the game is reverted.
+		//Therefore, we use a flag shouldRotateWinds. It defaults to true, and can be overridden by room.goMahjong
+		this.shouldRotateWinds = true
 		this.rotateWinds = function() {
-			//We don't want to rotate until the game is actually ended - otherwise, we mess up state if the game is reverted.
 			let winds = ["north", "east", "south", "west"].reverse()
 			for (let clientId in this.state.settings.windAssignments) {
 				let wind = this.state.settings.windAssignments[clientId]
 				this.state.settings.windAssignments[clientId] = winds[(winds.indexOf(wind) + 1) % 4] //Next in order
 			}
 		}
-
-		this.goMahjong = (function goMahjong(clientId, options = {}) {
-			//options.override
-
-			//First, verify the user can go mahjong.
-			let client = globalThis.serverStateManager.getClient(clientId)
-			let hand = this.gameData.playerHands[clientId]
-
-			if (this.state.settings.gameStyle === "chinese") {
-				//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
-				//the scoring will now be correct, not incorrect)
-				let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: this.gameData.previousTurnPickedUp})
-				if (isMahjong instanceof Hand) {
-					hand.contents = isMahjong.contents //Autocomplete the mahjong.
-				}
-				if (!isMahjong && !options.override) {
-					return client.message("roomActionPlaceTiles", "Unable to go mahjong with this hand. If you play by different rules, try again to override. ", "error")
-				}
-			}
-			else if (this.state.settings.gameStyle === "american") {
-
-			}
-
-			//The game is over.
-			this.gameData.currentTurn.userTurn = clientId
-			this.gameData.isMahjong = true
-
-			this.sendStateToClients()
-			//If East wins, do not rotate.
-			if (this.state.settings.windAssignments[clientId] === "east") {
-				shouldRotateWinds = false
-			}
-
-			this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has gone mahjong" , {clientId, speech: "Mahjong"})
-
-			this.setAllInstructions([this.hostClientId], client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
-			this.setInstructions(this.hostClientId, client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
-
-			this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options)}, "success")
-			this.sendStateToClients()
-		}).bind(this)
 
 		this.revertState = (function(moveCount) {
 			//Reverts state, removing moveCount moves
@@ -246,90 +127,10 @@ class Room {
 			room.init()
 		}).bind(this)
 
-		this.turnChoicesProxyHandler = {
-			set: (require("./Room/turnChoicesProxyHandler.js")).bind(this)
-		}
-
-		let getState = (function getState(requestingClientId) {
-			//Generate the game state visible to requestingClientId
-			let state = {}
-			state.inGame = this.inGame
-			state.isHost = (requestingClientId === this.hostClientId);
-			if (this.gameData.wall) {
-				//Pass tiles if mahjong, else number of tiles.
-				state.wallTiles = this.gameData.wall.tiles
-				if (!this.gameData.isMahjong) {
-					state.wallTiles = state.wallTiles.length
-				}
-			}
-
-			state.isGameOver = 0
-			if (this?.gameData?.isMahjong) {
-				state.isGameOver = 1
-			}
-			else if (this?.gameData?.wall?.isEmpty) {
-				state.isGameOver = 2
-			}
-
-			state.settings = this.state.settings
-
-			state.instructions = this?.gameData?.instructions?.[requestingClientId] || ""
-			state.discardPile = this.gameData.discardPile
-
-			if (this.gameData.currentTurn) {
-				state.currentTurn = {
-					thrown: this.gameData.currentTurn.thrown,
-					userTurn: this.gameData.currentTurn.userTurn,
-					playersReady: Object.keys(this.gameData.currentTurn.turnChoices || {})
-				}
-
-				//Pass the last drawn tile to the person requesting.
-				//Last drawn tile is cleared every throw to avoid leaking information and stop showing the tile as drawn.
-				if (requestingClientId === this.gameData.currentTurn.userTurn) {
-					state.currentTurn.lastDrawn = this.lastDrawn
-				}
-
-
-				if (this.gameData.charleston) {
-					state.currentTurn.charleston = true
-				}
-			}
-
-			state.clients = []
-			this.clientIds.slice(0, state.inGame?4:Infinity).forEach((currentClientId) => {
-				let visibleClientState = {
-					id: currentClientId,
-					nickname: globalThis.serverStateManager.getClient(currentClientId).getNickname(),
-					isHost: (currentClientId === this.hostClientId)
-				}
-				if (this.inGame) {
-					let hand = this.gameData.playerHands[currentClientId]
-					if (requestingClientId === currentClientId) {
-						//One can see all of their own tiles.
-						visibleClientState.hand = hand
-					}
-					else {
-						if (!this.gameData.isMahjong && !this.gameData.wall.isEmpty) {
-							//One can only see exposed tiles of other players. True says to include other tiles as face down.
-							visibleClientState.visibleHand = hand.getExposedTiles(true)
-						}
-						else {
-							//Game over. Show all.
-							visibleClientState.visibleHand = hand.contents
-						}
-						visibleClientState.wind = hand.wind
-					}
-				}
-				state.clients.push(visibleClientState)
-			})
-
-			return state
-		}).bind(this)
-
 		this.sendStateToClients = (function sendStateToClients() {
 			this.clientIds.forEach((clientId) => {
 				let client = globalThis.serverStateManager.getClient(clientId)
-				let state = getState(clientId)
+				let state = this.getState(clientId)
 				client.message("roomActionState", state, "success")
 			})
 		}).bind(this)
@@ -348,80 +149,12 @@ class Room {
 			return true
 		}).bind(this)
 
-		this.removeClient = (function(clientId, explaination = "You left the room. ") {
-			let clientIdIndex = this.clientIds.findIndex((currentClientId) => {return currentClientId === clientId})
-			if (clientIdIndex === -1) {
-				return "Client Not Found"
-			}
-			else {
-				this.clientIds.splice(clientIdIndex, 1)
-				if (this.hostClientId === clientId) {
-					//Choose a new host client. Make sure NOT to pick a bot.
-					this.hostClientId = null;
-					this.clientIds.forEach(((clientId) => {
-						if (this.hostClientId) {return}
-						if (!globalThis.serverStateManager.getClient(clientId).isBot) {
-							this.hostClientId = clientId
-						}
-					}).bind(this))
-				}
-				this.sendStateToClients()
-
-				let clientBeingKicked = globalThis.serverStateManager.getClient(clientId)
-				if (clientBeingKicked) {
-					clientBeingKicked.message("roomActionLeaveRoom", explaination, "success")
-					//The client is going to change their client Id. We can now delete the old client.
-					globalThis.serverStateManager.deleteClient(clientId)
-				}
-				if (this.hostClientId === null) {
-					//We have no clients. Delete this room.
-					//Note that this code shouldn't be called, unless there is a bug or lag. The client will not show the Leave Room button if they are the
-					//only player and host (which they should be if they are the only player), and therefore roomActionCloseRoom will be sent instead.
-					globalThis.serverStateManager.deleteRoom(this.roomId)
-				}
-			}
-		}).bind(this)
-
 		this.messageAll = (function(exclude = [], ...args) {
 			this.clientIds.forEach((clientId) => {
 				if (exclude.includes(clientId)) {return}
 				let client = globalThis.serverStateManager.getClient(clientId)
 				client.message(...args)
 			})
-		}).bind(this)
-
-		this.drawTile = (function drawTile(clientId, doNotMessage = false) {
-			let tile;
-			let pretty = -1
-			while (!(tile instanceof Tile)) {
-				pretty++
-				tile = this.gameData.wall.drawFirst()
-				if (!tile) {
-					console.log("Wall Empty");
-
-					this.messageAll([], "displayMessage", {title: "Game Over - Wall Empty", body: this.getSummary()}, "success")
-
-					this.setInstructions([this.hostClientId], "The Wall is empty. \nPress End Game to return everybody to the room screen. ")
-					this.setInstructions(this.hostClientId,  "The Wall is empty. \nPress End Game to return everybody to the room screen. Press New Game to play again with the same settings. ")
-
-					this.gameData.wall.isEmpty = true
-					this.sendStateToClients() //Game over. Wall empty.
-					return
-				}
-				this.gameData.playerHands[clientId].add(tile)
-			}
-			let client = globalThis.serverStateManager.getClient(clientId)
-			if (!doNotMessage) {
-				this.lastDrawn = tile
-				this.setInstructions(client.clientId, "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.getTileName(this.state.settings.gameStyle)) + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
-				if (pretty > 0) {
-					this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " drew " + ((pretty === 1)?"a pretty!":pretty + " prettys!"), {clientId, speech: "I'm pretty!"})
-				}
-			}
-			else if (pretty > 0) {
-				//If doNotMessage is passed, this is beginning of game setup. We won't send anything other than "You drew a pretty" to avoid having multiple overlapping pieces of text.
-				client.message("roomActionGameplayAlert", "You drew a pretty!", "success")
-			}
 		}).bind(this)
 
 		this.endGame = (function endGame(obj, clientId) {
@@ -431,8 +164,8 @@ class Room {
 				//Tell players who ended the game.
 				gameEndMessage = "The game has been ended by " + client.getNickname() + "."
 			}
-			if (shouldRotateWinds) {this.rotateWinds()}
-			shouldRotateWinds = true
+			if (this.shouldRotateWinds) {this.rotateWinds()}
+			this.shouldRotateWinds = true
 			this.inGame = false
 			delete this.state.seed
 			delete this.state.wall
@@ -462,10 +195,10 @@ class Room {
 			let hand = this.gameData.playerHands[clientId]
 
 			if (this.gameData.isMahjong) {
-				return client.message("displayMessage", {title: "Mahjong!", body: lastSummary})
+				return client.message("displayMessage", {title: "Mahjong!", body: this.lastSummary})
 			}
 			else if (this.gameData.wall.isEmpty) {
-				return client.message("displayMessage", {title: "Game Over - Wall Empty", body: lastSummary})
+				return client.message("displayMessage", {title: "Game Over - Wall Empty", body: this.lastSummary})
 			}
 
 			if (!hand) {
@@ -711,122 +444,16 @@ class Room {
 				this.sendStateToClients()
 			}
 		}).bind(this)
+	}
 
-		this.onIncomingMessage = (function(clientId, obj) {
-			let client = globalThis.serverStateManager.getClient(clientId)
-			let isHost = (clientId === this.hostClientId)
-
-			if (obj.type === "roomActionLeaveRoom") {
-				return this.removeClient(clientId)
-			}
-			else if (obj.type === "roomActionKickFromRoom") {
-				//Only the host can kick, and only if the game has not started.
-				if (!isHost) {
-					console.log(client)
-					console.log(client.message)
-					return client.message(obj.type, "Only Host Can Kick", "error")
-				}
-				if (this.inGame) {
-					return client.message(obj.type, "Can't Kick During Game", "error")
-				}
-				this.removeClient(obj.id, "You have been kicked from the room. ") //obj.id is the id of the user to kick.
-				return client.message(obj.type, "Kicked Client", "success")
-			}
-			else if (obj.type === "roomActionStartGame") {
-				if (!isHost) {
-					return client.message("displayMessage", {title: "Error Starting Game", body: "Only Host Can Start"})
-				}
-				if (this.inGame) {
-					return client.message("displayMessage", {title: "Error Starting Game", body: "Already in Game"})
-				}
-
-				//Time to start the game.
-				let res = this.startGame(obj)
-				if (typeof res === "string") {
-					//Strings are error messages.
-					return client.message("displayMessage", {title: "Error Starting Game", body: res})
-				}
-				return
-			}
-			else if (obj.type === "roomActionEndGame") {
-				//Anybody can end the game, as they could do the same going AFK.
-				if (!this.inGame) {
-					return client.message(obj.type, "No Game In Progress", "error")
-				}
-				if (this.clientIds.indexOf(clientId) > 3) {
-					return this.removeClient(clientId)
-				}
-				this.endGame(obj, clientId) //Clientid is an optional parameter.
-			}
-			else if (obj.type === "roomActionCloseRoom") {
-				if (!isHost) {
-					return client.message(obj.type, "Only Host Can Close Room", "error")
-				}
-
-				let hostClientId = this.hostClientId //Host may change as people are removed.
-
-				this.clientIds.slice(0).forEach((clientId) => {
-					if (clientId !== hostClientId) {
-						//Clone array to avoid shifting.
-						this.removeClient(clientId, "The room has been closed. ")
-					}
-				})
-				this.removeClient(hostClientId, "You closed the room. ")
-				globalThis.serverStateManager.deleteRoom(this.roomId)
-			}
-			else if (obj.type === "roomActionPlaceTiles") {
-				//Action to place tiles.
-				//Only current turn user can place.
-				return this.onPlace(obj, clientId)
-			}
-			else if (obj.type === "roomActionAddBot") {
-				if (!isHost) {
-					return client.message(obj.type, "Only Host Can Add Bots", "error")
-				}
-				return this.addBot(obj)
-			}
-			else if (obj.type === "roomActionRevertState") {
-				if (this.clientIds.indexOf(clientId) > 3) {
-					return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
-				}
-				if (!isNaN(obj.message)) {
-					this.messageAll([], "roomActionGameplayAlert", client.getNickname() + " is reverting the state " + Number(obj.message) + " moves. ", "success" )
-					return this.revertState(Number(obj.message))
-				}
-				return client.message("roomActionGameplayAlert", "Invalid Reversion Amount", "error")
-			}
-			else if (obj.type === "roomActionState") {
-				return client.message(obj.type, getState(clientId), "success")
-			}
-			else if (obj.type === "roomActionChangeNickname") {
-				let message; //Message will remain undefined if the user does not have permission to rename.
-				let target = globalThis.serverStateManager.getClient(obj.targetId)
-
-				if (obj.targetId === clientId) {
-					message = target.getNickname() + " renamed to " + obj.nickname
-				}
-				else if (isHost) {
-					message = "The host renamed " + target.getNickname() + " to " + obj.nickname
-				}
-
-				if (message) {
-					target.setNickname(obj.nickname)
-					this.messageAll([clientId], "roomActionGameplayAlert", message, "success" )
-					this.sendStateToClients()
-				}
-				return
-			}
-		}).bind(this)
-
-		this.toJSON = (function() {
-			let moves = this.state.moves
-			delete this.state.moves
-			let str = JSON.stringify(this.state)
-			this.state.moves = moves
-			str += "\n"
-			this.state.moves.forEach((move) => {str += JSON.stringify(move) + "\n"})
-			return str
-		}).bind(this)
+	toJSON() {
+		let moves = this.state.moves
+		delete this.state.moves
+		let str = JSON.stringify(this.state)
+		this.state.moves = moves
+		str += "\n"
+		this.state.moves.forEach((move) => {str += JSON.stringify(move) + "\n"})
+		return str
 	}
 
 	//Files have the moves after - they aren't all in one place.
