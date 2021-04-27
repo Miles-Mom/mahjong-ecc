@@ -10,7 +10,7 @@ function goMahjong(clientId, options = {}) {
 	if (this.state.settings.gameStyle === "chinese") {
 		//On override, always allow unlimited (4) sequences, as if the overrides are purely sequence limits (forgot to change the setting,
 		//the scoring will now be correct, not incorrect)
-		let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: this.gameData.previousTurnPickedUp})
+		let isMahjong = hand.isMahjong(options.override?4:this.state.settings.maximumSequences, {thrownTile: options.autoExpose && this.gameData.previousTurnPickedUp})
 		if (isMahjong instanceof Hand) {
 			hand.contents = isMahjong.contents //Autocomplete the mahjong.
 		}

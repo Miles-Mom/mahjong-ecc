@@ -456,7 +456,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					//Attempt a naked mahjong - user didn't provide what to do.
 					console.log("Attempting Naked Mahjong")
 					hand.add(this.gameData.currentTurn.thrown)
-					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
+					//Autoexpose to indicate we may need to automatically move something from in hand to expose. 
+					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), autoExpose: true})
 					utilized = true
 				}
 				else {
