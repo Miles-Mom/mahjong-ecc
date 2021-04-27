@@ -126,13 +126,17 @@ function isMahjong(maximumSequences = 4, options = {}) {
 	//TODO: Now that we support stacked sequences, we could have multiple valid winning hands. We should handle this, and return all valid hands.
 	//Either that, or pick highest value.
 
-	//TODO: Also, right now options.thrownTile matching might apply to a pair/pong when it could be applied to a sequence.
 	combos:
 	for (let i=0;i<combinations.length;i++) {
 		let combo = combinations[i]
 		let localTestHand = new Hand()
 		localTestHand.contents = testingHand.contents.slice(0)
+
+		//We need to expose a specific tile from the hand, as it was called for to go mahjong.
+		//We pick sequences first, as those are worth less.
+		let exposeTile;
 		let stillNeedToExposeTile = !!options.thrownTile
+
 		for (let i=0;i<combo.length;i++) {
 			let item = combo[i]
 			if (item instanceof Tile) {
@@ -141,8 +145,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 				}
 				let match = new Match({type: item.type, value: item.value, exposed: false, amount: 3})
 				if (stillNeedToExposeTile && item.matches(options.thrownTile)) {
-					match.exposed = true
-					stillNeedToExposeTile = false
+					exposeTile = match
 				}
 				localTestHand.add(match)
 			}
@@ -151,12 +154,15 @@ function isMahjong(maximumSequences = 4, options = {}) {
 					continue combos; //Continue outer loop
 				}
 				if (stillNeedToExposeTile && item.tiles.some((tile) => {return tile.matches(options.thrownTile)})) {
-					item.exposed = true
+					exposeTile = item
 					stillNeedToExposeTile = false
 				}
 				localTestHand.add(item)
 			}
 		}
+
+		if (exposeTile) {exposeTile.exposed = true}
+
 		//Check for a pair
 		let tile = (localTestHand.contents.filter((item) => {return item instanceof Tile}))[0]
 		if (pairs === 0 && !localTestHand.removeMatchingTilesFromHand(tile, 2, true)) {
