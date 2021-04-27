@@ -264,7 +264,6 @@ uploadSaveButton.addEventListener("click", function() {
 
 				for (let i=0;i<this.columns.length;i++) {
 					//Adjust text without adjusting other contents.
-					console.log(this.columns[i])
 					let columnKey = this.columns[i]?.replace("National Mahjongg League", "NMJL (In Development!)")
 
 					if (i === 2) {
@@ -308,7 +307,6 @@ uploadSaveButton.addEventListener("click", function() {
 					for (let key in this.obj) {
 
 						let item = this.obj[key]
-						console.log(item)
 						let itemToInsert;
 						if (item instanceof Object) {
 							itemToInsert = new ExpandableItem({obj: this.obj, key, columns: this.columns, depth: this.depth + 1})
@@ -352,7 +350,16 @@ uploadSaveButton.addEventListener("click", function() {
 							let text = await req.text()
 							console.log(text)
 							resumeOfflineGame(text)
-							//TODO: We need to create a revert menu and open it.
+							stateManager.revertState(0)
+
+							//Start at the beginning by default.
+							let messageBar = new Popups.MessageBar("Click Here to Load End of Game (Closes Automatically)")
+							messageBar.elem.addEventListener("click", function() {
+								resumeOfflineGame(text)
+								messageBar.dismiss()
+							})
+							messageBar.elem.style.cursor = "pointer"
+							messageBar.show(10000)
 						}
 						catch (e) {
 							console.error(e)

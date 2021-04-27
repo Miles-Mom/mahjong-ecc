@@ -112,17 +112,26 @@ class BlocklessAlert {
 }
 
 
+let openMessageBars; //Currently only allow one to be open at once. We should probably adjust to use increasing z-indexes, so multiple can overlap on different timelines. 
+
 class MessageBar {
 	constructor(text) {
 		let bar = document.createElement("div")
+		this.elem = bar
 		bar.id = "notificationBar"
 
-		let textHolder = document.createElement("p")
-		textHolder.innerHTML = text
-		bar.appendChild(textHolder)
+		//Allow passing elements or text.
+		let elem = text
+		if (typeof elem === "string") {
+			elem = document.createElement("p")
+			elem.innerHTML = text
+		}
+		bar.appendChild(elem)
 
 		this.show = function(duration) {
+			if (openMessageBars) {openMessageBars.dismiss()}
 			document.body.appendChild(bar)
+			openMessageBars = this
 			setTimeout(function() {
 				bar.remove()
 			}, duration)
@@ -130,6 +139,7 @@ class MessageBar {
 
 		this.dismiss = function() {
 			bar.remove()
+			openMessageBars = undefined
 		}
 	}
 }
