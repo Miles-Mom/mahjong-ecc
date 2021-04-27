@@ -211,12 +211,11 @@ uploadSaveButton.addEventListener("click", function() {
 	let popup;
 
 	let p = document.createElement("p")
-	//p.innerHTML = "You can upload a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
-	p.innerHTML = "You can upload a save file from your device to load that game: "
+	p.innerHTML = "You can upload a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
 	p.id = "messageText"
 	elem.appendChild(p)
 
-/*
+
 	function addColumn(row, text) {
 		let sectionNameColumn = document.createElement("td")
 		sectionNameColumn.innerHTML = `<span>${text}</span>`
@@ -240,6 +239,8 @@ uploadSaveButton.addEventListener("click", function() {
 			return
 		}
 
+
+
 		let table = document.createElement("table")
 		table.className = "guaranteedHandsTable"
 		tableContainer.innerHTML = ""
@@ -250,105 +251,126 @@ uploadSaveButton.addEventListener("click", function() {
 		addColumn(header, "Card")
 		addColumn(header, "Section")
 		addColumn(header, "Option")
-		addColumn(header, "Save")
+		addColumn(header, "Item")
 
-		Object.keys(obj).forEach((cardName) => {
-			//We can display all cards and options at once right now.
-			let card = obj[cardName]
-			let baseRows = [`${cardName.replace("National Mahjongg League", "NMJL")}`]
+		class ExpandableItem {
+			constructor({obj, key, columns = [], depth = 0}) {
+				this.elem = document.createElement("tr")
 
-			Object.keys(card).forEach((sectionName) => {
-				let section = card[sectionName]
-				let row = document.createElement("tr")
-				row.className = "sectionRow"
-				table.appendChild(row)
+				this.columns = columns.slice(0)
+				this.columns.push(key)
 
-				baseRows.push(`${sectionName}`)
-				baseRows.forEach((text) => {
-					addColumn(row, text)
-				})
-				addColumn(row, `${Object.keys(section).length} hands`)
-				addColumn(row, "")
+				this.depth = depth
 
-				let cachedBaseRows = baseRows.slice(0)
-				let expansion = [];
-				row.addEventListener("click", function() {
-					if (expansion[0]) {
-						while (expansion[0]) {expansion.pop().remove()}
+				for (let i=0;i<this.columns.length;i++) {
+					//Adjust text without adjusting other contents.
+					console.log(this.columns[i])
+					let columnKey = this.columns[i]?.replace("National Mahjongg League", "NMJL (In Development!)")
+
+					if (i === 2) {
+						columnKey = "#" + columnKey
 					}
-					else {
-						let insertBefore = row.nextSibling
-						Object.keys(section).forEach((itemName) => {
-							let saves = section[itemName]
+					addColumn(this.elem, columnKey)
+				}
 
-							let savesRow = document.createElement("tr")
-							savesRow.className = "savesRow"
-							table.insertBefore(savesRow, insertBefore)
+				columns = this.columns.slice(0)
 
-							let baseRows = cachedBaseRows
-							baseRows.push(`Hand #${itemName}`)
-							baseRows.forEach((text, index) => {
-								addColumn(savesRow, text)
-							})
-							addColumn(savesRow, `${Object.keys(saves).length} saves`)
+				this.elem.className = "guaranteedHands" + depth
 
-							expansion.push(savesRow)
+				this.obj = obj[key]
 
-							let cachedBaseRows2 = baseRows.slice(0);
-							let savesExpansion = []
-							savesRow.addEventListener("click", function() {
-								if (savesExpansion[0]) {
-									while (savesExpansion[0]) {savesExpansion.pop().remove()}
-								}
-								else {
-									let insertBefore = savesRow.nextSibling
-									Object.keys(saves).forEach((saveName) => {
-										let save = saves[saveName]
+				this.elem.addEventListener("click", (function() {
+					this.setExpanded()
+				}).bind(this))
+			}
 
-										let saveRow = document.createElement("tr")
-										saveRow.className = "saveRow"
-										table.insertBefore(saveRow, insertBefore)
+			emptyColumns = 0
+			addEmptyColumns(amount) {
+				this.emptyColumns = amount
+				while (this.elem.children.length < amount) {
+					addColumn(this.elem, "")
+				}
+				this.items.forEach((item) => {item.addEmptyColumns(amount)})
+			}
 
-										let baseRows = cachedBaseRows2
-										baseRows.forEach((text) => {
-											addColumn(saveRow, text)
-										})
-										addColumn(saveRow, `Save #${saveName} (${Math.round(save/1000)}kB)`)
-										saveRow.addEventListener("click", async function() {
-											let baseUrl = window.location.href
-											if (window.Capacitor) {
-												baseUrl = "https://mahjong4friends.com/"
-											}
-											baseUrl += encodeURI(`server/guaranteed/${cardName}/${sectionName}/${itemName}/${saveName}.server.json`)
-											console.log(baseUrl)
-											try {
-												let req = await fetch(baseUrl)
-												let text = await req.text()
-												console.log(text)
-												resumeOfflineGame(text)
-												//TODO: We need to create a revert menu and open it.
-											}
-											catch (e) {
-												console.error(e)
-												alert("Error Downloading Save File")
-											}
-										})
-
-										savesExpansion.push(saveRow)
-										expansion.push(saveRow)
-									})
-								}
-							})
-
-							baseRows.pop()
-						})
-					}
+			items = []
+			setExpanded(expanded) {
+				console.log(this.obj)
+				//If expanded is false, collapse. If true, expand. If undefined, toggle.
+				this.items.forEach((item) => {
+					item.setExpanded(false)
+					item.elem.remove()
 				})
-				baseRows.pop()
-			})
+
+				let insertBeforeElem = this.elem.nextSibling
+				if (expanded === true || expanded === undefined && this.items.length === 0) {
+					this.items = []
+					for (let key in this.obj) {
+
+						let item = this.obj[key]
+						console.log(item)
+						let itemToInsert;
+						if (item instanceof Object) {
+							itemToInsert = new ExpandableItem({obj: this.obj, key, columns: this.columns, depth: this.depth + 1})
+						}
+						else {
+							itemToInsert = new GameSaveItem({obj: this.obj, key, columns: this.columns, depth: this.depth + 1})
+						}
+
+						itemToInsert.addEmptyColumns(this.emptyColumns)
+						this.items.push(itemToInsert)
+						this.elem.parentNode.insertBefore(itemToInsert.elem, insertBeforeElem)
+					}
+				}
+				else {
+					this.items = []
+				}
+			}
+		}
+
+		class GameSaveItem extends ExpandableItem {
+			constructor(config) {
+				super(config)
+				this.elem.className = "saveRow"
+				this.elem.lastChild.remove()
+				addColumn(this.elem, config.key + ` (${Math.round(config.obj[config.key] / 1000)}kB)`)
+			}
+
+			setExpanded(status) {
+				if (status !== false) {
+					//We were clicked.
+					let baseUrl = window.location.href
+					if (window.Capacitor) {
+						baseUrl = "https://mahjong4friends.com/"
+					}
+					console.log(this.columns)
+					baseUrl += encodeURI(`server/guaranteed/${this.columns.join("/")}.server.json`)
+					console.log(baseUrl)
+					;(async function() {
+						try {
+							let req = await fetch(baseUrl)
+							let text = await req.text()
+							console.log(text)
+							resumeOfflineGame(text)
+							//TODO: We need to create a revert menu and open it.
+						}
+						catch (e) {
+							console.error(e)
+							alert("Error Downloading Save File")
+						}
+					}())
+				}
+			}
+		}
+
+		//Could use Object.keys(obj), but that doesn't get a custom ordering.
+		;["Tutorial", "2021 National Mahjongg League"].forEach((cardName) => {
+			let expandable = new ExpandableItem({obj, key: cardName})
+			expandable.addEmptyColumns(4)
+			table.appendChild(expandable.elem)
 		})
 	})())
-*/
+
 
 	let uploadFromDevice = document.createElement("button")
 	uploadFromDevice.innerHTML = "Upload From Device"
@@ -365,7 +387,7 @@ uploadSaveButton.addEventListener("click", function() {
 			try {
 				resumeOfflineGame(text)
 				popup.dismiss()
-				//Reset any selected files - if the user uploads the same file twice, we should load it twice. (they may have closed the game the first time) 
+				//Reset any selected files - if the user uploads the same file twice, we should load it twice. (they may have closed the game the first time)
 				fileInput.value = ""
 			}
 			catch (e) {

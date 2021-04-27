@@ -5,44 +5,28 @@ try {
 }
 catch (e) {console.warn(e)}
 
-function findAllGuaranteed(guaranteedDir = path.join(__dirname, "guaranteed")) {
-	let options = {}
-	fs.readdirSync(guaranteedDir).forEach((cardName) => {
-		let cardDir = path.join(guaranteedDir, cardName)
+function processDir(dirSrc, res = {}, allowFiles = true) {
+	fs.readdirSync(dirSrc).forEach((itemName) => {
+		let itemSrc = path.join(dirSrc, itemName)
 
-		if (!fs.statSync(cardDir).isDirectory()) {return}
+		if (fs.statSync(itemSrc).isDirectory()) {
+			//Is directory. Call processDir
+			res[itemName] = {}
+			processDir(itemSrc, res[itemName])
+		}
+		//Files in the root component are skipped.
+		else if (allowFiles) {
+			//Is file. Add to res.
+			if (!itemName.endsWith(".server.json")) {return}
+			res[itemName.replace(".server.json", "")] = fs.statSync(itemSrc).size
 
-		let card = {}
-		options[cardName] = card
-
-		fs.readdirSync(cardDir).forEach((dirname) => {
-			let dirSrc = path.join(cardDir, dirname)
-
-			if (!fs.statSync(dirSrc).isDirectory()) {return}
-
-			let dir = {}
-			card[dirname] = dir
-
-			fs.readdirSync(dirSrc).forEach((subdirName) => {
-				let subdirSrc = path.join(dirSrc, subdirName)
-
-				if (!fs.statSync(subdirSrc).isDirectory()) {return}
-
-				let subdir = {}
-				dir[subdirName] = subdir
-
-				let files = fs.readdirSync(subdirSrc).sort((a, b) => {
-					//Compare as numbers, not strings. 
-					return parseFloat(a) - parseFloat(b)
-				}).slice(0, 20) //Limit max files offered.
-				files.forEach((fileName) => {
-					if (!fileName.endsWith(".server.json")) {return}
-					let filePath = path.join(subdirSrc, fileName)
-					subdir[fileName.replace(".server.json", "")] = fs.statSync(filePath).size
-				})
-			})
-		})
+		}
 	})
+	return res
+}
+
+function findAllGuaranteed(guaranteedDir = path.join(__dirname, "guaranteed")) {
+	options = processDir(guaranteedDir, {}, allowFiles = false)
 
 	return options
 }

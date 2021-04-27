@@ -277,7 +277,7 @@
 }
 
 .guaranteedHandsTable tr:first-child {
-	background-color: #f9dba3
+	background-color: #ffff74;
 }
 
 .guaranteedHandsTable tr td {
@@ -296,12 +296,16 @@
 	padding-left: 10px;
 }
 
-.sectionRow {
+.guaranteedHands0 {
 	background-color: lightblue;
 }
 
-.savesRow {
+.guaranteedHands1 {
 	background-color: lightgreen;
+}
+
+.guaranteedHands2 {
+	background-color: #f9dba3;
 }
 
 .saveRow {
