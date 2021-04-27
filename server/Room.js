@@ -338,7 +338,7 @@ class Room {
 							if (res) {
 								//Swapped for a joker
 								client.message("roomActionGameplayAlert", "Successfully Swapped", {clientId, speech: "Swapped", durationMultiplier: 0.5})
-								this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has swapped a " + placement.getTileName(this.state.settings.gameStyle) + " for a joker", {clientId, speech: "Swap", durationMultiplier: 1})
+								this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " swapped a " + placement.getTileName(this.state.settings.gameStyle) + " for a joker", {clientId, speech: "Swap", durationMultiplier: 1})
 								return this.sendStateToClients()
 							}
 							else {
