@@ -760,6 +760,14 @@ setTimeout(function() {
 			  }, 2000)
 		  });
 
+		  //Position: fixed is used by Facebook. We need to adjust document.body to work.
+		  window.addEventListener("scroll", function() {
+			  let maxHeight = roomManager.scrollHeight
+			  let browserArea =  Math.max(document.documentElement.clientHeight, window.innerHeight)
+			  if (roomManager.style.display === "none") {maxHeight = browserArea}
+			  document.body.style.height = Math.min(maxHeight, window.scrollY + browserArea) + "px"
+		  })
+
 		};
 
 		(function(d, s, id) {
