@@ -709,14 +709,68 @@ else {
 	)
 }
 
-//Facebook Embed - https://developers.facebook.com/docs/plugins/page-plugin/
-let facebookDiv = document.createElement("div")
+
 setTimeout(function() {
 	if (stateManager.inRoom.includes("fbtest")) {
-		facebookDiv.innerHTML += `<iframe sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FMahjong-4-Friends-103233541852386&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true&appId" width="500" height="500" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`
+		//Facebook Embed - https://developers.facebook.com/docs/plugins/page-plugin/
+		/*let facebookDiv = document.createElement("div")
+		roomManager.appendChild(facebookDiv)
+
+		facebookDiv.innerHTML += `<iframe sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FMahjong-4-Friends-103233541852386&tabs=timeline&width=500&height=500&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true&appId" width="500" height="500" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`*/
+
+
+		//Facebook Messenger Plugin
+		let fbRoot = document.createElement("div")
+		fbRoot.id = "fb-root"
+		document.body.appendChild(fbRoot)
+
+		let fbCustomerChat = document.createElement("div")
+		fbCustomerChat.className = "fb-customerchat"
+		fbCustomerChat.setAttribute("page_id", "103233541852386")
+		document.body.appendChild(fbCustomerChat)
+
+		window.fbAsyncInit = function() {
+		  FB.init({
+			xfbml            : true,
+			version          : 'v10.0'
+		  });
+		  FB.Event.subscribe('customerchat.load', function() {
+			  setTimeout(function() {
+				  let styleElem = document.querySelector("style")
+
+				  //Messenger plugin wasn't closing when inline style was disabled.
+				  //We'll get them though...
+				  let text = styleElem.innerText
+
+				  let strs = []
+				  let str = ""
+				  let openBrackets = 0
+				  for (let i=0;i<text.length;i++) {
+					  let char = text[i]
+					  str += char
+					  if (char === "{") {openBrackets++}
+					  if (char === "}") {
+						  openBrackets--
+						  if (openBrackets === 0) {strs.push(str);str=""}
+					  }
+				  }
+
+				  console.log("Parsed and inserting Facebook CSS Rules to bypass inline-style CSP block", strs)
+				  strs.forEach((str) => {document.styleSheets[0].insertRule(str)})
+			  }, 2000)
+		  });
+
+		};
+
+		(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
 	}
 }, 2000)
-roomManager.appendChild(facebookDiv)
 
 let copyrightNotice = document.createElement("p")
 copyrightNotice.innerHTML = "Copyright © 2020, All Rights Reserved"
