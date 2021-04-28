@@ -735,6 +735,7 @@ setTimeout(function() {
 			version          : 'v10.0'
 		  });
 		  FB.Event.subscribe('customerchat.load', function() {
+			  FB.CustomerChat.show(false);
 			  setTimeout(function() {
 				  let styleElem = document.querySelector("style")
 
