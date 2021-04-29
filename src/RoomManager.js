@@ -1027,4 +1027,24 @@ window.stateManager.addEventListener("onEndGame", function(obj) {
 })
 
 
+//Height of document.body is used by Facebook Messenger and for our Error Popups.
+
+//We will run this on requestAnimationFrame for 1 second after the last scroll event.
+let activated;
+function setDocumentBodyHeight() {
+	let maxHeight = roomManager.scrollHeight
+	let browserArea =  Math.max(document.documentElement.clientHeight, window.innerHeight)
+	if (roomManager.style.display === "none") {maxHeight = browserArea}
+	document.body.style.height = Math.min(maxHeight, window.pageYOffset + browserArea) + "px"
+	if (Date.now() - activated < 1000) {
+		window.requestAnimationFrame(setDocumentBodyHeight)
+	}
+}
+
+window.addEventListener("scroll", function() {
+	activated = Date.now()
+	setDocumentBodyHeight()
+})
+setDocumentBodyHeight()
+
 module.exports = roomManager

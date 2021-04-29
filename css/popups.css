@@ -1,5 +1,6 @@
 #errorPopupCover {
-	position: absolute;
+	position: fixed;
+	bottom: 0;
 	width: 100vw;
 	height: 100vh;
 	background-color: #00000040;

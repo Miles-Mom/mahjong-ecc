@@ -7,6 +7,7 @@ document.body.appendChild(fbRoot)
 let fbCustomerChat = document.createElement("div")
 fbCustomerChat.className = "fb-customerchat"
 fbCustomerChat.setAttribute("page_id", "103233541852386")
+fbCustomerChat.setAttribute("greeting_dialog_display", "icon") //Only display the icon - nothing else.
 document.body.appendChild(fbCustomerChat)
 
 window.fbAsyncInit = function() {
@@ -42,15 +43,6 @@ window.fbAsyncInit = function() {
 	});
 
 	FB.XFBML.parse()
-
-	//Position: fixed is used by Facebook. We need to adjust document.body to work.
-	window.addEventListener("scroll", function() {
-		let maxHeight = roomManager.scrollHeight
-		let browserArea =  Math.max(document.documentElement.clientHeight, window.innerHeight)
-		if (roomManager.style.display === "none") {maxHeight = browserArea}
-		document.body.style.height = Math.min(maxHeight, window.scrollY + browserArea) + "px"
-	})
-
 };
 
 (function(d, s, id) {
