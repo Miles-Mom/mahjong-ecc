@@ -725,14 +725,23 @@ roomManager.appendChild(copyrightNotice)
 //TODO: Also need a way to deal with reloads.
 
 //TODO: Use speechSynthesis onvoiceschange event (or whatever it is).
-speechSynthesis.getVoices()
+if (window.speechSynthesis) {
+	speechSynthesis?.getVoices()
+}
 
 let voiceChoices = {}
 window.voiceChoices = voiceChoices
 
 function VoiceSelector() {
 	let voiceOptionsSelect = document.createElement("select")
-	let availableVoices = speechSynthesis.getVoices()
+	let availableVoices = [];
+	if (window.speechSynthesis) {
+		try {
+			availableVoices = speechSynthesis?.getVoices() || []
+		}
+		catch (e) {console.warn("Voice Error", e)}
+	}
+
 	console.log(availableVoices)
 
 	//We need to have a default, as some browsers (firefox) return an empty array for getVoices, but work.
