@@ -30,6 +30,7 @@ class StateManager {
 			}
 			else if (obj.type === "roomActionStartGame") {
 				onStartGame(obj)
+				window.scrollTo(0,0)
 			}
 			else if (obj.type === "roomActionEndGame") {
 				onEndGame(obj)

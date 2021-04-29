@@ -6,4 +6,5 @@ cp -r *.html capacitorDir/
 node copyCapacitorAssets.js
 
 npx cap copy
-npx cap open ios #Open in XCode
+
+echo "Run npx cap open ios or npx cap open android to open the projects. "

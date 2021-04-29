@@ -4,7 +4,8 @@ const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
 
 const QRCode = require("qrcode-generator")
 
-if (window.Capacitor) {
+//TODO: Test Android then enable on Android
+if (window?.Capacitor?.getPlatform() === "ios") {
 	//Configure AppRate plugin.
 	try {
 		AppRate.setPreferences({
@@ -14,9 +15,11 @@ if (window.Capacitor) {
 			promptAgainForEachNewVersion: false,
 			reviewType: {
 				ios: 'InAppReview',
+				android: "InAppReview"
 			},
 			storeAppURL: {
 				ios: "1552704332",
+				android: "market://details?id=com.mahjong4friends.twa"
 			},
 			customLocale: {
 				title: "Would you mind rating %@?",
@@ -102,15 +105,9 @@ if (params.has("name")) {
 }
 
 //Development only - fakes native UI somewhat. Intended for automated screenshotting.
-if (params.has("fakeNative")) {
-	if (params.get("fakeNative") === "android") {
-		window.isAndroid = true
-	}
-	else if (params.get("fakeNative") === "ios") {
-		window.Capacitor = true
-	}
-	else {
-		console.error("fakeNative set and invalid")
+if (!window.Capacitor && params.has("fakeNative")) {
+	window.Capacitor = {
+		getPlatform: function() {return params.get("fakeNative")}
 	}
 }
 
@@ -465,7 +462,8 @@ try {
 			downloadButton.innerHTML = "Download"
 			downloadButton.addEventListener("click", async function() {
 				let downloadName = "mahjong4friends.server.json"
-				if (window.Capacitor) {
+				if (window?.Capacitor?.getPlatform() === "ios") {
+					console.log("Download Native")
 					//iOS Capacitor doesn't support link downloads. Use share menu.
 					let saveInfo = await writeSave(downloadName, res, "CACHE")
 					await Capacitor.Plugins.Share.share({
@@ -474,6 +472,8 @@ try {
 					})
 				}
 				else {
+					console.log("Download Normal")
+
 					var elem = document.createElement('a');
 					elem.download = downloadName
 
@@ -667,13 +667,13 @@ supportInfo.id = "supportInfo"
 supportInfo.innerHTML = "Questions, Comments, or Concerns? Contact <a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>"
 roomManager.appendChild(supportInfo)
 
-if (window.Capacitor || window.isAndroid) {
+if (window.Capacitor) {
 	let ratingPrompt = document.createElement("p")
 	ratingPrompt.id = "supportInfo"
-	if (window.Capacitor) {
+	if (window?.Capacitor?.getPlatform() === "ios") {
 		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://apps.apple.com/us/app/mahjong-4-friends/id1552704332" target="_blank">rate us in the App Store</a>!`
 	}
-	else if (window.isAndroid) {
+	else if (window?.Capacitor?.getPlatform() === "android") {
 		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://play.google.com/store/apps/details?id=com.mahjong4friends.twa" target="_blank">leave a review on Google Play</a>!`
 	}
 	roomManager.appendChild(ratingPrompt)

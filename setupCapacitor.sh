@@ -1,5 +1,6 @@
 npx cap add ios
 npx cordova-res ios --copy
+npx cordova-res android --copy
 
 echo "Remember to set version codes in XCode"
 echo "Also add deep link support:"
