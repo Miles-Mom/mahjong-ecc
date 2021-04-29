@@ -4,6 +4,7 @@ android
 ios
 capacitorDir
 !resources/ios/
+!resources/android/
 resources/ios/icon
 resources/ios/splash
 server/guaranteed
