@@ -12,6 +12,7 @@ document.body.appendChild(fbCustomerChat)
 
 window.fbAsyncInit = function() {
 	//We want to display the bubble, but not the window, on load.
+	AppRate.promptForRating() //For testing.
 
 	FB.init({
 		xfbml            : false,
