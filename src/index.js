@@ -118,7 +118,8 @@ function setVisibleAreaHeight(callAgain = true) {
     document.documentElement.style.setProperty('--shiftPercentageRight', `${Math.max(minRight, pxRight/width)}`)
 
     //Somewhat occasionally, we get some issues with resizes.
-    if (callAgain) {
+    if (callAgain && callAgain?.isTrusted !== false) {
+        console.log(callAgain)
         setTimeout(function() {
             setVisibleAreaHeight(false)
         }, 500)
@@ -136,7 +137,7 @@ setVisibleAreaHeight()
 //In case any issues surface with load, resize constantly for first 5000 ms.
 let resizer = setInterval(function() {
     window.dispatchEvent(new Event("resize"))
-}, 1000)
+}, 100)
 setTimeout(function() {
     clearInterval(resizer)
 }, 5000)
