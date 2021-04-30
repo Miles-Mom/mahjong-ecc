@@ -11,13 +11,17 @@
 }
 
 #roomManager #mahjongHeading, #roomManager #fourFriendsHeading {
-	font-size: 3em;
+	font-size: 2.5em;
 	color: #ffbd17;
 	display: inline-block;
+	margin-top: 0.25em;
+	margin-top: max(0.25em, min(1em, 2vh));
+	margin-bottom: 0.25em;
+	margin-bottom: max(0.25em, min(1em, 2vh));
 }
 
 #roomManager #fourFriendsHeading {
-	font-size: 2.2em;
+	font-size: 2.1em;
 	vertical-align: top;
 	margin-left: 0.5em;
 	font-style: italic;
@@ -37,7 +41,7 @@
 #roomManager #roomIdInput, #roomManager #nicknameInput{
 	width: calc(100vw - 16px);
 	max-width: 550px;
-	font-size: 2.5em;
+	font-size: 2em;
 	padding: 5px;
 }
 
@@ -56,7 +60,7 @@
 #joinRoom, #createRoom, #singlePlayerGame, #offlineSinglePlayer, #uploadSaveButton {
 	min-width: 150px;
 	border-radius: 3.5vh;
-	font-size: 2em;
+	font-size: 1.7em;
 	padding: 10px;
 }
 
@@ -96,12 +100,12 @@
 }
 
 #roomManager #currentRoom {
-	font-size: 2em;
+	font-size: 1.7em;
 	margin: 0;
 }
 
 #connectionStatus {
-	font-size: 2em;
+	font-size: 1.7em;
 	width: fit-content;
 	padding: 6px 15px;
 	background: #ffc3c3;
@@ -129,7 +133,7 @@
 }
 
 #roomManager .playerViewNameSpan {
-	font-size: 2em;
+	font-size: 1.7em;
 	width: 40%;
 	display: inline-block;
 }
@@ -159,17 +163,17 @@
 }
 
 #roomManager .playerViewIdSpan {
-	font-size: 1em;
+	font-size: 1;
 }
 
 #roomManager .playerViewCard {
 	width: 30%;
 	display: inline-block;
-	font-size: 1.5em;
+	font-size: 1.5;
 	text-align: center;
 }
 
-#roomManager #roomSaveIdElem {
+#roomManager #roomSaveIdEl {
 	text-align: center;
 }
 
@@ -177,12 +181,12 @@
 	background: linear-gradient(45deg, #f23f3f,#eeb972);
 	border-radius: 250000px;
 	padding: 5px 20px 5px 20px;
-	font-size: 1em;
+	font-size: 1;
 	cursor: pointer;
 }
 
 #startGameButton, #addBotButton, #leaveRoomButton, #closeRoomButton {
-	font-size: 1.5em;
+	font-size: 1.5;
 	border-radius: 250000px;
 	padding: 10px;
 }
@@ -193,7 +197,7 @@
 
 #deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton {
 	border-radius: 250000px;
-	font-size: 2em;
+	font-size: 1.7;
 	margin: 0;
 	margin-top: 1vh;
 	margin-bottom: 1.5vh;
@@ -210,16 +214,16 @@
 }
 
 #tutorialLink {
-	font-size: 2em;
+	font-size: 1.7;
 	line-height: 60px;
 }
 
 #documentationLink {
-	font-size: 1.3em;
+	font-size: 1.3;
 	line-height: 30px;
 }
 
-#inviteYourFriendsElem {
+#inviteYourFriendsEl {
 	background-color: #2fcb29;
 	border-radius: 10px;
 	margin-top: 10px;
@@ -230,22 +234,22 @@
 
 #inviteYourFriendsDiv {
 	display: inline-block;
-	margin-top: 0.5em;
+	margin-top: 0.5;
 	vertical-align: top;
 }
 
-#QRImageElement {
+#QRImageElent {
 	margin-left: 20px;
-	margin-top: 1em;
+	margin-top: 1;
 }
 
-#joinRoomLinkElem {
-	font-size: 1.5em;
+#joinRoomLinkEl {
+	font-size: 1.5;
 	margin: 0;
 }
 
 #screenRotationAlert {
-	font-size: 2.5em;
+	font-size: 2em;
 	background-color: white;
 }
 
@@ -283,7 +287,7 @@
 	text-align: left;
 	border-top: 1px solid black;
 	font-size: 1.5em;
-	height: 2em;
+	height: 1.7em;
 	cursor: pointer;
 }
 
