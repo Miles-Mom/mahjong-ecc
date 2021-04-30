@@ -385,7 +385,7 @@ endGameButton.addEventListener("click", function() {
 		window.stateManager.endGame()
 
 		try {
-			if (window.Capacitor) {
+			if (window?.Capacitor?.getPlatform() === "ios") {
 				console.log("Analyzing")
 				//We will only prompt if this specific user went mahjong.
 				if (

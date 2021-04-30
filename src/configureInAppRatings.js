@@ -1,5 +1,5 @@
 //TODO: Test Android then enable on Android
-if (window?.Capacitor?.getPlatform() === "ios") {
+if (window?.Capacitor?.getPlatform()) {
 	//Configure AppRate plugin.
 	try {
 		AppRate.setPreferences({
