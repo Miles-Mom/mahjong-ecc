@@ -97,7 +97,7 @@ let gameBoard = require("./GameBoard.js")
 //See https://nicolas-hoizey.com/articles/2015/02/18/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers/
 //We will use CSS variables to counteract this bug.
 function setVisibleAreaHeight() {
-    let width = Math.max(document.documentElement.clientWidth, window.innerWidth)
+    let width = Math.max(document.documentElement.clientWidth, Math.min(screen.width, window.innerWidth))
     let height = Math.max(document.documentElement.clientHeight, window.innerHeight)
 
 	document.documentElement.style.setProperty('--vh', `${height/100}px`)
