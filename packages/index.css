@@ -213,7 +213,7 @@
 
 #deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton {
 	border-radius: 250000px;
-	font-size: 1.7;
+	font-size: 1.7em;
 	margin: 0;
 	margin-top: 1vh;
 	margin-top: calc(var(--vh) * 1);
@@ -232,7 +232,7 @@
 }
 
 #tutorialLink {
-	font-size: 1.7;
+	font-size: 1.7em;
 	line-height: 60px;
 }
 
@@ -935,7 +935,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #errorPopup #errorText {
-	font-size: 3.2em;
+	font-size: 2.3em;
 	color: #ffe100;
 	margin-block-start: 2.25vh;
 	margin-block-start: calc(var(--vh) * 2.25);
@@ -943,7 +943,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #errorPopup #messageText {
-	font-size: 2em;
+	font-size: 1.7em;
 	color: white;
 	margin-bottom: 0;
 	margin-block-start: 0.5em;
@@ -951,7 +951,7 @@ This means that something using bottom is off the page - hence we must use top. 
 
 #errorPopup #dismissButton {
 	border-radius: 250000px;
-	font-size: 2em;
+	font-size: 1.7em;
 	margin-top: 1vh;
 	margin-top: calc(var(--vh) * 1);
 	margin-bottom: 1.5vh;

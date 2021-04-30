@@ -198,7 +198,7 @@
 
 #deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton {
 	border-radius: 250000px;
-	font-size: 1.7;
+	font-size: 1.7em;
 	margin: 0;
 	margin-top: 1vh;
 	margin-bottom: 1.5vh;
@@ -215,7 +215,7 @@
 }
 
 #tutorialLink {
-	font-size: 1.7;
+	font-size: 1.7em;
 	line-height: 60px;
 }
 
