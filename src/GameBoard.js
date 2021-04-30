@@ -66,13 +66,13 @@ function FullscreenControls(elementId) {
 		this.toggleElement.addEventListener("click", function() {
 			if (document.fullscreenElement) {
 				document.exitFullscreen()
-				if (window.Capacitor.Plugins) {
+				if (window?.Capacitor?.Plugins) {
 					Capacitor.Plugins.StatusBar.show()
 				}
 			}
 			else {
 				document.documentElement.requestFullscreen()
-				if (window.Capacitor.Plugins) {
+				if (window?.Capacitor?.Plugins) {
 					Capacitor.Plugins.StatusBar.hide()
 				}
 			}

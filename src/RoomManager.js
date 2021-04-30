@@ -462,18 +462,20 @@ try {
 			downloadButton.innerHTML = "Download"
 			downloadButton.addEventListener("click", async function() {
 				let downloadName = "mahjong4friends.server.json"
-				if (window?.Capacitor?.getPlatform() === "ios") {
-					console.log("Download Native")
-					//iOS Capacitor doesn't support link downloads. Use share menu.
+				if (window?.Capacitor?.getPlatform()) {
+					//iOS and Android Capacitor don't support link downloads. Use share menu.
+					//Android share menu isn't as good, as it doesn't provide a way to download the file.
+					//Not sure there's a great solution to that though.
 					let saveInfo = await writeSave(downloadName, res, "CACHE")
-					await Capacitor.Plugins.Share.share({
+					let shareConfig = {
 						title: downloadName,
-						url: saveInfo.uri
-					})
+						url: saveInfo.uri,
+						//text: 'Save/Share to Play Later on Other Devices!' //Haven't seen this in testing, and it works without it, so not messing with it yet.
+						//dialogTitle: "" //Same as above.
+					}
+					await Capacitor.Plugins.Share.share(shareConfig)
 				}
 				else {
-					console.log("Download Normal")
-
 					var elem = document.createElement('a');
 					elem.download = downloadName
 
