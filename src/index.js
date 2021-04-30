@@ -96,7 +96,7 @@ let gameBoard = require("./GameBoard.js")
 //While viewport relative units work fine on desktop, some mobile browsers will not show the entire viewport, due to the url bar.
 //See https://nicolas-hoizey.com/articles/2015/02/18/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers/
 //We will use CSS variables to counteract this bug.
-function setVisibleAreaHeight() {
+function setVisibleAreaHeight(callAgain = true) {
     let width = Math.max(document.documentElement.clientWidth, Math.min(screen.width, window.innerWidth))
     let height = Math.max(document.documentElement.clientHeight, window.innerHeight)
 
@@ -116,6 +116,13 @@ function setVisibleAreaHeight() {
     let pxRight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sar"))
     pxRight -= 10 //Ignore the small safe area decrease caused by rounded corners.
     document.documentElement.style.setProperty('--shiftPercentageRight', `${Math.max(minRight, pxRight/width)}`)
+
+    //Somewhat occasionally, we get some issues with resizes.
+    if (callAgain) {
+        setTimeout(function() {
+            setVisibleAreaHeight(false)
+        }, 500)
+    }
 }
 
 window.addEventListener('resize', setVisibleAreaHeight)
@@ -129,7 +136,7 @@ setVisibleAreaHeight()
 //In case any issues surface with load, resize constantly for first 5000 ms.
 let resizer = setInterval(function() {
     window.dispatchEvent(new Event("resize"))
-}, 500)
+}, 1000)
 setTimeout(function() {
     clearInterval(resizer)
 }, 5000)
