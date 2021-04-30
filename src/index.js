@@ -119,8 +119,20 @@ function setVisibleAreaHeight() {
 }
 
 window.addEventListener('resize', setVisibleAreaHeight)
-window.addEventListener('orientationchange', setVisibleAreaHeight)
+//Fire resize on orientationchange.
+window.addEventListener('orientationchange', function() {
+    window.dispatchEvent(new Event("resize"))
+})
+
 setVisibleAreaHeight()
+
+//In case any issues surface with load, resize constantly for first 5000 ms.
+let resizer = setInterval(function() {
+    window.dispatchEvent(new Event("resize"))
+}, 500)
+setTimeout(function() {
+    clearInterval(resizer)
+}, 5000)
 
 //We are probably being hit by a race condition where the JavaScript can load before the CSS,
 //causing resizing to be intermittent. This should fix it.

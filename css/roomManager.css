@@ -164,13 +164,13 @@
 }
 
 #roomManager .playerViewIdSpan {
-	font-size: 1;
+	font-size: 1em;
 }
 
 #roomManager .playerViewCard {
 	width: 30%;
 	display: inline-block;
-	font-size: 1.5;
+	font-size: 1.5em;
 	text-align: center;
 }
 
@@ -182,12 +182,12 @@
 	background: linear-gradient(45deg, #f23f3f,#eeb972);
 	border-radius: 250000px;
 	padding: 5px 20px 5px 20px;
-	font-size: 1;
+	font-size: 1em;
 	cursor: pointer;
 }
 
 #startGameButton, #addBotButton, #leaveRoomButton, #closeRoomButton {
-	font-size: 1.5;
+	font-size: 1.5em;
 	border-radius: 250000px;
 	padding: 10px;
 }
@@ -241,11 +241,11 @@
 
 #QRImageElent {
 	margin-left: 20px;
-	margin-top: 1;
+	margin-top: 1em;
 }
 
 #joinRoomLinkEl {
-	font-size: 1.5;
+	font-size: 1.5em;
 	margin: 0;
 }
 

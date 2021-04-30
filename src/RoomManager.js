@@ -1057,5 +1057,6 @@ window.addEventListener("scroll", function() {
 	setDocumentBodyHeight()
 })
 setDocumentBodyHeight()
+window.addEventListener("resize", setDocumentBodyHeight)
 
 module.exports = roomManager
