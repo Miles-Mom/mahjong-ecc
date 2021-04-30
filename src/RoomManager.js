@@ -177,7 +177,7 @@ uploadSaveButton.addEventListener("click", function() {
 	;((async function() {
 		let obj;
 		try {
-			let req = await fetch("guaranteedHands.json")
+			let req = await fetch((window.Capacitor?"https://mahjong4friends.com/":"") + "guaranteedHands.json")
 			obj = await req.json()
 			console.log(obj)
 		}
