@@ -141,7 +141,7 @@ function resumeOfflineGame(saveText) {
 }
 
 let uploadSaveButton = document.createElement("button")
-uploadSaveButton.innerHTML = "Use Save File (Offline)"
+uploadSaveButton.innerHTML = "Use Save File"
 uploadSaveButton.id = "uploadSaveButton"
 joinOrCreateRoom.appendChild(uploadSaveButton)
 

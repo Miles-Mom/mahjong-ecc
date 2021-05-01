@@ -144,8 +144,9 @@ class Client {
 		this.messageHistory = []
 		this.messageHistory.push({message: "Game Started", move: 0})
 	}
-	addMessageToHistory(message) {
-		this.messageHistory.push({message, move: this?.getRoom()?.state?.moves?.length})
+	addMessageToHistory(message, offset = 0) {
+		//Offset can be used if the message is for the previous turn, etc. 
+		this.messageHistory.push({message, move: this?.getRoom()?.state?.moves?.length + offset})
 	}
 
 	setWebsocket(websocket) {

@@ -80,6 +80,27 @@ function getPriority(obj, key, exemptFromChecks = false) {
 		}
 
 		if (hand.removeTilesFromHand(obj[key])) {
+			let passMessage = "You Passed "
+			let tileNames = obj[key].map((tile) => {return tile.getTileName(this.state.settings.gameStyle)})
+
+			if (tileNames.length === 0) {
+				passMessage += "Nothing"
+			}
+			else {
+				passMessage += "a " + tileNames.shift()
+
+				let lastName = tileNames.pop()
+
+				tileNames.forEach((name) => {passMessage += ", a " + name})
+
+				if (lastName) {
+					if (tileNames.length > 0) {passMessage += ","} //Don't put a comma between tiles if only two.
+					passMessage += " and a " + lastName
+				}
+			}
+
+			client.addMessageToHistory(passMessage, -1) //Make draws appear in history menu. -1 so before, not after, this pass. 
+
 			//Assume number of tiles is valid for turn.
 			return true
 		}
@@ -456,7 +477,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					//Attempt a naked mahjong - user didn't provide what to do.
 					console.log("Attempting Naked Mahjong")
 					hand.add(this.gameData.currentTurn.thrown)
-					//Autoexpose to indicate we may need to automatically move something from in hand to expose. 
+					//Autoexpose to indicate we may need to automatically move something from in hand to expose.
 					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), autoExpose: true})
 					utilized = true
 				}
