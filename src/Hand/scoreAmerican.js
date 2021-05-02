@@ -1,7 +1,8 @@
 const americanUtilities = require("../../server/american/utilities.js")
+const Tile = require("../Tile.js")
 
 //scoreAmerican does not consider Drew Own Tile as part of the score (so we don't take it),
-//because being payed double for drawing your own tile is simply an extension of the mahjong tile thrower paying double.  
+//because being payed double for drawing your own tile is simply an extension of the mahjong tile thrower paying double.
 function scoreAmerican(config) {
 	if (!config.card) {throw "Must pass config.card"}
 
@@ -24,7 +25,24 @@ function scoreAmerican(config) {
 	result.score = handOption.score
 	result.handName = handOption.section + " #" + (handOption.cardIndex + 1)
 
-	if (hand.jokerCount === 0) {
+	function calculateJokerAmount(items) {
+		//We can't use the joker count from getTileDifferential, as that treats exposesd tiles like the jokers they act for.
+		let allTiles = []
+
+		items.forEach((item) => {
+			if (item instanceof Tile) {allTiles.push(item)}
+			else {
+				allTiles.push(...item.tiles)
+			}
+		})
+
+		return allTiles.reduce((total, tile) => {
+			if (tile.type === "joker") {return ++total}
+			return total
+		}, 0)
+	}
+
+	if (calculateJokerAmount(this.contents) === 0) {
 		//Get the maximum jokers allowed by the specific hand we went mahjong with.
 		let maxPossibleJokers = americanUtilities.getTileDifferential([handOption], [])[0].canFillJoker.length
 		if (maxPossibleJokers > 0) {
