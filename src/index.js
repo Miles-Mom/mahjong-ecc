@@ -17,7 +17,7 @@ if ('serviceWorker' in navigator) {
     }
 }
 
-document.title = "Mahjong 4 Friends - Free Multiplayer Mahjong"
+document.title = "Mahjong 4 Friends - Free Mahjong, Friends and/or Bots"
 
 if (window?.Capacitor?.getPlatform() === "ios") {
     try {
