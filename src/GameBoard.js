@@ -298,8 +298,6 @@ hintButton.addEventListener("click", function() {
 	popup.show()
 })
 
-console.log(hintButton)
-
 let instructionBubble = document.createElement("div")
 instructionBubble.id = "instructionBubble"
 instructionBubble.style.display = "none"

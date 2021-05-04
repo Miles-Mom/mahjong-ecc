@@ -45,6 +45,7 @@ class Notification {
 
 		this.show = function() {
 			cover.style.display = ""
+			return popup
 		}
 		this.dismiss = dismiss
 	}
@@ -112,7 +113,7 @@ class BlocklessAlert {
 }
 
 
-let openMessageBars; //Currently only allow one to be open at once. We should probably adjust to use increasing z-indexes, so multiple can overlap on different timelines. 
+let openMessageBars; //Currently only allow one to be open at once. We should probably adjust to use increasing z-indexes, so multiple can overlap on different timelines.
 
 class MessageBar {
 	constructor(text) {

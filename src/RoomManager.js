@@ -158,7 +158,7 @@ uploadSaveButton.addEventListener("click", function() {
 	let popup;
 
 	let p = document.createElement("p")
-	p.innerHTML = "You can upload a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
+	p.innerHTML = "You can upload/drag a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
 	p.id = "messageText"
 	elem.appendChild(p)
 
@@ -185,8 +185,6 @@ uploadSaveButton.addEventListener("click", function() {
 			tableContainer.innerHTML = "Error Loading Guaranteed Hands..."
 			return
 		}
-
-
 
 		let table = document.createElement("table")
 		table.className = "guaranteedHandsTable"
@@ -325,11 +323,7 @@ uploadSaveButton.addEventListener("click", function() {
 		})
 	})())
 
-
-	let uploadFromDevice = document.createElement("button")
-	uploadFromDevice.innerHTML = "Upload From Device"
-	fileInput.oninput = async function() {
-		let file = fileInput.files[0]
+	async function processSaveFile(file) {
 		if (file) {
 			let reader = new FileReader()
 			await new Promise((r, j) => {
@@ -350,6 +344,13 @@ uploadSaveButton.addEventListener("click", function() {
 			}
 		}
 	}
+
+	let uploadFromDevice = document.createElement("button")
+	uploadFromDevice.innerHTML = "Upload From Device"
+	fileInput.oninput = function() {
+		processSaveFile(fileInput.files[0])
+	}
+
 	uploadFromDevice.addEventListener("click", function() {
 		fileInput.click()
 	})
@@ -357,7 +358,40 @@ uploadSaveButton.addEventListener("click", function() {
 	elem.appendChild(uploadFromDevice)
 
 	popup = new Popups.Notification("Select Save File", elem)
-	popup.show()
+	let popupBox = popup.show()
+
+	;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+		popupBox.addEventListener(eventName, preventDefaults, false)
+	})
+
+	function preventDefaults (e) {
+		e.preventDefault()
+		e.stopPropagation()
+	}
+
+	//Allow drag drop
+	;['dragenter', 'dragover'].forEach(eventName => {
+		popupBox.addEventListener(eventName, highlight, false)
+	})
+
+	;['dragleave', 'drop'].forEach(eventName => {
+		popupBox.addEventListener(eventName, unhighlight, false)
+	})
+
+	function highlight(e) {
+		popupBox.style.filter = "brightness(1.25)"
+	}
+
+	function unhighlight(e) {
+		popupBox.style.filter = ""
+	}
+
+	popupBox.addEventListener('drop', handleDrop, false)
+
+	function handleDrop(e) {
+		unhighlight()
+		processSaveFile(e.dataTransfer.files[0])
+	}
 })
 
 //Save offline games.
