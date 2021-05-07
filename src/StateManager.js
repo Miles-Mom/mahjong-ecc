@@ -26,7 +26,13 @@ class StateManager {
 				onGetCurrentRoom(obj)
 			}
 			else if (obj.type === "displayMessage") {
-				new Popups.Notification(obj.message.title, obj.message.body).show()
+				if (obj?.message?.onlineOnly && window.stateManager.offlineMode) {
+					//This should only apply to serve maintence messages.
+					console.warn("Suppressing displayMessage as offline. ")
+				}
+				else {
+					new Popups.Notification(obj.message.title, obj.message.body).show()
+				}
 			}
 			else if (obj.type === "roomActionStartGame") {
 				onStartGame(obj)
@@ -271,12 +277,13 @@ class StateManager {
 			console.warn("You will need to manually kill the server on reboot and reload from save. ")
 		}
 
-		this.messageAllServerClients = function(auth, title, body) {
+		this.messageAllServerClients = function({auth, title, body, onlineOnly = true}) {
 			this.sendMessage(JSON.stringify({
 				type: "messageAllServerClients",
 				auth,
 				title,
 				body,
+				onlineOnly
 			}))
 		}
 
