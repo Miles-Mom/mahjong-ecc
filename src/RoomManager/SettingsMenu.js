@@ -25,6 +25,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 		//Chinese
 		maximumSequences: new MaximumSequencesSelector(),
+		tableLimit: new TableLimitSelector(),
 		checkForCalling: new CheckForCallingSelector(),
 		botSettings: new BotSettings(),
 
@@ -56,6 +57,11 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	if (Object.keys(options).length === 0) {header.remove()} //No settings to show.
 
+	//TODO: We currently send all choices (for chinese and american) -
+	//right now, all choices have different names, but some (like tableLimit)
+	//may end up reused in the future. This should be changed to only send choices relevant to selected gameStyles.
+	//Note that this may not actually be an issue - we can configure the same selector to display for multiple different gamestyles,
+	//by changing displayFor - we might just need a way to have seperate defaults for every game mode. 
 	this.getChoices = function(excludeClient = true) {
 		let obj = {}
 		for (let option in options) {
@@ -235,6 +241,32 @@ function BotSettings() {
 	}
 	this.set = function(obj = {}) {
 		checkbox.checked = obj?.canCharleston ?? false
+	}
+	this.displayFor = ["chinese"]
+	this.isHost = true
+}
+
+function TableLimitSelector() {
+	let elem = document.createElement("div")
+
+	let input = document.createElement("input")
+	input.type = "number"
+
+	let label = document.createElement("label")
+	label.innerHTML = "Table Limit (type 0 for Infinty): "
+
+	label.style.fontSize = "1.4em"
+	input.style.fontSize = "1.4em"
+
+	this.elem = elem
+	elem.appendChild(label)
+	elem.appendChild(input)
+
+	this.get = function() {
+		return input.value
+	}
+	this.set = function(value) {
+		input.value = value ?? 0
 	}
 	this.displayFor = ["chinese"]
 	this.isHost = true

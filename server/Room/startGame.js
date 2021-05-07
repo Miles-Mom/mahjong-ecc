@@ -53,6 +53,8 @@ function startGame(obj) {
 
 		this.state.settings.checkForCalling = obj?.settings?.checkForCalling ?? true
 
+		this.state.settings.tableLimit = Number(obj?.settings?.tableLimit) || Infinity //Default Infinity - || as 0 should mean infinity.
+
 		if (!isNaN(obj?.settings?.maximumSequences)) {
 			this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))
 		}

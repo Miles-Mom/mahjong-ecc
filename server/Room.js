@@ -14,7 +14,7 @@ class Room {
 		this.state.settings = this.state.settings || {}
 
 		console.log(state)
-		//TODO: Currently, clientId of other users is shown to users in the same room, allowing for impersonation. This needs to be fixed by using different identifiers.
+		//TODO: Currently, clientId of other users in the same room can be found in DevTools, allowing for impersonation. This needs to be fixed by using different identifiers internally and externally, or with auth.
 
 		this.clientIds = this.state.clientIds = this.state.clientIds || []
 		this.inGame = false

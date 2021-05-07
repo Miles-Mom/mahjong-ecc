@@ -1,7 +1,7 @@
 function getSummary(mahjongClientId, options = {}) {
 
 	//TODO: Reverting with history deletes this - might want to store in state.
-	//TODO: How to handle American vs Chinese scores if switching in game. 
+	//TODO: How to handle American vs Chinese scores if switching in game.
 	if (!this.gameScores) {
 		this.gameScores = []
 	}
@@ -26,6 +26,13 @@ function getSummary(mahjongClientId, options = {}) {
 				res[id].points += hand.score()
 			}
 			res[id].text += `, ${res[id].points} points`
+
+			//Apply limits.
+			let limit = this?.state?.settings?.tableLimit
+			if (res[id].points > limit) {
+				res[id].points = limit
+				res[id].text += ` (limit ${limit})`
+			}
 		}
 		else if (this.state.settings.gameStyle === "american") {
 			if (id === mahjongClientId) {
