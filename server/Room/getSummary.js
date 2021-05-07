@@ -1,4 +1,11 @@
 function getSummary(mahjongClientId, options = {}) {
+
+	//TODO: Reverting with history deletes this - might want to store in state.
+	//TODO: How to handle American vs Chinese scores if switching in game. 
+	if (!this.gameScores) {
+		this.gameScores = []
+	}
+
 	let summary = []
 
 	let res = {}
@@ -89,8 +96,27 @@ function getSummary(mahjongClientId, options = {}) {
 		}
 	}
 
+	this.gameScores.push(res)
+
+	function getScoreForClientId(clientId) {
+		let score = 0
+		for (let i=0;i<this.gameScores.length;i++) {
+			let info = this.gameScores[i]
+			if (info[clientId]) {
+				score += info[clientId].netpoints
+			}
+		}
+		return score
+	}
+
 	for (let id in this.gameData.playerHands) {
-		res[id].text += " (Net " + (res[id].netpoints > 0?"+":"") + res[id].netpoints + " points)"
+		res[id].text += ` (Net ${(res[id].netpoints > 0?"+":"")}${res[id].netpoints} points`
+		if (this.gameScores.length > 1) {
+			res[id].text += `, ${getScoreForClientId.call(this, id)} room total)`
+		}
+		else {
+			res[id].text += ")"
+		}
 	}
 
 	this.lastSummary = summary.map((item) => {return item.text}).join("\n")
