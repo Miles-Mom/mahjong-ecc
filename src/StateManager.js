@@ -27,7 +27,7 @@ class StateManager {
 			}
 			else if (obj.type === "displayMessage") {
 				if (obj?.message?.onlineOnly && window.stateManager.offlineMode) {
-					//This should only apply to serve maintence messages.
+					//This should only apply to server maintence messages.
 					console.warn("Suppressing displayMessage as offline. ")
 				}
 				else {
