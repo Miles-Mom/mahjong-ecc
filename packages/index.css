@@ -498,6 +498,32 @@ This means that something using bottom is off the page - hence we must use top. 
 	margin-left: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 17 / -10 * var(--negativeMarginMultiplier)); /*Negative margin of 10%. Allows even more tiles to fit. */
 }
 
+/*Make your in-hand tiles larger on phones*/
+@media (max-height: 600px) {
+  #userHand {
+	  top: 85vh;
+	  top: calc(var(--vh) * 85);
+	  height: 15vh;
+	  height: calc(var(--vh) * 15);
+	  max-height: 15vh;
+	  max-height: calc(var(--vh) * 15);
+  }
+
+  #userHand img{
+  	max-height: 15vh;
+  	max-height: calc(var(--vh) * 15);
+  }
+
+  #userHandExposed {
+	  max-height: 9vh; /*Not actually neccessary*/
+	  max-height: calc(var(--vh) * 9); /*Not actually neccessary*/
+  }
+  #userHandExposed img {
+	  max-height: 9vh;
+	  max-height: calc(var(--vh) * 9);
+  }
+}
+
 /*Note: These animations are eating up a very significant amount of CPU/GPU power. We may want to stop using them. */
 @keyframes handTurnPulse {
   0% {
