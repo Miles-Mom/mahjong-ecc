@@ -5,13 +5,15 @@ sudo apt-get update
 sudo apt-get upgrade
 
 #Add Swap - Google Cloud has none by default.
-#This isn't *needed* but it can help prevent issues. 
+#This isn't *needed* but it can help prevent issues.
 sudo fallocate -l 1G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
 sudo swapon -s
 
+echo "Add the following line to /etc/fstab:"
+echo "/swapfile none swap sw 0 0"
 
 #Install git
 sudo apt-get install -y git
