@@ -119,7 +119,8 @@ function getSummary(mahjongClientId, options = {}) {
 	for (let id in this.gameData.playerHands) {
 		res[id].text += ` (Net ${(res[id].netpoints > 0?"+":"")}${res[id].netpoints} points`
 		if (this.gameScores.length > 1) {
-			res[id].text += `, ${getScoreForClientId.call(this, id)} room total)`
+			let clientScore = getScoreForClientId.call(this, id)
+			res[id].text += `, ${(clientScore > 0?"+":"")}${clientScore} room total)`
 		}
 		else {
 			res[id].text += ")"
