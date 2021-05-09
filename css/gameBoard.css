@@ -140,7 +140,7 @@ This means that something using bottom is off the page - hence we must use top. 
   }
 
   #userHandExposed {
-	  max-height: 9vh; /*Not actually neccessary*/
+	  max-height: 9vh; /*Not actually neccessary - the tiles are limited, and this is covered up*/
   }
   #userHandExposed img {
 	  max-height: 9vh;

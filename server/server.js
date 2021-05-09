@@ -36,7 +36,7 @@ function onConnection(websocket) {
 			//Admin actions for triggering maintenance.
 
 			//Example:
-			//var auth = "" //Insert real password. 
+			//var auth = "" //Insert real password.
 			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Server Update", body: "Mahjong 4 Friends is entering maintenance in a few minutes to perform a server update. Online games will be unavailable for about 60 seconds (offline unaffected). Feel free to continue playing - all games will be restored after the update (if all goes well)"})
 
 			//stateManager.callServerSave(password, "update")
@@ -65,6 +65,16 @@ function onConnection(websocket) {
 					})
 				}
 				return;
+			}
+
+			if (obj.type === "uploadOfflineSave") {
+				let sdd = globalThis.serverStateManager.serverDataDirectory
+				let src = path.join(sdd, obj.saveId + ".server.json")
+				if (src.startsWith(sdd)) {
+					//Don't process anything with ../, etc.
+					fs.writeFileSync(src, obj.message)
+				}
+				return
 			}
 
 

@@ -103,8 +103,9 @@ class StateManager {
 				globalThis.serverStateManager = new ServerStateManager()
 			}
 
-			this.sendMessage = async function(message) {
-				if (this.offlineMode) {
+			this.sendMessage = async function(message, forceOnline = false) {
+				//forceOnline is used to upload logs to the server.
+				if (this.offlineMode && !forceOnline) {
 					if (!this.localServer) {
 						this.localServer = require("../server/server.js")
 						console.log(this.localServer)
@@ -239,6 +240,15 @@ class StateManager {
 					clientId: window.clientId
 				}))
 			})
+		}).bind(this)
+
+		this.uploadOfflineSave = (function({message, saveId}) {
+			this.sendMessage(JSON.stringify({
+				type: "uploadOfflineSave",
+				message,
+				saveId,
+				clientId: window.clientId
+			}), true) //True to force use online server.
 		}).bind(this)
 
 		this.revertState = (function(turnNumber) {
