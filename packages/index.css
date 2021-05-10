@@ -655,15 +655,15 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 .wall.wallPopupView img {
-	width: 2.5vw;
-	width: calc(var(--vw) * 2.5);
+	width: 3.5vw;
+	width: calc(var(--vw) * 3.5);
 }
 
 .wall.wallPopupView p {
-	width: 5vw;
-	width: calc(var(--vw) * 5);
-	font-size: 3vw;
-	font-size: calc(var(--vw) * 3);
+	width: 7vw;
+	width: calc(var(--vw) * 7);
+	font-size: 4vw;
+	font-size: calc(var(--vw) * 4);
 }
 
 .wall.smallView {

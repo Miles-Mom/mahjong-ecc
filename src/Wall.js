@@ -116,16 +116,19 @@ class Wall {
 			div.appendChild(tileImage)
 		}
 
-		if (tilesRemaining.length > 30) {
-			div.className = "wall"
-		}
-		else {
+		window.requestAnimationFrame(function() {
 			//Set an animation frame so the tiles are rendered before the class change is applied.
-			//Otherwise these are drawn with smallView styles, and never animated. 
-			window.requestAnimationFrame(function() {
+			//Otherwise these are drawn with smallView styles, and never animated.
+
+			//We need both to be in requestAnimationFrame as guaranteed hands call revert state sync, which would otherwise
+			//result in smallView being set when not correct. 
+			if (tilesRemaining.length > 30) {
+				div.className = "wall"
+			}
+			else {
 				div.className = "wall smallView"
-			})
-		}
+			}
+		})
 
 		div.onclick = function() {
 			let elem = document.createElement("div")
