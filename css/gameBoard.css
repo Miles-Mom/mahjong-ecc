@@ -50,9 +50,8 @@ This means that something using bottom is off the page - hence we must use top. 
 #userHand, #userHandExposed, #tilePlacemat {
 	position: absolute;
 	/*bottom: 0;*/
-	top: 88vh;
 	left: 10.52vh;
-	height:12vh;
+	height: 12vh;
 	max-height: 12vh;
 	width: calc(100vw - 21.04vh);
 	text-align: center; /*Center tiles horizontally. */
@@ -61,18 +60,21 @@ This means that something using bottom is off the page - hence we must use top. 
 
 #gameBoard #userHand {
 	z-index: 1; /*Allows tiles in userHand to show up above tiles in handForExposed - needed for indicating last tile drawn. */
+	top: 85vh;
+	height: 15vh;
+	max-height: 15vh;
 }
 
 #gameBoard #userHandExposed {
 	/*bottom: 12vh;*/
-	top: 76vh;
+	top: 73vh;
 	background-color: #a04622;
 	text-align: left;
 }
 
 #gameBoard #tilePlacemat {
 	/*bottom: 24vh;*/
-	top: 64vh;
+	top: 61vh;
 	background-color: #FFFFFF00;
 }
 
@@ -122,28 +124,15 @@ This means that something using bottom is off the page - hence we must use top. 
 	max-height: 12vh;
 }
 
+#userHand img {
+	max-height: 15vh;
+}
+
 #userHand img:not(:first-child), #userHand img:not(:first-child),
 #userHandExposed img:not(:first-child), #topHand img:not(:first-child) {
 	margin-left: calc(calc(100vw - 19.04vh) / 17 / -10 * var(--negativeMarginMultiplier)); /*Negative margin of 10%. Allows even more tiles to fit. */
 }
 
-/*Make your in-hand tiles larger on phones*/
-@media (max-height: 600px) {
-  #userHand {
-	  top: 85vh;
-	  height: 15vh;
-	  max-height: 15vh;
-  }
-
-  #userHand img{
-  	max-height: 15vh;
-  }
-
-  /*We don't need to change the height of userHandExposed, as the tiles will be at the top anyway, and userHandExposed goes underneath. */
-  #userHandExposed img {
-	  max-height: 9vh;
-  }
-}
 
 /*Note: These animations are eating up a very significant amount of CPU/GPU power. We may want to stop using them. */
 @keyframes handTurnPulse {
@@ -231,24 +220,60 @@ This means that something using bottom is off the page - hence we must use top. 
 
 #wallAndDiscardContainer {
 	position: absolute;
-	left: calc(9.52vh + 3vw);
+	max-width: calc(75vw - 21.04vh);
+}
+
+#wallAndDiscardContainer, .wall {
+	/*Wall is not absolute position, so ignored until the wall is transitioned. */
+	left: calc(9.52vh + 2vw);
 	top: calc(12vh + 1vh);
-	max-width: 56vw;
 }
 
-#wall * {
-	max-width: calc(50vw / 31);
-	max-height: 3.33vh;
+.wall {
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	flex-wrap: wrap;
 }
 
-#wall p {
+.wall, .wall img {
+	transition: all 1.6s linear;
+	margin-left: 0;
+}
+
+.wall img {
+	width: calc(1.6vw + 1.6vmin - 1.3vmax);
+	aspect-ratio: 0.75;
+}
+
+.wall p {
 	display: inline-block;
 	margin: 0;
-	font-size: 2.5vh;
-	vertical-align: top;
-	width: calc(50vw / 31);
+	width: calc(2 * calc(1.6vw + 1.6vmin - 1.3vmax));
 	text-align: center;
+	font-size: calc(1.1 * calc(1.6vw + 1.6vmin - 1.3vmax));
 }
+
+.wall.wallPopupView img {
+	width: 2.5vw;
+}
+
+.wall.wallPopupView p {
+	width: 5vw;
+	font-size: 3vw;
+}
+
+.wall.smallView {
+	position: fixed;
+	height: 5vh;
+	left: calc(9.52vh + 75.5vw - 19.04vh);
+	top: 55vh;
+}
+
+.wall.smallView img:nth-child(1n+7) {
+	margin-left: calc(-0.99 * calc(1.6vw + 1.6vmin - 1.3vmax));
+}
+
 
 #discardPile {
 	margin-top: 1vh;
@@ -263,7 +288,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #fullscreenControls {
 	position: absolute;
 	right: calc(10.52vh + 1vw);
-	top: calc(71vh - 1vh);
+	top: calc(68vh - 1vh);
 	max-height: 5vh;
 	max-width: 5vw;
 	z-index: 1;
@@ -272,7 +297,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #syncButton {
 	position: absolute;
 	right: calc(10.52vh + 1vw);
-	top: 64vh;
+	top: 61vh;
 	max-height: 5vh;
 	max-width: 5vw;
 	z-index: 1;
@@ -281,7 +306,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #revertStateButton {
 	position: absolute;
 	left: calc(9.52vh + 2vw);
-	top: 64vh;
+	top: 61vh;
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
@@ -291,7 +316,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #gameBoard.chinese #revertStateButton {
 	left: initial;
 	right: calc(9.52vh + 8vw);
-	top: 70vh;
+	top: 67vh;
 }
 
 /*Make these from the left*/
@@ -303,7 +328,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #proceedButton {
 	position: absolute;
 	left: calc(9.52vh + 13vw);
-	top: 57vh;
+	top: 54vh;
 	width: calc(62vw - 19.04vh);
 	height: 5vh;
 	border-radius: 50vh;
@@ -337,7 +362,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #hintButton {
 	position: absolute;
 	right: calc(9.52vh + 25.5vw);
-	top: 57vh;
+	top: 54vh;
 	width: 15.5vw;
 	height: 5vh;
 	border-radius: 50vh;
@@ -363,7 +388,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #endGameButton {
 	position: absolute;
 	left: calc(9.52vh + 2vw);
-	top: 70vh;
+	top: 67vh;
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
@@ -373,7 +398,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #goMahjongButton {
 	position: absolute;
 	right: calc(9.52vh + 8vw);
-	top: 70vh;
+	top: 67vh;
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
@@ -381,7 +406,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #gameBoard.chinese #goMahjongButton {
-	top: 64vh;
+	top: 61vh;
 }
 
 #proceedButton:disabled {
@@ -392,7 +417,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #newGameNoLobbyButton {
 	position: absolute;
 	left: calc(9.52vh + 2vw);
-	top: 58vh;
+	top: 55vh;
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
@@ -400,13 +425,13 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #gameBoard.chinese #newGameNoLobbyButton {
-	top: 64vh;
+	top: 61vh;
 }
 
 #swapJokerButton {
 	position: absolute;
 	right: calc(9.52vh + 8vw);
-	top: 64vh;
+	top: 61vh;
 	width: 10vw;
 	height: 5vh;
 	border-radius: 50vh;
@@ -420,13 +445,13 @@ This means that something using bottom is off the page - hence we must use top. 
 #instructionBubble {
 	position: absolute;
 	right: calc(9.52vh + 10px + 1vw);
-	top: calc(calc(var(--vh) * 12) + 12vmin + 3vmin + 4vmin);
+	top: calc(12vh + 12vmin + 3vmin + 4vmin);
 	background-color: #fdffcb;
 	font-size: calc(1.1vmin + 0.70vmax); /*Seems to work decently, though not perfect. TODO: Might need to transpile this too. */
-	padding: 10px;
+	padding: 0 10px;
 	border-radius: 10px;
 	width: 20vw;
-	height: 21vh;
+	height: 22vh;
 	display: flex;
 	align-items: center;
 	text-align: center;

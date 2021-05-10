@@ -102,6 +102,12 @@ class Wall {
 	static renderWall(div, tilesRemaining) {
 		while (div.firstChild) {div.firstChild.remove()} //Delete any existing tiles.
 
+		if (tilesRemaining.length === 0) {return} //Don't write "0" to the screen.
+		//Write the number of tiles that remain.
+		let elem = document.createElement("p")
+		elem.innerHTML = tilesRemaining.length
+		div.appendChild(elem)
+
 		for (let i=0;i<tilesRemaining.length;i++) {
 			let tile = tilesRemaining[i]
 			let tileImage = document.createElement("img")
@@ -110,11 +116,24 @@ class Wall {
 			div.appendChild(tileImage)
 		}
 
-		if (tilesRemaining.length === 0) {return} //Don't write "0" to the screen.
-		//Write the number of tiles that remain.
-		let elem = document.createElement("p")
-		elem.innerHTML = tilesRemaining.length
-		div.appendChild(elem)
+		if (tilesRemaining.length > 30) {
+			div.className = "wall"
+		}
+		else {
+			//Set an animation frame so the tiles are rendered before the class change is applied.
+			//Otherwise these are drawn with smallView styles, and never animated. 
+			window.requestAnimationFrame(function() {
+				div.className = "wall smallView"
+			})
+		}
+
+		div.onclick = function() {
+			let elem = document.createElement("div")
+			let wallPreview = div.cloneNode(true)
+			elem.appendChild(wallPreview)
+			wallPreview.className = "wall wallPopupView"
+			new Popups.Notification("Wall View", elem).show()
+		}
 	}
 
 	static fromJSON(str) {

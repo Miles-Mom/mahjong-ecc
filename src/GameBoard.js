@@ -420,7 +420,7 @@ wallAndDiscardContainer.id = "wallAndDiscardContainer"
 gameBoard.appendChild(wallAndDiscardContainer)
 
 let wallRendering = document.createElement("div")
-wallRendering.id = "wall"
+wallRendering.className = "wall"
 wallAndDiscardContainer.appendChild(wallRendering)
 
 let discardPile = document.createElement("div")
