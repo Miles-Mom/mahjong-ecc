@@ -31,20 +31,18 @@ function onConnection(websocket) {
 				return websocket.send(getMessage("error", "Message must be valid JSON"))
 			}
 
-			console.log('received: ' + JSON.stringify(obj));
-
 			//Admin actions for triggering maintenance.
 
 			//Example:
 			//var auth = "" //Insert real password.
-			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Server Update", body: "Mahjong 4 Friends is entering maintenance in a few minutes to perform a server update. Online games will be unavailable for about 60 seconds (offline unaffected). Feel free to continue playing - all games will be restored after the update (if all goes well)"})
+			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Server Update", body: "Mahjong 4 Friends is entering maintenance in a few minutes to perform a server update. Online games will be unavailable for about 30 seconds (offline unaffected). Feel free to continue playing - all games will be restored after the update (assuming all goes well)"})
 
-			//stateManager.callServerSave(password, "update")
+			//stateManager.callServerSave(auth, "update")
 
 			//Then apply the update, and start the server loading from the state.
 			//That should probably be done by editing crontab before reboot, then editing back.
 
-			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Reconnected", body: "Mahjong 4 Friends is back up - you may need to reload page/restart app, and your game might have gone back a turn or two. Please report any issues to support@mahjong4friends.com"})
+			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Reconnected", body: "Mahjong 4 Friends is online. Please report any issues to support@mahjong4friends.com"})
 
 			if (obj.type === "callServerSave" || obj.type === "messageAllServerClients") {
 				if (!obj.auth) {
@@ -76,6 +74,8 @@ function onConnection(websocket) {
 				}
 				return
 			}
+
+			console.log('received: ' + JSON.stringify(obj));
 
 
 			let client;
