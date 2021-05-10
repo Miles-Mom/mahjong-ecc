@@ -276,7 +276,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 .wall.smallView img:nth-child(1n+7) {
-	margin-left: calc(-0.99 * calc(1.6vw + 1.6vmin - 1.3vmax));
+	margin-left: calc(1px + -1 * calc(1.6vw + 1.6vmin - 1.3vmax)); /*1px so you can see the edge of other tiles and know they are stacked*/
 }
 
 
