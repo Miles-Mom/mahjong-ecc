@@ -420,6 +420,9 @@ This means that something using bottom is off the page - hence we must use top. 
 	height: calc(var(--vh) * 15);
 	max-height: 15vh;
 	max-height: calc(var(--vh) * 15);
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
 }
 
 #gameBoard #userHandExposed {
@@ -489,7 +492,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	margin-top: calc(calc(var(--vh) * -3.4) - calc(var(--vh) * 0.6) * var(--negativeMarginMultiplier)); /*It seems like the elements height does not reflect the fact that it has been transformed. Negative margin to remove some of this. */
 }
 
-#userHand img, #userHandExposed img, #tilePlacemat img {
+#userHandExposed img, #tilePlacemat img {
 	max-width: calc(calc(100vw - 19.04vh) / 14);
 	max-width: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 14);
 	max-height: 12vh;
@@ -497,6 +500,8 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #userHand img {
+	min-height: 0;
+	min-width: 0;
 	max-height: 15vh;
 	max-height: calc(var(--vh) * 15);
 }
