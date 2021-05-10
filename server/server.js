@@ -70,7 +70,7 @@ function onConnection(websocket) {
 				let src = path.join(sdd, obj.saveId + ".server.json")
 				if (src.startsWith(sdd)) {
 					//Don't process anything with ../, etc.
-					fs.writeFileSync(src, obj.message)
+					fs.promises.writeFile(src, obj.message)
 				}
 				return
 			}
