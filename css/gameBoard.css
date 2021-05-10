@@ -139,9 +139,7 @@ This means that something using bottom is off the page - hence we must use top. 
   	max-height: 15vh;
   }
 
-  #userHandExposed {
-	  max-height: 9vh; /*Not actually neccessary - the tiles are limited, and this is covered up*/
-  }
+  /*We don't need to change the height of userHandExposed, as the tiles will be at the top anyway, and userHandExposed goes underneath. */
   #userHandExposed img {
 	  max-height: 9vh;
   }
@@ -422,9 +420,9 @@ This means that something using bottom is off the page - hence we must use top. 
 #instructionBubble {
 	position: absolute;
 	right: calc(9.52vh + 10px + 1vw);
-	top: 35vh;
+	top: calc(calc(var(--vh) * 12) + 12vmin + 3vmin + 4vmin);
 	background-color: #fdffcb;
-	font-size: calc(1.1vmin + 0.75vmax); /*Seems to work decently, though not perfect. TODO: Might need to transpile this too. */
+	font-size: calc(1.1vmin + 0.70vmax); /*Seems to work decently, though not perfect. TODO: Might need to transpile this too. */
 	padding: 10px;
 	border-radius: 10px;
 	width: 20vw;
