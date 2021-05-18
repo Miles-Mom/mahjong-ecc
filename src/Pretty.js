@@ -1,4 +1,4 @@
-const Tile = require("Tile") //We call the createImageElem method. TODO: Pretty should be a subclass of tile, though instanceof Tile checking might make that hard. 
+const Tile = require("./Tile.js") //We call the createImageElem method. TODO: Pretty should be a subclass of tile, though instanceof Tile checking might make that hard. 
 
 class Pretty {
 	constructor(config = {}) {
