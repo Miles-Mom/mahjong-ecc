@@ -159,9 +159,9 @@ function getTileDifferential(handOptions, hand) {
 			}*/
 
 			//Add jokers that we aren't using to fill anything
-			//We could take a different approach - add jokers until we can't use them -
-			//however this approach, while making recovery plans worse,
-			//increases the odds of no joker point doubles.
+			//We could take a different approach - attempt to use every joker, and discard the actual tile first,
+			//however the current approach, while making recovery plans worse (discards jokers that we could keep),
+			//increases the odds of no joker point doubles (compared to discarding the actual tile and stashing jokers).
 			if (jokerCount > canFillJoker.length) {
 				notUsed.push(new Tile({type: "joker", value: ""}))
 				jokerCount--

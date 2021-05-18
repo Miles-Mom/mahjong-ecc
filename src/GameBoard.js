@@ -434,10 +434,9 @@ function renderDiscardPile(tileStrings) {
 	tiles = Hand.sortTiles(tiles)
 
 	tiles.forEach((tile) => {
-		let img = tile.createImageElem({
+		discardPile.appendChild(tile.createImageElem({
 			gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
-		})
-		discardPile.appendChild(img)
+		}))
 	})
 }
 
