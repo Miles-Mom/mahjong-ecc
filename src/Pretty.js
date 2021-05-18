@@ -1,3 +1,5 @@
+const Tile = require("Tile") //We call the createImageElem method. TODO: Pretty should be a subclass of tile, though instanceof Tile checking might make that hard. 
+
 class Pretty {
 	constructor(config = {}) {
 
@@ -43,12 +45,11 @@ class Pretty {
 		return "assets/tiles/" + this.seasonOrFlower + "s" + "/" + this.value + ".png"
 	}
 
-	//TODO: Make a static method of tile. 
 	createImageElem(options = {}) {
-		let img = document.createElement("img")
-		img.src = this.getImageUrl()
-		img.title = this.getTileName(options.gameStyle)
-		return img
+		return Tile.createImageElem({
+			src: this.getImageUrl(),
+			title: this.getTileName(options.gameStyle)
+		})
 	}
 
 	static fromJSON(str) {

@@ -59,50 +59,20 @@ class Tile {
 		}
 	}
 
-	createImageElem(options = {}) {
-		let src = this.getImageUrl() //Need to pass options if getImageUrl ever adds any.
-		//We'll store a URL, either blob URL or dataURI.
-		// if (!tileCache[src]) {
-		// 	console.log(tileCache[src])
-		// 	//TODO: Upscale, rotate if needed.
-		// 	//This ensures the tiles grow properly on larger screens, instead of stopping at 96x128
-		// 	//It also greatly cleans up the styling on the vertical tiles (rotate transforms don't seem to
-		// 	//affect their dimensions, causing sizing, margins, etc, to be complicated)
-		// 	console.log("Generating", src)
-		// 	let img = document.createElement("img")
-		// 	img.src = src
-		// 	tileCache[src] = img
-		//
-		// 	console.log("Stored")
-		//
-		// 	img.onload = function() {
-		// 		console.log(img.width)
-		// 		console.log(img.height)
-		// 		console.log(src)
-		// 		let cnv = document.createElement("canvas")
-		// 		let ctx = cnv.getContext("2d")
-		// 		//We can upscale to ensure that tiles properly grow beyond their normal maximum size on larger devices.
-		// 		//We should also add rotations, so that we can avoid the need for CSS transforms.
-		// 		cnv.width = img.width * 2
-		// 		cnv.height = img.height * 2
-		// 		ctx.drawImage(img, 0, 0, cnv.width, cnv.height)
-		//
-		// 		cnv.toBlob(function(blob) {
-		// 			let newSrc = URL.createObjectURL(blob)
-		// 			img.onload = null;
-		// 			console.log("Got Blob!")
-		// 			img.src = newSrc
-		// 		}, "image/png")
-		// 	}
-		// }
-		//
-		// //TODO: Would using a Canvas be quicker?
-		// //TODO: Or - we could simply return the same image object every time, just changing the title. That's probably the best option.
-		// let img = tileCache[src].cloneNode()
+	static createImageElem(options = {}) {
+		//We may want to do upscaling and rotations here to avoid some issues with CSS, and
+		//clean up our styling. See commit 3250171 and the commit after - there's 30+ lines of trial code in there. 
 		let img = document.createElement("img")
-		img.src = src
-		img.title = this.getTileName(options.gameStyle)
+		img.src = options.src
+		img.title = options.title
 		return img
+	}
+
+	createImageElem(options = {}) {
+		return Tile.createImageElem({
+			src: this.getImageUrl(),
+			title: this.getTileName(options.gameStyle)
+		})
 	}
 
 	matches(tile) {
