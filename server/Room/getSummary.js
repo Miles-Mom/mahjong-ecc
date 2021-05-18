@@ -1,6 +1,7 @@
 function getSummary(mahjongClientId, options = {}) {
 
 	//TODO: Reverting with history deletes this - might want to store in state.
+	//TODO: Ignore bot Mahjong also causes problems with this - we need to score the initial bot Mahjong only. 
 	//TODO: How to handle American vs Chinese scores if switching in game.
 	if (!this.gameScores) {
 		this.gameScores = []

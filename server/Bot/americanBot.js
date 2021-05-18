@@ -144,6 +144,8 @@ function evaluateNextMove({botConfig}) {
 		return toThrow
 	}
 
+	let mahjongIgnored = this.getRoom()?.state?.settings?.ignoreBotMahjong
+
 	if (gameData.charleston) {
 		let round = gameData.charleston.directions[0][0]
 
@@ -193,14 +195,18 @@ function evaluateNextMove({botConfig}) {
 			let tile = getTopTiles(analysis, 1)
 			placeTiles(tile)
 		}
-		else if (analysis[0]?.diff === 0) {
-			placeTiles([], true) //Go Mahjong
+		//If we are Mahjong, go Mahjong.
+		else if (analysis[0]?.diff === 0
+			&& (placeTiles([], true) || true) //Call placeTiles - doesn't matter what actually returns.
+			&& !mahjongIgnored
+		) {
+			//If this block executes, it means ignoreBotMahjong is false. If ignoreBotMahjong is true, we proceed to emergency pick.
 		}
 		else {
 			//Our hand should only be dead if we start checking exposed tiles in the future.
 			//Otherwise, we should never make a move that would make us dead by our detection.
-			console.error("Bot hand appears to be dead. Initiating emergency pick. ")
-			throw "Hand is Dead"
+
+			console.error("Initiating emergency pick. Either bot hand appears dead, or Mahjong was ignored. ")
 
 			if (!currentHand.contents.some((tile) => {
 				if (tile instanceof Tile) {
@@ -273,7 +279,13 @@ function evaluateNextMove({botConfig}) {
 							//Can always pick up for Mahjong.
 							if (tilesToPlace.length === match.length - 1) {
 								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), true)
-								return true
+								if (mahjongIgnored) {
+									console.log("MAHJJ!!")
+									//Our Mahjong will be ignored, so we need to continue with the proceed (I believe this is what's going on here)
+								}
+								else {
+									return true
+								}
 							}
 							else {console.warn("Continuing Needs Mahjong")} //Can't really think of when this would trigger?
 						}

@@ -33,7 +33,9 @@ function SettingsMenu(settingsDiv, isHost = false) {
 		card: new CardSelector(),
 		americanBotDifficulty: new AmericanBotDifficulty(),
 		disableHints: new DisableHintsSelector(),
+
 		//Both
+		ignoreBotMahjong: new IgnoreBotMahjongSelector(),
 	})
 
 	let hasChoices = false
@@ -61,7 +63,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	//right now, all choices have different names, but some (like tableLimit)
 	//may end up reused in the future. This should be changed to only send choices relevant to selected gameStyles.
 	//Note that this may not actually be an issue - we can configure the same selector to display for multiple different gamestyles,
-	//by changing displayFor - we might just need a way to have seperate defaults for every game mode. 
+	//by changing displayFor - we might just need a way to have seperate defaults for every game mode.
 	this.getChoices = function(excludeClient = true) {
 		let obj = {}
 		for (let option in options) {
@@ -219,11 +221,9 @@ function BotSettings() {
 	elem.id = "botSelectorDiv"
 
 	let checkbox = document.createElement("input")
-	checkbox.id = "botSelectorCheckbox"
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.for = "botSelectorCheckbox"
 	label.innerHTML = "Allow bot to charleston"
 	label.addEventListener("click", function() {checkbox.click()})
 
@@ -354,6 +354,33 @@ function DisableHintsSelector() {
 
 	let label = document.createElement("label")
 	label.innerHTML = "Disable Hints/Suggested Hands"
+	label.addEventListener("click", function() {checkbox.click()})
+
+	label.style.fontSize = "1.4em"
+	checkbox.style.fontSize = "1.4em"
+
+	this.elem = elem
+	elem.appendChild(checkbox)
+	elem.appendChild(label)
+
+	this.get = function() {
+		return checkbox.checked
+	}
+	this.set = function(value = false) {
+		checkbox.checked = value
+	}
+	this.displayFor = ["american"]
+	this.isHost = true
+}
+
+function IgnoreBotMahjongSelector() {
+	let elem = document.createElement("div")
+
+	let checkbox = document.createElement("input")
+	checkbox.type = "checkbox"
+
+	let label = document.createElement("label")
+	label.innerHTML = "Allow Play after Bot Mahjong"
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"

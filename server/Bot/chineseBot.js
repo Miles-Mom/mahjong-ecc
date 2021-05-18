@@ -226,6 +226,7 @@ function evaluateNextMove() {
 		return tiles
 	}
 
+	//TODO: This needs to support this.state.settings.ignoreBotMahjong
 	if (gameData.charleston) {
 		//We need to choose 3 tiles.
 		placeTiles(getCharlestonTiles())

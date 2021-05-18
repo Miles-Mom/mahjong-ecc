@@ -67,8 +67,10 @@ function startGame(obj) {
 
 		if (this.state.settings.gameStyle === "chinese") {
 			this.gameData.wall = new Wall(this.state.seed)
+			this.state.settings.ignoreBotMahjong = false //Not currently supported for Chinese.
 		}
 		else if (this.state.settings.gameStyle === "american") {
+			this.state.settings.ignoreBotMahjong = obj?.settings?.ignoreBotMahjong || false
 			this.gameData.wall = new Wall(this.state.seed, {
 				prettysAsTiles: true,
 				includeJokers: 8
