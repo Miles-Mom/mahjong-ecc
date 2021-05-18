@@ -276,9 +276,9 @@ hintButton.addEventListener("click", function() {
 						table.appendChild(tileRow)
 
 						item.handOption.tiles.flat().forEach((tile) => {
-							let img = document.createElement("img")
-							img.src = tile.getImageUrl()
-							tileRow.appendChild(img)
+							tileRow.appendChild(tile.createImageElem({
+								gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+							}))
 						})
 					}
 				})
@@ -434,9 +434,9 @@ function renderDiscardPile(tileStrings) {
 	tiles = Hand.sortTiles(tiles)
 
 	tiles.forEach((tile) => {
-		let img = document.createElement("img")
-		img.src = tile.getImageUrl()
-		img.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
+		let img = tile.createImageElem({
+			gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+		})
 		discardPile.appendChild(img)
 	})
 }

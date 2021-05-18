@@ -43,6 +43,14 @@ class Pretty {
 		return "assets/tiles/" + this.seasonOrFlower + "s" + "/" + this.value + ".png"
 	}
 
+	//TODO: Make a static method of tile. 
+	createImageElem(options = {}) {
+		let img = document.createElement("img")
+		img.src = this.getImageUrl()
+		img.title = this.getTileName(options.gameStyle)
+		return img
+	}
+
 	static fromJSON(str) {
 		let obj = JSON.parse(str)
 		if (obj.class !== "Pretty") {throw "String was not created by Pretty.toJSON()"}

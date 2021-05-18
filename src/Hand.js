@@ -302,25 +302,28 @@ class Hand {
 
 			for (let i=0;i<this.placematLength;i++) {
 				let tile = this.inPlacemat[i]
-				let elem = document.createElement("img")
-				this.tilePlacemat.appendChild(elem)
-				if (i === 0 && classForFirst) {
-					elem.className = classForFirst
-				}
+
+				let elem;
 				if (tile) {
-					elem.src = tile.getImageUrl()
-					elem.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
+					elem = tile.createImageElem({
+						gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+					})
 					elem.draggable = true //Is this even neccessary? It wasn't set earlier, yet it was working fine. Do browsers just assume or something?
-					//Both work. Using i is faster and simpler.
-					elem.placematIndex = i //this.inPlacemat.findIndex((item) => {return item === tile})
+					elem.placematIndex = i
 					elem.addEventListener("dragstart", dragstart)
 					elem.addEventListener("click", (function() {
 						this.moveTile(tile) //Closure.
 					}).bind(this))
 				}
 				else {
+					elem = document.createElement("img")
 					elem.src = "assets/tiles/tile-outline.png"
 				}
+
+				if (i === 0 && classForFirst) {
+					elem.className = classForFirst
+				}
+				this.tilePlacemat.appendChild(elem)
 			}
 
 
@@ -409,9 +412,9 @@ class Hand {
 
 				let drawTile = (function(tile, indexInGroup) {
 
-					let elem = document.createElement("img")
-					elem.src = tile.getImageUrl()
-					elem.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
+					let elem = tile.createImageElem({
+						gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+					})
 
 					//Group tiles in a match together.
 					if (indexInGroup && indexInGroup !== 0) {

@@ -110,10 +110,9 @@ class Wall {
 
 		for (let i=0;i<tilesRemaining.length;i++) {
 			let tile = tilesRemaining[i]
-			let tileImage = document.createElement("img")
-			tileImage.src = tile.getImageUrl()
-			tileImage.title = tile.getTileName(stateManager?.lastState?.message?.settings?.gameStyle)
-			div.appendChild(tileImage)
+			div.appendChild(tile.createImageElem({
+				gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+			}))
 		}
 
 		window.requestAnimationFrame(function() {
@@ -121,7 +120,7 @@ class Wall {
 			//Otherwise these are drawn with smallView styles, and never animated.
 
 			//We need both to be in requestAnimationFrame as guaranteed hands call revert state sync, which would otherwise
-			//result in smallView being set when not correct. 
+			//result in smallView being set when not correct.
 			if (tilesRemaining.length > 30) {
 				div.className = "wall"
 			}
