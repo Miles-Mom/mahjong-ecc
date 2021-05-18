@@ -1,5 +1,3 @@
-// let tileCache = {}
-// window.tileCache = tileCache
 class Tile {
 	constructor(config = {}) {
 		this.type = config.type //Ex. wind, bamboo, character, pretty, dragon
@@ -61,7 +59,7 @@ class Tile {
 
 	static createImageElem(options = {}) {
 		//We may want to do upscaling and rotations here to avoid some issues with CSS, and
-		//clean up our styling. See commit 3250171 and the commit after - there's 30+ lines of trial code in there. 
+		//clean up our styling. See commit 3250171, 507c040, and the commit after - there's 30+ lines of trial code in there.
 		let img = document.createElement("img")
 		img.src = options.src
 		img.title = options.title
