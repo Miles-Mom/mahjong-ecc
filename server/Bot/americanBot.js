@@ -6,7 +6,6 @@ const TileContainer = require("../../src/TileContainer.js")
 const utilities = require("../american/utilities.js")
 
 const SeedRandom = require("seed-random")
-
 function evaluateNextMove({botConfig}) {
 	let room = this.getRoom()
 
@@ -270,7 +269,7 @@ function evaluateNextMove({botConfig}) {
 							})
 
 							if (tilesToPlace.length === match.length - 1) {
-								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown))
+								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), withTileAnalysis[0].diff === 0)
 								return true
 							}
 							else {} //Nothing we can do - we can't pick it up.

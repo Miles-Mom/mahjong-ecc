@@ -99,7 +99,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 				}
 			}
 
-			client.addMessageToHistory(passMessage, -1) //Make draws appear in history menu. -1 so before, not after, this pass. 
+			client.addMessageToHistory(passMessage, -1) //Make draws appear in history menu. -1 so before, not after, this pass.
 
 			//Assume number of tiles is valid for turn.
 			return true
@@ -443,6 +443,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 					if (valid) {
 						//Add the tile to hand, attempt to verify, and, if not, remove
+						let orig = hand.contents.slice(0)
 						hand.add(this.gameData.currentTurn.thrown)
 						if (hand.removeTilesFromHand(placement)) {
 							utilized = true
@@ -462,7 +463,12 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
 							}
-							this.gameData.currentTurn.userTurn = clientId
+							if (placement.mahjong && client.isBot && this.state.settings.ignoreBotMahjong) {
+								hand.contents = orig //Reverse the match - we don't want to end up with everything exposed where we can't throw.
+							}
+							else {
+								this.gameData.currentTurn.userTurn = clientId //Either not for Mahjong or not reversed. Change turn.
+							}
 						}
 						else {
 							hand.remove(this.gameData.currentTurn.thrown)
@@ -542,7 +548,7 @@ module.exports = function(obj, prop, value) {
 	if (getPriority.call(this, obj, prop, exemptFromChecks.includes(prop)) === false) {
 		delete obj[prop]
 		if (globalThis.serverStateManager.getClient(prop).isBot) {
-			console.log("Bots are not allowed to obtain override power. ")
+			console.error("Bots are not allowed to obtain override power. ")
 		}
 		else {
 			exemptFromChecks.push(prop) //We will only block a client once per turn. Successive attempts will be treated as overrides.

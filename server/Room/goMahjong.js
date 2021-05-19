@@ -45,10 +45,10 @@ function goMahjong(clientId, options = {}) {
 	this.setInstructions(this.hostClientId, client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
 
 	this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options)}, "success")
-	setTimeout(function() {
-		//Offset this call for bots (which are synchronus) to avoid infinite recursion if their Mahjong is ignored. 
+	setTimeout((function() {
+		//Offset this call for bots (which are synchronus) to avoid infinite recursion if their Mahjong is ignored.
 		this.sendStateToClients()
-	}, 0)
+	}).bind(this), 0)
 }
 
 module.exports = goMahjong
