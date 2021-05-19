@@ -502,11 +502,11 @@ function calculateNextTurn(obj, exemptFromChecks) {
 			for (let clientId in this.gameData.playerHands) {
 				let hand = this.gameData.playerHands[clientId]
 				if (hand.wind === nextWind) {
-
 					//Pick up as 4th tile for an exposed pong if possible.
 					//TODO: Consider notifying people when the 4th tile is added. We currently don't do this, because it is just points, so shouldn't really impact
 					//gameplay, and the message can't currently be sent to the person who gained the pickup, as they receive tile pickup message too.
 					hand.contents.forEach((item) => {
+						if (!this.state.settings.allow4thTilePickup) {return}
 						if (item instanceof Match && item.type === this.gameData.currentTurn.thrown.type && item.value === this.gameData.currentTurn.thrown.value) {
 							utilized = true
 							item.amount = 4

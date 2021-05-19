@@ -55,6 +55,8 @@ function startGame(obj) {
 
 		this.state.settings.tableLimit = Number(obj?.settings?.tableLimit) || Infinity //Default Infinity - || as 0 should mean infinity.
 
+		this.state.settings.allow4thTilePickup = obj?.settings?.allow4thTilePickup ?? true
+
 		if (!isNaN(obj?.settings?.maximumSequences)) {
 			this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))
 		}

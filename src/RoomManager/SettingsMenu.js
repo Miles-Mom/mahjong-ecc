@@ -28,6 +28,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 		tableLimit: new TableLimitSelector(),
 		checkForCalling: new CheckForCallingSelector(),
 		botSettings: new BotSettings(),
+		allow4thTilePickup: new Allow4thTilePickupSelector(),
 
 		//American
 		card: new CardSelector(),
@@ -197,7 +198,7 @@ function MaximumSequencesSelector() {
 
 	let label = document.createElement("label")
 	label.for = "maximumSequencesSelector"
-	label.innerHTML = "Maximum Sequences: "
+	label.innerHTML = "Maximum Sequences/Chows: "
 
 	label.style.fontSize = "1.4em"
 	input.style.fontSize = "1.4em"
@@ -397,6 +398,33 @@ function IgnoreBotMahjongSelector() {
 		checkbox.checked = value
 	}
 	this.displayFor = ["american"]
+	this.isHost = true
+}
+
+function Allow4thTilePickupSelector() {
+	let elem = document.createElement("div")
+
+	let checkbox = document.createElement("input")
+	checkbox.type = "checkbox"
+
+	let label = document.createElement("label")
+	label.innerHTML = "Allow call for 4th tile for kong"
+	label.addEventListener("click", function() {checkbox.click()})
+
+	label.style.fontSize = "1.4em"
+	checkbox.style.fontSize = "1.4em"
+
+	this.elem = elem
+	elem.appendChild(checkbox)
+	elem.appendChild(label)
+
+	this.get = function() {
+		return checkbox.checked
+	}
+	this.set = function(value = true) {
+		checkbox.checked = value
+	}
+	this.displayFor = ["chinese"]
 	this.isHost = true
 }
 
