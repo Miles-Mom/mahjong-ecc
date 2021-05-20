@@ -436,7 +436,7 @@ function PickupDiscardForDrawSelector() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Allow picking up discard from prior player instead of draw"
+	label.innerHTML = "Allow claiming discard from prior player instead of draw"
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
