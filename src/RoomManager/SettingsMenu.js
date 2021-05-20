@@ -34,9 +34,10 @@ function SettingsMenu(settingsDiv, isHost = false) {
 		card: new CardSelector(),
 		americanBotDifficulty: new AmericanBotDifficulty(),
 		disableHints: new DisableHintsSelector(),
+		pickupDiscardForDraw: new PickupDiscardForDrawSelector(),
 
 		//Both
-		ignoreBotMahjong: new IgnoreBotMahjongSelector(),
+		ignoreBotMahjong: new IgnoreBotMahjongSelector(), //Currently works in American only - coded to appear only for American.
 	})
 
 	let hasChoices = false
@@ -427,5 +428,33 @@ function Allow4thTilePickupSelector() {
 	this.displayFor = ["chinese"]
 	this.isHost = true
 }
+
+function PickupDiscardForDrawSelector() {
+	let elem = document.createElement("div")
+
+	let checkbox = document.createElement("input")
+	checkbox.type = "checkbox"
+
+	let label = document.createElement("label")
+	label.innerHTML = "Allow picking up discard from prior player instead of draw"
+	label.addEventListener("click", function() {checkbox.click()})
+
+	label.style.fontSize = "1.4em"
+	checkbox.style.fontSize = "1.4em"
+
+	this.elem = elem
+	elem.appendChild(checkbox)
+	elem.appendChild(label)
+
+	this.get = function() {
+		return checkbox.checked
+	}
+	this.set = function(value = true) {
+		checkbox.checked = value
+	}
+	this.displayFor = ["chinese"]
+	this.isHost = true
+}
+
 
 module.exports = SettingsMenu

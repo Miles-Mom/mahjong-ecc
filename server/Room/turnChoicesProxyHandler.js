@@ -33,6 +33,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 
 	let priority;
 
+
 	if (this.gameData.charleston) {
 		if (obj[key].length > 3) {
 			client.message("roomActionPlaceTiles", "You can pass no more than 3 tiles during one Charleston round. ", "error")
@@ -108,6 +109,18 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			client.message("roomActionPlaceTiles", "You can't pass tiles you don't possess. ", "error")
 			return false
 		}
+	}
+	else if (obj[key] === "Claim") {
+		//Claiming the discard tile in lieu of draw.
+		if (!this.state.settings.pickupDiscardForDraw) {
+			client.message("roomActionPlaceTiles", "Pickup discard for draw was not enabled by host. ", "error")
+			return false
+		}
+		if (getBackwardsDistance(placerWind, throwerWind) !== 1) {
+			client.message("roomActionPlaceTiles", "You can only claim the discard tile if you are next in rotation. ", "error")
+			return false
+		}
+		priority = 50 //Low priority.
 	}
 	else if (obj[key] instanceof TileContainer || (this.state.settings.gameStyle === "american" && obj[key].mahjong)) {
 		//TileContainers are American Mahjong. We don't validate everything here -
@@ -486,6 +499,19 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					//Autoexpose to indicate we may need to automatically move something from in hand to expose.
 					this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId), autoExpose: true})
 					utilized = true
+				}
+				else if (placement === "Claim") {
+					if (utilized === true) {
+						client.message("roomActionPlaceTiles", "This tile was called - your draw was skipped. ", "error")
+						continue;
+					}
+					utilized = true
+					let tile = this.gameData.currentTurn.thrown
+					hand.add(tile)
+					this.lastDrawn = tile
+					this.gameData.currentTurn.userTurn = clientId
+					let message = client.getNickname() + " called for a " + tile.getTileName(this.state.settings.gameStyle)
+					this.messageAll([], "roomActionGameplayAlert", message, {clientId, speech: "I'll take that tile"})
 				}
 				else {
 					console.error("No known operation to perform when processing turn. ")

@@ -210,9 +210,13 @@ class Room {
 				return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
 			}
 
-			let placement;
+			let placement = obj?.message;
 			try {
-				placement = Hand.convertStringsToTiles(obj.message)
+				if (placement === "Claim") {
+					this.gameData.currentTurn.turnChoices[clientId] = placement
+					return
+				}
+				placement = Hand.convertStringsToTiles(placement)
 
 				if (this.state.settings.charleston.length > 0 && this.gameData.charleston === undefined && placement.length !== 1 && hand.wind === "east") {
 					if (placement.length === 3) {

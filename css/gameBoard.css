@@ -330,6 +330,13 @@ This means that something using bottom is off the page - hence we must use top. 
 	width: calc(73vw - 19.04vh);
 }
 
+#gameBoard.chinese #proceedButton.shrinkForClaimButton {
+	left: calc(9.52vh + 13vw);
+	top: 54vh;
+	width: calc(62vw - 19.04vh);
+}
+
+
 #proceedButton {
 	position: absolute;
 	left: calc(9.52vh + 13vw);
@@ -340,7 +347,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	font-size: 2.1vh;
 }
 
-#proceedButton.shrinkForHintButton {
+#gameBoard.american #proceedButton.shrinkForHintButton {
 	width: calc(45vw - 19.04vh);
 }
 
@@ -419,7 +426,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	cursor: not-allowed;
 }
 
-#newGameNoLobbyButton {
+#newGameNoLobbyButton, #claimButton {
 	position: absolute;
 	left: calc(9.52vh + 2vw);
 	top: 55vh;

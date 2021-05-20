@@ -298,6 +298,14 @@ hintButton.addEventListener("click", function() {
 	popup.show()
 })
 
+let claimButton = document.createElement("button")
+claimButton.id = "claimButton"
+claimButton.innerHTML = "Claim"
+claimButton.addEventListener("click", function() {
+	stateManager.placeTiles("Claim")
+})
+gameBoard.appendChild(claimButton)
+
 let instructionBubble = document.createElement("div")
 instructionBubble.id = "instructionBubble"
 instructionBubble.style.display = "none"
@@ -503,6 +511,18 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		proceedButton.classList.remove("shrinkForHintButton")
 	}
 
+	claimButton.style.display = ""
+	proceedButton.classList.add("shrinkForClaimButton")
+
+	function hideClaimButton() {
+		claimButton.style.display = "none"
+		proceedButton.classList.remove("shrinkForClaimButton")
+	}
+
+	if (!message?.settings?.pickupDiscardForDraw) {
+		hideClaimButton()
+	}
+
 	if (!message.inGame) {
 		document.body.style.overflow = ""
 		charlestonStart = false
@@ -528,12 +548,12 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let winds = ["north", "east", "south", "west"]
 	let hands = [userHand, rightHand, topHand, leftHand]
 
-	let userWind;
+	delete userHand.wind //Make sure this is cleared - if we are spectating, we don't want this to be defined.
 	clients.forEach((client) => {
 		if (client.hand) {
 			let tempHand = Hand.fromString(client.hand)
 			userHand.syncContents(tempHand.contents,  charlestonStart && message?.currentTurn?.charleston)
-			userWind = tempHand.wind
+			userHand.wind = tempHand.wind
 		}
 	})
 
@@ -541,10 +561,10 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		charlestonStart = true
 	}
 
-	let userWindIndex = winds.indexOf(userWind)
+	let userWindIndex = winds.indexOf(userHand.wind)
 
 	let windOrder = winds.slice(userWindIndex).concat(winds.slice(0, userWindIndex))
-	if (!userWind) {
+	if (!userHand.wind) {
 		//Must be spectating.
 		compass.setDirectionForUserWind(windOrder[0])
 		endGameButton.innerHTML = "Leave Room"
@@ -555,10 +575,11 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		}
 	}
 	else {
-		compass.setDirectionForUserWind(userWind)
+		compass.setDirectionForUserWind(userHand.wind)
 		endGameButton.innerHTML = "End Game"
 	}
 
+	let currentTurnWind;
 	clients.forEach((client) => {
 		let windPosition = 0;
 		if (client.wind) {
@@ -578,6 +599,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		hand.handToRender.classList.remove("brightnessPulse")
 
 		if (message.currentTurn && client.id === message.currentTurn.userTurn) {
+			currentTurnWind = client.wind
 			hand.handToRender.classList.add("brightnessPulse")
 			nametag.style.color = "red"
 		}
@@ -591,8 +613,15 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	if (message.currentTurn?.playersReady?.length > 0) {
 		//The person has thrown their tile. Waiting on players to ready.
 		let clientIdReady = message.currentTurn.playersReady.includes(window.clientId)
-		proceedButton.disabled = clientIdReady?"disabled":""
-		goMahjongButton.disabled = clientIdReady?"disabled":""
+		claimButton.disabled =
+			goMahjongButton.disabled =
+			proceedButton.disabled = clientIdReady?"disabled":""
+
+		//Completely hide the claim button if we aren't the next in order.
+		if ((winds.indexOf(currentTurnWind) + 1) % 4 !== winds.indexOf(userHand.wind)) {
+			hideClaimButton()
+		}
+
 		swapJokerButton.disabled = "disabled"
 		proceedButton.innerHTML = "Proceed (" + message.currentTurn.playersReady.length + "/4)"
 		//If you haven't thrown, are not in charleston, and it is your turn, override and enable.
@@ -607,6 +636,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		userHand.renderPlacemat("")
 	}
 	else {
+		hideClaimButton()
 		proceedButton.disabled = ""
 		goMahjongButton.disabled = ""
 		proceedButton.innerHTML = "Proceed"
