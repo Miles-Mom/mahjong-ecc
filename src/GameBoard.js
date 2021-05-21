@@ -610,6 +610,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	userHand.setEvictingThrownTile() //Clear evictingThrownTile
 
+	if (message.currentTurn.charleston) {hideClaimButton()}
+
 	if (message.currentTurn?.playersReady?.length > 0) {
 		//The person has thrown their tile. Waiting on players to ready.
 		let clientIdReady = message.currentTurn.playersReady.includes(window.clientId)
