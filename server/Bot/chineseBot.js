@@ -5,6 +5,8 @@ const Pretty = require("../../src/Pretty.js")
 
 const SeedRandom = require("seed-random")
 
+const getBackwardsDistance = require("../Room/getBackwardsDistance.js")
+
 function evaluateNextMove() {
 	let room = this.getRoom()
 
@@ -18,11 +20,18 @@ function evaluateNextMove() {
 
 	//Call room.onPlace properly.
 	let placeTiles = (function placeTiles(tiles = [], goMahjong = currentHand.isMahjong(room.state.settings.maximumSequences)) {
-		if (!(tiles instanceof Array)) {tiles = [tiles]}
+		if (typeof tiles === "string") {
+			//Should be "Claim"
+		}
+		else if (!(tiles instanceof Array)) {tiles = [tiles]}
+		if (typeof tiles !== "string") {
+			tiles = tiles.map((tile) => {return tile.toJSON()})
+		}
+
 		room.onPlace({
 			mahjong: goMahjong || undefined,
 			type: "roomActionPlaceTiles",
-			message: tiles = tiles.map((tile) => {return tile.toJSON()})
+			message: tiles
 		}, this.clientId)
 	}).bind(this)
 
@@ -280,6 +289,23 @@ function evaluateNextMove() {
 			return placeTiles(new Array(2).fill(gameData.currentTurn.thrown), isMahjong)
 		}
 		//TODO: Look at making sequence.
+
+		//Check if claiming is allowed.
+		if (room.state.settings.pickupDiscardForDraw) {
+			//Check if we are in the position to claim the tile.
+			let throwerWind = room.gameData.playerHands[room.gameData.currentTurn.userTurn].wind
+			console.log(currentHand.wind, throwerWind)
+			console.log(getBackwardsDistance(currentHand.wind, throwerWind))
+			if (getBackwardsDistance(currentHand.wind, throwerWind) === 1) {
+				//Determine if we want the tile (in our suit)
+				let breakdown = computeHandBreakdown(currentHand.contents, currentHand.wind, {chooseSecondarySuit: false, looseTileCost: 5})
+				if (gameData.currentTurn.thrown.type === breakdown.strategy.suit) {
+					currentHand.remove(gameData.currentTurn.thrown)
+					placeTiles("Claim")
+					return
+				}
+			}
+		}
 
 		//Nothing we can do. Next.
 		currentHand.remove(gameData.currentTurn.thrown)
