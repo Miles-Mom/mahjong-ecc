@@ -449,7 +449,7 @@ function PickupDiscardForDrawSelector() {
 	this.get = function() {
 		return checkbox.checked
 	}
-	this.set = function(value = true) {
+	this.set = function(value = false) {
 		checkbox.checked = value
 	}
 	this.displayFor = ["chinese"]
