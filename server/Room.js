@@ -218,7 +218,11 @@ class Room {
 				}
 				placement = Hand.convertStringsToTiles(placement)
 
-				if (this.state.settings.charleston.length > 0 && this.gameData.charleston === undefined && placement.length !== 1 && hand.wind === "east") {
+				if (this.state.settings.charleston.length > 0 && this.gameData.charleston === undefined && placement.length !== 1 && placement.length !== 4 && hand.wind === "east") {
+					//In hand kongs are also possible at the start, hence the check for a length of 4.
+					//I believe that one must charleston with in-hand-kongs (can't expose beforehand) if they are going to charleston.
+					//However it is currently possible to charleston after placing an in hand kong - although the message changes
+					//to the tile draw message (drawn tile from kong), placing 3 tiles afterwards still starts the charleston. 
 					if (placement.length === 3) {
 						this.gameData.charleston = {
 							directions: this.state.settings.charleston.slice(0)
