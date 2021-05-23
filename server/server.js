@@ -32,6 +32,8 @@ function onConnection(websocket) {
 			}
 
 			//Admin actions for triggering maintenance.
+			//A Warning! If the server is killed, you only have 60 seconds to bring it back up before the server will reboot.
+			//restartServer.js will not reboot again for 90 minutes. 
 
 			//Example:
 			//var auth = "" //Insert real password.
@@ -121,7 +123,6 @@ function onConnection(websocket) {
 				return globalThis.serverStateManager.getRoom(obj.roomId).addClient(clientId)
 			}
 			else if (obj.type === "getCurrentRoom") {
-				console.log(client.getRoomId())
 				let roomId = client.getRoomId()
 				client.message(obj.type, roomId, "success")
 				return websocket.send(getMessage(obj.type, roomId, "success"))

@@ -294,8 +294,6 @@ function evaluateNextMove() {
 		if (room.state.settings.pickupDiscardForDraw) {
 			//Check if we are in the position to claim the tile.
 			let throwerWind = room.gameData.playerHands[room.gameData.currentTurn.userTurn].wind
-			console.log(currentHand.wind, throwerWind)
-			console.log(getBackwardsDistance(currentHand.wind, throwerWind))
 			if (getBackwardsDistance(currentHand.wind, throwerWind) === 1) {
 				//Determine if we want the tile (in our suit)
 				let breakdown = computeHandBreakdown(currentHand.contents, currentHand.wind, {chooseSecondarySuit: false, looseTileCost: 5})
