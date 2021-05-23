@@ -87,6 +87,5 @@ echo "Adding instructions to crontab. The server is currently scheduled to reboo
 #Run restart code every 30 minutes to verify server is up.
 (crontab -l ; echo "*/30 * * * * node $HOME/mahjong/restartServer.js >> $HOME/mahjong/server/data/restartServer.log") | sort - | uniq - | crontab -
 (crontab -l ; echo "@reboot sudo certbot renew") | sort - | uniq - | crontab -
-(crontab -l ; echo "0 7 * * 1 sudo reboot") | sort - | uniq - | crontab - #TODO: Save server state for resumption.
 
 echo "Rebooting now is recommended, and should start the site up properly. "
