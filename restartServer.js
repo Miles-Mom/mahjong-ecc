@@ -7,7 +7,10 @@ let restartCounter = 0;
 let restartAbove = 5 //If restartCounter exceeds restartAbove, reboot.
 
 function checkForRestart() {
-	if (restartCounter !== 0) {
+	if (restartCounter === 0) {
+		return
+	}
+	else {
 		console.log("Restart Counter at " + restartCounter)
 	}
 
