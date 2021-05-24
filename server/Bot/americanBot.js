@@ -233,8 +233,10 @@ function evaluateNextMove({botConfig}) {
 			//The top hand including this tile would be concealed, and it would not be for Mahjong.
 		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {
-				if (withTileAnalysisItem.diff < analysis[0].diff) {
-					//Claiming this tile would put us closer to Mahjong.
+				if (withTileAnalysisItem.weightedDiff < analysis[0].weightedDiff) {
+					//We use weightedDiff instead of diff, as even though we may be less tiles away,
+					//those tiles may be higher to get. If this tile reduces weightedDiff,
+					//we should pick it up as it puts us closer to Mahjong.
 
 					//TODO: There are still some issues with hands like 2021 #3, where we need a kong,
 					//but that kong must include at least one joker, or we make our hand dead. (As 5 total are needed, 1 single, 1 kong)
@@ -291,6 +293,7 @@ function evaluateNextMove({botConfig}) {
 						else {} //We want this tile, but can only pick it up for mahjong - ex, pair or single tile.
 					}
 					else {
+						//This should never happen. 
 						console.warn(gameData.currentTurn.thrown, currentHand.contents, analysis[0], withTileAnalysisItem)
 						console.warn("Something odd happened, probably in sorting, causing a match not including the thrown tile to be provided. ")
 					}

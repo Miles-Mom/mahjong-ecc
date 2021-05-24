@@ -32,7 +32,9 @@ var suitDragonConversion = {
 	"circle": "white"
 }
 
-function getTileDifferential(handOptions, hand) {
+function getTileDifferential(handOptions, hand, options = {}) {
+    //options.skipConcealedCheck - default false. If true, we don't check if concealed hands are impossible due to exposures.
+
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
 
@@ -150,13 +152,11 @@ function getTileDifferential(handOptions, hand) {
 
 			diff = noFillJoker.length + Math.max(0, canFillJoker.length - jokerCount)
 
-			//This check was preventing the removal of duplicates.
-
-			/*if (handOption.concealed && !(exposedMatches === 0 || (exposedMatches === 1 && diff === 0))) {
+			//This check doesn't work when analyzing for duplicate removal. Therefore, we check options.skipConcealedCheck
+			if (!options.skipConcealedCheck && handOption.concealed && !(exposedMatches === 0 || (exposedMatches === 1 && diff === 0))) {
 				diff = Infinity
-				console.warn("Hand Requires Concealed, Combo Disabled")
 				continue;
-			}*/
+			}
 
 			//Add jokers that we aren't using to fill anything
 			//We could take a different approach - attempt to use every joker, and discard the actual tile first,
@@ -190,7 +190,7 @@ function getTileDifferential(handOptions, hand) {
 
 		//Give a benefit for hands where we can call for tiles.
 		//TODO: Penalize singular remaining tiles less than pairs.
-		//TODO: Penalize for callable, but not now, vs never callale.
+		//TODO: Penalize for callable but not now (ex, need more jokers/tiles before it can be called), vs never callale.
 
 		function getUncallableTiles(hand) {
 			//This function is called so much it is insanely expensive. Cache per hand.
@@ -268,7 +268,9 @@ function outputExpander(combos, options = {}) {
 			let uniqueCombos = []
 			for (let i=0;i<comboOutput.length;i++) {
 				let combo = comboOutput[i]
-				if (getTileDifferential(uniqueCombos, combo.tiles)[0]?.diff === 0) {
+				if (getTileDifferential(uniqueCombos, combo.tiles, {
+                    skipConcealedCheck: true
+                })[0]?.diff === 0) {
 					duplicatesRemoved++
 				}
 				else {
