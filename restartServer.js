@@ -7,7 +7,9 @@ let restartCounter = 0;
 let restartAbove = 5 //If restartCounter exceeds restartAbove, reboot.
 
 function checkForRestart() {
-	console.log("Restart Counter at " + restartCounter)
+	if (restartCounter !== 0) {
+		console.log("Restart Counter at " + restartCounter)
+	}
 
 	let lastRebooted;
 	try {
@@ -38,7 +40,9 @@ let interval = setInterval(function() {
 
 	let socket = new WebSocket("http://127.0.0.1:" + port)
 	socket.addEventListener("open", function() {
-		console.log("Resetting Restart Counter")
+		if (restartCounter !== 0) {
+			console.log("Resetting Restart Counter")
+		}
 		restartCounter = 0 //It's working!
 		socket.close() //Not sure if it's needed, but we don't want to risk triggering any server side memory leaks, etc.
 	})
