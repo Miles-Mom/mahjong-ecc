@@ -14,7 +14,24 @@ if (process.argv.includes("--serverDataDirectory")) {
 	serverDataDirectory = process.argv[process.argv.indexOf("--serverDataDirectory") + 1]
 }
 
+//Log timestamp every 60 seconds.
+console.log(new Date())
+setInterval(function() {
+	console.log(new Date())
+}, 60 * 1000)
+
 if (!fs.existsSync(serverDataDirectory)) {fs.mkdirSync(serverDataDirectory, {recursive: true})}
+
+let serverLogFile = path.join(serverDataDirectory, "server.log")
+try {
+	if (fs.existsSync(serverLogFile)) {
+		console.log("Moving Server Log File")
+		fs.renameSync(serverLogFile, path.join(serverDataDirectory, `server-${Date.now()}.log`))
+	}
+}
+catch (e) {
+	console.error(e)
+}
 
 try {
 	fs.writeFileSync(path.join(__dirname, "guaranteedHands.json"), JSON.stringify(findAllGuaranteed()))
