@@ -295,7 +295,13 @@ uploadSaveButton.addEventListener("click", function() {
 							let text = await req.text()
 							console.log(text)
 							resumeOfflineGame(text)
+
 							stateManager.revertState(0)
+							//TODO: We need to load at the beginning, instead of loading the end and reverting.
+							//There needs to be a way to only resume the first few moves. 
+							setTimeout(function() {
+								stateManager.revertState(0)
+							}, 300)
 
 							//Start at the beginning by default.
 							let messageBar = new Popups.MessageBar("Click Here to Load End of Game (Closes Automatically)")
