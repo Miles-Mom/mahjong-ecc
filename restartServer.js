@@ -43,7 +43,7 @@ let interval = setInterval(function() {
 
 	let socket = new WebSocket("http://127.0.0.1:" + port)
 	socket.addEventListener("open", function() {
-		if (restartCounter !== 0) {
+		if (restartCounter > 1) {
 			console.log("Resetting Restart Counter")
 		}
 		restartCounter = 0 //It's working!
