@@ -34,147 +34,6 @@ class Hand {
 			}
 		})
 
-		this.add = (function(obj) {
-			//We will insert the tile where our sorting algorithm would find it most appropriate.
-			//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
-			let newItemScore;
-			if (obj instanceof Sequence) {
-				newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in sequence.
-			}
-			else if (obj instanceof TileContainer) {
-				//Same as sequence for now - use first tile.
-				newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in TileContainer.
-			}
-			else {
-				newItemScore = obj.getTileValue()
-			}
-
-			for (let i=0;i<this.contents.length;i++) {
-				//Find where to insert this tile.
-				let currentItem = this.contents[i]
-				if (currentItem instanceof Sequence) {
-					//Not quite sure how to handle this.
-					currentItem = currentItem.tiles[2] //Get the value using the last tile in sequence.
-				}
-				if (currentItem instanceof TileContainer) {
-					//Use the first tile in container.
-					currentItem = currentItem.tiles[0]
-				}
-				let currentScore = currentItem.getTileValue() //Value of the tile in that position
-
-				if (newItemScore < currentScore) {
-					this.contents.splice(i, 0, obj)
-					return
-				}
-			}
-			this.contents.push(obj)
-		}).bind(this)
-
-		this.remove = (function(obj) {
-			let index = this.contents.indexOf(obj)
-			let placematIndex = this.inPlacemat.indexOf(obj)
-			if (index !== -1) {
-				this.contents.splice(index, 1)
-			}
-			else if (placematIndex !== -1) {
-				this.inPlacemat.splice(placematIndex, 1)
-			}
-			else {throw obj + " does not exist in hand. "}
-		}).bind(this)
-
-
-		this.moveTile = (function moveTile(tile, switchPlace = true, targetPosition) {
-			//Tile is the object in either the hand or placemat.
-			//targetPosition is the position to the left of where we want to move this tile.
-
-			let placematIndex = this.inPlacemat.indexOf(tile)
-			let contentsIndex = this.contents.indexOf(tile)
-
-			console.log(targetPosition)
-
-			if (placematIndex + contentsIndex === -2) {
-				console.error("Tile does not exist. ")
-				return
-			}
-
-			let target = [this.inPlacemat, this.contents];
-			if (switchPlace) {
-				if (placematIndex === -1) {
-					//Moving from hand to placemat.
-					if (this.inPlacemat.length >= this.placematLength) {
-						alert("Placemat is already full. ")
-						return
-					}
-					else {
-						this.inPlacemat.push(this.contents.splice(contentsIndex, 1)[0])
-					}
-				}
-				else {
-					//Moving from placemat to hand.
-					if (placematIndex === 0 && this.inPlacemat[0].evicting) {
-						alert("This tile was discarded. To claim it, select the tiles you would like to match with it, then hit proceed. ")
-						return;
-					}
-					let currentTile = this.inPlacemat.splice(placematIndex, 1)[0]
-					if (!isNaN(targetPosition)) {
-						//Moving to specfic place in hand.
-						this.contents.splice(targetPosition, 0, currentTile)
-					}
-					else {
-						//Add with auto sort.
-						this.add(currentTile)
-					}
-				}
-			}
-			else if (!isNaN(targetPosition)) {
-				if (contentsIndex === -1) {
-					console.error("Reordering in placemat is not supported. Must be in hand.")
-				}
-				else {
-					if (targetPosition > contentsIndex) {targetPosition--} //Compensate for the splice.
-
-					this.contents.splice(targetPosition, 0, this.contents.splice(contentsIndex, 1)[0])
-				}
-			}
-			else {console.error("Unable to determine how this tile should be moved. ")}
-
-			this.renderTiles() //Re-render.
-			this.renderPlacemat() //Not sure if this is needed?
-		}).bind(this)
-
-		this.removeMatchingTile = (function(obj) {
-			//Removes a Tile that matches the object passed, although may not be the same object.
-
-			if (!obj instanceof Tile) {throw "removeMatchingTile only supports Tiles"}
-			if (this.inPlacemat.length > 0) {console.warn("Hand.removeMatchingTile is intended for server side use only. ")}
-			if (this.contents.some(((item, index) => {
-				if (obj.matches(item)) {
-					this.contents.splice(index, 1)
-					return true
-				}
-				return false
-			}).bind(this))) {return true}
-			return false
-		})
-
-		this.getExposedTiles = (function(includeFaceDown = false) {
-			let exposedTiles = []
-			this.contents.forEach((item) => {
-				if (item.exposed) {
-					exposedTiles.push(item)
-				}
-				else if (item instanceof Match && item.amount === 4) {
-					//If it is stored as a match, but not exposed, is in hand kong.
-					//Is not stored as a match if the user never placed them down
-					exposedTiles.push(item)
-				}
-				else if (includeFaceDown) {
-					exposedTiles.push(new Tile({faceDown: true}))
-				}
-			})
-			return exposedTiles
-		}).bind(this)
-
 		function allowDrop(ev) {
 			ev.preventDefault();
 		}
@@ -246,57 +105,7 @@ class Hand {
 			}
 		}
 
-
-		this.removeMatchingTilesFromHand = (function removeMatchingTilesFromHand(obj, amount = 1, simulated = false) {
-			if (!obj instanceof Tile) {throw "You must send a tile. "}
-			return this.removeTilesFromHand(new Array(amount).fill(obj), simulated)
-		}).bind(this)
-
-		this.removeTilesFromHand = (function removeTilesFromHand(tiles, simulated = false) {
-			if (tiles instanceof Sequence || tiles instanceof TileContainer) {tiles = tiles.tiles}
-			if (tiles instanceof Tile) {tiles = [tiles]}
-			else if (!tiles instanceof Array) {throw "Must send a Sequence, Tile, or Array. "}
-
-			//We will verify that the tiles CAN be removed before removing them.
-			let indexes = []
-			tiles.forEach((tile, index) => {
-				if (!(tile instanceof Tile)) {throw "Your Sequence or Array contains non-tiles. "}
-
-				for (let i=this.contents.length-1;i>=0;i--) {
-					let matchResult = tile.matches(this.contents[i])
-
-					if (!indexes.includes(i)) {
-						if (matchResult === 2) {
-							//Non-exact match (like a 1 flower vs 4 season - same in gameplay, not visually)
-							//We will prefer exact matches, but accept non exact ones.
-							indexes[index] = i
-						}
-						else if (matchResult) {
-							indexes[index] = i
-							return
-						}
-					}
-				}
-			})
-
-			let allDefined = true
-			for (let i=0;i<tiles.length;i++) {
-				if (indexes[i] === undefined) {
-					allDefined = false
-				}
-			}
-			if (allDefined) {
-				if (simulated) {return true}
-				//Remove the item the farthest back in the hand to avoid position shifting.
-				indexes.sort((a,b) => {return b-a}).forEach((index) => {
-					this.contents.splice(index, 1)
-				})
-				return true
-			}
-			else {return false}
-		}).bind(this)
-
-		this.renderPlacemat = (function(classForFirst) {
+		this.renderPlacemat = (function renderPlacemat(classForFirst) {
 			classForFirst = classForFirst ?? this.tilePlacemat.firstChild?.className //Don't clear existing class unless classForFirst is ""
 			while (this.tilePlacemat.firstChild) {this.tilePlacemat.firstChild.remove()} //Delete everything currently rendered in the hand.
 
@@ -325,28 +134,9 @@ class Hand {
 				}
 				this.tilePlacemat.appendChild(elem)
 			}
-
-
 		}).bind(this)
 
-		this.setEvictingThrownTile = (function(tile) {
-			//Clear the other evicting tile, even if it's position has moved due to some glitch or user hacking.
-			for (let i=this.inPlacemat.length - 1;i>=0;i--) {
-				let item = this.inPlacemat[i]
-				if (item.evicting) {
-					this.inPlacemat.splice(i, 1)
-				}
-			}
-			if (tile) {
-				if (this.inPlacemat.length >= this.placematLength) {
-					this.contents.push(this.inPlacemat.pop())
-				}
-				this.inPlacemat.unshift(tile)
-				tile.evicting = true
-			}
-		}).bind(this)
-
-		this.renderTiles = (function(displayElevated) {
+		this.renderTiles = (function renderTiles(displayElevated) {
 			if (!this.handToRender) {throw "Unable to render hand. You must pass config.handToRender to the constructor. "}
 
 			if (typeof displayElevated === "string") {displayElevated = Tile.fromJSON(displayElevated)}
@@ -501,18 +291,226 @@ class Hand {
 				this.renderPlacemat()
 			}
 		}).bind(this)
+	}
 
-		this.getStringContents = (function(prop = "contents") {
-			//Can also pass "inPlacemat" for placemat contents.
-			return this[prop].map((item) => {return item.toJSON()})
-		}).bind(this)
 
-		this.toJSON = (function() {
-			return JSON.stringify({
-				wind: this.wind,
-				contents: this.contents
+	add(obj) {
+		//We will insert the tile where our sorting algorithm would find it most appropriate.
+		//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
+		let newItemScore;
+		if (obj instanceof Sequence) {
+			newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in sequence.
+		}
+		else if (obj instanceof TileContainer) {
+			//Same as sequence for now - use first tile.
+			newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in TileContainer.
+		}
+		else {
+			newItemScore = obj.getTileValue()
+		}
+
+		for (let i=0;i<this.contents.length;i++) {
+			//Find where to insert this tile.
+			let currentItem = this.contents[i]
+			if (currentItem instanceof Sequence) {
+				//Not quite sure how to handle this.
+				currentItem = currentItem.tiles[2] //Get the value using the last tile in sequence.
+			}
+			if (currentItem instanceof TileContainer) {
+				//Use the first tile in container.
+				currentItem = currentItem.tiles[0]
+			}
+			let currentScore = currentItem.getTileValue() //Value of the tile in that position
+
+			if (newItemScore < currentScore) {
+				this.contents.splice(i, 0, obj)
+				return
+			}
+		}
+		this.contents.push(obj)
+	}
+
+	remove(obj) {
+		let index = this.contents.indexOf(obj)
+		let placematIndex = this.inPlacemat.indexOf(obj)
+		if (index !== -1) {
+			this.contents.splice(index, 1)
+		}
+		else if (placematIndex !== -1) {
+			this.inPlacemat.splice(placematIndex, 1)
+		}
+		else {throw obj + " does not exist in hand. "}
+	}
+
+
+	moveTile(tile, switchPlace = true, targetPosition) {
+		//Tile is the object in either the hand or placemat.
+		//targetPosition is the position to the left of where we want to move this tile.
+
+		let placematIndex = this.inPlacemat.indexOf(tile)
+		let contentsIndex = this.contents.indexOf(tile)
+
+		console.log(targetPosition)
+
+		if (placematIndex + contentsIndex === -2) {
+			console.error("Tile does not exist. ")
+			return
+		}
+
+		let target = [this.inPlacemat, this.contents];
+		if (switchPlace) {
+			if (placematIndex === -1) {
+				//Moving from hand to placemat.
+				if (this.inPlacemat.length >= this.placematLength) {
+					alert("Placemat is already full. ")
+					return
+				}
+				else {
+					this.inPlacemat.push(this.contents.splice(contentsIndex, 1)[0])
+				}
+			}
+			else {
+				//Moving from placemat to hand.
+				if (placematIndex === 0 && this.inPlacemat[0].evicting) {
+					alert("This tile was discarded. To claim it, select the tiles you would like to match with it, then hit proceed. ")
+					return;
+				}
+				let currentTile = this.inPlacemat.splice(placematIndex, 1)[0]
+				if (!isNaN(targetPosition)) {
+					//Moving to specfic place in hand.
+					this.contents.splice(targetPosition, 0, currentTile)
+				}
+				else {
+					//Add with auto sort.
+					this.add(currentTile)
+				}
+			}
+		}
+		else if (!isNaN(targetPosition)) {
+			if (contentsIndex === -1) {
+				console.error("Reordering in placemat is not supported. Must be in hand.")
+			}
+			else {
+				if (targetPosition > contentsIndex) {targetPosition--} //Compensate for the splice.
+
+				this.contents.splice(targetPosition, 0, this.contents.splice(contentsIndex, 1)[0])
+			}
+		}
+		else {console.error("Unable to determine how this tile should be moved. ")}
+
+		this.renderTiles() //Re-render.
+		this.renderPlacemat() //Not sure if this is needed?
+	}
+
+	removeMatchingTile(obj) {
+		//Removes a Tile that matches the object passed, although may not be the same object.
+
+		if (!obj instanceof Tile) {throw "removeMatchingTile only supports Tiles"}
+		if (this.inPlacemat.length > 0) {console.warn("Hand.removeMatchingTile is intended for server side use only. ")}
+		if (this.contents.some(((item, index) => {
+			if (obj.matches(item)) {
+				this.contents.splice(index, 1)
+				return true
+			}
+			return false
+		}).bind(this))) {return true}
+		return false
+	}
+
+	getExposedTiles(includeFaceDown = false) {
+		let exposedTiles = []
+		this.contents.forEach((item) => {
+			if (item.exposed) {
+				exposedTiles.push(item)
+			}
+			else if (item instanceof Match && item.amount === 4) {
+				//If it is stored as a match, but not exposed, is in hand kong.
+				//Is not stored as a match if the user never placed them down
+				exposedTiles.push(item)
+			}
+			else if (includeFaceDown) {
+				exposedTiles.push(new Tile({faceDown: true}))
+			}
+		})
+		return exposedTiles
+	}
+
+	removeMatchingTilesFromHand(obj, amount = 1, simulated = false) {
+		if (!obj instanceof Tile) {throw "You must send a tile. "}
+		return this.removeTilesFromHand(new Array(amount).fill(obj), simulated)
+	}
+
+	removeTilesFromHand(tiles, simulated = false) {
+		if (tiles instanceof Sequence || tiles instanceof TileContainer) {tiles = tiles.tiles}
+		if (tiles instanceof Tile) {tiles = [tiles]}
+		else if (!tiles instanceof Array) {throw "Must send a Sequence, Tile, or Array. "}
+
+		//We will verify that the tiles CAN be removed before removing them.
+		let indexes = []
+		tiles.forEach((tile, index) => {
+			if (!(tile instanceof Tile)) {throw "Your Sequence or Array contains non-tiles. "}
+
+			for (let i=this.contents.length-1;i>=0;i--) {
+				let matchResult = tile.matches(this.contents[i])
+
+				if (!indexes.includes(i)) {
+					if (matchResult === 2) {
+						//Non-exact match (like a 1 flower vs 4 season - same in gameplay, not visually)
+						//We will prefer exact matches, but accept non exact ones.
+						indexes[index] = i
+					}
+					else if (matchResult) {
+						indexes[index] = i
+						return
+					}
+				}
+			}
+		})
+
+		let allDefined = true
+		for (let i=0;i<tiles.length;i++) {
+			if (indexes[i] === undefined) {
+				allDefined = false
+			}
+		}
+		if (allDefined) {
+			if (simulated) {return true}
+			//Remove the item the farthest back in the hand to avoid position shifting.
+			indexes.sort((a,b) => {return b-a}).forEach((index) => {
+				this.contents.splice(index, 1)
 			})
-		}).bind(this)
+			return true
+		}
+		else {return false}
+	}
+
+	setEvictingThrownTile(tile) {
+		//Clear the other evicting tile, even if it's position has moved due to some glitch or user hacking.
+		for (let i=this.inPlacemat.length - 1;i>=0;i--) {
+			let item = this.inPlacemat[i]
+			if (item.evicting) {
+				this.inPlacemat.splice(i, 1)
+			}
+		}
+		if (tile) {
+			if (this.inPlacemat.length >= this.placematLength) {
+				this.contents.push(this.inPlacemat.pop())
+			}
+			this.inPlacemat.unshift(tile)
+			tile.evicting = true
+		}
+	}
+
+	getStringContents(prop = "contents") {
+		//Can also pass "inPlacemat" for placemat contents.
+		return this[prop].map((item) => {return item.toJSON()})
+	}
+
+	toJSON() {
+		return JSON.stringify({
+			wind: this.wind,
+			contents: this.contents
+		})
 	}
 
 	static sortTiles(tiles) {
