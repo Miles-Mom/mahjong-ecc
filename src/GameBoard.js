@@ -391,14 +391,12 @@ endGameButton.addEventListener("click", function() {
 		window.stateManager.endGame()
 
 		try {
-			if (window?.Capacitor?.getPlatform() === "ios") {
-				console.log("Analyzing")
-				//We will only prompt if this specific user went mahjong.
-				if (
-					lastMessage.currentTurn.userTurn === window.clientId
-					&& lastMessage.isGameOver === 1 //Mahjong only, not wall empty.
-				) {
-					console.log("Calling")
+			//We will only prompt if this specific user went mahjong.
+			if (
+				lastMessage.currentTurn.userTurn === window.clientId
+				&& lastMessage.isGameOver === 1 //Mahjong only, not wall empty.
+			) {
+				if (window?.Capacitor?.getPlatform() === "ios") {
 					AppRate.promptForRating(false)
 				}
 			}
