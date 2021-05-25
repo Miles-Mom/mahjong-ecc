@@ -183,65 +183,80 @@ class Hand {
 				else {console.error("Unknown item " + item)}
 			}
 
+			let processingIndex = 0; //Index of the element we are processing.
 			let drawTiles = (function drawTiles(tiles, type, applyColorShading = false) {
 				//TODO: If flashing remains a problem, instead of deleting the entire hand and redrawing, try replacing each item individually.
 				//Ideally we wouldn't replace if not needed, but that doesn't seem easy to implement, and would likely be buggy with matches, etc.
 
-				if (type === "exposed") {
-					if (this.handForExposed) {
-						while (this.handForExposed.firstChild) {this.handForExposed.firstChild.remove()} //Delete everything currently rendered in the hand.
-					}
-					else {
-						while (this.handToRender.firstChild) {this.handToRender.firstChild.remove()}
-					}
+				//We will reset processingIndex UNLESS there is not an exposed hand and we are currently unexposed.
+				if (type === "unexposed" && !this.handForExposed) {
+					//In this case, both hands are the same, so we want to only clear the first time.
+				}
+				else {
+					processingIndex = 0
 				}
 
-				//Check that there is an exposed hand, since we draw the exposed tiles before unexposed, and we don't want to clear them.
-				while (type === "unexposed" && this.handToRender.firstChild && this.handForExposed) {this.handToRender.firstChild.remove()} //Delete everything currently rendered in the hand.
-
-
 				let drawTile = (function(tile, indexInGroup) {
+					let handBeingUsed = this.handToRender;
+					if (type === "exposed" && this.handForExposed) {
+						handBeingUsed = this.handForExposed
+					}
 
-					let elem = tile.createImageElem({
+					let currentElem = handBeingUsed.children[processingIndex++]
+
+					let refElem = tile.createImageElem({
 						gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
 					})
 
-					//Group tiles in a match together.
-					if (indexInGroup && indexInGroup !== 0) {
-						elem.style.setProperty("--negativeMarginMultiplier", 2)
+					if (!currentElem) {
+						currentElem = refElem
+						handBeingUsed.appendChild(currentElem)
 					}
-					else if (indexInGroup === 0) {
-						elem.style.setProperty("--negativeMarginMultiplier", 0)
+					else {
+						currentElem.src = refElem.src
+						currentElem.title = refElem.title
 					}
 
-					if (type === "exposed" && this.handForExposed) {
-						this.handForExposed.appendChild(elem)
+					//Group tiles in a match together.
+					if (indexInGroup && indexInGroup !== 0) {
+						currentElem.style.setProperty("--negativeMarginMultiplier", 2)
 					}
-					else if (type === "exposed") {
+					else if (indexInGroup === 0) {
+						currentElem.style.setProperty("--negativeMarginMultiplier", 0)
+					}
+					else {
+						currentElem.style.setProperty("--negativeMarginMultiplier", "")
+					}
+
+					if (type === "exposed") {
 						if (applyColorShading) {
 							//There is no hand specifically for exposed tiles. We'll apply some style to make it clear this was exposed.
-							elem.style.filter = "brightness(1.2)"
+							currentElem.style.filter = "brightness(1.2)"
 						}
-						this.handToRender.appendChild(elem)
+						else {
+							currentElem.style.filter = ""
+						}
 					}
 					else if (type === "unexposed") {
 						if (!this.handForExposed && applyColorShading) {
 							//There is no hand for exposed tiles, let's make it clear this is unexposed
-							elem.style.filter = "brightness(0.8)"
+							currentElem.style.filter = "brightness(0.8)"
+						}
+						else {
+							currentElem.style.filter = ""
 						}
 						if (this.interactive) {
 							if (displayElevated && tile.matches(displayElevated)) {
 								displayElevated = undefined
-								elem.classList.add("animateTile")
+								currentElem.classList.add("animateTile")
 							}
-							elem.draggable = true
-							elem.addEventListener("click", (function() {
+							currentElem.draggable = true
+							currentElem.onclick = (function() {
 								this.moveTile(tile) //Closure.
-							}).bind(this))
-							elem.addEventListener("dragstart", dragstart)
-							elem.tileIndex = this.contents.findIndex((item) => {return item === tile})
+							}).bind(this)
+							currentElem.ondragstart = dragstart
+							currentElem.tileIndex = this.contents.findIndex((item) => {return item === tile})
 						}
-						this.handToRender.appendChild(elem)
 					}
 				}).bind(this)
 
@@ -286,7 +301,17 @@ class Hand {
 				applyColorShading = true
 			}
 			drawTiles(exposedTiles, "exposed", applyColorShading)
+			if (this.handForExposed) {
+				//Remove all excess tiles.
+				while (this.handForExposed.children.length > processingIndex) {
+					this.handForExposed.lastChild.remove()
+				}
+			}
 			drawTiles(unexposedTiles, "unexposed", applyColorShading)
+			while (this.handToRender.children.length > processingIndex) {
+				//Remove all excess tiles.
+				this.handToRender.lastChild.remove()
+			}
 			if (this.tilePlacemat) {
 				this.renderPlacemat()
 			}
