@@ -14,3 +14,7 @@ echo "With"
 echo "import androidx.core.content.FileProvider;"
 
 echo "On Android, some things will need to be done for deep link support as well. "
+
+echo "On Android, to enable zoom in app, add the following to java/com.getcapacitor/BridgeActivity load function:"
+echo "webView.getSettings().setBuiltInZoomControls(true);"
+echo "webView.getSettings().setDisplayZoomControls(false);"
