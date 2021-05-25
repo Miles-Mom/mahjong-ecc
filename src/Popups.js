@@ -84,15 +84,12 @@ class BlocklessAlert {
 				//we don't display more optional messages.
 				if (counters.optionalMessages > triggerLevel && config.optional) {
 					//Skip
-					console.log("Skipping optional message due to time. ")
 					undoCounters(true)
 					return resolve()
 				}
 
-				console.log(`${counters.messages} messages remaining to be posted (${counters.optionalMessages} optional)`)
 				//Speed up alerts to eat through queue - if maxCounter exceeds triggerLevel, message volume is reduced, so we stop factoring in maxCounter
 				let newDuration = duration / Math.min(2.5, (Math.max(1, counters ** 0.7) || 1)) //2.5x speedup max.
-				console.log(`Adjusting duration from ${duration} to ${newDuration}`)
 				duration = newDuration
 				cover.style.animation = "fadeInAndOut " + duration + "ms ease-in"
 				cover.style.display = ""
