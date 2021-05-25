@@ -100,6 +100,7 @@ class Wall {
 	}
 
 	static renderWall(div, tilesRemaining) {
+		//TODO: Only render changes, instead of re-rendering entire wall. 
 		while (div.firstChild) {div.firstChild.remove()} //Delete any existing tiles.
 
 		if (tilesRemaining.length === 0) {return} //Don't write "0" to the screen.

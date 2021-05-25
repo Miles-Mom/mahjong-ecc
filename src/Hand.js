@@ -246,6 +246,7 @@ class Hand {
 							currentElem.style.filter = ""
 						}
 						if (this.interactive) {
+							currentElem.classList.remove("animateTile")
 							if (displayElevated && tile.matches(displayElevated)) {
 								displayElevated = undefined
 								currentElem.classList.add("animateTile")

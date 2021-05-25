@@ -436,15 +436,26 @@ discardPile.id = "discardPile"
 wallAndDiscardContainer.appendChild(discardPile)
 
 function renderDiscardPile(tileStrings) {
-	while (discardPile.firstChild) {discardPile.firstChild.remove()}
-
 	let tiles = tileStrings.map((str) => {return Tile.fromJSON(str)})
 	tiles = Hand.sortTiles(tiles)
 
-	tiles.forEach((tile) => {
-		discardPile.appendChild(tile.createImageElem({
+	while (discardPile.children.length > tiles.length) {
+		discardPile.lastChild.remove()
+	}
+
+	tiles.forEach((tile, index) => {
+		let refElem = tile.createImageElem({
 			gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
-		}))
+		})
+
+		let current = discardPile.children[index]
+		if (current) {
+			current.src = refElem.src
+			current.title = refElem.title
+		}
+		else {
+			discardPile.appendChild(refElem)
+		}
 	})
 }
 
