@@ -20,6 +20,7 @@ self.addEventListener("activate", async function() {
 })
 
 //Network, with fallback to cache.
+//TODO: Do we need a timeout? 
 self.addEventListener('fetch', async function(event) {
 	let url = event.request.url
 	event.respondWith((async() => {
