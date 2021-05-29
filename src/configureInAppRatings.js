@@ -5,7 +5,7 @@ if (window?.Capacitor?.getPlatform()) {
 		AppRate.setPreferences({
 			displayAppName: 'Mahjong 4 Friends',
 			simpleMode: false, //Worth considering - the negative feedback filtering is a bit excessive for repeat players, though it is friendly.
-			usesUntilPrompt: 10, //We might want to configure this a bit better.
+			usesUntilPrompt: 8, //We might want to configure this a bit better.
 			promptAgainForEachNewVersion: false,
 			reviewType: {
 				ios: 'InAppReview',

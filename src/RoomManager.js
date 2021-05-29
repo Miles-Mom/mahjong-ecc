@@ -298,7 +298,7 @@ uploadSaveButton.addEventListener("click", function() {
 
 							stateManager.revertState(0)
 							//TODO: We need to load at the beginning, instead of loading the end and reverting.
-							//There needs to be a way to only resume the first few moves. 
+							//There needs to be a way to only resume the first few moves.
 							setTimeout(function() {
 								stateManager.revertState(0)
 							}, 300)
@@ -606,6 +606,11 @@ inRoomContainer.appendChild(startGameButton)
 let gameSettings;
 startGameButton.addEventListener("click", function() {
 	window.stateManager.startGame(gameSettings.getChoices())
+
+	//If we are on mobile, let's go full screen now.
+	if ((window.innerWidth < 600 || window.innerHeight < 600) && document.fullscreenElement === undefined) {
+		document.querySelector("#fullscreenControls").click()
+	}
 })
 
 let addBotButton = document.createElement("button")

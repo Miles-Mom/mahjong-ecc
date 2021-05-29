@@ -409,7 +409,7 @@ function Allow4thTilePickupSelector() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Allow call for 4th tile for kong"
+	label.innerHTML = "Automatically call 4th tile for exposed pong"
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
