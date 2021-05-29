@@ -608,7 +608,7 @@ startGameButton.addEventListener("click", function() {
 	window.stateManager.startGame(gameSettings.getChoices())
 
 	//If we are on mobile, let's go full screen now.
-	if ((window.innerWidth < 600 || window.innerHeight < 600) && document.fullscreenElement === undefined) {
+	if ((window.innerWidth < 600 || window.innerHeight < 600) && !document.fullscreenElement) {
 		document.querySelector("#fullscreenControls").click()
 	}
 })
