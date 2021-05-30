@@ -3,7 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
-//Hands #1, 2, 3, 4, 5 of 7
+//All but #7 (last)
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
@@ -178,6 +178,33 @@ module.exports = [
 		return {
 			tiles,
 			score: 30,
+			concealed: false,
+		}
+	},
+	function(tiles = []) {
+		oddOptions.forEach((offset) => {
+			allSuits.forEach((suitFor7) => {
+				allSuitArrangements.forEach((suitOrder) => {
+					let newArr = []
+					tiles.push(newArr)
+					newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
+					newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
+					newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+					newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+
+					newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+					newArr.push(createTiles({type: "flower", amount: 1}))
+
+					newArr.push(createTiles({type: suitOrder[0], value: offset, amount: 3}))
+					newArr.push(createTiles({type: suitOrder[1], value: offset, amount: 2}))
+					newArr.push(createTiles({type: suitOrder[2], value: offset, amount: 3}))
+				})
+			})
+		})
+
+		return {
+			tiles,
+			score: 35,
 			concealed: false,
 		}
 	},
