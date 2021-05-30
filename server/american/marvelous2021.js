@@ -14,6 +14,7 @@ function calculateCombos() {
 	output.push(...require("./marvelous2021/3-more-miles.js"))
 	output.push(...require("./marvelous2021/running-with-the-bulls.js"))
 	output.push(...require("./marvelous2021/what's-your-number-please.js"))
+	output.push(...require("./marvelous2021/field-and-stream.js"))
 
 	return utilities.outputExpander(output)
 }

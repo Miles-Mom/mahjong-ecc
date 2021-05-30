@@ -3,8 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
-
-//All 5 hands supported. 
+//All 5 hands supported.
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
@@ -112,6 +111,7 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
+		//TODO: Tricolor year is specified - must the colors explicitly match those on the card? Currently assuming NO.
 		allSuitArrangements.forEach((suitOrder) => {
 			allSuitArrangements.forEach((triColorOrder) => {
 				let newArr = []
@@ -127,13 +127,33 @@ module.exports = [
 				newArr.push(createTiles({type: suitOrder[2], value: 6, amount: 1}))
 				newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 1}))
 
-				//TODO: Tricolor year is specified - must the colors explicitly match those on the card? Currently assuming NO.
 				newArr.push(createTiles({type: triColorOrder[0], value: 2, amount: 1}))
 				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
 				newArr.push(createTiles({type: triColorOrder[1], value: 2, amount: 1}))
 				newArr.push(createTiles({type: triColorOrder[2], value: 1, amount: 1}))
 			})
 		})
+
+		//If yes:
+		// allSuitArrangements.forEach((suitOrder) => {
+		// 	let newArr = []
+		// 	tiles.push(newArr)
+		//
+		// 	newArr.push(createTiles({type: "flower", amount: 4}))
+		//
+		// 	newArr.push(createTiles({type: suitOrder[0], value: 3, amount: 1}))
+		// 	newArr.push(createTiles({type: suitOrder[0], value: 6, amount: 1}))
+		//
+		// 	newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 2}))
+		//
+		// 	newArr.push(createTiles({type: suitOrder[2], value: 6, amount: 1}))
+		// 	newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 1}))
+		//
+		// 	newArr.push(createTiles({type: suitOrder[0], value: 2, amount: 1}))
+		// 	newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+		// 	newArr.push(createTiles({type: suitOrder[1], value: 2, amount: 1}))
+		// 	newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 1}))
+		// })
 		return {
 			tiles,
 			score: 35,
