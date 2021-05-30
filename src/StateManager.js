@@ -130,7 +130,6 @@ class StateManager {
 							this.websocket.onerror = reject //TODO: Handle error.
 						})
 					}
-					console.log(message)
 					this.websocket.send(message)
 				}
 			}

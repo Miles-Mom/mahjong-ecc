@@ -160,7 +160,10 @@ function evaluateNextMove() {
 
 		let suits = Object.keys(standardTypes)
 		if (suits.length > 1) {strategy.honors = true} //No reason to eliminate honors at the moment.
-		if (suits.length === 1) {strategy.suit = suits[0]}
+		if (suits.length === 1) {
+			strategy.suit = suits[0]
+			strategy.throwSuit = suits[0]
+		}
 		else {
 			let results = []
 			for (let key in standardTypes) {
@@ -191,7 +194,6 @@ function evaluateNextMove() {
 		if (strategy.suit !== "honor" && breakdown.honor && breakdown.honor.value + breakdown.honor.weight > standardTypes[strategy.suit].value / 2) {strategy.honors = true}
 
 		if (strategy.throwSuit === strategy.suit && strategy.honors === false) {strategy.throwSuit = "honor"}
-
 		strategy.throw = breakdown[strategy.throwSuit]?.contents?.[0]
 
 		breakdown.tiles = []
