@@ -253,7 +253,10 @@ function outputExpander(combos, options = {}) {
 			//Create a seperate object for each possibility
 			let obj = Object.assign({}, combo)
 			obj.tiles = tileCombo
-			if (obj.tiles.flat().length !== 14) {throw "Invalid Combo"}
+			if (obj.tiles.flat().length !== 14) {
+                console.error(obj.tiles)
+                throw "Invalid Combo"
+            }
 			comboOutput.push(obj)
 		})
 
@@ -297,4 +300,7 @@ function outputExpander(combos, options = {}) {
 let nonJokerTiles = Wall.getNonPrettyTiles(1)
 nonJokerTiles.push(new Tile({type: "flower"}))
 
-module.exports = {nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+let allTiles = nonJokerTiles.slice(0)
+allTiles.push(new Tile({type: "joker"})) //TODO: Test with these - could be weird.
+
+module.exports = {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
