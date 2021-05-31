@@ -111,7 +111,6 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		//TODO: Tricolor year is specified - must the colors explicitly match those on the card? Currently assuming NO.
 		allSuitArrangements.forEach((suitOrder) => {
 			allSuitArrangements.forEach((triColorOrder) => {
 				let newArr = []
@@ -134,26 +133,6 @@ module.exports = [
 			})
 		})
 
-		//If yes:
-		// allSuitArrangements.forEach((suitOrder) => {
-		// 	let newArr = []
-		// 	tiles.push(newArr)
-		//
-		// 	newArr.push(createTiles({type: "flower", amount: 4}))
-		//
-		// 	newArr.push(createTiles({type: suitOrder[0], value: 3, amount: 1}))
-		// 	newArr.push(createTiles({type: suitOrder[0], value: 6, amount: 1}))
-		//
-		// 	newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 2}))
-		//
-		// 	newArr.push(createTiles({type: suitOrder[2], value: 6, amount: 1}))
-		// 	newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 1}))
-		//
-		// 	newArr.push(createTiles({type: suitOrder[0], value: 2, amount: 1}))
-		// 	newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-		// 	newArr.push(createTiles({type: suitOrder[1], value: 2, amount: 1}))
-		// 	newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 1}))
-		// })
 		return {
 			tiles,
 			score: 35,
