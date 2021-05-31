@@ -5,14 +5,11 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
 // of 7
 module.exports = [
-	//#1 generates a huge number of duplicates, but our remover isn't fast enough.
+	//#1 generates a huge number of duplicates, but our remover isn't very fast, as it is quadratic.
 	//We return an empty array right now.
 	//We need to find a way to non-quadratically remove duplicates (so linear - need to stringify)
+	//Either that or rewrite so that the suitForSecond7 and suitFor7 don't regenerate the same combos. 
 	function(tiles = []) {
-		
-		return {tiles: []}
-
-		allTiles.forEach((anyTileOption) => {
 			allTiles.forEach((pongTileOption) => {
 				allSuits.forEach((suitFor7) => {
 					allSuits.forEach((suitForSecond7) => {
@@ -27,7 +24,7 @@ module.exports = [
 								newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
 								newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
 
-								newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 1}))
+								newArr.push(createTiles({type: "any", value: "any", amount: 1}))
 
 								newArr.push(createTiles({type: "flower", amount: 3}))
 
@@ -39,7 +36,6 @@ module.exports = [
 						})
 					})
 				})
-			})
 		})
 
 		return {

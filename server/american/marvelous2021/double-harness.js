@@ -3,7 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
-//All 7 hands supported (last disabled due to duplicate slowdowns)
+//All 7 hands supported
 module.exports = [
 	function(tiles = []) {
 		[2,4].forEach((offset) => {
@@ -114,11 +114,10 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		allTiles.forEach((anyTileOption) => {
 			allSuitArrangements.forEach((suitOrder) => {
 				let newArr = []
 				tiles.push(newArr)
-				newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 1}))
+				newArr.push(createTiles({type: "any", value: "any", amount: 1}))
 
 				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
@@ -131,7 +130,6 @@ module.exports = [
 
 				newArr.push(createTiles({type: suitOrder[2], value: 8, amount: 3}))
 			})
-		})
 
 		return {
 			tiles,
@@ -185,11 +183,7 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-
-		return {tiles: []}
-
 		allTiles.forEach((pongTileOption) => {
-			allTiles.forEach((anyTileOption) => {
 				allSuits.forEach((suitFor1) => {
 					allSuitArrangements.forEach((suitOrder) => {
 						let newArr = []
@@ -197,7 +191,7 @@ module.exports = [
 
 						newArr.push(createTiles({type: pongTileOption.type, value: pongTileOption.value, amount: 3}))
 
-						newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 1}))
+						newArr.push(createTiles({type: "any", value: "any", amount: 1}))
 
 						newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
 						newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
@@ -211,11 +205,9 @@ module.exports = [
 						newArr.push(createTiles({type: "joker", amount: 1}))
 					})
 				})
-			})
 		})
 
 		allTiles.forEach((pongTileOption) => {
-			allTiles.forEach((anyTileOption) => {
 				allSuits.forEach((suitFor1) => {
 					allSuits.forEach((suit) => {
 						let newArr = []
@@ -223,7 +215,7 @@ module.exports = [
 
 						newArr.push(createTiles({type: pongTileOption.type, value: pongTileOption.value, amount: 3}))
 
-						newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 1}))
+						newArr.push(createTiles({type: "any", value: "any", amount: 1}))
 
 						newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
 						newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
@@ -237,7 +229,6 @@ module.exports = [
 						newArr.push(createTiles({type: "joker", amount: 1}))
 					})
 				})
-			})
 		})
 
 		return {

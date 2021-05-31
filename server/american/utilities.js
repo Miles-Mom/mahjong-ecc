@@ -257,6 +257,12 @@ function outputExpander(combos, options = {}) {
                 console.error(obj.tiles)
                 throw "Invalid Combo"
             }
+            obj.tiles = obj.tiles.filter((arr) => {
+                if (arr.length === 1 && arr[0].type === "any" && arr[0].value === "any") {
+                    return false //If a lone tile can be "any", simply remove it from matching. It doesn't matter at all.
+                }
+                return true
+            })
 			comboOutput.push(obj)
 		})
 

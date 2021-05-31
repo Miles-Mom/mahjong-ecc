@@ -156,11 +156,10 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		allTiles.forEach((anyTileOption) => {
 			allSuitArrangements.forEach((suitOrder) => {
 				let newArr = []
 				tiles.push(newArr)
-				newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 1}))
+				newArr.push(createTiles({type: "any", value: "any", amount: 1}))
 
 				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
@@ -173,7 +172,6 @@ module.exports = [
 
 				newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 3}))
 			})
-		})
 
 		return {
 			tiles,
