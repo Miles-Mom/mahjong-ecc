@@ -258,18 +258,25 @@ function outputExpander(combos, options = {}) {
 			//Create a seperate object for each possibility
 			let obj = Object.assign({}, combo)
 			obj.tiles = tileCombo
-			if (obj.tiles.flat().length !== 14) {
-                console.error(obj.tiles)
-                throw "Invalid Combo"
-            }
+
+            let totalLength = 0
+            
             obj.tileValueSum = 0 //Used to accelarate duplicate removal
             obj.tiles = obj.tiles.filter((arr) => {
+                totalLength += arr.length
                 if (arr.length === 1 && arr[0].type === "any" && arr[0].value === "any") {
                     return false //If a lone tile can be "any", simply remove it from matching. It doesn't matter at all.
                 }
                 obj.tileValueSum += arr[0].getTileValue(true) * arr.length
                 return true
             })
+
+            //Verify input was the correct length.
+            if (totalLength !== 14) {
+                console.error(obj.tiles)
+                throw "Invalid Combo"
+            }
+
 			comboOutput.push(obj)
 		})
 
