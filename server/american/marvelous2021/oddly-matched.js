@@ -50,7 +50,7 @@ module.exports = [
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //Too many combos.
+			skipDuplicateRemoval: true //No duplicates and lots of combos. 
 		}
 	},
 	function(tiles = []) {

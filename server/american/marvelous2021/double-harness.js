@@ -48,7 +48,7 @@ module.exports = [
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //Too many combos.
+			skipDuplicateRemoval: true //No duplicates and lots of combos.
 		}
 	},
 	function(tiles = []) {
@@ -188,7 +188,7 @@ module.exports = [
 				allSuitArrangements.forEach((suitOrder) => {
 					let newArr = []
 					tiles.push(newArr)
-					
+
 					newArr.push(createTiles({type: pongTileOption.type, value: pongTileOption.value, amount: 3}))
 
 					newArr.push(createTiles({type: "any", value: "any", amount: 1}))

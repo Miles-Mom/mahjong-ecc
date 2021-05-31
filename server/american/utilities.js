@@ -10,10 +10,15 @@ function permutations(xs) {
   });
 }
 
+let tileCache = {} //We'll use references to the same exact tile. It's slightly faster, and isn't an issue.
 function createTiles({type, value, amount}) {
-	//Temporarily tileName for debugging with console.log
-	let tile = new Tile({type, value})
-	return new Array(amount).fill(tile) //Not seperate objects, but should be OK. TODO: Should we cache these and use the same tile in EVERY one?
+    if (!tileCache[type]) {tileCache[type] = {}}
+
+    if (!tileCache[type][value]) {
+        tileCache[type][value] = new Tile({type, value})
+    }
+
+	return new Array(amount).fill(tileCache[type][value])
 }
 
 var allSuits = ["bamboo", "character", "circle"]
@@ -305,7 +310,7 @@ function outputExpander(combos, options = {}) {
 
         for (let i=0;i<comboOutput.length;i++) {
             delete comboOutput[i].tileValueSum
-            delete comboOutput[i].skipDuplicateRemoval //TODO: This property should probably never be set on expanded outputs. 
+            delete comboOutput[i].skipDuplicateRemoval //TODO: This property should probably never be set on expanded outputs.
         }
         output.push(...comboOutput)
 	})

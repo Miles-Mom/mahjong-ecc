@@ -27,7 +27,7 @@ module.exports = [
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //Lots of combos
+			skipDuplicateRemoval: true //No duplicates. 
 		}
 	},
 	function(tiles = []) {
