@@ -162,7 +162,7 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		allOptions.slice(-3).forEach((offset) => {
+		allOptions.slice(0, -3).forEach((offset) => {
 			allSuitArrangements.forEach((suitOrder) => {
 				let newArr = []
 				tiles.push(newArr)
