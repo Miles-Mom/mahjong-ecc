@@ -16,6 +16,8 @@ function calculateCombos() {
 	output.push(...require("./marvelous2021/what's-your-number-please.js"))
 	output.push(...require("./marvelous2021/field-and-stream.js"))
 	output.push(...require("./marvelous2021/sub-atomic.js"))
+	output.push(...require("./marvelous2021/carpe-diem.js"))
+	output.push(...require("./marvelous2021/quintaabulous.js"))
 
 	return utilities.outputExpander(output)
 }

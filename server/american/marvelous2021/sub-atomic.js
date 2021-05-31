@@ -22,7 +22,6 @@ module.exports = [
 			})
 		})
 
-		console.log(tiles)
 		return {
 			tiles,
 			score: 30,
