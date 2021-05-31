@@ -87,12 +87,15 @@ class Tile {
 		return false
 	}
 
-	getTileValue() {
+	getTileValue(onlyFunctional = false) {
+		//onlyFunctional - should the same value be returned for all Flowers/Seasons? Yes when matching, no when ordering visually.
 		//The greater the value, the further to the right we place the tile.
 
 		let tileValue = 100 //Pretty starts at 0.
 
 		tileValue += 100 * ["flower", "season", "circle", "bamboo", "character", "wind", "dragon", "joker"].findIndex((suit) => {return this.type === suit})
+
+		if (onlyFunctional && tileValue <= 200) {return 100}
 
 		if (typeof this.value === "number") {tileValue += this.value}
 		else if (this.type === "wind") {

@@ -13,7 +13,7 @@ function permutations(xs) {
 function createTiles({type, value, amount}) {
 	//Temporarily tileName for debugging with console.log
 	let tile = new Tile({type, value})
-	return new Array(amount).fill(tile) //Not seperate objects, but should be OK.
+	return new Array(amount).fill(tile) //Not seperate objects, but should be OK. TODO: Should we cache these and use the same tile in EVERY one?
 }
 
 var allSuits = ["bamboo", "character", "circle"]
@@ -257,44 +257,57 @@ function outputExpander(combos, options = {}) {
                 console.error(obj.tiles)
                 throw "Invalid Combo"
             }
+            obj.tileValueSum = 0 //Used to accelarate duplicate removal
             obj.tiles = obj.tiles.filter((arr) => {
                 if (arr.length === 1 && arr[0].type === "any" && arr[0].value === "any") {
                     return false //If a lone tile can be "any", simply remove it from matching. It doesn't matter at all.
                 }
+                obj.tileValueSum += arr[0].getTileValue(true) * arr.length
                 return true
             })
 			comboOutput.push(obj)
 		})
 
-		//Combos might include duplicate outputs - while they wouldn't if they were ideally designed, using the first two
-		//of three set permutations is extremely useful, generating extra possibilities as a side effect.
+		//Combos might include duplicate outputs - while they wouldn't if they were ideally designed, they are often
+        //easier to write with duplicates.
 
-		//We don't currently check for duplicate outputs outside of combos.
+		//We don't currently check for duplicate outputs outside of combos. That is possible in some cases,
+        //especially with Marvelous, however they really aren't the same combo then (as it is Mahjong two different ways)
 
-		//Duplicate checking slows stuff down quite a bit - it is a one time cost, but if it is too slow, it might need
-		//to be optimized even more, to only run on specific combos, etc.
+        //TODO: This can still be a bit slow, and is still quadratic.
 		if (!combo.skipDuplicateRemoval) {
 			let uniqueCombos = []
 			for (let i=0;i<comboOutput.length;i++) {
 				let combo = comboOutput[i]
-				if (getTileDifferential(uniqueCombos, combo.tiles, {
-                    skipConcealedCheck: true
-                })[0]?.diff === 0) {
+
+                let isDuplicate = uniqueCombos.some((uniqueCombo) => {
+                    //Two identical combos must have the same tileValueSum, however identical tileValueSums do not mean identical combos.
+                    if (uniqueCombo.tileValueSum !== combo.tileValueSum) {return false}
+                    return getTileDifferential([uniqueCombo], combo.tiles, {
+                        skipConcealedCheck: true
+                    })[0]?.diff === 0
+                })
+
+            	if (isDuplicate) {
 					duplicatesRemoved++
 				}
 				else {
 					uniqueCombos.push(combo)
 				}
-
 			}
-			output.push(...uniqueCombos)
+            comboOutput = uniqueCombos
 		}
 		else {
 			//Marvelous hands easily blow the duplicate remover to pieces. It's quadratic.
 			console.warn("Skipping Duplicate Removal")
 			delete combo.skipDuplicateRemoval
-			output.push(...comboOutput)
 		}
+
+        for (let i=0;i<comboOutput.length;i++) {
+            delete comboOutput[i].tileValueSum
+            delete comboOutput[i].skipDuplicateRemoval //TODO: This property should probably never be set on expanded outputs. 
+        }
+        output.push(...comboOutput)
 	})
 	console.timeEnd("Expand")
 	if (duplicatesRemoved) {
