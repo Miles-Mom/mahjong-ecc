@@ -39,6 +39,7 @@ var suitDragonConversion = {
 
 function getTileDifferential(handOptions, hand, options = {}) {
     //options.skipConcealedCheck - default false. If true, we don't check if concealed hands are impossible due to exposures.
+    //options.onlyExactMatch - do not match any.
 
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
@@ -58,7 +59,7 @@ function getTileDifferential(handOptions, hand, options = {}) {
         let anyValueSingletons = []
 
 		handOption.tiles.forEach((item) => {
-            if (item.length === 1 && item[0].value === "any") {
+            if (!options.onlyExactMatch && item.length === 1 && item[0].value === "any") {
                 //We can't do any type yet, since we have any value -
                 //then the ordering might matter.
                 if (item[0].type === "any") {
@@ -106,8 +107,8 @@ function getTileDifferential(handOptions, hand, options = {}) {
 				return true
 			}
 
-            //TODO: This set is FAR slower than need be. It's duplicative. Try to merge with noFillIndex. 
-            noFillIndex = noFillJoker.findIndex((tile) => {return tile.matches(item, true)}) //True to check any.
+            //TODO: This is slower than it needs to be. It's duplicative. Try to merge with noFillIndex.
+            noFillIndex = noFillJoker.findIndex((tile) => {return tile.matches(item, !options.onlyExactMatch)})
             if (noFillIndex !== -1) {
                 noFillJoker.splice(noFillIndex, 1)
                 return true
@@ -314,7 +315,8 @@ function outputExpander(combos, options = {}) {
                     //Two identical combos must have the same tileValueSum, however identical tileValueSums do not mean identical combos.
                     if (uniqueCombo.tileValueSum !== combo.tileValueSum) {return false}
                     return getTileDifferential([uniqueCombo], combo.tiles, {
-                        skipConcealedCheck: true
+                        skipConcealedCheck: true,
+                        onlyExactMatch: true
                     })[0]?.diff === 0
                 })
 
