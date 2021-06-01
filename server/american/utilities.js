@@ -39,6 +39,7 @@ var suitDragonConversion = {
 
 function getTileDifferential(handOptions, hand, options = {}) {
     //options.skipConcealedCheck - default false. If true, we don't check if concealed hands are impossible due to exposures.
+    //options.onlyExactMatch - do not match any.
 
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
@@ -55,15 +56,30 @@ function getTileDifferential(handOptions, hand, options = {}) {
 
 		let canFillJoker = []
 		let noFillJoker = []
+        let anyValueSingletons = []
 
 		handOption.tiles.forEach((item) => {
-			if (item.length <= 2) {
+            if (!options.onlyExactMatch && item.length === 1 && item[0].value === "any") {
+                //We can't do any type yet, since we have any value -
+                //then the ordering might matter.
+                if (item[0].type === "any") {
+                    //Do nothing - this tile can be, quite literally, anything.
+                }
+                else {
+                    //This tile is a specific suit, but can be any value (1-9)
+                    //Add to noFillJoker AFTER everything else.
+                    anyValueSingletons.push(...item)
+                }
+            }
+			else if (item.length <= 2) {
 				noFillJoker.push(...item)
 			}
 			else {
 				canFillJoker.push(...item)
 			}
 		})
+
+        noFillJoker.push(...anyValueSingletons)
 
 		let jokerCount = 0
 		let diff;
@@ -90,6 +106,13 @@ function getTileDifferential(handOptions, hand, options = {}) {
 				canFillJoker.splice(canFillIndex, 1)
 				return true
 			}
+
+            //TODO: This is slower than it needs to be. It's duplicative. Try to merge with noFillIndex.
+            noFillIndex = noFillJoker.findIndex((tile) => {return tile.matches(item, !options.onlyExactMatch)})
+            if (noFillIndex !== -1) {
+                noFillJoker.splice(noFillIndex, 1)
+                return true
+            }
 
 			return false
 		}
@@ -260,15 +283,11 @@ function outputExpander(combos, options = {}) {
 			obj.tiles = tileCombo
 
             let totalLength = 0
-            
+
             obj.tileValueSum = 0 //Used to accelarate duplicate removal
-            obj.tiles = obj.tiles.filter((arr) => {
+            obj.tiles.forEach((arr) => {
                 totalLength += arr.length
-                if (arr.length === 1 && arr[0].type === "any" && arr[0].value === "any") {
-                    return false //If a lone tile can be "any", simply remove it from matching. It doesn't matter at all.
-                }
                 obj.tileValueSum += arr[0].getTileValue(true) * arr.length
-                return true
             })
 
             //Verify input was the correct length.
@@ -296,7 +315,8 @@ function outputExpander(combos, options = {}) {
                     //Two identical combos must have the same tileValueSum, however identical tileValueSums do not mean identical combos.
                     if (uniqueCombo.tileValueSum !== combo.tileValueSum) {return false}
                     return getTileDifferential([uniqueCombo], combo.tiles, {
-                        skipConcealedCheck: true
+                        skipConcealedCheck: true,
+                        onlyExactMatch: true
                     })[0]?.diff === 0
                 })
 

@@ -52,6 +52,12 @@ class Tile {
 		else if (this.type === "joker") {
 		 	return "assets/tiles/joker.png"
 		}
+		else if (this.type === "any") {
+			return "assets/tiles/any/" + this.value + ".png"
+		}
+		else if (this.value === "any") {
+			return "assets/tiles/any/" + this.type + ".png"
+		}
 		else {
 			return "assets/tiles/" + this.type + "s" + "/" + this.value + ".png"
 		}
@@ -73,10 +79,15 @@ class Tile {
 		})
 	}
 
-	matches(tile) {
+	matches(tile, checkAny = false) {
+		//If checkAny is true, check any parameters.
+		//TODO: A flower should never match any of a number. 
 		if (this.faceDown || !(tile instanceof Tile)) {return false}
 
-		if (tile.type === this.type && tile.value === this.value) {return true}
+		if (
+			(tile.type === this.type || (checkAny && (this.type === "any" || tile.type === "any")))
+			&& (tile.value === this.value || (checkAny && (this.value === "any" || tile.value === "any")))
+		) {return true}
 		if (this.type === "joker" && tile.type === this.type) {return true} //Value no-op for jokers.
 		if (
 			//For American Mahjong - all flowers and seasons are identical.
@@ -90,6 +101,10 @@ class Tile {
 	getTileValue(onlyFunctional = false) {
 		//onlyFunctional - should the same value be returned for all Flowers/Seasons? Yes when matching, no when ordering visually.
 		//The greater the value, the further to the right we place the tile.
+
+		//TODO: How to hand Any? It probably works fine (any number has no suit, so 0 plus something, and any suit has a suit plus 0)
+		//So it might overlap pretties, but American Mahjong doesn't have those.
+		//Still, we want to stop that overlap.
 
 		let tileValue = 100 //Pretty starts at 0.
 
@@ -105,6 +120,7 @@ class Tile {
 			tileValue += 10 * ["red", "green", "white"].findIndex((value) => {return this.value === value})
 		}
 		else if (this.type === "flower" || this.type === "season") {}
+		else if (this.value === "any") {}
 		else if (!this.faceDown && this.type !== "joker") {console.error("Couldn't fully calculate ", this)}
 		return tileValue
 	}

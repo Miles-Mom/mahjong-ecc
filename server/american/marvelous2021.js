@@ -3,6 +3,10 @@ const utilities = require("./utilities.js")
 //Order doesn't really matter (might influence sorting output if ratings end up the same, but that should be really minor),
 //however putting cards under development last makes them much easier to review for accuracy, as they are at the end of the array.
 
+//NOTE: Current, "any" only works for single tiles.
+//It only works for tiles that are any value.
+//Tiles that are any type are not currently supported. 
+
 function calculateCombos() {
 	let output = []
 	//TODO: We are probably going to want a setup for any pong/any kong (utilities.js getTileDifferential changes?)

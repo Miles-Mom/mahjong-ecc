@@ -50,7 +50,7 @@ module.exports = [
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //No duplicates and lots of combos. 
+			skipDuplicateRemoval: true //No duplicates and lots of combos.
 		}
 	},
 	function(tiles = []) {
@@ -207,34 +207,32 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		allOptions.forEach((valueForChar) => {
-			allSuits.forEach((suitFor7) => {
-				allSuits.forEach((suitFor1) => {
-					allSuits.forEach((suit) => {
-						let newArr = []
-						tiles.push(newArr)
+		allSuits.forEach((suitFor7) => {
+			allSuits.forEach((suitFor1) => {
+				allSuits.forEach((suit) => {
+					let newArr = []
+					tiles.push(newArr)
 
-						//MJ
-						newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
-						newArr.push(createTiles({type: "joker", amount: 1}))
+					//MJ
+					newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+					newArr.push(createTiles({type: "joker", amount: 1}))
 
-						//FIRE
-						newArr.push(createTiles({type: "flower", amount: 1}))
-						newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
-						newArr.push(createTiles({type: "dragon", value: "red", amount: 1}))
-						newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+					//FIRE
+					newArr.push(createTiles({type: "flower", amount: 1}))
+					newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
+					newArr.push(createTiles({type: "dragon", value: "red", amount: 1}))
+					newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
 
-						//CA
-						newArr.push(createTiles({type: "character", value: valueForChar, amount: 1}))
-						newArr.push(createTiles({type: "any", value: "any", amount: 1}))
+					//CA
+					newArr.push(createTiles({type: "character", value: "any", amount: 1}))
+					newArr.push(createTiles({type: "any", value: "any", amount: 1}))
 
-						//LLL
-						newArr.push(createTiles({type: suitFor7, value: 7, amount: 3}))
+					//LLL
+					newArr.push(createTiles({type: suitFor7, value: 7, amount: 3}))
 
-						//911
-						newArr.push(createTiles({type: suit, value: 9, amount: 1}))
-						newArr.push(createTiles({type: suit, value: 9, amount: 2}))
-					})
+					//911
+					newArr.push(createTiles({type: suit, value: 9, amount: 1}))
+					newArr.push(createTiles({type: suit, value: 9, amount: 2}))
 				})
 			})
 		})
