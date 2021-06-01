@@ -25,10 +25,17 @@ let arr = [
 	arr.push(`assets/tiles/dragons/${dragon}.png`)
 })
 
+;["circle", "bamboo", "character", "dragon", "wind", "any"].forEach((category) => {
+	arr.push(`assets/tiles/any/${category}.png`)
+})
+
 ;[1,2,3,4,5,6,7,8,9].forEach((num) => {
 	arr.push(`assets/tiles/circles/${num}.png`)
 	arr.push(`assets/tiles/bamboos/${num}.png`)
 	arr.push(`assets/tiles/characters/${num}.png`)
+	arr.push(`assets/tiles/any/${num}.png`)
 })
+
+
 
 module.exports = arr
