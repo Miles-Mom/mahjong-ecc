@@ -39,7 +39,7 @@ var suitDragonConversion = {
 
 function getTileDifferential(handOptions, hand, options = {}) {
     //options.skipConcealedCheck - default false. If true, we don't check if concealed hands are impossible due to exposures.
-    //options.onlyExactMatch - do not match any.
+    //options.onlyExactMatch - "Any" only matches other "Any"s. Should be true if the input hand can contain "any"s (like for duplicate removal)
 
 	//getTileDifferential takes an array of tiles are determines how many tiles away hand is
 	//from every achivable handOption (TODO: Allow passing remaining wall tiles / already exposed tiles)
