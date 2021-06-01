@@ -43,22 +43,22 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allTiles.forEach((anyTileOption) => {
-				allSuits.forEach((suitFor2) => {
-					allSuits.forEach((suitFor1) => {
-						let newArr = []
-						tiles.push(newArr)
+			allSuits.forEach((suitFor2) => {
+				allSuits.forEach((suitFor1) => {
+					let newArr = []
+					tiles.push(newArr)
 
-						newArr.push(createTiles({type: suitFor2, value: 2, amount: 1}))
-						newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
+					newArr.push(createTiles({type: suitFor2, value: 2, amount: 1}))
+					newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
 
-						newArr.push(createTiles({type: "character", value: "any", amount: 1}))
+					newArr.push(createTiles({type: "character", value: "any", amount: 1}))
 
-						newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 2}))
+					newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 2}))
 
-						newArr.push(createTiles({type: "dragon", value: "red", amount: 3}))
-						newArr.push(createTiles({type: "dragon", value: "green", amount: 3}))
-						newArr.push(createTiles({type: "dragon", value: "white", amount: 3}))
-					})
+					newArr.push(createTiles({type: "dragon", value: "red", amount: 3}))
+					newArr.push(createTiles({type: "dragon", value: "green", amount: 3}))
+					newArr.push(createTiles({type: "dragon", value: "white", amount: 3}))
+				})
 			})
 		})
 
@@ -71,27 +71,27 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allTiles.forEach((kongTileOption) => {
-				allSuits.forEach((suitFor2) => {
-					allSuits.forEach((suitFor7) => {
-						allSuits.forEach((suitFor1) => {
-							let newArr = []
-							tiles.push(newArr)
+			allSuits.forEach((suitFor2) => {
+				allSuits.forEach((suitFor7) => {
+					allSuits.forEach((suitFor1) => {
+						let newArr = []
+						tiles.push(newArr)
 
-							newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-							newArr.push(createTiles({type: "character", value: "any", amount: 1}))
+						newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+						newArr.push(createTiles({type: "character", value: "any", amount: 1}))
 
-							newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
+						newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
 
-							newArr.push(createTiles({type: "wind", value: "south", amount: 3}))
+						newArr.push(createTiles({type: "wind", value: "south", amount: 3}))
 
-							newArr.push(createTiles({type: suitFor2, value: 2, amount: 2}))
+						newArr.push(createTiles({type: suitFor2, value: 2, amount: 2}))
 
 
-							newArr.push(createTiles({type: "any", value: "any", amount: 1}))
-							newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
-							newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
-						})
+						newArr.push(createTiles({type: "any", value: "any", amount: 1}))
+						newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
+						newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
 					})
+				})
 			})
 		})
 		return {
@@ -103,23 +103,23 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allTiles.forEach((kongTileOption) => {
-				allSuits.forEach((suitFor4s) => {
-					let newArr = []
-					tiles.push(newArr)
+			allSuits.forEach((suitFor4s) => {
+				let newArr = []
+				tiles.push(newArr)
 
-					newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-					newArr.push(createTiles({type: "character", value: "any", amount: 1}))
-					newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
-					newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
+				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+				newArr.push(createTiles({type: "character", value: "any", amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 
-					newArr.push(createTiles({type: suitFor4s, value: 4, amount: 3}))
+				newArr.push(createTiles({type: suitFor4s, value: 4, amount: 3}))
 
-					newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
-					newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-					newArr.push(createTiles({type: "dragon", value: "red", amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+				newArr.push(createTiles({type: "dragon", value: "red", amount: 1}))
 
-					newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
-				})
+				newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
+			})
 		})
 
 		return {
@@ -139,7 +139,7 @@ module.exports = [
 					newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
 
 					newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 2}))
-
+					
 					newArr.push(createTiles({type: "dragon", value: "green", amount: 1}))
 					newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
 					newArr.push(createTiles({type: "wind", value: "north", amount: 1}))

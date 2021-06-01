@@ -212,7 +212,7 @@ module.exports = [
 				allSuits.forEach((suit) => {
 					let newArr = []
 					tiles.push(newArr)
-					
+
 					//MJ
 					newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
 					newArr.push(createTiles({type: "joker", amount: 1}))
