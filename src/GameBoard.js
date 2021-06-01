@@ -265,7 +265,7 @@ hintButton.addEventListener("click", function() {
 				let table = document.createElement("table")
 
 				options.forEach((item, index) => {
-					if (index < 100) {
+					if (index < 200) {
 						let row = document.createElement("tr")
 						table.appendChild(row)
 
