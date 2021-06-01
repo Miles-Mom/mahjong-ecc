@@ -41,6 +41,7 @@ function Compass(config = {}) {
 
 let compass = new Compass({id: "compass"})
 
+
 function FullscreenControls(elementId) {
 
 	let goFullscreenImage = "assets/go-full-screen.svg"
@@ -96,7 +97,7 @@ function FullscreenControls(elementId) {
 		this.toggleElement.id = elementId
 		this.toggleElement.title = "Toggle Full Screen"
 
-		let setIcon = (function setIcon() {
+		let setIcon = (async function setIcon() {
 			if (await this.isFullscreen()) {
 				this.toggleElement.src = exitFullscreenImage
 			}
@@ -105,7 +106,7 @@ function FullscreenControls(elementId) {
 			}
 		}).bind(this)
 
-		this.toggleElement.addEventListener("click", async function() {
+		this.toggleElement.addEventListener("click", (async function() {
 			let prom;
 			if (await this.isFullscreen()) {
 				prom = this.exitFullscreen()
@@ -114,7 +115,7 @@ function FullscreenControls(elementId) {
 				prom = this.goFullscreen()
 			}
 			if (prom) {prom.then(setIcon)} //Capacitor uses promises.
-		})
+		}).bind(this))
 
 		document.addEventListener("fullscreenchange", setIcon)
 		setIcon()
@@ -130,7 +131,7 @@ if (fullscreenControls.toggleElement) {
 	//If we can't, we will go fullscreen on first document click.
 	function callFullScreen() {
 	    //Check for mobile or currently being in fullscreen.
-	    if ((window.innerWidth < 600 || window.innerHeight < 600) && !document.fullscreenElement) {
+	    if ((window.innerWidth < 600 || window.innerHeight < 600)) {
 			fullscreenControls.goFullscreen()
 	    }
 	}
