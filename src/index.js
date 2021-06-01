@@ -143,7 +143,10 @@ document.addEventListener("click", function(e) {
     callFullScreen()
 })
 
-callFullScreen()
+try {
+    callFullScreen()
+}
+catch (e) {console.error(e)}
 
 window.addEventListener('resize', setVisibleAreaHeight)
 //Fire resize on orientationchange.
