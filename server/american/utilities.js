@@ -55,10 +55,20 @@ function getTileDifferential(handOptions, hand, options = {}) {
 
 		let canFillJoker = []
 		let noFillJoker = []
+        let anyValueSingletons = []
 
 		handOption.tiles.forEach((item) => {
-            if (item.length === 1 && item[0].type === "any" && item[0].value === "any") {
-                //Do nothing - this tile can be, quite literally, anything. 
+            if (item.length === 1 && item[0].value === "any") {
+                //We can't do any type yet, since we have any value -
+                //then the ordering might matter.
+                if (item[0].type === "any") {
+                    //Do nothing - this tile can be, quite literally, anything.
+                }
+                else {
+                    //This tile is a specific suit, but can be any value (1-9)
+                    //Add to noFillJoker AFTER everything else.
+                    anyValueSingletons.push(...item)
+                }
             }
 			else if (item.length <= 2) {
 				noFillJoker.push(...item)
@@ -67,6 +77,8 @@ function getTileDifferential(handOptions, hand, options = {}) {
 				canFillJoker.push(...item)
 			}
 		})
+
+        noFillJoker.push(...anyValueSingletons)
 
 		let jokerCount = 0
 		let diff;
@@ -93,6 +105,13 @@ function getTileDifferential(handOptions, hand, options = {}) {
 				canFillJoker.splice(canFillIndex, 1)
 				return true
 			}
+
+            //TODO: This set is FAR slower than need be. It's duplicative. Try to merge with noFillIndex. 
+            noFillIndex = noFillJoker.findIndex((tile) => {return tile.matches(item, true)}) //True to check any.
+            if (noFillIndex !== -1) {
+                noFillJoker.splice(noFillIndex, 1)
+                return true
+            }
 
 			return false
 		}

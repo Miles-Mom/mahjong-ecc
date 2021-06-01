@@ -3,7 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
-//#1, 2, 3, 4, 5 of 7
+//#1, 2, 3, 4, 5, 6 of 7
 module.exports = [
 	//#1 generates a huge number of duplicates (~1000 of 3000 are duplicates).
 	function(tiles = []) {
@@ -43,7 +43,6 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allTiles.forEach((anyTileOption) => {
-			allOptions.forEach((charNum) => {
 				allSuits.forEach((suitFor2) => {
 					allSuits.forEach((suitFor1) => {
 						let newArr = []
@@ -52,7 +51,7 @@ module.exports = [
 						newArr.push(createTiles({type: suitFor2, value: 2, amount: 1}))
 						newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
 
-						newArr.push(createTiles({type: "character", value: charNum, amount: 1}))
+						newArr.push(createTiles({type: "character", value: "any", amount: 1}))
 
 						newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 2}))
 
@@ -60,7 +59,6 @@ module.exports = [
 						newArr.push(createTiles({type: "dragon", value: "green", amount: 3}))
 						newArr.push(createTiles({type: "dragon", value: "white", amount: 3}))
 					})
-				})
 			})
 		})
 
@@ -73,7 +71,6 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allTiles.forEach((kongTileOption) => {
-			allOptions.forEach((charNum) => {
 				allSuits.forEach((suitFor2) => {
 					allSuits.forEach((suitFor7) => {
 						allSuits.forEach((suitFor1) => {
@@ -81,7 +78,7 @@ module.exports = [
 							tiles.push(newArr)
 
 							newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-							newArr.push(createTiles({type: "character", value: charNum, amount: 1}))
+							newArr.push(createTiles({type: "character", value: "any", amount: 1}))
 
 							newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
 
@@ -95,7 +92,6 @@ module.exports = [
 							newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
 						})
 					})
-				})
 			})
 		})
 		return {
@@ -107,13 +103,12 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allTiles.forEach((kongTileOption) => {
-			allOptions.forEach((charNum) => {
 				allSuits.forEach((suitFor4s) => {
 					let newArr = []
 					tiles.push(newArr)
 
 					newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-					newArr.push(createTiles({type: "character", value: charNum, amount: 1}))
+					newArr.push(createTiles({type: "character", value: "any", amount: 1}))
 					newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
 					newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 
@@ -125,7 +120,6 @@ module.exports = [
 
 					newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
 				})
-			})
 		})
 
 		return {
@@ -166,6 +160,35 @@ module.exports = [
 			score: 30,
 			concealed: false,
 			skipDuplicateRemoval: true //No duplicates. Lots of combos.
+		}
+	},
+	function(tiles = []) {
+		allSuits.forEach((suitFor7) => {
+			allTiles.forEach((kongTileOption) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				newArr.push(createTiles({type: "bamboo", value: "any", amount: 1}))
+				newArr.push(createTiles({type: "any", value: "any", amount: 1}))
+				newArr.push(createTiles({type: "bamboo", value: "any", amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+
+				newArr.push(createTiles({type: "bamboo", value: "any", amount: 1}))
+				newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+
+				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+				newArr.push(createTiles({type: "character", value: "any", amount: 1}))
+
+				newArr.push(createTiles({type: kongTileOption.type, value: kongTileOption.value, amount: 4}))
+			})
+		})
+
+		return {
+			tiles,
+			score: 35,
+			concealed: false,
 		}
 	},
 ].map((func, index) => {

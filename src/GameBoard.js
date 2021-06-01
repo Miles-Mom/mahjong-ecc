@@ -60,7 +60,7 @@ function FullscreenControls(elementId) {
 
 	if (document.fullscreenElement !== undefined) {
 		//Support check. This allows users to check toggleElement.
-		//fullscreenElement is null when supported. 
+		//fullscreenElement is null when supported.
 		this.toggleElement = document.createElement("img")
 		this.toggleElement.id = elementId
 		this.toggleElement.title = "Toggle Full Screen"
