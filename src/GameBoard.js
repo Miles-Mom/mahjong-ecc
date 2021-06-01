@@ -58,29 +58,46 @@ function FullscreenControls(elementId) {
 		})
 	}
 
-	if (document.fullscreenElement !== undefined) {
+	if (window?.Capacitor?.Plugins?.StatusBar) {
+		//These return promises or are async!
+		this.goFullscreen = function() {
+			return Capacitor.Plugins.StatusBar.hide()
+		}
+
+		this.exitFullscreen = function() {
+			return Capacitor.Plugins.StatusBar.show()
+		}
+
+		this.isFullscreen = async function() {
+			let info = await Capacitor.Plugins.StatusBar.getInfo()
+			return !info.visible
+		}
+	}
+	else if (document.fullscreenElement !== undefined) {
 		//Support check. This allows users to check toggleElement.
 		//fullscreenElement is null when supported.
+
+		this.goFullscreen = function() {
+			document.documentElement.requestFullscreen()
+		}
+
+		this.exitFullscreen = function() {
+			document.exitFullscreen()
+		}
+
+		this.isFullscreen = function() {
+			return document.fullscreenElement
+		}
+	}
+
+	if (this.goFullscreen) {
+		//Confirm that fullscreen is supported.
 		this.toggleElement = document.createElement("img")
 		this.toggleElement.id = elementId
 		this.toggleElement.title = "Toggle Full Screen"
-		this.toggleElement.addEventListener("click", function() {
-			if (document.fullscreenElement) {
-				document.exitFullscreen()
-				if (window?.Capacitor?.Plugins) {
-					Capacitor.Plugins.StatusBar.show()
-				}
-			}
-			else {
-				document.documentElement.requestFullscreen()
-				if (window?.Capacitor?.Plugins) {
-					Capacitor.Plugins.StatusBar.hide()
-				}
-			}
-		})
 
 		let setIcon = (function setIcon() {
-			if (document.fullscreenElement) {
+			if (await this.isFullscreen()) {
 				this.toggleElement.src = exitFullscreenImage
 			}
 			else {
@@ -88,15 +105,50 @@ function FullscreenControls(elementId) {
 			}
 		}).bind(this)
 
+		this.toggleElement.addEventListener("click", async function() {
+			let prom;
+			if (await this.isFullscreen()) {
+				prom = this.exitFullscreen()
+			}
+			else {
+				prom = this.goFullscreen()
+			}
+			if (prom) {prom.then(setIcon)} //Capacitor uses promises.
+		})
+
 		document.addEventListener("fullscreenchange", setIcon)
 		setIcon()
 	}
+
 }
 
 let fullscreenControls = new FullscreenControls("fullscreenControls")
 if (fullscreenControls.toggleElement) {
 	gameBoard.appendChild(fullscreenControls.toggleElement)
+
+	//We will go fullscreen at the very beginning if possible on mobile.
+	//If we can't, we will go fullscreen on first document click.
+	function callFullScreen() {
+	    //Check for mobile or currently being in fullscreen.
+	    if ((window.innerWidth < 600 || window.innerHeight < 600) && !document.fullscreenElement) {
+			fullscreenControls.goFullscreen()
+	    }
+	}
+
+	let wentFullScreenPrior;
+	document.addEventListener("click", function(e) {
+	    //If the event is not trusted, it's not going to allow fullscreen. Ignore it.
+	    if (!e.isTrusted || wentFullScreenPrior) {return}
+	    wentFullScreenPrior = true
+	    callFullScreen()
+	})
+
+	try {
+	    callFullScreen()
+	}
+	catch (e) {console.error(e)}
 }
+
 
 let syncButton = document.createElement("img")
 syncButton.src = "assets/reload-icon.svg"

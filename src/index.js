@@ -126,28 +126,6 @@ function setVisibleAreaHeight(callAgain = true) {
     }
 }
 
-//We will go fullscreen at the very beginning if possible on mobile.
-//If we can't, we will go fullscreen on first document click.
-function callFullScreen() {
-    //Check for mobile or currently being in fullscreen.
-    if ((window.innerWidth < 600 || window.innerHeight < 600) && !document.fullscreenElement) {
-        document.querySelector("#fullscreenControls").click()
-    }
-}
-
-let wentFullScreenPrior;
-document.addEventListener("click", function(e) {
-    //If the event is not trusted, it's not going to allow fullscreen. Ignore it.
-    if (!e.isTrusted || wentFullScreenPrior) {return}
-    wentFullScreenPrior = true
-    callFullScreen()
-})
-
-try {
-    callFullScreen()
-}
-catch (e) {console.error(e)}
-
 window.addEventListener('resize', setVisibleAreaHeight)
 //Fire resize on orientationchange.
 window.addEventListener('orientationchange', function() {
