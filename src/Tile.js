@@ -52,6 +52,12 @@ class Tile {
 		else if (this.type === "joker") {
 		 	return "assets/tiles/joker.png"
 		}
+		else if (this.type === "any") {
+			return "assets/tiles/any/" + this.value + ".png"
+		}
+		else if (this.value === "any") {
+			return "assets/tiles/any" + this.type + ".png"
+		}
 		else {
 			return "assets/tiles/" + this.type + "s" + "/" + this.value + ".png"
 		}
@@ -90,6 +96,10 @@ class Tile {
 	getTileValue(onlyFunctional = false) {
 		//onlyFunctional - should the same value be returned for all Flowers/Seasons? Yes when matching, no when ordering visually.
 		//The greater the value, the further to the right we place the tile.
+
+		//TODO: How to hand Any? It probably works fine (any number has no suit, so 0 plus something, and any suit has a suit plus 0)
+		//So it might overlap pretties, but American Mahjong doesn't have those.
+		//Still, we want to stop that overlap. 
 
 		let tileValue = 100 //Pretty starts at 0.
 

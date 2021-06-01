@@ -57,7 +57,10 @@ function getTileDifferential(handOptions, hand, options = {}) {
 		let noFillJoker = []
 
 		handOption.tiles.forEach((item) => {
-			if (item.length <= 2) {
+            if (item.length === 1 && item[0].type === "any" && item[0].value === "any") {
+                //Do nothing - this tile can be, quite literally, anything. 
+            }
+			else if (item.length <= 2) {
 				noFillJoker.push(...item)
 			}
 			else {
@@ -260,15 +263,11 @@ function outputExpander(combos, options = {}) {
 			obj.tiles = tileCombo
 
             let totalLength = 0
-            
+
             obj.tileValueSum = 0 //Used to accelarate duplicate removal
-            obj.tiles = obj.tiles.filter((arr) => {
+            obj.tiles.forEach((arr) => {
                 totalLength += arr.length
-                if (arr.length === 1 && arr[0].type === "any" && arr[0].value === "any") {
-                    return false //If a lone tile can be "any", simply remove it from matching. It doesn't matter at all.
-                }
                 obj.tileValueSum += arr[0].getTileValue(true) * arr.length
-                return true
             })
 
             //Verify input was the correct length.
