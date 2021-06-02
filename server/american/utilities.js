@@ -330,10 +330,10 @@ function getTileDifferential(handOptions, hand, options = {}) {
 
         //We'll apply a reduced noJokerPenalty for hands with maximum joker amounts.
         if (a.handOption.maxJokers !== undefined) {
-            diffA += Math.max(0, a.canFillJoker.length - a.maxJokers) * noJokerPenalty / 1.5
+            diffA += Math.max(0, a.canFillJoker.length - a.handOption.maxJokers) * noJokerPenalty / 1.5
         }
         if (b.handOption.maxJokers !== undefined) {
-            diffB += Math.max(0, b.canFillJoker.length - b.maxJokers) * noJokerPenalty / 1.5
+            diffB += Math.max(0, b.canFillJoker.length - b.handOption.maxJokers) * noJokerPenalty / 1.5
         }
 
 		//For Debugging and Analysis.
