@@ -326,7 +326,7 @@ function outputExpander(combos, options = {}) {
                 let isDuplicate = uniqueCombos.some((uniqueCombo) => {
                     //Two identical combos must have the same tileValueSum, however identical tileValueSums do not mean identical combos.
                     if (uniqueCombo.tileValueSum !== combo.tileValueSum) {return false}
-                    return getTileDifferential(uniqueCombo, combo.tiles, {
+                    return getTileDifferential([uniqueCombo], combo.tiles, {
                         skipConcealedCheck: true,
                         onlyExactMatch: true
                     })[0]?.diff === 0
