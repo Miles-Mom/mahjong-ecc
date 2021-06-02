@@ -113,12 +113,39 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		//Not yet implemented.
+		//This combo is HUGE compared to most other ones now. 2916 combos, and the any can make that as much as 14x as expensive.
+		allOptions.slice(0, -5).forEach((offset) => {
+			allSuits.forEach((firstSuit) => {
+				allSuits.forEach((secondSuit) => {
+					allSuits.forEach((thirdSuit) => {
+						allSuits.forEach((fourthSuit) => {
+							allSuits.forEach((fifthSuit) => {
+								allSuits.forEach((sixthSuit) => {
+
+									let newArr = []
+									tiles.push(newArr)
+
+									newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+
+									newArr.push(createTiles({type: firstSuit, value: 0+offset, amount: 2}))
+									newArr.push(createTiles({type: secondSuit, value: 1+offset, amount: 2}))
+									newArr.push(createTiles({type: thirdSuit, value: 2+offset, amount: 2}))
+									newArr.push(createTiles({type: fourthSuit, value: 3+offset, amount: 2}))
+									newArr.push(createTiles({type: fifthSuit, value: 4+offset, amount: 2}))
+									newArr.push(createTiles({type: sixthSuit, value: 5+offset, amount: 2}))
+								})
+							})
+						})
+					})
+				})
+			})
+		})
 
 		return {
 			tiles,
 			score: 40,
-			concealed: true
+			concealed: true,
+			skipDuplicateRemoval: true
 		}
 	},
 	function(tiles = []) {
