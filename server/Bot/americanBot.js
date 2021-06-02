@@ -254,23 +254,30 @@ function evaluateNextMove({botConfig}) {
 					if (match) {
 						let tilesToPlace = []
 
-						//If this tile is beneficial, we shouldn't have enough of it, so don't need to check against match length here.
 						currentHand.contents.forEach((item) => {
-							if (match[0].matches(item)) {
-								tilesToPlace.push(item)
+							if (tilesToPlace.length !== match.length - 1) {
+								if (match[0].matches(item)) {
+									tilesToPlace.push(item)
+								}
 							}
 						})
 
 						if (match.length > 2) {
+							let maxJokers = withTileAnalysisItem.handOption.maxJokers ?? Infinity
+							if (maxJokers !== Infinity) {
+								maxJokers -= currentHand.calculateJokerAmount(true) //Remove exposed jokers.
+							}
+
 							currentHand.contents.forEach((item) => {
 								if (tilesToPlace.length !== match.length - 1) {
 									if (item.type === "joker") {
 										tilesToPlace.push(item)
+										maxJokers-- //Remove one from maxjokers for every joker we could need to use.
 									}
 								}
 							})
 
-							if (tilesToPlace.length === match.length - 1) {
+							if (tilesToPlace.length === match.length - 1 && maxJokers >= 0) {
 								placeTiles(tilesToPlace.concat(gameData.currentTurn.thrown), withTileAnalysis[0].diff === 0)
 								return true
 							}
@@ -293,7 +300,7 @@ function evaluateNextMove({botConfig}) {
 						else {} //We want this tile, but can only pick it up for mahjong - ex, pair or single tile.
 					}
 					else {
-						//This should never happen. 
+						//This should never happen.
 						console.warn(gameData.currentTurn.thrown, currentHand.contents, analysis[0], withTileAnalysisItem)
 						console.warn("Something odd happened, probably in sorting, causing a match not including the thrown tile to be provided. ")
 					}

@@ -285,7 +285,7 @@ function CardSelector() {
 		"2021 National Mahjongg League",
 		"2020 National Mahjongg League",
 		{
-			name: "2021 Marvelous (Partial Scoring & Suggestions)",
+			name: "2021 Marvelous Mah Jongg",
 			value: "2021 Marvelous Mahjongg"
 		}
 	]

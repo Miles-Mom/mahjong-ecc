@@ -18,7 +18,7 @@ module.exports = [
 			tiles,
 			score: 35,
 			concealed: false,
-			maxJokers: 1
+			maxJokers: 1 //Technically, a hand using more than one joker is NOT dead, as somebody might swap, but hoping for other people to mess up in order to not be dead is not a good strategy. 
 		}
 	},
 ].map((func, index) => {
