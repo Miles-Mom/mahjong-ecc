@@ -1,8 +1,8 @@
-function calculateJokerAmount(items) {
+function calculateJokerAmount() {
 	//We can't use the joker count from getTileDifferential, as that treats exposesd tiles like the jokers they act for.
 	let allTiles = []
 
-	items.forEach((item) => {
+	this.contents.forEach((item) => {
 		if (item instanceof Tile) {allTiles.push(item)}
 		else {
 			allTiles.push(...item.tiles)
