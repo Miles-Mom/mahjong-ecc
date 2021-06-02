@@ -7,18 +7,18 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 module.exports = [
 	function(tiles = []) {
 		allSuits.forEach((suit) => {
-				allOptions.slice(0,-4).forEach((offset) => {
-					let newArr = []
-					tiles.push(newArr)
+			allOptions.slice(0,-4).forEach((offset) => {
+				let newArr = []
+				tiles.push(newArr)
+				
+				newArr.push(createTiles({type: suit, value: offset+0, amount: 1}))
+				newArr.push(createTiles({type: suit, value: offset+1, amount: 3}))
+				newArr.push(createTiles({type: suit, value: offset+2, amount: 1}))
+				newArr.push(createTiles({type: suit, value: offset+3, amount: 4}))
+				newArr.push(createTiles({type: suit, value: offset+4, amount: 1}))
 
-					newArr.push(createTiles({type: suit, value: offset+0, amount: 1}))
-					newArr.push(createTiles({type: suit, value: offset+1, amount: 3}))
-					newArr.push(createTiles({type: suit, value: offset+2, amount: 1}))
-					newArr.push(createTiles({type: suit, value: offset+3, amount: 4}))
-					newArr.push(createTiles({type: suit, value: offset+4, amount: 1}))
-
-					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
-				})
+				newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+			})
 		})
 
 		return {
@@ -88,23 +88,23 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-			allOptions.slice(0, -4).forEach((offset) => {
-				allSuitArrangements.forEach((suitOrder) => {
-					let newArr = []
-					tiles.push(newArr)
-					newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+		allOptions.slice(0, -4).forEach((offset) => {
+			allSuitArrangements.forEach((suitOrder) => {
+				let newArr = []
+				tiles.push(newArr)
+				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
-					newArr.push(createTiles({type: suitOrder[0], value: 0+offset, amount: 3}))
-					newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[0], value: 0+offset, amount: 3}))
+				newArr.push(createTiles({type: suitOrder[0], value: 1+offset, amount: 3}))
 
-					//This has duplicates, as last 2 suits are identical.
-					newArr.push(createTiles({type: suitOrder[1], value: 2+offset, amount: 1}))
-					newArr.push(createTiles({type: suitOrder[1], value: 3+offset, amount: 1}))
-					newArr.push(createTiles({type: suitOrder[1], value: 4+offset, amount: 1}))
+				//This has duplicates, as last 2 suits are identical.
+				newArr.push(createTiles({type: suitOrder[1], value: 2+offset, amount: 1}))
+				newArr.push(createTiles({type: suitOrder[1], value: 3+offset, amount: 1}))
+				newArr.push(createTiles({type: suitOrder[1], value: 4+offset, amount: 1}))
 
-					newArr.push(createTiles({type: suitOrder[2], value: 2+offset, amount: 1}))
-					newArr.push(createTiles({type: suitOrder[2], value: 3+offset, amount: 1}))
-					newArr.push(createTiles({type: suitOrder[2], value: 4+offset, amount: 1}))
+				newArr.push(createTiles({type: suitOrder[2], value: 2+offset, amount: 1}))
+				newArr.push(createTiles({type: suitOrder[2], value: 3+offset, amount: 1}))
+				newArr.push(createTiles({type: suitOrder[2], value: 4+offset, amount: 1}))
 			})
 		})
 		return {

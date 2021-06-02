@@ -122,49 +122,49 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-			allSuitArrangements.forEach((suitOrder) => {
-				let newArr = []
-				tiles.push(newArr)
+		allSuitArrangements.forEach((suitOrder) => {
+			let newArr = []
+			tiles.push(newArr)
 
-				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
-				newArr.push(createTiles({type: suitOrder[0], value: 1, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[0], value: 9, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[0], value: 4, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[0], value: 9, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[0], value: 1, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[0], value: 9, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[0], value: 4, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[0], value: 9, amount: 1}))
 
-				newArr.push(createTiles({type: suitOrder[1], value: 1, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 9, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 1, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 1, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 9, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 1, amount: 1}))
 
-				newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[2], value: 7, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[2], value: 3, amount: 1}))
-			})
+			newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[2], value: 7, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[2], value: 3, amount: 1}))
+		})
 
-			allSuits.forEach((suit) => {
-				let newArr = []
-				tiles.push(newArr)
+		allSuits.forEach((suit) => {
+			let newArr = []
+			tiles.push(newArr)
 
-				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
-				newArr.push(createTiles({type: suit, value: 1, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 9, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 4, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 9, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 1, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 4, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 1}))
 
-				newArr.push(createTiles({type: suit, value: 1, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 9, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 6, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 1, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 1, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 6, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 1, amount: 1}))
 
-				newArr.push(createTiles({type: suit, value: 1, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 9, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 7, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 3, amount: 1}))
-			})
+			newArr.push(createTiles({type: suit, value: 1, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 7, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 3, amount: 1}))
+		})
 
 		return {
 			tiles,

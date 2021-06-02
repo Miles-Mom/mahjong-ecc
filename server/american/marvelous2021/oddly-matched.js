@@ -7,35 +7,35 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
-					let newArr = []
-					tiles.push(newArr)
+			let newArr = []
+			tiles.push(newArr)
 
-					newArr.push(createTiles({type: suitOrder[0], value: 1, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[0], value: 1, amount: 1}))
 
-					newArr.push(createTiles({type: suitOrder[1], value: 3, amount: 1}))
-					newArr.push(createTiles({type: suitOrder[1], value: 5, amount: 1}))
-					newArr.push(createTiles({type: suitOrder[1], value: 7, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 3, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 5, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 7, amount: 1}))
 
-					newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 3}))
+			newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 3}))
 
-					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
-					newArr.push(createTiles({type: "any", value: "any", amount: 3}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 3}))
 		})
 
 		allSuits.forEach((suit) => {
-					let newArr = []
-					tiles.push(newArr)
+			let newArr = []
+			tiles.push(newArr)
 
-					newArr.push(createTiles({type: suit, value: 1, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 1, amount: 1}))
 
-					newArr.push(createTiles({type: suit, value: 3, amount: 1}))
-					newArr.push(createTiles({type: suit, value: 5, amount: 1}))
-					newArr.push(createTiles({type: suit, value: 7, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 3, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 5, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 7, amount: 1}))
 
-					newArr.push(createTiles({type: suit, value: 9, amount: 3}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 3}))
 
-					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
-					newArr.push(createTiles({type: "any", value: "any", amount: 3}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 3}))
 		})
 
 		return {

@@ -29,22 +29,21 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allSuits.forEach((suit) => {
-					let newArr = []
-					tiles.push(newArr)
+			let newArr = []
+			tiles.push(newArr)
 
-					newArr.push(createTiles({type: suit, value: 3, amount: 3}))
-					newArr.push(createTiles({type: suit, value: 6, amount: 3}))
-					newArr.push(createTiles({type: suit, value: 9, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 3, amount: 3}))
+			newArr.push(createTiles({type: suit, value: 6, amount: 3}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 1}))
 
-					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
-					newArr.push(createTiles({type: "any", value: "any", amount: 3}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+			newArr.push(createTiles({type: "any", value: "any", amount: 3}))
 		})
 
 		return {
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //Too many combos.
 		}
 	},
 	function(tiles = []) {
@@ -69,35 +68,35 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-			allSuitArrangements.forEach((suitOrder) => {
-				let newArr = []
-				tiles.push(newArr)
-				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+		allSuitArrangements.forEach((suitOrder) => {
+			let newArr = []
+			tiles.push(newArr)
+			newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
-				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
 
-				newArr.push(createTiles({type: suitOrder[0], value: 3, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 3}))
-				newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 4}))
-			})
+			newArr.push(createTiles({type: suitOrder[0], value: 3, amount: 1}))
+			newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 3}))
+			newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 4}))
+		})
 
-			allSuits.forEach((suit) => {
-				let newArr = []
-				tiles.push(newArr)
-				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+		allSuits.forEach((suit) => {
+			let newArr = []
+			tiles.push(newArr)
+			newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
-				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "south", amount: 1}))
 
-				newArr.push(createTiles({type: suit, value: 3, amount: 1}))
-				newArr.push(createTiles({type: suit, value: 6, amount: 3}))
-				newArr.push(createTiles({type: suit, value: 9, amount: 4}))
-			})
+			newArr.push(createTiles({type: suit, value: 3, amount: 1}))
+			newArr.push(createTiles({type: suit, value: 6, amount: 3}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 4}))
+		})
 		return {
 			tiles,
 			score: 30,
