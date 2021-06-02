@@ -5,13 +5,10 @@ const utilities = require("./utilities.js")
 
 //NOTE: Current, "any" only works for single tiles.
 //It only works for tiles that are any value.
-//Tiles that are any type are not currently supported. 
+//Tiles that are any type are not currently supported.
 
 function calculateCombos() {
 	let output = []
-	//TODO: We are probably going to want a setup for any pong/any kong (utilities.js getTileDifferential changes?)
-	//That would massively reduce the number of combos.
-	//We also need something to handle any tile - probably allow hands under 14 tiles, as the other tiles should fall under any tile.
 
 	output.push(...require("./marvelous2021/double-harness.js"))
 	output.push(...require("./marvelous2021/oddly-matched.js"))
@@ -22,7 +19,6 @@ function calculateCombos() {
 	output.push(...require("./marvelous2021/sub-atomic.js"))
 	output.push(...require("./marvelous2021/carpe-diem.js"))
 	output.push(...require("./marvelous2021/quintaabulous.js"))
-
 	return utilities.outputExpander(output)
 }
 

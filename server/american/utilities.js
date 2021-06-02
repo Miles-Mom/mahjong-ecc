@@ -45,23 +45,75 @@ function processHand(handOption, hand, options) {
     let noFillJoker = []
     let anyValueSingletons = []
 
-    //TODO: Another complication - there may be cases where we need to use an excess joker in order to fill an "any" spot.
-    handOption.tiles.forEach((item) => {
-        if (!options.onlyExactMatch && item.length === 1 && item[0].value === "any") {
-            if (item[0].type === "any") {
-                return; //Do nothing - this tile can be, quite literally, anything.
+    for (let handOptionIndex=0;handOptionIndex<handOption.tiles.length;handOptionIndex++) {
+        let item = handOption.tiles[handOptionIndex]
+
+        let anyType = (item[0].type === "any")
+        let anyValue = (item[0].value === "any")
+
+
+        if (!options.onlyExactMatch) {
+            if (item.length === 1 && anyType && anyValue) {
+                continue; //Do nothing - this tile can be, quite literally, anything.
             }
-            //This tile is a specific suit, but can be any value (1-9)
-            //Add to noFillJoker AFTER everything else.
-            anyValueSingletons.push(...item)
+            if (item.length === 1 && anyValue) {
+                //TODO: Another complication - there may be cases where we need to use an excess joker in order to fill an "any" spot.
+                //This anyValue category probably isn't perfect, in that a human should be able to do some things better in weird circumstances.
+
+                //This tile is a specific suit, but can be any value (1-9)
+                //Add to noFillJoker AFTER everything else.
+                anyValueSingletons.push(...item)
+                continue;
+            }
+            if (item.length > 1 && anyType && anyValue) {
+                let uniqueTiles = []
+                hand.forEach((handItem) => {
+                    let tile;
+                    if (handItem.tiles) {tile = handItem.tiles[0]} //TileContainer.
+                    else if (handItem instanceof Array) {tile = handItem[0]}
+                    else {tile = handItem}
+
+                    if (tile.type === "any" || tile.value === "any") {return false} //We are simulating all possible tiles. Any tiles are not a tile.
+
+                    let isUnique = !(uniqueTiles.some((uniqueTile) => {
+                        return uniqueTile.matches(tile)
+                    }))
+
+                    if (isUnique) {
+                        uniqueTiles.push(tile)
+                    }
+                })
+
+                //Now for every unique tile, simulate this hand.
+                let results = []
+                for (let i=0;i<uniqueTiles.length;i++) {
+                    let simHandOption = Object.assign({}, handOption) //Clone our hand option.
+                    let simTiles = simHandOption.tiles.slice(0) //Clone the tiles
+                    simTiles[handOptionIndex] = new Array(item.length).fill(uniqueTiles[i]) //Replace this "any" item with the simulated tiles.
+                    simHandOption.tiles = simTiles //Swap in our simulated tiles.
+                    let res = processHand(simHandOption, hand, options)
+                    if (res instanceof Array) {
+                        results.push(...res)
+                    }
+                    else if (res) {
+                        results.push(res)
+                    }
+                }
+
+                //TODO: Right now, we return all possible combos. We may want to begin rendering these an any pair, any tile, etc, instead, and return the best, with the anys swapped back in.
+                //results.sort((a, b) => {return a.diff - b.diff})
+                return results//[0]
+            }
         }
-        else if (item.length <= 2) {
+
+        if (item.length <= 2) {
             noFillJoker.push(...item)
         }
         else {
             canFillJoker.push(...item)
         }
-    })
+    }
+
 
     noFillJoker.push(...anyValueSingletons)
 
@@ -198,13 +250,16 @@ function getTileDifferential(handOptions, hand, options = {}) {
 	}
 
     let results = []
-        //Passing an array of handOptions.
-        for (let i=0;i<handOptions.length;i++) {
-    		let handOption = handOptions[i]
+    //Passing an array of handOptions.
+    for (let i=0;i<handOptions.length;i++) {
+        let handOption = handOptions[i]
 
-            let res = processHand(handOption, hand, options)
-            if (res) {results.push(res)}
-    	}
+        let res = processHand(handOption, hand, options)
+        if (res instanceof Array) {
+            results.push(...res)
+        }
+        else if (res) {results.push(res)}
+    }
 
 
 	results = results.sort((function(a,b) {
@@ -351,6 +406,16 @@ function outputExpander(combos, options = {}) {
 	if (duplicatesRemoved) {
 		console.warn("Removed " + duplicatesRemoved +  " Duplicate Combos")
 	}
+    // console.log(output.slice(0,1))
+    // let hand = [
+    //     new Array(4).fill(new Tile({type: "bamboo", value: 2})),
+    //     new Array(4).fill(new Tile({type: "bamboo", value: 3})),
+    //     new Array(2).fill(new Tile({type: "character", value: 9})),
+    //     new Array(2).fill(new Tile({type: "character", value: 5})),
+    //     new Array(2).fill(new Tile({type: "circle", value: 1}))
+    // ].flat()
+    // console.log(hand)
+    // console.log(getTileDifferential(output.slice(0,1), hand))
 	return output
 }
 
