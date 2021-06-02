@@ -4,6 +4,7 @@ const Sequence = require("./Sequence.js")
 const Pretty = require("./Pretty.js")
 const Wall = require("./Wall.js")
 const TileContainer = require("./TileContainer.js")
+const calculateJokerAmount = require("./Hand/calculateJokerAmount.js")
 
 class Hand {
 	constructor(config = {}) {
@@ -26,7 +27,9 @@ class Hand {
 		this.getClearHandDoubles = (require("./Hand/getClearHandDoubles.js")).bind(this)
 		this.isMahjong = (require("./Hand/isMahjong.js")).bind(this)
 		this.isCalling = (require("./Hand/isCalling.js")).bind(this)
-		this.calculateJokerAmount = (require("./Hand/calculateJokerAmount.js")).bind(this)
+		this.calculateJokerAmount = (function() {
+			return calculateJokerAmount(this.contents)
+		}).bind(this)
 
 		Object.defineProperty(this, "placematLength", {
 			get: function getPlacematLength() {

@@ -1,10 +1,16 @@
-function calculateJokerAmount() {
+function calculateJokerAmount(items, exposed) {
+	//Do not pass exposed to calculate all jokers.
+	//Pass false for in hand only, true for exposed only.
 	//We can't use the joker count from getTileDifferential, as that treats exposesd tiles like the jokers they act for.
 	let allTiles = []
 
-	this.contents.forEach((item) => {
-		if (item instanceof Tile) {allTiles.push(item)}
-		else {
+	items.forEach((item) => {
+		if (item instanceof Tile) {
+			if (exposed !== true) {
+				allTiles.push(item)
+			}
+		}
+		else if (exposed !== false) {
 			allTiles.push(...item.tiles)
 		}
 	})

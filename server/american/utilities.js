@@ -1,6 +1,7 @@
 const Tile = require("../../src/Tile.js")
 const TileContainer = require("../../src/TileContainer.js")
 const Wall = require("../../src/Wall.js")
+const calculateJokerAmount = require("../../src/Hand/calculateJokerAmount.js")
 
 //https://stackoverflow.com/a/30551462/10965456
 function permutations(xs) {
@@ -187,7 +188,6 @@ function processHand(handOption, hand, options) {
                         //The jokers in this match are acting as something. (It must be a pong, kong, etc, to have jokers)
                         tile = itemValue
                     }
-
                     if (!removeItem(tile)) {
                         diff = Infinity //The hand is impossible with current exposures.
                         break processHandItems;
@@ -201,8 +201,18 @@ function processHand(handOption, hand, options) {
         }
     }
 
-    if (diff !== Infinity) {
+    let exposedJokerAmount;
+    if (handOption.maxJokers !== undefined) {
+        //Pass true to compute exposed jokers only.
+        exposedJokerAmount = calculateJokerAmount(hand, true)
 
+        if (exposedJokerAmount > handOption.maxJokers) {
+            diff = Infinity //The hand is impossible with current exposures.
+            return
+        }
+    }
+
+    if (diff !== Infinity) {
         for (let i=0;i<hand.length;i++) {
             let handItem = hand[i]
 
@@ -214,7 +224,7 @@ function processHand(handOption, hand, options) {
             }
         }
 
-        diff = noFillJoker.length + Math.max(0, canFillJoker.length - Math.min(jokerCount, handOption.maxJokers ?? Infinity))
+        diff = noFillJoker.length + Math.max(0, canFillJoker.length - Math.min(jokerCount, (handOption.maxJokers ?? Infinity) - exposedJokerAmount))
 
         //This check doesn't work when analyzing for duplicate removal. Therefore, we check options.skipConcealedCheck
         if (!options.skipConcealedCheck && handOption.concealed && !(exposedMatches === 0 || (exposedMatches === 1 && diff === 0))) {
