@@ -10,7 +10,7 @@ module.exports = [
 			allOptions.slice(0,-4).forEach((offset) => {
 				let newArr = []
 				tiles.push(newArr)
-				
+
 				newArr.push(createTiles({type: suit, value: offset+0, amount: 1}))
 				newArr.push(createTiles({type: suit, value: offset+1, amount: 3}))
 				newArr.push(createTiles({type: suit, value: offset+2, amount: 1}))
@@ -159,6 +159,7 @@ module.exports = [
 	function(tiles = []) {
 		allOptions.slice(0, -3).forEach((offset) => {
 			allSuitArrangements.forEach((suitOrder) => {
+				//The windArrangments produce an absolutely insane amount of duplicates. 
 				windArrangments.forEach((windArrangment) => {
 					let newArr = []
 					tiles.push(newArr)
