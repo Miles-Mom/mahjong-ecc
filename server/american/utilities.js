@@ -201,7 +201,7 @@ function processHand(handOption, hand, options) {
         }
     }
 
-    let exposedJokerAmount;
+    let exposedJokerAmount = 0;
     if (handOption.maxJokers !== undefined) {
         //Pass true to compute exposed jokers only.
         exposedJokerAmount = calculateJokerAmount(hand, true)
@@ -290,6 +290,7 @@ function getTileDifferential(handOptions, hand, options = {}) {
 		//Give a benefit for hands where we can call for tiles.
 		//TODO: Penalize singular remaining tiles less than pairs.
 		//TODO: Penalize for callable but not now (ex, need more jokers/tiles before it can be called), vs never callale.
+        //TODO: Penalize less for semi-any tiles (any bamboo, etc)
 
 		function getUncallableTiles(hand) {
 			//This function is called so much it is insanely expensive. Cache per hand.
@@ -326,6 +327,14 @@ function getTileDifferential(handOptions, hand, options = {}) {
 		//Give a penalty to the hands that need non-joker tiles.
 		diffA += a.noFillJoker.length * noJokerPenalty
 		diffB += b.noFillJoker.length * noJokerPenalty
+
+        //We'll apply a reduced noJokerPenalty for hands with maximum joker amounts.
+        if (a.handOption.maxJokers !== undefined) {
+            diffA += Math.max(0, a.canFillJoker.length - a.maxJokers) * noJokerPenalty / 1.5
+        }
+        if (b.handOption.maxJokers !== undefined) {
+            diffB += Math.max(0, b.canFillJoker.length - b.maxJokers) * noJokerPenalty / 1.5
+        }
 
 		//For Debugging and Analysis.
 		a.weightedDiff = diffA
