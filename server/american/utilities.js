@@ -406,16 +406,7 @@ function outputExpander(combos, options = {}) {
 	if (duplicatesRemoved) {
 		console.warn("Removed " + duplicatesRemoved +  " Duplicate Combos")
 	}
-    // console.log(output.slice(0,1))
-    // let hand = [
-    //     new Array(4).fill(new Tile({type: "bamboo", value: 2})),
-    //     new Array(4).fill(new Tile({type: "bamboo", value: 3})),
-    //     new Array(2).fill(new Tile({type: "character", value: 9})),
-    //     new Array(2).fill(new Tile({type: "character", value: 5})),
-    //     new Array(2).fill(new Tile({type: "circle", value: 1}))
-    // ].flat()
-    // console.log(hand)
-    // console.log(getTileDifferential(output.slice(0,1), hand))
+
 	return output
 }
 

@@ -29,8 +29,6 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allSuits.forEach((suit) => {
-			nonJokerTiles.forEach((kongTile) => {
-				nonJokerTiles.forEach((pongTile) => {
 					let newArr = []
 					tiles.push(newArr)
 
@@ -38,10 +36,8 @@ module.exports = [
 					newArr.push(createTiles({type: suit, value: 6, amount: 3}))
 					newArr.push(createTiles({type: suit, value: 9, amount: 1}))
 
-					newArr.push(createTiles({type: kongTile.type, value: kongTile.value, amount: 4}))
-					newArr.push(createTiles({type: pongTile.type, value: pongTile.value, amount: 3}))
-				})
-			})
+					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+					newArr.push(createTiles({type: "any", value: "any", amount: 3}))
 		})
 
 		return {
@@ -73,11 +69,10 @@ module.exports = [
 		}
 	},
 	function(tiles = []) {
-		allTiles.forEach((anyTileOption) => {
 			allSuitArrangements.forEach((suitOrder) => {
 				let newArr = []
 				tiles.push(newArr)
-				newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 2}))
+				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
 				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
@@ -92,7 +87,7 @@ module.exports = [
 			allSuits.forEach((suit) => {
 				let newArr = []
 				tiles.push(newArr)
-				newArr.push(createTiles({type: anyTileOption.type, value: anyTileOption.value, amount: 2}))
+				newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
 				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
@@ -103,7 +98,6 @@ module.exports = [
 				newArr.push(createTiles({type: suit, value: 6, amount: 3}))
 				newArr.push(createTiles({type: suit, value: 9, amount: 4}))
 			})
-		})
 		return {
 			tiles,
 			score: 30,

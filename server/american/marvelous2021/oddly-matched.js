@@ -7,8 +7,6 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
-			nonJokerTiles.forEach((kongTile) => {
-				nonJokerTiles.forEach((pongTile) => {
 					let newArr = []
 					tiles.push(newArr)
 
@@ -20,15 +18,11 @@ module.exports = [
 
 					newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 3}))
 
-					newArr.push(createTiles({type: kongTile.type, value: kongTile.value, amount: 4}))
-					newArr.push(createTiles({type: pongTile.type, value: pongTile.value, amount: 3}))
-				})
-			})
+					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+					newArr.push(createTiles({type: "any", value: "any", amount: 3}))
 		})
 
 		allSuits.forEach((suit) => {
-			nonJokerTiles.forEach((kongTile) => {
-				nonJokerTiles.forEach((pongTile) => {
 					let newArr = []
 					tiles.push(newArr)
 
@@ -40,17 +34,14 @@ module.exports = [
 
 					newArr.push(createTiles({type: suit, value: 9, amount: 3}))
 
-					newArr.push(createTiles({type: kongTile.type, value: kongTile.value, amount: 4}))
-					newArr.push(createTiles({type: pongTile.type, value: pongTile.value, amount: 3}))
-				})
-			})
+					newArr.push(createTiles({type: "any", value: "any", amount: 4}))
+					newArr.push(createTiles({type: "any", value: "any", amount: 3}))
 		})
 
 		return {
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //No duplicates and lots of combos.
 		}
 	},
 	function(tiles = []) {
