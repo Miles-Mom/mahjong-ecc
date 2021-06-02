@@ -214,7 +214,7 @@ function processHand(handOption, hand, options) {
             }
         }
 
-        diff = noFillJoker.length + Math.max(0, canFillJoker.length - jokerCount)
+        diff = noFillJoker.length + Math.max(0, canFillJoker.length - Math.min(jokerCount, handOption.maxJokers ?? Infinity))
 
         //This check doesn't work when analyzing for duplicate removal. Therefore, we check options.skipConcealedCheck
         if (!options.skipConcealedCheck && handOption.concealed && !(exposedMatches === 0 || (exposedMatches === 1 && diff === 0))) {
