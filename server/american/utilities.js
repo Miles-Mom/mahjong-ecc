@@ -198,7 +198,6 @@ function getTileDifferential(handOptions, hand, options = {}) {
 	}
 
     let results = []
-    if (handOptions instanceof Array) {
         //Passing an array of handOptions.
         for (let i=0;i<handOptions.length;i++) {
     		let handOption = handOptions[i]
@@ -206,11 +205,6 @@ function getTileDifferential(handOptions, hand, options = {}) {
             let res = processHand(handOption, hand, options)
             if (res) {results.push(res)}
     	}
-    }
-    else {
-        let res = processHand(handOptions, hand, options)
-        if (res) {results.push(res)}
-    }
 
 
 	results = results.sort((function(a,b) {
