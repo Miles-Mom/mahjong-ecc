@@ -62,7 +62,7 @@ function FullscreenControls(elementId) {
 	if (window?.Capacitor?.Plugins?.StatusBar) {
 		//TODO: I don't believe there is any event to detect when the StatusBar appears/dissapears.
 		//This is possible on Android by swiping down from the top of the screen.
-		
+
 		//These return promises or are async!
 		this.goFullscreen = function() {
 			return Capacitor.Plugins.StatusBar.hide()
@@ -307,7 +307,9 @@ hintButton.addEventListener("click", function() {
 			let card = cards[cardName]
 
 			let tiles = userHand.contents.concat(userHand.inPlacemat.filter((tile) => {return !tile.evicting}))
+			console.time("Gen Options")
 			let options = utilities.getTileDifferential(card, tiles)
+			console.timeEnd("Gen Options")
 
 			if (options.length === 0) {
 				popup = new Popups.Notification("No Hands Found", ` - Your hand might be dead<br> - You might have selected the wrong card (using ${cardName}). <br> - Bots might only support a portion of your card`)
@@ -318,10 +320,15 @@ hintButton.addEventListener("click", function() {
 				p.innerHTML = "(Sorted by Bot - Scroll to see more)"
 				elem.appendChild(p)
 
+				//Progressively render 200 suggestions 2 at a time. 
 				let table = document.createElement("table")
+				let index = 0
+				function drawMore() {
+					let amount = 2
+					for (let i=index;i<(index + amount);i++) {
+						let item = options[i]
+						if (!item) {return}
 
-				options.forEach((item, index) => {
-					if (index < 200) {
 						let row = document.createElement("tr")
 						table.appendChild(row)
 
@@ -338,7 +345,13 @@ hintButton.addEventListener("click", function() {
 							}))
 						})
 					}
-				})
+
+					index += amount
+					if (index > 200) {return}
+					window.requestAnimationFrame(drawMore)
+				}
+
+				window.requestAnimationFrame(drawMore)
 
 				elem.appendChild(table)
 				table.className = "suggestedHandsTable"
