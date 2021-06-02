@@ -25,24 +25,7 @@ function scoreAmerican(config) {
 	result.score = handOption.score
 	result.handName = handOption.section + " #" + (handOption.cardIndex + 1)
 
-	function calculateJokerAmount(items) {
-		//We can't use the joker count from getTileDifferential, as that treats exposesd tiles like the jokers they act for.
-		let allTiles = []
-
-		items.forEach((item) => {
-			if (item instanceof Tile) {allTiles.push(item)}
-			else {
-				allTiles.push(...item.tiles)
-			}
-		})
-
-		return allTiles.reduce((total, tile) => {
-			if (tile.type === "joker") {return ++total}
-			return total
-		}, 0)
-	}
-
-	if (calculateJokerAmount(this.contents) === 0) {
+	if (this.calculateJokerAmount(this.contents) === 0) {
 		//Get the maximum jokers allowed by the specific hand we went mahjong with.
 		let maxPossibleJokers = americanUtilities.getTileDifferential([handOption], [])[0].canFillJoker.length
 		if (maxPossibleJokers > 0) {

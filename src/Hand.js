@@ -26,6 +26,7 @@ class Hand {
 		this.getClearHandDoubles = (require("./Hand/getClearHandDoubles.js")).bind(this)
 		this.isMahjong = (require("./Hand/isMahjong.js")).bind(this)
 		this.isCalling = (require("./Hand/isCalling.js")).bind(this)
+		this.calculateJokerAmount = (require("./Hand/calculateJokerAmount.js")).bind(this)
 
 		Object.defineProperty(this, "placematLength", {
 			get: function getPlacematLength() {
