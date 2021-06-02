@@ -26,7 +26,7 @@ var allSuitArrangements = permutations(allSuits)
 var oddOptions = [1,3,5,7,9]
 var evenOptions = [2,4,6,8]
 var allOptions = oddOptions.concat(evenOptions).sort()
-let windOptions = ["north", "east", "west", "south"]
+var windOptions = ["north", "east", "west", "south"]
 
 //Dragons are associated with a suit.
 var dragonOptions = ["red", "green", "white"]
@@ -36,6 +36,8 @@ var suitDragonConversion = {
 	"bamboo": "green",
 	"circle": "white"
 }
+
+var windArrangments = permutations(windOptions)
 
 function getTileDifferential(handOptions, hand, options = {}) {
     //options.skipConcealedCheck - default false. If true, we don't check if concealed hands are impossible due to exposures.
@@ -354,4 +356,4 @@ nonJokerTiles.push(new Tile({type: "flower"}))
 let allTiles = nonJokerTiles.slice(0)
 allTiles.push(new Tile({type: "joker"})) //TODO: Test with these - could be weird.
 
-module.exports = {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+module.exports = {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}

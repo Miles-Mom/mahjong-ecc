@@ -60,6 +60,9 @@ function FullscreenControls(elementId) {
 	}
 
 	if (window?.Capacitor?.Plugins?.StatusBar) {
+		//TODO: I don't believe there is any event to detect when the StatusBar appears/dissapears.
+		//This is possible on Android by swiping down from the top of the screen.
+		
 		//These return promises or are async!
 		this.goFullscreen = function() {
 			return Capacitor.Plugins.StatusBar.hide()

@@ -1,4 +1,4 @@
-const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
 = require("../utilities.js");
 
 
@@ -27,7 +27,7 @@ module.exports = [
 			tiles,
 			score: 25,
 			concealed: false,
-			skipDuplicateRemoval: true //No duplicates. 
+			skipDuplicateRemoval: true //No duplicates.
 		}
 	},
 	function(tiles = []) {
@@ -164,23 +164,25 @@ module.exports = [
 	function(tiles = []) {
 		allOptions.slice(0, -3).forEach((offset) => {
 			allSuitArrangements.forEach((suitOrder) => {
-				let newArr = []
-				tiles.push(newArr)
+				windArrangments.forEach((windArrangment) => {
+					let newArr = []
+					tiles.push(newArr)
 
-				newArr.push(createTiles({type: suitOrder[0], value: 2, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[0], value: 2, amount: 1}))
 
-				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "east", amount: 3}))
+					newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+					newArr.push(createTiles({type: "wind", value: windArrangment[0], amount: 3}))
 
-				newArr.push(createTiles({type: suitOrder[1], value: 0+offset, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 1+offset, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 2+offset, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[1], value: 3+offset, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[1], value: 0+offset, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[1], value: 1+offset, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[1], value: 2+offset, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[1], value: 3+offset, amount: 1}))
 
-				newArr.push(createTiles({type: "wind", value: "west", amount: 3}))
+					newArr.push(createTiles({type: "wind", value: windArrangment[1], amount: 3}))
 
-				newArr.push(createTiles({type: suitOrder[2], value: 2, amount: 1}))
-				newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[2], value: 2, amount: 1}))
+					newArr.push(createTiles({type: suitOrder[2], value: 1, amount: 1}))
+				})
 			})
 		})
 
