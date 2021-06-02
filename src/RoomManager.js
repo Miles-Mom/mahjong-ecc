@@ -78,7 +78,6 @@ joinRoom.addEventListener("click", function() {
 	window.stateManager.joinRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
 joinOrCreateRoom.appendChild(joinRoom)
-
 let createRoom = document.createElement("button")
 createRoom.id = "createRoom"
 createRoom.innerHTML = "Create Room"
@@ -606,11 +605,6 @@ inRoomContainer.appendChild(startGameButton)
 let gameSettings;
 startGameButton.addEventListener("click", function() {
 	window.stateManager.startGame(gameSettings.getChoices())
-
-	//If we are on mobile, let's go full screen now.
-	if ((window.innerWidth < 600 || window.innerHeight < 600) && !document.fullscreenElement) {
-		document.querySelector("#fullscreenControls").click()
-	}
 })
 
 let addBotButton = document.createElement("button")
