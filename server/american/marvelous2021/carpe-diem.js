@@ -111,7 +111,7 @@ module.exports = [
 			newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 			newArr.push(createTiles({type: "dragon", value: "any", amount: 1}))
 
-			newArr.push(createTiles({type: "dragon", value: "west", amount: 1}))
+			newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
 			newArr.push(createTiles({type: "joker", amount: 1}))
 		})
 
