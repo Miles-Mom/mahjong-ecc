@@ -381,9 +381,9 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							hand.add(placement)
 							placement.exposed = true
 
-							let message = client.getNickname() + " has placed a sequence of " + placement.tiles[0].type + "s"
-							this.messageAll([clientId], "roomActionGameplayAlert", message, {clientId, speech: "Chow"})
-							client.addMessageToHistory(message)
+							let message = " placed a sequence of " + placement.tiles[0].type + "s"
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + message, {clientId, speech: "Chow"})
+							client.addMessageToHistory("You" + message)
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
@@ -410,9 +410,9 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							placement.exposed = true
 							let matchType = [,,"pair","pong","kong"][placement.amount]
 
-							let message = client.getNickname() + " placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s"
-							this.messageAll([clientId], "roomActionGameplayAlert", message, {clientId, speech: matchType})
-							client.addMessageToHistory(message)
+							let message = " placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s"
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + message, {clientId, speech: matchType})
+							client.addMessageToHistory("You" + message)
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
@@ -456,9 +456,9 @@ function calculateNextTurn(obj, exemptFromChecks) {
 								matchInfo += " of " + matchTile.getTileName(this.state.settings.gameStyle) + "s"
 							}
 
-							matchInfo = client.getNickname() + " placed a " + matchInfo
-							this.messageAll([clientId], "roomActionGameplayAlert",  matchInfo, {clientId, speech: "I'll take that"})
-							client.addMessageToHistory(matchInfo)
+							matchInfo = " placed a " + matchInfo
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + matchInfo, {clientId, speech: "I'll take that"})
+							client.addMessageToHistory("You" + matchInfo)
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})

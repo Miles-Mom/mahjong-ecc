@@ -222,7 +222,7 @@ class Room {
 					//In hand kongs are also possible at the start, hence the check for a length of 4.
 					//I believe that one must charleston with in-hand-kongs (can't expose beforehand) if they are going to charleston.
 					//However it is currently possible to charleston after placing an in hand kong - although the message changes
-					//to the tile draw message (drawn tile from kong), placing 3 tiles afterwards still starts the charleston. 
+					//to the tile draw message (drawn tile from kong), placing 3 tiles afterwards still starts the charleston.
 					if (placement.length === 3) {
 						this.gameData.charleston = {
 							directions: this.state.settings.charleston.slice(0)
@@ -363,7 +363,7 @@ class Room {
 						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile.
 						if (!obj.swapJoker || obj.swapJoker === true) {
 							let tileName = placement.getTileName(this.state.settings.gameStyle)
-							let discardMessage = client.getNickname() + " threw a " + tileName
+							let discardMessage = " threw a " + tileName
 							//We're also going to check if the discarder is calling.
 							let durationMultiplier = 1;
 							if (this.state.settings.checkForCalling && !hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
@@ -378,10 +378,10 @@ class Room {
 							this.gameData.currentTurn.turnChoices[clientId] = "Next"
 							placerMahjongOverride = false
 
-							this.messageAll([clientId], "roomActionGameplayAlert", discardMessage, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
-							this.setAllInstructions([clientId], discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + discardMessage, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
+							this.setAllInstructions([clientId], client.getNickname() + discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
 
-							client.addMessageToHistory(discardMessage) //Make discards appear in history menu.
+							client.addMessageToHistory("You" + discardMessage) //Make discards appear in history menu.
 
 							this.sendStateToClients()
 						}
@@ -402,7 +402,9 @@ class Room {
 						//Draw them another tile.
 						this.drawTile(clientId)
 						this.sendStateToClients()
-						this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has placed an in-hand kong of " + placement.getTileName(this.state.settings.gameStyle) + "s", {clientId, speech: "kong"})
+						let placeMessage = " placed an in-hand kong of " + placement.getTileName(this.state.settings.gameStyle) + "s"
+						this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + placeMessage, {clientId, speech: "kong"})
+						client.addMessageToHistory("You" + placeMessage)
 						console.log("Kong")
 						return
 					}
