@@ -26,10 +26,10 @@ module.exports = [
 			let newArr = []
 			tiles.push(newArr)
 
-			newArr.push(createTiles({type: suit, value: 3, amount: 3}))
-			newArr.push(createTiles({type: suit, value: 6, amount: 4}))
-			newArr.push(createTiles({type: suit, value: 9, amount: 3}))
-			newArr.push(createTiles({type: "dragon", value: suitDragonConversion[suit], amount: 4}))
+			newArr.push(createTiles({type: suit, value: 3, amount: 4}))
+			newArr.push(createTiles({type: suit, value: 6, amount: 3}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 4}))
+			newArr.push(createTiles({type: "dragon", value: suitDragonConversion[suit], amount: 3}))
 		})
 
 		return {
