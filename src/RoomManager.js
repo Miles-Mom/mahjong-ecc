@@ -729,7 +729,23 @@ roomManager.appendChild(copyrightNotice)
 
 //TODO: Use speechSynthesis onvoiceschange event (or whatever it is).
 if (window.speechSynthesis) {
-	speechSynthesis?.getVoices()
+	try {
+		speechSynthesis?.getVoices()
+
+		//Workaround for iOS speechSynthesis weirdness.
+		const isiOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+		if (isiOS) {
+			const simulateSpeech = () => {
+				const lecture = new SpeechSynthesisUtterance('hello');
+				lecture.volume = 0;
+				speechSynthesis.speak(lecture);
+				document.removeEventListener('click', simulateSpeech);
+			};
+
+			document.addEventListener('click', simulateSpeech);
+		}
+	}
+	catch (e) {console.error(e)}
 }
 
 let voiceChoices = {}
