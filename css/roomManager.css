@@ -58,7 +58,7 @@
 	margin-top: 2vh;
 }
 
-#joinRoom, #createRoom, #singlePlayerGame, #offlineSinglePlayer, #uploadSaveButton {
+#joinRoom, #createRoom, #offlineSinglePlayer, #uploadSaveButton {
 	min-width: 150px;
 	border-radius: 3.5vh;
 	font-size: 1.7em;
@@ -84,11 +84,6 @@
 #offlineSinglePlayer, #downloadSaveNowButton {
 	background: linear-gradient(45deg, #ccadf8, #96a6ee, #8fc6f6);
 }
-
-#roomManager #singlePlayerGame {
-	background: linear-gradient(45deg, #d18e5f, #dfd31d, #779fff);
-}
-
 
 #roomManager #copyrightNotice {
 	text-align: center;

@@ -91,30 +91,12 @@ createRoom.addEventListener("click", function() {
 })
 joinOrCreateRoom.appendChild(createRoom)
 
-let singlePlayerGame = document.createElement("button")
-singlePlayerGame.id = "singlePlayerGame"
-singlePlayerGame.innerHTML = "Single Player"
-singlePlayerGame.addEventListener("click", function() {
-	stateManager.offlineMode = false
-
-	let roomId = roomIdInput.value.trim() || ("sp-" + Math.floor(Math.random() * 1e10)) //We need to stop depending on randomness - collisions are possible.
-	//Websockets guarantees delivery order, so we should be safe here, unless any calls error.
-
-	let nickname = nicknameInput.value || "Player 1"
-
-	window.stateManager.createRoom(roomId, nickname)
-	window.stateManager.addBot("Bot 1")
-	window.stateManager.addBot("Bot 2")
-	window.stateManager.addBot("Bot 3")
-})
-joinOrCreateRoom.appendChild(singlePlayerGame)
-
 let br = document.createElement("br")
 joinOrCreateRoom.appendChild(br)
 
 let offlineSinglePlayer = document.createElement("button")
 offlineSinglePlayer.id = "offlineSinglePlayer"
-offlineSinglePlayer.innerHTML = "Offline (Single Player)"
+offlineSinglePlayer.innerHTML = "Single Player"
 offlineSinglePlayer.addEventListener("click", function() {
 	stateManager.offlineMode = true //Send to local server.
 
@@ -532,7 +514,7 @@ let dots = 1 //We could make these go a bit faster...
 window.setConnectionStatus = function({connected}) {
 	connectionStatus.innerHTML = connected?"✓ Connected to Server":"Trying To Connect" + ".".repeat(1 + (++dots % 5))
 	connectionStatus.className = connected?"connected":""
-	joinRoom.disabled = createRoom.disabled = singlePlayerGame.disabled = connected?"":"disabled"
+	joinRoom.disabled = createRoom.disabled = connected?"":"disabled"
 }
 
 window.setConnectionStatus({connected: false})
