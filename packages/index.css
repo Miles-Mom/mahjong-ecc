@@ -49,7 +49,7 @@
 #roomManager #roomIdInput, #roomManager #nicknameInput{
 	width: calc(100vw - 16px);
 	width: calc(calc(var(--vw) * 100) - 16px);
-	max-width: 550px;
+	max-width: 400px;
 	font-size: 2em;
 	padding: 5px;
 }
@@ -64,12 +64,12 @@
 }
 
 #roomManager #joinOrCreateRoom {
-	margin-top: 2vh;
-	margin-top: calc(var(--vh) * 2);
+	margin-top: 1vh;
+	margin-top: calc(var(--vh) * 1);
 }
 
 #joinRoom, #createRoom, #offlineSinglePlayer, #uploadSaveButton {
-	min-width: 150px;
+	min-width: 200px;
 	border-radius: 3.5vh;
 	border-radius: calc(var(--vh) * 3.5);
 	font-size: 1.7em;
