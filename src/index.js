@@ -119,7 +119,6 @@ function setVisibleAreaHeight(callAgain = true) {
 
     //Somewhat occasionally, we get some issues with resizes.
     if (callAgain && callAgain?.isTrusted !== false) {
-        console.log(callAgain)
         setTimeout(function() {
             setVisibleAreaHeight(false)
         }, 500)

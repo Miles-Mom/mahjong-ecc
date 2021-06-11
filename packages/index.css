@@ -15,21 +15,17 @@
 	transform: translateX(calc(calc(var(--vw) * -100) * var(--shiftPercentageLeft) * var(--counterTranslationScaling)));
 }
 
-#roomManager #mahjongHeading, #roomManager #fourFriendsHeading {
+#mahjongHeading, #fourFriendsHeading {
 	font-size: 2.5em;
 	color: #ffbd17;
 	display: inline-block;
-	margin-top: 0.25em;
-	margin-top: max(0.25em, min(1em, 2vh));
-	margin-top: max(0.25em, min(1em, calc(var(--vh) * 2)));
-	margin-bottom: 0.25em;
-	margin-bottom: max(0.25em, min(1em, 2vh));
-	margin-bottom: max(0.25em, min(1em, calc(var(--vh) * 2)));
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
 }
 
-#roomManager #fourFriendsHeading {
+#fourFriendsHeading {
 	font-size: 2.1em;
-	margin-top: 0.25em;
+	margin-top: 0.3em;
 	vertical-align: top;
 	margin-left: 0.5em;
 	font-style: italic;
@@ -49,7 +45,7 @@
 #roomManager #roomIdInput, #roomManager #nicknameInput{
 	width: calc(100vw - 16px);
 	width: calc(calc(var(--vw) * 100) - 16px);
-	max-width: 400px;
+	max-width: 440px;
 	font-size: 2em;
 	padding: 5px;
 }
