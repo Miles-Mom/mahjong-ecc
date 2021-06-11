@@ -5,128 +5,18 @@
 </head>
 <body>
 	<h1>Loading Documentation. </h1>
-	<h2>If docs fail to load, please click <a href="https://docs.google.com/document/d/1yK3t3_SyLj5gHZz4gAbKmCyIk9mvQ-nkTCkQhBqH8_o/edit">here. </a></h2>
 	<style>
 		* {
 			text-align: center;
 		}
 	</style>
 	<script>
-		let API_KEY = "AIzaSyD-MaLfNzz1BiUvdKKfowXbmW_v8E-9xSc"
-		let File_ID = "1yK3t3_SyLj5gHZz4gAbKmCyIk9mvQ-nkTCkQhBqH8_o"
+		window.File_ID = "1yK3t3_SyLj5gHZz4gAbKmCyIk9mvQ-nkTCkQhBqH8_o"
 
-		let url = 'https://www.googleapis.com/drive/v3/files/' + File_ID + '/export?mimeType=text/html&key=' + API_KEY
-
-		fetch(url).then((resp) => {
-			resp.text().then((text) =>{
-				document.documentElement.innerHTML = text
-
-				//In order to get the "4 friends" part styled differently, we will need 3 elements for our heading.
-				let heading = document.createElement("div")
-				heading.id = "heading"
-				heading.addEventListener("click", function() {
-					window.location.href = window.location.origin
-				})
-				document.documentElement.insertBefore(heading, document.body)
-
-				let mahjongHeading = document.createElement("h1")
-				mahjongHeading.innerHTML = "Mahjong"
-				mahjongHeading.id = "mahjongHeading"
-				heading.appendChild(mahjongHeading)
-
-				let fourFriendsHeading = document.createElement("h1")
-				fourFriendsHeading.innerHTML = "4 Friends"
-				fourFriendsHeading.id = "fourFriendsHeading"
-				heading.appendChild(fourFriendsHeading)
-
-				let css = `
-				html {
-					background-image: url("assets/tiles/dragons/red.png"), url("assets/tiles/dragons/green.png");
-					background-position: right bottom, left top;
-				}
-
-				.divElement {
-					margin: auto;
-					padding: 40px !important;
-					padding-top: calc(40px + 4em) !important;
-					background-color: white;
-				}
-
-				body {
-					margin: 0;
-					background: #00000088;
-					padding-bottom: 50px;
-				}
-
-				img {
-					max-width: calc(100vw - 40px);
-					height: auto !important;
-				}
-
-				#heading {
-					text-align: center;
-					position: fixed;
-					background-color: #26a221;
-					cursor: pointer;
-					top: 0;
-					left: 0;
-					right: 0;
-					z-index: 9999;
-					width: 100vw;
-					transition: 0.5s;
-				}
-
-				#mahjongHeading, #fourFriendsHeading {
-					font-size: 2.5em;
-					color: #ffbd17;
-					display: inline-block;
-					margin-top: 0.5em;
-					margin-bottom: 0.5em;
-				}
-
-				#fourFriendsHeading {
-					font-size: 2.1em;
-					margin-top: 0.3em;
-					vertical-align: top;
-					margin-left: 0.5em;
-					font-style: italic;
-					color: #ffe100;
-				}
-				`
-
-				let style = document.createElement("style")
-				style.innerHTML = css
-				document.body.appendChild(style)
-
-				window.onscroll = function scrollFunction() {
-					let triggerPoint = 50
-					let height = document.body.scrollTop || document.documentElement.scrollTop
-					let heading = document.getElementById("heading")
-					if (height < triggerPoint) {
-						heading.style.fontSize = "";
-					}
-					else if (height > triggerPoint) {
-						heading.style.fontSize = "0.5em";
-					}
-				};
-
-				style.innerHTML += `
-				.divElement {
-					padding-left: calc(calc(100vw - ${window.getComputedStyle(document.body).maxWidth}) / 4) !important;
-					padding-right: calc(calc(100vw - ${window.getComputedStyle(document.body).maxWidth}) / 4) !important;
-				}
-				`
-
-				let divElement = document.createElement("div")
-				divElement.className = "divElement"
-				divElement.innerHTML = document.body.innerHTML
-				document.body.innerHTML = ""
-				document.body.appendChild(divElement)
-
-				divElement.style.maxWidth = document.body.style.maxWidth
-				document.body.style = ""
-			})
-		})
+		let h2 = document.createElement("h2")
+		h2.innerHTML = `If docs fail to load, please click <a href="https://docs.google.com/document/d/${window.File_ID}">here. </a>`
+		document.body.appendChild(h2)
 	</script>
+	<script src="packages/docs.js"></script>
 </body>
 </html>

@@ -632,13 +632,6 @@ inviteYourFriendsElem.appendChild(QRImageElement)
 //Create link to tutorial.
 let tutorial = document.createElement("a")
 tutorial.href = "tutorial.html"
-
-//Until next app update.
-if (window.Capacitor) {
-	tutorial.href = "https://mahjong4friends.com/tutorial.html"
-	tutorial.target = "_blank"
-}
-
 tutorial.id = "tutorialLink"
 tutorial.innerHTML = "Mahjong 4 Friends Tutorial"
 roomManager.appendChild(tutorial)
@@ -648,13 +641,6 @@ roomManager.appendChild(document.createElement("br"))
 //Create link to tutorial.
 let documentation = document.createElement("a")
 documentation.href = "documentation.html"
-
-//Until next app update.
-if (window.Capacitor) {
-	documentation.href = "https://mahjong4friends.com/documentation.html"
-	documentation.target = "_blank"
-}
-
 documentation.id = "documentationLink"
 documentation.innerHTML = "See Full Documentation"
 roomManager.appendChild(documentation)

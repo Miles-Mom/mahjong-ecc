@@ -8,6 +8,7 @@ let config = {
 	entry: {
 		"packages/index.js": "./src/index.js",
 		"packages/universalLinks.js": "./src/universalLinks.js",
+		"packages/docs.js": "./docs.js",
 		"./packagedsw.js": "./sw.js",
 	},
 	target: "web",
