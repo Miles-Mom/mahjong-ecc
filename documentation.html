@@ -45,11 +45,17 @@
 					background-position: right bottom, left top;
 				}
 
-				body {
+				.divElement {
 					margin: auto;
 					padding: 40px !important;
 					padding-top: calc(40px + 4em) !important;
-					margin-bottom: 50px;
+					background-color: white;
+				}
+
+				body {
+					margin: 0;
+					background: #00000088;
+					padding-bottom: 50px;
 				}
 
 				img {
@@ -93,7 +99,7 @@
 				document.body.appendChild(style)
 
 				window.onscroll = function scrollFunction() {
-					let triggerPoint = 100
+					let triggerPoint = 50
 					let height = document.body.scrollTop || document.documentElement.scrollTop
 					let heading = document.getElementById("heading")
 					if (height < triggerPoint) {
@@ -105,11 +111,20 @@
 				};
 
 				style.innerHTML += `
-				body {
-					padding-left: calc(calc(100vw - ${window.getComputedStyle(document.body).maxWidth}) / 3.2) !important;
-					padding-right: calc(calc(100vw - ${window.getComputedStyle(document.body).maxWidth}) / 3.2) !important;
+				.divElement {
+					padding-left: calc(calc(100vw - ${window.getComputedStyle(document.body).maxWidth}) / 4) !important;
+					padding-right: calc(calc(100vw - ${window.getComputedStyle(document.body).maxWidth}) / 4) !important;
 				}
 				`
+
+				let divElement = document.createElement("div")
+				divElement.className = "divElement"
+				divElement.innerHTML = document.body.innerHTML
+				document.body.innerHTML = ""
+				document.body.appendChild(divElement)
+
+				divElement.style.maxWidth = document.body.style.maxWidth
+				document.body.style = ""
 			})
 		})
 	</script>
