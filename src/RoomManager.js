@@ -636,6 +636,7 @@ tutorial.href = "tutorial.html"
 //Until next app update.
 if (window.Capacitor) {
 	tutorial.href = "https://mahjong4friends.com/tutorial.html"
+	tutorial.target = "_blank"
 }
 
 tutorial.id = "tutorialLink"
@@ -651,6 +652,7 @@ documentation.href = "documentation.html"
 //Until next app update.
 if (window.Capacitor) {
 	documentation.href = "https://mahjong4friends.com/documentation.html"
+	documentation.target = "_blank"
 }
 
 documentation.id = "documentationLink"
