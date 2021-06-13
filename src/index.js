@@ -47,7 +47,34 @@ if (window?.Capacitor?.getPlatform() === "ios") {
     }
     catch (e) {console.error(e)}
 }
+else if (window?.Capacitor?.getPlatform() === "android") {
+    try {
+        //TODO: Implement in app update API. Probably need native plugin.
+        //https://developer.android.com/guide/playcore/in-app-updates
 
+        //Probably don't bother actually doing in app updates, at least until we get our review prompts
+        //working on android, as people often review when they download updates. Just use the API to
+        //tell if updates are available.
+
+        //The native API is also better, as the latest version can vary by device (the old TWA version is
+        //still being released, and it supports older Android versions)
+        ;((async function() {
+            //Alert for App Updates.
+
+            let latestVersion = "2.1"
+
+            let deviceInfo = await window.Capacitor.Plugins.Device.getInfo()
+            let currentVersion = deviceInfo.appVersion
+
+            //Using numeric comparison, so version codes can't have more than one decimal.
+            if (parseFloat(currentVersion) < parseFloat(latestVersion)) {
+                const Popups = require("./Popups.js")
+                new Popups.Notification("App Update", "There is a Mahjong 4 Friends <a href='https://play.google.com/store/apps/details?id=com.mahjong4friends.twa' target='_blank'>app update</a>. Downloading it is recommended. You may experience issues if you do not update. ").show()
+            }
+        })())
+    }
+    catch (e) {console.error(e)}
+}
 
 require("./universalLinks.js")
 
