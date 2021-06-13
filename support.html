@@ -21,6 +21,10 @@
     	color: #ffe100;
     }
 
+	#heading {
+		cursor: pointer;
+	}
+
     body {
       background-color: #26a221;
       text-align: center;
@@ -33,6 +37,9 @@
     let heading = document.createElement("div")
     heading.id = "heading"
     document.body.appendChild(heading)
+	heading.addEventListener("click", function() {
+		window.location.href = window.location.origin
+	})
 
     let mahjongHeading = document.createElement("h1")
     mahjongHeading.innerHTML = "Mahjong"

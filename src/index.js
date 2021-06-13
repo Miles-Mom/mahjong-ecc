@@ -19,6 +19,7 @@ if ('serviceWorker' in navigator) {
 
 document.title = "Mahjong 4 Friends - Free Mahjong, Friends and/or Bots"
 
+//TODO: Need app update notifications for android.
 if (window?.Capacitor?.getPlatform() === "ios") {
     try {
         ;((async function() {

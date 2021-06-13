@@ -22,7 +22,7 @@ try {
 			}
 			else {
 				console.log("Different pathname. Setting")
-                window.location.hash = url.hash //Hash might be different too. 
+                window.location.hash = url.hash //Hash might be different too.
 				window.location.pathname = url.pathname
 			}
 		}
@@ -32,8 +32,9 @@ try {
 		  processRedirect(data.url)
 		});
 
+		//Redirect to our launch URL, unless we have a referrer set (meaning we navigated from another app page. )
 		Capacitor.Plugins.App.getLaunchUrl().then((ret) => {
-			if(ret && ret.url) {
+			if(ret && ret.url && (document.referrer === "")) {
 				console.log('Launch url: ', ret.url);
 				processRedirect(ret.url)
 			}
