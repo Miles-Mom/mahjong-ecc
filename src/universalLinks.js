@@ -32,11 +32,11 @@ try {
 		  processRedirect(data.url)
 		});
 
-		//Redirect to our launch URL, unless we have a referrer set (meaning we navigated from another app page. )
+		//Redirect to our launch URL, unless we have a referrer set (meaning we navigated from another app page)
 		Capacitor.Plugins.App.getLaunchUrl().then((ret) => {
 			console.log("Document Referrer: ", document.referrer)
 			console.log('Launch url: ', ret.url);
-			if(ret && ret.url && (document.referrer === "")) {
+			if (ret && ret.url && (document.referrer === "")) {
 				processRedirect(ret.url)
 			}
 		});
