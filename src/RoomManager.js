@@ -700,13 +700,11 @@ setTimeout(function() {
 }, 2000)
 
 let copyrightNotice = document.createElement("p")
-copyrightNotice.innerHTML = "Copyright © 2020, All Rights Reserved"
+copyrightNotice.innerHTML = "Copyright © 2021, All Rights Reserved"
 copyrightNotice.id = "copyrightNotice"
 roomManager.appendChild(copyrightNotice)
 
-//TODO: Need some ERROR HANDLING!!!!! speechSynthesis may not work/exist.
-//TODO: Also need a way to deal with reloads.
-
+//TODO: Need a way to deal with reloads.
 //TODO: Use speechSynthesis onvoiceschange event (or whatever it is).
 if (window.speechSynthesis) {
 	try {

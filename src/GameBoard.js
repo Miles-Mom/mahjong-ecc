@@ -320,7 +320,7 @@ hintButton.addEventListener("click", function() {
 				p.innerHTML = "(Sorted by Bot - Scroll to see more)"
 				elem.appendChild(p)
 
-				//Progressively render 200 suggestions 2 at a time. 
+				//Progressively render 200 suggestions 2 at a time.
 				let table = document.createElement("table")
 				let index = 0
 				function drawMore() {
@@ -466,7 +466,7 @@ endGameButton.addEventListener("click", function() {
 				lastMessage.currentTurn.userTurn === window.clientId
 				&& lastMessage.isGameOver === 1 //Mahjong only, not wall empty.
 			) {
-				if (window?.Capacitor?.getPlatform() === "ios") {
+				if (window?.Capacitor) {
 					AppRate.promptForRating(false)
 				}
 			}
