@@ -1,3 +1,5 @@
+const Tile = require("../Tile.js")
+
 function calculateJokerAmount(items, exposed) {
 	//Do not pass exposed to calculate all jokers.
 	//Pass false for in hand only, true for exposed only.

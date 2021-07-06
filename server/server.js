@@ -33,7 +33,7 @@ function onConnection(websocket) {
 
 			//Admin actions for triggering maintenance.
 			//A Warning! If the server is killed, you only have 60 seconds to bring it back up before the server will reboot.
-			//restartServer.js will not reboot again for 90 minutes. 
+			//restartServer.js will not reboot again for 90 minutes.
 
 			//Example:
 			//var auth = "" //Insert real password.
@@ -130,7 +130,7 @@ function onConnection(websocket) {
 			else if (obj.type === "createRoomFromState") {
 				//Intended for developer use.
 				try {
-					let roomFilePath = path.join(globalThis.serverStateManager.serverDataDirectory, obj.saveId + ".room")
+					let roomFilePath = path.join(globalThis.serverStateManager.serverDataDirectory, obj.saveId)
 
 					if (fs.existsSync(roomFilePath)) {
 						//Technically roomPath could be a ../ path, however this kind of "hacking" shouldn't do any damage here. We don't write or expose non-mahjong data.
@@ -139,7 +139,7 @@ function onConnection(websocket) {
 						if (!globalThis.serverStateManager.createRoom(roomId, room)) {return console.warn("Room already exists. ")}
 						room.init()
 					}
-					else {console.warn("Invalid save path")}
+					else {console.warn("Invalid save path. Make sure to include file extension. ")}
 				}
 				catch(e) {console.error(e)}
 				return;
