@@ -864,13 +864,14 @@ function enterRoom() {
 	notInRoomContainer.style.display = "none"
 
 	//TODO: In the app, these links need to open in the browser. I believe they do on iOS, but they certainly don't on Android,
-	//as the link is captured by our link capturing. 
-	joinRoomLink.href = getRoomLink()
-	currentRoom.innerHTML = `You are in room <a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
+	//as the link is captured by our link capturing.
+	joinRoomLink.innerHTML = joinRoomLink.href = getRoomLink()
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
+	//Link room name when online. 
+	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
+	currentRoom.innerHTML = `You are in room ${roomNameText}`
 
-	joinRoomLink.innerHTML = joinRoomLink.href
 	try {
 		let dpi = 4
 
