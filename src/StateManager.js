@@ -310,6 +310,27 @@ class StateManager {
 			if (this.onJoinRoom instanceof Function) {this.onJoinRoom(obj)}
 		}).bind(this)
 
+		//We'll allow multiple listeners for some events.
+		this.listeners = {
+			onStartGame: [],
+			onEndGame: [],
+			onStateUpdate: [],
+			onLeaveRoom: []
+		}
+
+		this.addEventListener = (function addEventListener(type, listener) {
+			if (!this.listeners[type]) {throw type + " is not supported by this addEventListener"}
+			this.listeners[type].push(listener)
+		}).bind(this)
+
+		this.removeEventListener = (function removeEventListener(type, listener) {
+			let listeners = this.listeners[type]
+			if (!listeners) {throw type + " is not supported by this addEventListener"}
+			let index = listeners.indexOf(listener)
+			if (index === -1) {throw "Unable to find listener"}
+			listeners.splice(index, 1)
+		}).bind(this)
+
 		let onLeaveRoom = (function onLeaveRoom(obj) {
 			if (obj.status === "success") {
 				this.inRoom = false
@@ -320,33 +341,15 @@ class StateManager {
 					onEndGame({status: "success", message: "State Sync"})
 				}
 			}
-			if (this.onLeaveRoom instanceof Function) {this.onLeaveRoom(obj)}
+			this.listeners.onLeaveRoom.forEach((listener) => {
+				listener(obj)
+			})
 		}).bind(this)
-
-		//We'll allow multiple listeners for some events.
-		this.listeners = {
-			onStartGame: [],
-			onEndGame: [],
-			onStateUpdate: [],
-		}
-
-		this.addEventListener = (function addEventListener(type, listener) {
-			if (!this.listeners[type]) {throw type + " is not supported by this addEventListener"}
-			this.listeners[type].push(listener)
-		}).bind(this)
-
-		this.removeEventListener = (function addEventListener(type, listener) {
-			if (!this.listeners[type]) {throw type + " is not supported by this addEventListener"}
-			if (this.listeners.indexOf(listener) === -1) {throw "Unable to find listener"}
-			this.listeners[type].splice(this.listeners.indexOf(listener), 1)
-		}).bind(this)
-
 
 		let onStartGame = (function onStartGame(obj) {
 			if (obj.status === "success") {
 				this.inGame = true
 			}
-			if (this.onStartGame instanceof Function) {this.onStartGame(obj)}
 			this.listeners.onStartGame.forEach((listener) => {
 				listener(obj)
 			})
@@ -356,7 +359,6 @@ class StateManager {
 			if (obj.status === "success") {
 				this.inGame = false
 			}
-			if (this.onEndGame instanceof Function) {this.onEndGame(obj)}
 			this.listeners.onEndGame.forEach((listener) => {
 				listener(obj)
 			})
@@ -377,7 +379,6 @@ class StateManager {
 
 			this.currentTurn = obj.message.currentTurn
 
-			if (this.onStateUpdate instanceof Function) {this.onStateUpdate(obj)}
 			this.listeners.onStateUpdate.forEach((listener) => {
 				listener(obj)
 			})

@@ -31,9 +31,8 @@ function onIncomingMessage(clientId, obj) {
 
 		//Time to start the game.
 		let res = this.startGame(obj)
-		if (typeof res === "string") {
-			//Strings are error messages.
-			return client.message("displayMessage", {title: "Error Starting Game", body: res})
+		if (res) {
+			return client.message("displayMessage", res)
 		}
 		return
 	}
@@ -78,7 +77,7 @@ function onIncomingMessage(clientId, obj) {
 		if (this.clientIds.indexOf(clientId) > 3) {
 			return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
 		}
-		//revertState takes client, as it needs to get the name of the person reverting to notify other players. 
+		//revertState takes client, as it needs to get the name of the person reverting to notify other players.
 		return this.revertState(client, obj.message)
 	}
 	else if (obj.type === "roomActionState") {

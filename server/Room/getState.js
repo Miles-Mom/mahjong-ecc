@@ -45,10 +45,12 @@ function getState(requestingClientId) {
 
 	state.clients = []
 	this.clientIds.slice(0, state.inGame?4:Infinity).forEach((currentClientId) => {
+		let currentClient = globalThis.serverStateManager.getClient(currentClientId)
 		let visibleClientState = {
 			id: currentClientId,
-			nickname: globalThis.serverStateManager.getClient(currentClientId).getNickname(),
-			isHost: (currentClientId === this.hostClientId)
+			nickname: currentClient.getNickname(),
+			isHost: (currentClientId === this.hostClientId),
+			isBot: currentClient.isBot
 		}
 		if (this.inGame) {
 			let hand = this.gameData.playerHands[currentClientId]

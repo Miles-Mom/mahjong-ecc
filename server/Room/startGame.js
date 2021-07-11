@@ -32,7 +32,10 @@ function startGame(obj) {
 		this.state.settings.gameStyle = obj?.settings?.gameStyle
 	}
 	else {
-		return "You must select either Chinese or American Mahjong in Game Settings (scroll down if not visible). ";
+		return {
+			title: "Please Select Settings",
+			body: "You must select either Chinese or American Mahjong in Game Settings (scroll down if not visible). "
+		}
 	}
 
 	this.inGame = true

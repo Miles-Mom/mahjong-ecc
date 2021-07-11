@@ -79,7 +79,7 @@
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#offlineSinglePlayer, #downloadSaveNowButton, #addBotButton {
+#offlineSinglePlayer, #downloadSaveNowButton, #addBotButton, #goOfflineButton {
 	background: linear-gradient(45deg, #ccadf8, #96a6ee, #8fc6f6);
 }
 
@@ -189,7 +189,7 @@
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton {
+#deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton, #stayOnlineButton, #goOfflineButton {
 	border-radius: 250000px;
 	font-size: 1.7em;
 	margin: 0;
@@ -203,7 +203,7 @@
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 
-#leaveRoomButton, #resumeSaveNowButton {
+#leaveRoomButton, #resumeSaveNowButton, #stayOnlineButton {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 

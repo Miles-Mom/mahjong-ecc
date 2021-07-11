@@ -594,7 +594,72 @@ inRoomContainer.appendChild(startGameButton)
 
 let gameSettings;
 startGameButton.addEventListener("click", function() {
-	window.stateManager.startGame(gameSettings.getChoices())
+
+	function start() {
+		window.stateManager.startGame(gameSettings.getChoices())
+	}
+
+	//We want users to play offline if they are doing single player games.
+	//Give them the option to switch now.
+	try {
+		if (!stateManager.offlineMode && localStorage.getItem("overruledOnlineSinglePlayerAlert") === null) {
+			let nonBotCount = 0
+			stateManager.lastState.message.clients.forEach((client) => {
+				if (!client.isBot) {nonBotCount++}
+			})
+
+			if (nonBotCount === 1) {
+				//TODO: Copy over bot nicknames.
+				//Maybe player nickname as well, but very few players are likely to change their name in a single player game,
+				//and Player 1 is a better default that userxxx
+
+				let elem = new DocumentFragment() //We want the buttons to be on the same line, so use a fake container.
+				let popup;
+
+				let p = document.createElement("p")
+				p.innerHTML = "You're playing online - Rooms created with the Single Player button are faster <i>and</i> work offline! You can find it on the main page, below the Join Room button."
+				p.id = "messageText"
+				elem.appendChild(p)
+
+				let goOfflineButton = document.createElement("button")
+				goOfflineButton.innerHTML = "Go Offline"
+				goOfflineButton.addEventListener("click", function() {
+					stateManager.addEventListener("onLeaveRoom", startOfflineGame)
+					closeRoomButton.click()
+
+					function startOfflineGame() {
+						offlineSinglePlayer.click()
+						startGameButton.click()
+						stateManager.removeEventListener("onLeaveRoom", startOfflineGame)
+					}
+
+					popup.dismiss()
+				})
+				goOfflineButton.id = "goOfflineButton"
+				elem.appendChild(goOfflineButton)
+
+
+				let stayOnlineButton = document.createElement("button")
+				stayOnlineButton.innerHTML = "Stay Online"
+				stayOnlineButton.addEventListener("click", function() {
+					localStorage.setItem("overruledOnlineSinglePlayerAlert", "yes")
+					start()
+					popup.dismiss()
+				})
+				stayOnlineButton.id = "stayOnlineButton"
+				elem.appendChild(stayOnlineButton)
+
+				popup = new Popups.Notification("Play Offline?", elem)
+				popup.show()
+				return;
+			}
+		}
+	}
+	catch (e) {
+		console.error(e)
+	}
+
+	start()
 })
 
 let gameSettingsElem = document.createElement("div")
@@ -865,7 +930,8 @@ function enterRoom() {
 
 	//TODO: In the app, these links need to open in the browser. I believe they do on iOS, but they certainly don't on Android,
 	//as the link is captured by our link capturing.
-	joinRoomLink.innerHTML = joinRoomLink.href = getRoomLink()
+	joinRoomLink.href = getRoomLink()
+	joinRoomLink.innerHTML = joinRoomLink.href //We want the full URL, not just the hash.
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
 	//Link room name when online.
@@ -965,7 +1031,7 @@ window.stateManager.onCreateRoom = function(obj) {
 	}
 }
 
-window.stateManager.onLeaveRoom = function(obj) {
+window.stateManager.addEventListener("onLeaveRoom", function(obj) {
 	exitRoom()
 	if (stateManager.offlineMode) {
 		//If we resumed an offline game from an online game, go back to the online game.
@@ -977,7 +1043,7 @@ window.stateManager.onLeaveRoom = function(obj) {
 	if (obj.message !== "You closed the room. " && obj.message !== "You left the room. ") {
 		new Popups.Notification("Out of Room", obj.message).show()
 	}
-}
+})
 
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	playerCount.innerHTML = obj.message.clients.length + "/4 Players are Present"
