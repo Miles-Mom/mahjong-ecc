@@ -19,7 +19,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	chineseMahjongInfo.style.fontSize = "1.3em"
 
 	let panamaRulesInfo = document.createElement("p")
-	panamaRulesInfo.innerHTML = "Chinese, but with up to 1 sequence, and an optional 3 round charleston (decided by East wind)"
+	panamaRulesInfo.innerHTML = "Chinese, but with a limit of 1 sequence/chow, and an optional 3 pass charleston (decided by East wind)"
 	panamaRulesInfo.style.fontSize = "1.3em"
 
 	let options = {}

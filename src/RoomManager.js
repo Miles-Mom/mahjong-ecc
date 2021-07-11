@@ -105,9 +105,9 @@ offlineSinglePlayer.addEventListener("click", function() {
 	let nickname = nicknameInput.value || "Player 1"
 
 	window.stateManager.createRoom(roomId, nickname)
-	window.stateManager.addBot("Bot 1")
-	window.stateManager.addBot("Bot 2")
-	window.stateManager.addBot("Bot 3")
+	for (let i=0;i<3;i++) {
+		window.stateManager.addBot()
+	}
 })
 joinOrCreateRoom.appendChild(offlineSinglePlayer)
 
@@ -578,6 +578,18 @@ closeRoomButton.addEventListener("click", function() {
 	window.stateManager.closeRoom(window.stateManager.roomId)
 })
 
+let addBotButton = document.createElement("button")
+addBotButton.innerHTML = "Add Bot"
+addBotButton.id = "addBotButton"
+addBotButton.style.display = "none"
+inRoomContainer.appendChild(addBotButton)
+
+addBotButton.addEventListener("click", function() {
+	//TODO: Should we ask for a name? The host can rename the bots if they don't like the defaults. 
+	let name = prompt("Please enter a name for the bot: ")
+	window.stateManager.addBot(name)
+})
+
 let startGameButton = document.createElement("button")
 startGameButton.innerHTML = "Start Game"
 startGameButton.id = "startGameButton"
@@ -587,17 +599,6 @@ inRoomContainer.appendChild(startGameButton)
 let gameSettings;
 startGameButton.addEventListener("click", function() {
 	window.stateManager.startGame(gameSettings.getChoices())
-})
-
-let addBotButton = document.createElement("button")
-addBotButton.innerHTML = "Add Bot"
-addBotButton.id = "addBotButton"
-addBotButton.style.display = "none"
-inRoomContainer.appendChild(addBotButton)
-
-addBotButton.addEventListener("click", function() {
-	let name = prompt("Please enter a name for the bot: ")
-	window.stateManager.addBot(name)
 })
 
 let gameSettingsElem = document.createElement("div")
@@ -981,7 +982,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let choices = gameSettings?.getChoices()
 
 	if (window.stateManager.isHost) {
-		startGameButton.style.display = "none"
+		startGameButton.style.display = ""
 		addBotButton.style.display = ""
 		closeRoomButton.style.display = ""
 		leaveRoomButton.style.display = ""
@@ -995,7 +996,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			leaveRoomButton.style.display = "none"
 		}
 		else if (obj.message.clients.length >= 4) {
-			startGameButton.style.display = ""
 			addBotButton.style.display = "none" //No reason to allow adding bots when game is full.
 		}
 
