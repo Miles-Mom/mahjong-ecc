@@ -1,3 +1,4 @@
+//TODO: Only upload settings available for the selected game mode.
 function SettingsMenu(settingsDiv, isHost = false) {
 	while (settingsDiv.firstChild) {settingsDiv.firstChild.remove()}
 
@@ -17,11 +18,14 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	chineseMahjongInfo.innerHTML = "Most variants should be supported, although overrides may be needed, and you might need to score your own hands. Can't play your way? Have suggestions? Need different bots? Send an email to support@mahjong4friends.com!"
 	chineseMahjongInfo.style.fontSize = "1.3em"
 
+	let panamaRulesInfo = document.createElement("p")
+	panamaRulesInfo.innerHTML = "Chinese, but with up to 1 sequence, and an optional 3 round charleston (decided by East wind)"
+	panamaRulesInfo.style.fontSize = "1.3em"
 
 	let options = {}
 	//Use Object.assign so GameStyleSelector can get a reference to all selectors.
 	Object.assign(options, {
-		gameStyle: new GameStyleSelector(options, {americanMahjongInfo, chineseMahjongInfo}),
+		gameStyle: new GameStyleSelector(options, {americanMahjongInfo, chineseMahjongInfo, panamaRulesInfo}),
 
 		//Chinese
 		maximumSequences: new MaximumSequencesSelector(),
@@ -58,6 +62,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	settingsDiv.appendChild(americanMahjongInfo)
 	settingsDiv.appendChild(chineseMahjongInfo)
+	settingsDiv.appendChild(panamaRulesInfo)
 
 	if (Object.keys(options).length === 0) {header.remove()} //No settings to show.
 
@@ -94,7 +99,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 	}
 }
 
-function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo, chineseMahjongInfo}) {
+function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo, chineseMahjongInfo, panamaRulesInfo}) {
 	let elem = document.createElement("div")
 	elem.id = "gameStyleSelectorDiv"
 	elem.style.marginBottom = "10px"
@@ -111,7 +116,13 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo, chineseMa
 	american.id = "selectAmericanMahjong"
 	elem.appendChild(american)
 
-	let buttons = [chinese, american]
+	let panama = document.createElement("button")
+	panama.innerHTML = "Panama Rules"
+	panama.value = "panama"
+	panama.id = "selectPanamaRules"
+	elem.appendChild(panama)
+
+	let buttons = [chinese, american, panama]
 	function setSelectedButton(selectedButton) {
 		//Switch the button selected.
 		buttons.forEach((button) => {
@@ -123,6 +134,7 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo, chineseMa
 
 		americanMahjongInfo.style.display = selectedButton.value === "american"?"":"none"
 		chineseMahjongInfo.style.display = selectedButton.value === "chinese"?"":"none"
+		panamaRulesInfo.style.display = selectedButton.value === "panama"?"":"none"
 
 		//Hide all settings not for this mode.
 		for (let prop in allSettingsSelectors) {
@@ -270,7 +282,7 @@ function TableLimitSelector() {
 	this.set = function(value) {
 		input.value = value ?? 0
 	}
-	this.displayFor = ["chinese"]
+	this.displayFor = ["chinese", "panama"]
 	this.isHost = true
 }
 

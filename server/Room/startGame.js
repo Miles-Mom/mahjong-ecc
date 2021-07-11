@@ -15,6 +15,17 @@ catch (e) {console.warn(e)}
 function startGame(obj) {
 	if (this.clientIds.length < 4) {return "Not Enough Clients"}
 	else {
+		if (obj?.settings?.gameStyle === "panama") {
+			//Panama Rules is a specific variant of Chinese rules.
+			obj.settings = {
+				gameStyle: "chinese",
+				checkForCalling: true,
+				allow4thTilePickup: true,
+				botSettings: {canCharleston: true},
+				maximumSequences: 1,
+			}
+		}
+
 		if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
 			this.state.settings.gameStyle = obj?.settings?.gameStyle
 		}
@@ -76,7 +87,7 @@ function startGame(obj) {
 			this.state.settings.ignoreBotMahjong = false //Not currently supported for Chinese.
 		}
 		else if (this.state.settings.gameStyle === "american") {
-			this.state.settings.pickupDiscardForDraw = false //Not allowed in American. 
+			this.state.settings.pickupDiscardForDraw = false //Not allowed in American.
 			this.gameData.wall = new Wall(this.state.seed, {
 				prettysAsTiles: true,
 				includeJokers: 8

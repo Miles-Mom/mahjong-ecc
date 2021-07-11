@@ -32,7 +32,7 @@
 	color: #ffe100;
 }
 
-#selectChineseMahjong, #selectAmericanMahjong {
+#selectChineseMahjong, #selectAmericanMahjong, #selectPanamaRules {
 	border-radius: 250000px;
 	font-size: 1.5em;
 	padding: 5px 20px 5px 20px;
