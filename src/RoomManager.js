@@ -863,6 +863,8 @@ function enterRoom() {
 	inRoomContainer.style.display = "block"
 	notInRoomContainer.style.display = "none"
 
+	//TODO: In the app, these links need to open in the browser. I believe they do on iOS, but they certainly don't on Android,
+	//as the link is captured by our link capturing. 
 	joinRoomLink.href = getRoomLink()
 	currentRoom.innerHTML = `You are in room <a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
 
@@ -872,7 +874,7 @@ function enterRoom() {
 	try {
 		let dpi = 4
 
-		let qrGenerator = QRCode(0, "H"); //0 is for auto-detection. We want maximum error correction.
+		let qrGenerator = QRCode(0, "H"); //0 is for auto-detection. H is for maximum error correction.
 
 		//Generate the code.
 		qrGenerator.addData(joinRoomLink.href)

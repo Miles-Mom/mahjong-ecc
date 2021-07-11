@@ -561,7 +561,7 @@ module.exports = function(obj, prop, value) {
 	if (getPriority.call(this, obj, prop, exemptFromChecks.includes(prop)) === false) {
 		delete obj[prop]
 		if (globalThis.serverStateManager.getClient(prop).isBot) {
-			console.error("Bots are not allowed to obtain override power. ")
+			console.error("Bots are not allowed to obtain override power. ", this.logFileSaveId)
 		}
 		else {
 			exemptFromChecks.push(prop) //We will only block a client once per turn. Successive attempts will be treated as overrides.

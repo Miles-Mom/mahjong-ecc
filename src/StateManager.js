@@ -113,8 +113,6 @@ class StateManager {
 						this.localServer(fakeSocket)
 					}
 
-					console.log(fakeSocket)
-
 					if (!fakeSocket.onmessage) {
 						console.log(fakeSocket)
 						this.localServer(fakeSocket)
