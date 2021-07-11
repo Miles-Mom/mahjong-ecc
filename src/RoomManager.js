@@ -83,10 +83,6 @@ createRoom.id = "createRoom"
 createRoom.innerHTML = "Create Room"
 createRoom.addEventListener("click", function() {
 	stateManager.offlineMode = false
-
-	if (roomIdInput.value.trim().length === 0) {
-		return new Popups.Notification("Unable to Create Room", "Please pick a 1+ character long name, and enter it into the box labeled \"Enter Room Name\" ").show()
-	}
 	window.stateManager.createRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
 joinOrCreateRoom.appendChild(createRoom)
@@ -585,7 +581,7 @@ addBotButton.style.display = "none"
 inRoomContainer.appendChild(addBotButton)
 
 addBotButton.addEventListener("click", function() {
-	//TODO: Should we ask for a name? The host can rename the bots if they don't like the defaults. 
+	//TODO: Should we ask for a name? The host can rename the bots if they don't like the defaults.
 	let name = prompt("Please enter a name for the bot: ")
 	window.stateManager.addBot(name)
 })
@@ -855,14 +851,20 @@ function renderPlayerView(clientList = [], kickUserCallback) {
 	})
 }
 
+function getRoomLink() {
+	let queryParam = "#roomId=" + stateManager.inRoom
+	if (window.Capacitor) {
+		return "https://mahjong4friends.com" + queryParam
+	}
+	return queryParam
+}
+
 function enterRoom() {
 	inRoomContainer.style.display = "block"
 	notInRoomContainer.style.display = "none"
-	let queryParam = "#roomId=" + stateManager.inRoom
-	joinRoomLink.href = queryParam
-	if (window.Capacitor) {
-	    joinRoomLink.href = "https://mahjong4friends.com" + queryParam
-	}
+
+	joinRoomLink.href = getRoomLink()
+	currentRoom.innerHTML = `You are in room <a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
 
@@ -947,7 +949,6 @@ window.stateManager.onJoinRoom = function(obj) {
 			showRestoreNotice = false
 		}
 
-		currentRoom.innerHTML = "You are in room " + obj.message
 		enterRoom()
 	}
 }
@@ -957,7 +958,6 @@ window.stateManager.onCreateRoom = function(obj) {
 		return new Popups.Notification("Unable to Create Room", obj.message).show()
 	}
 	else {
-		currentRoom.innerHTML = "You are hosting room " + obj.message
 		enterRoom()
 	}
 }

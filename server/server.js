@@ -102,8 +102,8 @@ function onConnection(websocket) {
 			}
 
 			if (obj.type === "createRoom") {
-				if (typeof obj.roomId !== "string" || obj.roomId.trim().length === 0) {
-					return websocket.send(getMessage("createRoom", "roomId must be a string with at least one character", "error"))
+				if (typeof obj.roomId !== "string") {
+					return websocket.send(getMessage("createRoom", "roomId must be a string", "error"))
 				}
 				else if (globalThis.serverStateManager.getRoom(obj.roomId)) {
 					return websocket.send(getMessage("createRoom", "Room Already Exists", "error"))
@@ -111,8 +111,7 @@ function onConnection(websocket) {
 				else {
 					client.setNickname(obj.nickname)
 					globalThis.serverStateManager.createRoom(obj.roomId).addClient(clientId)
-					client.setRoomId(obj.roomId)
-					return websocket.send(getMessage("createRoom", obj.roomId, "success"))
+					return websocket.send(getMessage("createRoom", client.getRoomId(), "success"))
 				}
 			}
 			else if (obj.type === "joinRoom") {

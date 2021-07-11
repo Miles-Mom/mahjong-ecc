@@ -40,6 +40,10 @@ class StateManager {
 		}
 
 		this.createRoom = function(roomId, room) {
+			if (roomId.trim().length === 0) {
+				//Auto-generate a unique ID.
+				roomId = StateManager.findUniqueId(rooms, "room")
+			}
 			if (rooms[roomId]) {return false} //Room already exists.
 			return rooms[roomId] = room || new Room(roomId)
 		}
