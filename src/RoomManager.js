@@ -135,7 +135,7 @@ uploadSaveButton.addEventListener("click", function() {
 	let popup;
 
 	let p = document.createElement("p")
-	p.innerHTML = "You can upload/drag a save file from your device, or download one of ours, guaranteed winnable with specific hands: "
+	p.innerHTML = "You can upload/drag a save file from your device, or download one of ours: "
 	p.id = "messageText"
 	elem.appendChild(p)
 
@@ -868,7 +868,7 @@ function enterRoom() {
 	joinRoomLink.innerHTML = joinRoomLink.href = getRoomLink()
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
-	//Link room name when online. 
+	//Link room name when online.
 	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
 	currentRoom.innerHTML = `You are in room ${roomNameText}`
 
