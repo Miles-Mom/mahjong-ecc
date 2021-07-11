@@ -107,7 +107,7 @@ offlineSinglePlayer.addEventListener("click", function() {
 })
 joinOrCreateRoom.appendChild(offlineSinglePlayer)
 
-function resumeOfflineGame(saveText) {
+function resumeOfflineGame(saveText, resumeAtStart = false) {
 	serverStateManager.init(saveText)
 	//Set our clientId to the offline mode clientId. Note that clientId should be static now.
 	window.clientId = serverStateManager.getRoom("Offline").clientIds.find((clientId) => {
@@ -115,6 +115,24 @@ function resumeOfflineGame(saveText) {
 	})
 	stateManager.offlineMode = true
 	stateManager.getCurrentRoom()
+
+	if (resumeAtStart) {
+		stateManager.revertState(0)
+		//TODO: We need to load at the beginning, instead of loading the end and reverting.
+		//There needs to be a way to only resume the first few moves.
+		setTimeout(function() {
+			stateManager.revertState(0)
+		}, 300)
+
+		//Start at the beginning by default.
+		let messageBar = new Popups.MessageBar("Click Here to Load End of Game (Closes Automatically)")
+		messageBar.elem.addEventListener("click", function() {
+			resumeOfflineGame(saveText)
+			messageBar.dismiss()
+		})
+		messageBar.elem.style.cursor = "pointer"
+		messageBar.show(10000)
+	}
 }
 
 let uploadSaveButton = document.createElement("button")
@@ -271,23 +289,7 @@ uploadSaveButton.addEventListener("click", function() {
 							let req = await fetch(baseUrl)
 							let text = await req.text()
 							console.log(text)
-							resumeOfflineGame(text)
-
-							stateManager.revertState(0)
-							//TODO: We need to load at the beginning, instead of loading the end and reverting.
-							//There needs to be a way to only resume the first few moves.
-							setTimeout(function() {
-								stateManager.revertState(0)
-							}, 300)
-
-							//Start at the beginning by default.
-							let messageBar = new Popups.MessageBar("Click Here to Load End of Game (Closes Automatically)")
-							messageBar.elem.addEventListener("click", function() {
-								resumeOfflineGame(text)
-								messageBar.dismiss()
-							})
-							messageBar.elem.style.cursor = "pointer"
-							messageBar.show(10000)
+							resumeOfflineGame(text, true)
 						}
 						catch (e) {
 							console.error(e)
@@ -316,7 +318,7 @@ uploadSaveButton.addEventListener("click", function() {
 			})
 			let text = reader.result
 			try {
-				resumeOfflineGame(text)
+				resumeOfflineGame(text, true)
 				popup.dismiss()
 				//Reset any selected files - if the user uploads the same file twice, we should load it twice. (they may have closed the game the first time)
 				fileInput.value = ""
