@@ -2,6 +2,6 @@
 Header add Access-Control-Allow-Origin "*"
 
 #Stop disk cache from blocking updates (6 hour max-age)
-<FilesMatch "\.(css|js)$">
+<FilesMatch "\.(css|js|html)$">
 Header set Cache-Control "max-age=21600, public, must-revalidate"
 </FilesMatch>
