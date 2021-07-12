@@ -3,7 +3,7 @@
 ;((async function() {
 	let platform = window?.Capacitor?.getPlatform()
 
-	if (!platform) {return} //Just return, avoid spamming console with errors. 
+	if (!platform) {return} //Just return, avoid spamming console with errors.
 
 	const Popups = require("./Popups.js")
 
@@ -37,7 +37,7 @@
 		//The native API is also better, as the latest version can vary by device (the old TWA version is
 		//still being released, and it supports older Android versions)
 
-		let latestVersion = "2.1"
+		let latestVersion = "2.2"
 
 		//Using numeric comparison, so version codes can't have more than one decimal.
 		if (parseFloat(currentVersion) < parseFloat(latestVersion)) {
