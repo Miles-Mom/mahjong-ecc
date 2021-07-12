@@ -7,6 +7,7 @@ capacitorDir
 !resources/android/
 resources/ios/icon
 resources/ios/splash
+resources/android/splash
 server/guaranteed
 guaranteedHands.json
 .gradle

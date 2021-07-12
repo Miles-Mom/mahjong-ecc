@@ -8,6 +8,13 @@ try {
 }
 catch(e) {console.error(e)}
 
+try {
+    if (window.Capacitor) {
+        window.Capacitor.SplashScreen.hide()
+    }
+}
+catch (e) {console.error(e)}
+
 if ('serviceWorker' in navigator) {
     try {
         navigator.serviceWorker.register('packagedsw.js');
