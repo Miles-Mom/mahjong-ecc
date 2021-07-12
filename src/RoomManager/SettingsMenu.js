@@ -11,7 +11,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so these are last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - the selected card is only used for automated scoring and bots (which will still run, just on whichever card is selected). <br><br>Not all moves are validated - if you make a mistake, you can use the \"Revert\" button to undo it. "
+	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!"
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let chineseMahjongInfo = document.createElement("p")
