@@ -267,7 +267,7 @@ function TableLimitSelector() {
 	input.type = "number"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Table Limit (type 0 for Infinty): "
+	label.innerHTML = "Max Points (type 0 for Infinty): "
 
 	label.style.fontSize = "1.4em"
 	input.style.fontSize = "1.4em"

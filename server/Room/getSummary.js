@@ -1,7 +1,7 @@
 function getSummary(mahjongClientId, options = {}) {
 
 	//TODO: Reverting with history deletes this - might want to store in state.
-	//TODO: Ignore bot Mahjong also causes problems with this - we need to score the initial bot Mahjong only. 
+	//TODO: Ignore bot Mahjong also causes problems with this - we need to score the initial bot Mahjong only.
 	//TODO: How to handle American vs Chinese scores if switching in game.
 	if (!this.gameScores) {
 		this.gameScores = []
@@ -19,7 +19,7 @@ function getSummary(mahjongClientId, options = {}) {
 		res[id].text = globalThis.serverStateManager.getClient(id).getNickname() + ": " + hand.wind
 
 		if (this.state.settings.gameStyle === "chinese") {
-			if (hand.wind === "east") {res[id].text += " (pay(s) double)"}
+			if (hand.wind === "east") {res[id].text += " (nets doubled)"}
 			if (id === mahjongClientId) {
 				res[id].points += hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
 			}
