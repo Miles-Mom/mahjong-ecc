@@ -1,5 +1,7 @@
 npx cap add ios
+npx cap add android
 npx cordova-res ios --copy
+npx cordova-res android --type splash --copy
 echo "Create Android Assets using Android Studio Image Asset Studio with the 512x512 px Mahjong Tile and background under resources/android"
 
 echo "Remember to set version codes in XCode"
