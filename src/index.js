@@ -10,7 +10,7 @@ catch(e) {console.error(e)}
 
 try {
     if (window.Capacitor) {
-        window.Capacitor.SplashScreen.hide()
+        window.Capacitor.Plugins.SplashScreen.hide()
     }
 }
 catch (e) {console.error(e)}

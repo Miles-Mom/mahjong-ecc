@@ -73,7 +73,7 @@ joinRoom.addEventListener("click", function() {
 	stateManager.offlineMode = false
 
 	if (roomIdInput.value.trim().length === 0) {
-		return new Popups.Notification("Room Name Invalid", "The room name contains at least one character. Please enter it into the box labeled \"Enter Room Name\" ").show()
+		return new Popups.Notification("Whoops!", "Please enter the name of the room you would like to join into the box labeled \"Enter Room Name\"").show()
 	}
 	window.stateManager.joinRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
