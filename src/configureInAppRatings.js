@@ -30,7 +30,7 @@ if (window?.Capacitor?.getPlatform()) {
 				handleNegativeFeedback: function(){
 					cordova.plugins.email.open({
 					  to: 'support@mahjong4friends.com',
-					  subject: 'Mahjong 4 Friends iOS Feedback',
+					  subject: `Mahjong 4 Friends ${window.Capacitor.getPlatform()} Feedback`,
 					  body: '',
 					  isHtml: true
 					})

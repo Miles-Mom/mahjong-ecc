@@ -107,7 +107,8 @@ class StateManager {
 			//Since both room and client objects have a toString method, we can do this quite easily with JSON.stringify
 			return JSON.stringify({
 				rooms,
-				clients
+				clients,
+				deviceInfo: StateManager.getHostInfo()
 			})
 		}).bind(this)
 	}
@@ -123,6 +124,26 @@ class StateManager {
 		}
 
 		return id
+	}
+
+	static getHostInfo() {
+		try {
+			if (fs) {
+				return; //Actual server.
+			}
+			else if (window.navigator) {
+				return {
+					platform: window.Capacitor? window.Capacitor.getPlatform() : "web",
+					userAgent: navigator.userAgent //TODO: Capacitor can give us much easier to parse data, but async. Might be better to keep standardized though.
+				}
+			}
+			else {
+				throw "Unknown Platform"
+			}
+		}
+		catch (e) {
+			console.error(e)
+		}
 	}
 }
 
