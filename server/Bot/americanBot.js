@@ -229,11 +229,14 @@ function evaluateNextMove({botConfig}) {
 		if (!withTileAnalysis[0]) {
 			throw "Bot Hand is Dead"
 		}
-		else if (withTileAnalysis[0].handOption.concealed && withTileAnalysis[0].diff !== 0) {
-			//The top hand including this tile would be concealed, and it would not be for Mahjong.
-		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {
 				if (withTileAnalysisItem.weightedDiff < analysis[0].weightedDiff) {
+
+					if (withTileAnalysisItem.handOption.concealed && withTileAnalysisItem.diff !== 0) {
+						//We can't call this tile for this handOption as it would make the handOption dead. 
+						return;
+					}
+
 					//We use weightedDiff instead of diff, as even though we may be less tiles away,
 					//those tiles may be higher to get. If this tile reduces weightedDiff,
 					//we should pick it up as it puts us closer to Mahjong.
