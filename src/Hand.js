@@ -131,6 +131,7 @@ class Hand {
 				else {
 					elem = document.createElement("img")
 					elem.src = "assets/tiles/tile-outline.png"
+					elem.alt = "Placemat Slot for Tile"
 				}
 
 				if (i === 0 && classForFirst) {

@@ -32,6 +32,7 @@ function Compass(config = {}) {
 
 	this.compass = document.createElement("img")
 	this.compass.id = config.id
+	this.compass.alt = "Compass"
 	gameBoard.appendChild(this.compass)
 
 	this.setDirectionForUserWind = function(userWind) {

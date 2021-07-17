@@ -734,6 +734,7 @@ else {
 		let link = document.createElement("a")
 		link.href = href
 		link.target = "_blank"
+		link.rel = "noopener"
 
 		let img = document.createElement("img")
 		img.src = src
