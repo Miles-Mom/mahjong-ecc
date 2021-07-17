@@ -1,7 +1,11 @@
-//TODO: Test Android then enable on Android
 if (window?.Capacitor?.getPlatform()) {
 	//Configure AppRate plugin.
+
 	try {
+		let androidUrl = "market://details?id=com.mahjong4friends.twa"
+		let iosCode = "1552704332"
+		let iosUrl = "https://apps.apple.com/us/app/mahjong-4-friends/id" + iosCode
+
 		AppRate.setPreferences({
 			displayAppName: 'Mahjong 4 Friends',
 			simpleMode: false, //Worth considering - the negative feedback filtering is a bit excessive for repeat players, though it is friendly.
@@ -9,11 +13,12 @@ if (window?.Capacitor?.getPlatform()) {
 			promptAgainForEachNewVersion: false,
 			reviewType: {
 				ios: 'InAppReview',
-				android: "InAppReview"
+				//Android InAppReview does not appear to be working - it's showing the prompts, but clicking rate isn't working.
+				android: "InAppBrowser"
 			},
 			storeAppURL: {
-				ios: "1552704332",
-				android: "market://details?id=com.mahjong4friends.twa"
+				ios: iosCode,
+				android: androidUrl
 			},
 			customLocale: {
 				title: "Would you mind rating %@?",
@@ -25,6 +30,14 @@ if (window?.Capacitor?.getPlatform()) {
 				noButtonLabel: "Not Yet",
 				appRatePromptTitle: 'Do you like using %@',
 				feedbackPromptTitle: "Would you like to give us feedback?",
+			},
+			openUrl: function() {
+				if (window.Capacitor.getPlatform() === "android") {
+					window.open(androidUrl)
+				}
+				else {
+					window.open(iosUrl)
+				}
 			},
 			callbacks: {
 				handleNegativeFeedback: function(){
