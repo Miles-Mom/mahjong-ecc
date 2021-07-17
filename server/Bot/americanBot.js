@@ -233,7 +233,7 @@ function evaluateNextMove({botConfig}) {
 				if (withTileAnalysisItem.weightedDiff < analysis[0].weightedDiff) {
 
 					if (withTileAnalysisItem.handOption.concealed && withTileAnalysisItem.diff !== 0) {
-						//We can't call this tile for this handOption as it would make the handOption dead. 
+						//We can't call this tile for this handOption as it would make the handOption dead.
 						return;
 					}
 
@@ -293,6 +293,8 @@ function evaluateNextMove({botConfig}) {
 								if (mahjongIgnored) {
 									console.log("MAHJJ!!")
 									//Our Mahjong will be ignored, so we need to continue with the proceed (I believe this is what's going on here)
+									//TODO: This likely means we could fake Mahjong multiple times in one round. Probably need to inline proceed code and
+									//return true here as well, but we'd need to test that and make sure. 
 								}
 								else {
 									return true
@@ -309,7 +311,7 @@ function evaluateNextMove({botConfig}) {
 					}
 				}
 			})
-		) {console.warn("Returned");return}
+		) {return} //We did something with the tile. Don't proceed.
 
 		placeTiles([])
 	}

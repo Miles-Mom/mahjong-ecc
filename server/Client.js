@@ -50,7 +50,7 @@ class Client {
 				let weWon = game.mahjongPlayer === this.clientId
 				game.weWon = weWon
 
-				let guaranteedDir = path.join(globalThis.serverStateManager.serverDataDirectory, this.getRoom().gameData.card.name)
+				let guaranteedDir = path.join(globalThis.serverStateManager.serverDataDirectory, "../", this.getRoom().gameData.card.name)
 				if (!fs.existsSync(guaranteedDir)) {fs.mkdirSync(guaranteedDir, {recursive: true})}
 
 				if (weWon) {
@@ -145,7 +145,7 @@ class Client {
 		this.messageHistory.push({message: "Game Started", move: 0})
 	}
 	addMessageToHistory(message, offset = 0) {
-		//Offset can be used if the message is for the previous turn, etc. 
+		//Offset can be used if the message is for the previous turn, etc.
 		this.messageHistory.push({message, move: this?.getRoom()?.state?.moves?.length + offset})
 	}
 
