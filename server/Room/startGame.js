@@ -10,7 +10,7 @@ try {
 	fs = require("fs")
 	path = require("path")
 }
-catch (e) {console.warn(e)}
+catch (e) {}
 
 function startGame(obj) {
 	while (this.clientIds.length < 4) {

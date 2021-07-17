@@ -8,9 +8,7 @@ try {
 	fs = require("fs")
 	crypto = require("crypto")
 }
-catch (e) {
-	console.warn(e)
-}
+catch (e) {}
 
 function getMessage(type, message, status) {
 	return JSON.stringify({

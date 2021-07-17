@@ -9,7 +9,7 @@ try {
 	fs = require("fs")
 	path = require("path")
 }
-catch (e) {console.warn(e)}
+catch (e) {}
 
 class StateManager {
 	constructor(rooms = {}, clients = {}) {
