@@ -19,7 +19,7 @@ function getSummary(mahjongClientId, options = {}) {
 		res[id].text = globalThis.serverStateManager.getClient(id).getNickname() + ": " + hand.wind
 
 		if (this.state.settings.gameStyle === "chinese") {
-			if (hand.wind === "east") {res[id].text += " (nets doubled)"}
+			if (hand.wind === "east") {res[id].text += " (net doubled)"}
 			if (id === mahjongClientId) {
 				res[id].points += hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
 			}

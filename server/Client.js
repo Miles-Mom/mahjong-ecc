@@ -50,7 +50,7 @@ class Client {
 				let weWon = game.mahjongPlayer === this.clientId
 				game.weWon = weWon
 
-				let guaranteedDir = path.join(globalThis.serverStateManager.serverDataDirectory, "../", this.getRoom().gameData.card.name)
+				let guaranteedDir = path.join(globalThis.serverStateManager.serverDataDirectory, "../guaranteed", this.getRoom().gameData.card.name)
 				if (!fs.existsSync(guaranteedDir)) {fs.mkdirSync(guaranteedDir, {recursive: true})}
 
 				if (weWon) {
