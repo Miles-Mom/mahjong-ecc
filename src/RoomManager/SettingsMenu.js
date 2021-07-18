@@ -11,7 +11,7 @@ function SettingsMenu(settingsDiv, isHost = false) {
 
 	//Appended later, so these are last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!"
+	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!<br>You can purchase cards from the <a target='_blank' href='https://www.nationalmahjonggleague.org/'>National Mah Jongg League</a> or from <a target='_blank' href='https://marvelousmahjongg.com/'>Marvelous Mah Jongg</a>"
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let chineseMahjongInfo = document.createElement("p")
