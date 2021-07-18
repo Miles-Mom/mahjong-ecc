@@ -35,7 +35,7 @@
 #selectChineseMahjong, #selectAmericanMahjong, #selectPanamaRules {
 	border-radius: 250000px;
 	font-size: 1.5em;
-	padding: 5px 20px 5px 20px;
+	padding: 5px 20px;
 }
 
 #selectChineseMahjong:disabled::before, #selectAmericanMahjong:disabled::before {
@@ -203,20 +203,21 @@
 #roomManager .playerViewKickButton {
 	background: linear-gradient(45deg, #f23f3f,#eeb972);
 	border-radius: 250000px;
-	padding: 5px 20px 5px 20px;
+	padding: 5px 20px;
 	font-size: 1em;
 	cursor: pointer;
 }
 
 #deleteSaveNowButton {
 	font-size: 1.7em;
-	margin: 0 6px;
+	margin: 0;
 	cursor: pointer;
 }
 
 #downloadSaveNowButton {
 	width: 2em;
-	margin: 0 6px;
+	padding-left: 12px;
+	padding-right: 18px;
 	cursor: pointer;
 }
 
@@ -234,7 +235,6 @@
 	border-radius: 250000px;
 	font-size: 1.7em;
 	border: 2px solid black;
-	padding: 5px 20px 5px 20px;
 	margin: 0;
 }
 
@@ -243,10 +243,12 @@
 	margin-top: calc(var(--vh) * 1);
 	margin-bottom: 1.5vh;
 	margin-bottom: calc(var(--vh) * 1.5);
+	padding: 5px 20px;
 }
 
 #resumeSaveNowButton {
 	margin-left: 5px;
+	padding: 5px 15px;
 }
 
 #closeRoomButton {
