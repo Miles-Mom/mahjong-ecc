@@ -414,10 +414,7 @@ class Room {
 				}
 				else if (obj.mahjong) {
 					this.goMahjong(clientId, {drewOwnTile: !this.gameData.previousTurnPickedUp, override: placerMahjongOverride})
-					if (globalThis.serverStateManager.getClient(clientId).isBot) {
-						console.log("Bots are not allowed to obtain override power", this.logFileSaveId)
-					}
-					else {
+					if (!globalThis.serverStateManager.getClient(clientId).isBot) {
 						placerMahjongOverride = true
 					}
 				}
