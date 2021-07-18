@@ -510,6 +510,7 @@ notInRoomContainer.appendChild(connectionStatus)
 
 let dots = 1 //We could make these go a bit faster...
 window.setConnectionStatus = function({connected}) {
+	//TODO: This uses a lot of space - how to shrink it?
 	connectionStatus.innerHTML = connected?"✓ Connected to Server":"Trying To Connect" + ".".repeat(1 + (++dots % 5))
 	connectionStatus.className = connected?"connected":""
 	joinRoom.disabled = createRoom.disabled = connected?"":"disabled"
@@ -583,9 +584,7 @@ addBotButton.style.display = "none"
 inRoomContainer.appendChild(addBotButton)
 
 addBotButton.addEventListener("click", function() {
-	//TODO: Should we ask for a name? The host can rename the bots if they don't like the defaults.
-	let name = prompt("Please enter a name for the bot: ")
-	window.stateManager.addBot(name)
+	window.stateManager.addBot()
 })
 
 let startGameButton = document.createElement("button")
