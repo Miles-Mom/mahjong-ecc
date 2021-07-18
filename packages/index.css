@@ -62,6 +62,7 @@
 #roomManager #joinOrCreateRoom {
 	margin-top: 1vh;
 	margin-top: calc(var(--vh) * 1);
+	position: relative;
 }
 
 #joinRoom, #createRoom, #offlineSinglePlayer, #uploadSaveButton {
@@ -88,8 +89,12 @@
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#offlineSinglePlayer, #downloadSaveNowButton, #addBotButton, #goOfflineButton {
+#offlineSinglePlayer, #addBotButton, #goOfflineButton {
 	background: linear-gradient(45deg, #ccadf8, #96a6ee, #8fc6f6);
+}
+
+#resumeSaveNowButton {
+	background: linear-gradient(45deg, #e2d2f9, #c2caf0, #b2d6f7); /*Lightened offlineSinglePlayer*/
 }
 
 #roomManager #copyrightNotice {
@@ -112,14 +117,25 @@
 #connectionStatus {
 	font-size: 1.7em;
 	width: fit-content;
-	padding: 6px 15px;
+	padding: 4px 15px;
 	background: #ffc3c3;
+	position: absolute;
 	margin: auto;
-	margin-top: 10px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
-#connectionStatus.connected {
-	background-color: #4de83a;
+#savedGameDiv {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: fit-content;
+	padding: 6px 15px;
+	background: #fed601;
+	margin: auto;
+	margin-top: 5px;
+	border-radius: 20px;
 }
 
 #roomManager #playerCount {
@@ -192,33 +208,52 @@
 	cursor: pointer;
 }
 
+#deleteSaveNowButton {
+	font-size: 1.7em;
+	margin: 0 6px;
+	cursor: pointer;
+}
+
+#downloadSaveNowButton {
+	width: 2em;
+	margin: 0 6px;
+	cursor: pointer;
+}
+
 #startGameButton, #addBotButton, #leaveRoomButton, #closeRoomButton {
 	font-size: 1.5em;
 	border-radius: 250000px;
 	padding: 10px;
 }
 
-#roomManager #startGameButton, #deleteSaveNowButton  {
+#roomManager #startGameButton  {
 	background: linear-gradient(45deg, #FF6600, #FF77CC, #7777FF);
 }
 
-#deleteSaveNowButton, #resumeSaveNowButton, #downloadSaveNowButton, #stayOnlineButton, #goOfflineButton {
+#resumeSaveNowButton, #stayOnlineButton, #goOfflineButton {
 	border-radius: 250000px;
 	font-size: 1.7em;
+	border: 2px solid black;
+	padding: 5px 20px 5px 20px;
 	margin: 0;
+}
+
+#stayOnlineButton, #goOfflineButton {
 	margin-top: 1vh;
 	margin-top: calc(var(--vh) * 1);
 	margin-bottom: 1.5vh;
 	margin-bottom: calc(var(--vh) * 1.5);
-	border: 2px solid black;
-	padding: 5px 20px 5px 20px;
+}
+
+#resumeSaveNowButton {
+	margin-left: 5px;
 }
 
 #closeRoomButton {
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 
-#leaveRoomButton, #resumeSaveNowButton, #stayOnlineButton {
+#leaveRoomButton, #stayOnlineButton {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 

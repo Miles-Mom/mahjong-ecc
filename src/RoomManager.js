@@ -66,6 +66,9 @@ let joinOrCreateRoom = document.createElement("div")
 joinOrCreateRoom.id = "joinOrCreateRoom"
 notInRoomContainer.appendChild(joinOrCreateRoom)
 
+let joinCreateSpan = document.createElement("span")
+joinOrCreateRoom.appendChild(joinCreateSpan)
+
 let joinRoom = document.createElement("button")
 joinRoom.id = "joinRoom"
 joinRoom.innerHTML = "Join Room"
@@ -77,7 +80,17 @@ joinRoom.addEventListener("click", function() {
 	}
 	window.stateManager.joinRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
-joinOrCreateRoom.appendChild(joinRoom)
+joinCreateSpan.appendChild(joinRoom)
+joinCreateSpan.style.position = "relative"
+joinCreateSpan.style.display = "inline-block"
+
+let offlineOverlay = document.createElement("div")
+offlineOverlay.style.position = "absolute"
+offlineOverlay.style.top = offlineOverlay.style.left = offlineOverlay.style.right = "0"
+offlineOverlay.style.height = "100%"
+offlineOverlay.style.backgroundColor = "#000000bb"
+joinCreateSpan.appendChild(offlineOverlay)
+
 let createRoom = document.createElement("button")
 createRoom.id = "createRoom"
 createRoom.innerHTML = "Create Room"
@@ -85,10 +98,16 @@ createRoom.addEventListener("click", function() {
 	stateManager.offlineMode = false
 	window.stateManager.createRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
-joinOrCreateRoom.appendChild(createRoom)
+joinCreateSpan.appendChild(createRoom)
 
-let br = document.createElement("br")
-joinOrCreateRoom.appendChild(br)
+
+let offlineGameDiv = document.createElement("div")
+notInRoomContainer.appendChild(offlineGameDiv)
+
+let savedGameDiv = document.createElement("div")
+savedGameDiv.id = "savedGameDiv"
+savedGameDiv.style.display = "none"
+offlineGameDiv.appendChild(savedGameDiv)
 
 let offlineSinglePlayer = document.createElement("button")
 offlineSinglePlayer.id = "offlineSinglePlayer"
@@ -105,7 +124,7 @@ offlineSinglePlayer.addEventListener("click", function() {
 		window.stateManager.addBot()
 	}
 })
-joinOrCreateRoom.appendChild(offlineSinglePlayer)
+offlineGameDiv.appendChild(offlineSinglePlayer)
 
 function resumeOfflineGame(saveText, resumeAtStart = false) {
 	serverStateManager.init(saveText)
@@ -138,7 +157,7 @@ function resumeOfflineGame(saveText, resumeAtStart = false) {
 let uploadSaveButton = document.createElement("button")
 uploadSaveButton.innerHTML = "Use Save File"
 uploadSaveButton.id = "uploadSaveButton"
-joinOrCreateRoom.appendChild(uploadSaveButton)
+offlineGameDiv.appendChild(uploadSaveButton)
 
 //Dummy file input.
 let fileInput = document.createElement("input")
@@ -422,26 +441,34 @@ try {
 	readSave(saveKey).then((res) => {
 		if (res) {
 			//Alert the user about the save.
-			let elem = new DocumentFragment() //We want the dismiss button to be on the same line, so use a fake container.
-			let popup;
+			//TODO: Do we want to have this overlay the Single Player button, or otherwise indicate Single Player and Saved
+			//Offline Game will overwrite this?
+			savedGameDiv.style.display = ""
 
-			let p = document.createElement("p")
-			p.innerHTML = "If you start another <strong><i>offline</i></strong> game, your save will be overwritten. You can optionally download this save to share with other devices or play later. "
-			p.id = "messageText"
-			elem.appendChild(p)
+			let span = document.createElement("span")
+			span.innerHTML = "Saved Game: "
+			span.style.fontSize = "2em"
+			savedGameDiv.appendChild(span)
 
 			let resumeButton = document.createElement("button")
 			resumeButton.innerHTML = "Resume"
 			resumeButton.addEventListener("click", function() {
 				resumeOfflineGame(res)
-				popup.dismiss()
+				savedGameDiv.remove()
 			})
 			resumeButton.id = "resumeSaveNowButton"
-			elem.appendChild(resumeButton)
+			savedGameDiv.appendChild(resumeButton)
 
-			let downloadButton = document.createElement("button")
-			downloadButton.innerHTML = "Download"
-			downloadButton.addEventListener("click", async function() {
+
+			let downloadSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+			downloadSvg.setAttribute("viewBox", "0 0 24 24")
+
+			let svgPath = document.createElementNS("http://www.w3.org/2000/svg", "path")
+			svgPath.setAttribute("d", "M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z")
+
+			downloadSvg.appendChild(svgPath)
+
+			downloadSvg.addEventListener("click", async function() {
 				let downloadName = "mahjong4friends.server.json"
 				if (window?.Capacitor?.getPlatform()) {
 					//iOS and Android Capacitor don't support link downloads. Use share menu.
@@ -472,20 +499,18 @@ try {
 					URL.revokeObjectURL(url)
 				}
 			})
-			downloadButton.id = "downloadSaveNowButton"
-			elem.appendChild(downloadButton)
+			downloadSvg.id = "downloadSaveNowButton"
+			savedGameDiv.appendChild(downloadSvg)
 
-			let deleteButton = document.createElement("button")
-			deleteButton.innerHTML = "Delete"
+			let deleteButton = document.createElement("span")
+			deleteButton.innerHTML = "✖︎"
 			deleteButton.addEventListener("click", function() {
+				//TODO: Requiring confirmation is too obnoxious, but we might want some sort of undo or something.
 				deleteSave(saveKey)
-				popup.dismiss()
+				savedGameDiv.remove()
 			})
 			deleteButton.id = "deleteSaveNowButton"
-			elem.appendChild(deleteButton)
-
-			popup = new Popups.Notification("Saved Offline Game", elem)
-			popup.show()
+			savedGameDiv.appendChild(deleteButton)
 		}
 	})
 }
@@ -506,14 +531,14 @@ if (window.Capacitor) {
 let connectionStatus = document.createElement("p")
 connectionStatus.id = "connectionStatus"
 
-notInRoomContainer.appendChild(connectionStatus)
+joinOrCreateRoom.appendChild(connectionStatus)
 
 let dots = 1 //We could make these go a bit faster...
 window.setConnectionStatus = function({connected}) {
-	//TODO: This uses a lot of space - how to shrink it?
-	connectionStatus.innerHTML = connected?"✓ Connected to Server":"Trying To Connect" + ".".repeat(1 + (++dots % 5))
-	connectionStatus.className = connected?"connected":""
+	connectionStatus.innerHTML = "Trying To Connect" + ".".repeat(1 + (++dots % 5))
+	offlineOverlay.style.display = connected ? "none":""
 	joinRoom.disabled = createRoom.disabled = connected?"":"disabled"
+	connectionStatus.style.display = connected ? "none":""
 }
 
 window.setConnectionStatus({connected: false})
