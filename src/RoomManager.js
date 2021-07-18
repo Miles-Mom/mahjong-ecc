@@ -535,7 +535,7 @@ joinOrCreateRoom.appendChild(connectionStatus)
 
 let dots = 1 //We could make these go a bit faster...
 window.setConnectionStatus = function({connected}) {
-	connectionStatus.innerHTML = "Trying to Connect" + ".".repeat(1 + (++dots % 5))
+	connectionStatus.innerHTML = "Multiplayer Needs Internet" + ".".repeat(1 + (++dots % 5))
 	offlineOverlay.style.display = connected ? "none":""
 	joinRoom.disabled = createRoom.disabled = connected?"":"disabled"
 	connectionStatus.style.display = connected ? "none":""
