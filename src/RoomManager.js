@@ -931,7 +931,7 @@ function renderPlayerView(clientList = [], kickUserCallback) {
 				kickButton.innerHTML = "Remove " + obj.nickname
 				kickButton.classList.add("playerViewKickButton")
 				kickButton.addEventListener("click", function() {
-					if (confirm("Are you sure you want to remove " + obj.nickname)) {
+					if (obj.isBot || confirm("Are you sure you want to remove " + obj.nickname)) {
 						kickUserCallback(obj.id)
 					}
 				})
@@ -1076,7 +1076,7 @@ window.stateManager.addEventListener("onLeaveRoom", function(obj) {
 })
 
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
-	playerCount.innerHTML = obj.message.clients.length + "/4 Players are Present"
+	playerCount.innerHTML = obj.message.clients.length + " Players are Present"
 
 	let choices = gameSettings?.getChoices()
 

@@ -207,7 +207,7 @@ class Room {
 			}
 
 			if (!hand) {
-				return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
+				return client.message("displayMessage", {title: "Access Denied", body: "You are Spectating. "})
 			}
 
 			let placement = obj?.message;

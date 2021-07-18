@@ -75,7 +75,7 @@ function onIncomingMessage(clientId, obj) {
 	}
 	else if (obj.type === "roomActionRevertState") {
 		if (this.clientIds.indexOf(clientId) > 3) {
-			return client.message("displayMessage", {title: "Access Denied", body: "It appears that you spectating. "})
+			return client.message("displayMessage", {title: "Access Denied", body: "You are Spectating. "})
 		}
 		//revertState takes client, as it needs to get the name of the person reverting to notify other players.
 		return this.revertState(client, obj.message)
