@@ -447,7 +447,7 @@ try {
 
 			let span = document.createElement("span")
 			span.innerHTML = "Saved Game: "
-			span.style.fontSize = "2em"
+			span.style.fontSize = "1.7em"
 			savedGameDiv.appendChild(span)
 
 			let resumeButton = document.createElement("button")
@@ -535,7 +535,7 @@ joinOrCreateRoom.appendChild(connectionStatus)
 
 let dots = 1 //We could make these go a bit faster...
 window.setConnectionStatus = function({connected}) {
-	connectionStatus.innerHTML = "Trying To Connect" + ".".repeat(1 + (++dots % 5))
+	connectionStatus.innerHTML = "Trying to Connect" + ".".repeat(1 + (++dots % 5))
 	offlineOverlay.style.display = connected ? "none":""
 	joinRoom.disabled = createRoom.disabled = connected?"":"disabled"
 	connectionStatus.style.display = connected ? "none":""
