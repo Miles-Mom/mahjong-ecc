@@ -334,7 +334,7 @@ hintButton.addEventListener("click", function() {
 						table.appendChild(row)
 
 						let nameColumn = document.createElement("td")
-						nameColumn.innerHTML = `${item.handOption.section} #${item.handOption.cardIndex + 1} - ${item.diff} Tiles Away (${item.handOption.concealed?"C":"X"})`
+						nameColumn.innerHTML = `${item.handOption.section} #${item.handOption.cardIndex + 1} - ${item.diff} Tiles Away (${item.handOption.concealed?"C":"X"}, ${item.handOption.score}pt)`
 						row.appendChild(nameColumn)
 
 						let tileRow = document.createElement("tr")
