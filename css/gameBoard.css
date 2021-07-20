@@ -55,7 +55,6 @@ This means that something using bottom is off the page - hence we must use top. 
 	height: 12vh;
 	max-height: 12vh;
 	width: calc(100vw - 21.04vh);
-	text-align: center; /*Center tiles horizontally. */
 	background-color: #7d4b37;
 }
 
@@ -80,6 +79,7 @@ This means that something using bottom is off the page - hence we must use top. 
 #gameBoard #tilePlacemat {
 	top: 61vh;
 	background-color: #FFFFFF00;
+	text-align: center;
 }
 
 

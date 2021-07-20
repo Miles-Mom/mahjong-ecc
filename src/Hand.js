@@ -282,8 +282,8 @@ class Hand {
 				}
 
 				//Note: If the window is resized, tiles will not adjust until the hand is redrawn.
-				//While these properties are set on all hands with over 14 tiles, they only impact the left and right hands,
-				//as all other hands utilize flexbox. 
+
+				//TODO: Only set for left and right hands (which don't use flexbox)
 				function resizeHandTiles(hand) {
 					if (hand.children.length > 14) {
 						//Downscale tiles to fit.

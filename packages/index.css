@@ -437,7 +437,6 @@ This means that something using bottom is off the page - hence we must use top. 
 	max-height: calc(var(--vh) * 12);
 	width: calc(100vw - 21.04vh);
 	width: calc(calc(var(--vw) * 100) - calc(var(--vh) * 21.04));
-	text-align: center; /*Center tiles horizontally. */
 	background-color: #7d4b37;
 }
 
@@ -467,6 +466,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	top: 61vh;
 	top: calc(var(--vh) * 61);
 	background-color: #FFFFFF00;
+	text-align: center;
 }
 
 
