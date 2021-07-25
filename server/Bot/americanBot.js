@@ -227,7 +227,9 @@ function evaluateNextMove({botConfig}) {
 		//We should ALWAYS have one handOption available, given how we do not analyze discards,
 		//and an additional tile not in a match shouldn't remove any possibilities,
 		if (!withTileAnalysis[0]) {
-			throw "Bot Hand is Dead"
+			console.error("Error: Bot Hand is Dead. This should be debugged. Initiating fallback proceed")
+			placeTiles([])
+			return
 		}
 		else if (withTileAnalysis.some((withTileAnalysisItem) => {
 				if (withTileAnalysisItem.weightedDiff < analysis[0].weightedDiff) {
@@ -294,7 +296,7 @@ function evaluateNextMove({botConfig}) {
 									console.log("MAHJJ!!")
 									//Our Mahjong will be ignored, so we need to continue with the proceed (I believe this is what's going on here)
 									//TODO: This likely means we could fake Mahjong multiple times in one round. Probably need to inline proceed code and
-									//return true here as well, but we'd need to test that and make sure. 
+									//return true here as well, but we'd need to test that and make sure.
 								}
 								else {
 									return true
