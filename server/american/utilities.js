@@ -71,7 +71,7 @@ function processHand(handOption, hand, options) {
                 hand.forEach((handItem) => {
                     let tile;
                     if (handItem.tiles) {handItem = handItem.tiles} //TileContainer.
-                    if (handItem instanceof Array) {tile = TileContainer.findNonJoker(handItem)}
+                    if (handItem instanceof Array) {tile = TileContainer.findBaseTile(handItem)}
                     else {tile = handItem}
 
                     if (tile.type === "any" || tile.value === "any") {return false} //We are simulating all possible tiles. Any tiles are not a tile.
@@ -174,7 +174,7 @@ function processHand(handOption, hand, options) {
 
             if (handOption.tiles.some((item) => {
                 if (!itemValue) {return true} //This exposure must be a bunch of individual tiles, like a 2019.
-                else if (item.length === handItem.length && itemValue.matches(TileContainer.findNonJoker(item))) {
+                else if (item.length === handItem.length && itemValue.matches(TileContainer.findBaseTile(item))) {
                     return true
                 }
                 else {return false}

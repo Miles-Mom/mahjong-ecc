@@ -17,7 +17,7 @@ class TileContainer {
 
 	static isValidMatch(tiles, allowJokers = false) {
 		//Confirm that the tiles all match.
-		let validationTile = TileContainer.findNonJoker(tiles)
+		let validationTile = TileContainer.findBaseTile(tiles)
 
 		if (!validationTile) {return false}
 
@@ -34,12 +34,12 @@ class TileContainer {
 		return TileContainer.isValidMatch(this.tiles, allowJokers)
 	}
 
-	static findNonJoker(tiles) {
-		//This function doesn't technically return a non-joker - it returns the base tile for the match.
+	static findBaseTile(tiles) {
+		//Return the base tile for the match.
 		let nonJoker = tiles.find((tile) => {return tile.type !== "joker"})
 		if (nonJoker) {return nonJoker}
 		else {
-			return tiles[0] //Return the joker if there are only jokers. 
+			return tiles[0] //Return the joker if there are only jokers.
 		}
 	}
 
