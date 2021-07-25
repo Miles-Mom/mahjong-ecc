@@ -43,8 +43,3 @@ body {
 	transform: scaleX(calc(1 - var(--shiftPercentageRight) - var(--shiftPercentageLeft)))
 		translateX(calc(50vw * (var(--shiftPercentageLeft) - var(--shiftPercentageRight)) * var(--counterTranslationScaling)));
 }
-
-body * {
-	/*Fix iOS dissapearing hands on zoom out*/
-	-webkit-transform: translate3d(0, 0, 0);
-}
