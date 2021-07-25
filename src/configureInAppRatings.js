@@ -41,10 +41,21 @@ if (window?.Capacitor?.getPlatform()) {
 			},
 			callbacks: {
 				handleNegativeFeedback: function(){
+					let body = `\n\n
+Please type your feedback above this line. \n
+Screenshots help massively when investigating issues. If possible, please include them, as well as the times at which any affected games were played. `
+
+					try {
+						body += "\n\nDevice Details: "
+						body += `\nWebKit/WebView: ${navigator.userAgent}`
+						body += `\nTime Zone Code: ${new Date().getTimezoneOffset()}`
+					}
+					catch (e) {console.error(e)}
+
 					cordova.plugins.email.open({
 					  to: 'support@mahjong4friends.com',
 					  subject: `Mahjong 4 Friends ${window.Capacitor.getPlatform()} Feedback`,
-					  body: '',
+					  body,
 					  isHtml: true
 					})
 				},
