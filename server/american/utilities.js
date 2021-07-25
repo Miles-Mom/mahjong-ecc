@@ -70,8 +70,8 @@ function processHand(handOption, hand, options) {
                 let uniqueTiles = []
                 hand.forEach((handItem) => {
                     let tile;
-                    if (handItem.tiles) {tile = handItem.tiles[0]} //TileContainer.
-                    else if (handItem instanceof Array) {tile = handItem[0]}
+                    if (handItem.tiles) {handItem = handItem.tiles} //TileContainer.
+                    if (handItem instanceof Array) {tile = TileContainer.findNonJoker(handItem)}
                     else {tile = handItem}
 
                     if (tile.type === "any" || tile.value === "any") {return false} //We are simulating all possible tiles. Any tiles are not a tile.

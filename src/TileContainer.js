@@ -35,11 +35,11 @@ class TileContainer {
 	}
 
 	static findNonJoker(tiles) {
-		//This function doesn't technically return a non-joker - it returns the base tile for the match. 
+		//This function doesn't technically return a non-joker - it returns the base tile for the match.
 		let nonJoker = tiles.find((tile) => {return tile.type !== "joker"})
 		if (nonJoker) {return nonJoker}
 		else {
-			return tiles[0]
+			return tiles[0] //Return the joker if there are only jokers. 
 		}
 	}
 
