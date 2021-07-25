@@ -107,7 +107,7 @@ function processHand(handOption, hand, options) {
             }
         }
 
-        if (item.length <= 2) {
+        if (item.length <= 2 && item[0].type !== "joker") {
             noFillJoker.push(...item)
         }
         else {
@@ -258,7 +258,7 @@ function getTileDifferential(handOptions, hand, options = {}) {
     //Doing this perfectly is nearly impossible, but improvements would be nice:
     // - Detect when current exposures make non-joker tiles unobtainable.
     // - Jokers (especially for quints) are complicated, because of joker swaps. Detecting when a hand is dead because
-    //jokers are needed given present exposures, and said jokers can't be obtained (tiles to swap for exposed jokers dead, etc) 
+    //jokers are needed given present exposures, and said jokers can't be obtained (tiles to swap for exposed jokers dead, etc)
 
 	if (handOptions.combos) {
 		//A card was passed, instead of an array.
