@@ -158,6 +158,7 @@ This means that something using bottom is off the page - hence we must use top. 
 
 .brightnessPulse {
 	animation: handTurnPulse 3s linear infinite;
+	animation-delay: 5s;
 }
 
 #tilePlacemat img {
