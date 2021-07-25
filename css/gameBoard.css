@@ -143,13 +143,13 @@ This means that something using bottom is off the page - hence we must use top. 
     filter: brightness(1);
   }
   25% {
-    filter: brightness(0.7);
+    filter: brightness(0.8);
   }
   50% {
 	  filter: brightness(1);
   }
   75% {
-	  filter: brightness(1.3);
+	  filter: brightness(1.25);
   }
   100% {
 	filter: brightness(1);
