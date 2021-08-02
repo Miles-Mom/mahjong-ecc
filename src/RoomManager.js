@@ -54,11 +54,16 @@ if (params.has("name")) {
 	nicknameInput.value = params.get("name")
 }
 
-//Development only - fakes native UI somewhat. Intended for automated screenshotting.
-if (!window.Capacitor && params.has("fakeNative")) {
-	window.Capacitor = {
-		getPlatform: function() {return params.get("fakeNative")}
-	}
+//window.nativePlatform is used for setting up some UI components in a platform specific manner (like rating links)
+//Used for screenshots and things like the Microsoft PWA.
+if (params.has("fakeNative")) {
+	window.nativePlatform = params.get("fakeNative")
+}
+else if (window.Capacitor) {
+	window.nativePlatform = Capacitor.getPlatform()
+}
+else if (document.referrer === "app-info://platform/microsoft-store") {
+	window.nativePlatform = "windows"
 }
 
 //The join/create room buttons.
@@ -738,14 +743,17 @@ supportInfo.id = "supportInfo"
 supportInfo.innerHTML = "Questions, Comments, or Concerns? Contact <a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>"
 roomManager.appendChild(supportInfo)
 
-if (window.Capacitor) {
+if (window.nativePlatform) {
 	let ratingPrompt = document.createElement("p")
 	ratingPrompt.id = "supportInfo"
-	if (window?.Capacitor?.getPlatform() === "ios") {
+	if (window.nativePlatform === "ios") {
 		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://apps.apple.com/us/app/mahjong-4-friends/id1552704332" target="_blank">rate us in the App Store</a>!`
 	}
-	else if (window?.Capacitor?.getPlatform() === "android") {
+	else if (window.nativePlatform === "android") {
 		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://play.google.com/store/apps/details?id=com.mahjong4friends.twa" target="_blank">leave a review on Google Play</a>!`
+	}
+	else if (window.nativePlatform === "windows") {
+		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P" target="_blank">leave a review in the Microsoft Store</a>!`
 	}
 	roomManager.appendChild(ratingPrompt)
 }
@@ -779,6 +787,12 @@ else {
 		"assets/badges/googleplay.svg",
 		"Get Mahjong 4 Friends on Google Play"
 	)
+	//
+	// createButton(
+	// 	"https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
+	// 	"assets/badges/microsoft.svg",
+	// 	"Get Mahjong 4 Friends from Microsoft"
+	// )
 }
 
 
