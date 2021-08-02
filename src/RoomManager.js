@@ -46,23 +46,24 @@ nicknameInput.placeholder = "Choose a Nickname..."
 notInRoomContainer.appendChild(nicknameInput)
 
 //Allow query params.
-let params = new URLSearchParams(window.location.hash.slice(1))
-if (params.has("roomId")) {
-	roomIdInput.value = params.get("roomId")
+let hashParams = new URLSearchParams(window.location.hash.slice(1))
+let searchParams = new URLSearchParams(window.location.search)
+if (hashParams.has("roomId")) {
+	roomIdInput.value = hashParams.get("roomId")
 }
-if (params.has("name")) {
-	nicknameInput.value = params.get("name")
+if (hashParams.has("name")) {
+	nicknameInput.value = hashParams.get("name")
 }
 
 //window.nativePlatform is used for setting up some UI components in a platform specific manner (like rating links)
 //Used for screenshots and things like the Microsoft PWA.
-if (params.has("fakeNative")) {
-	window.nativePlatform = params.get("fakeNative")
+if (hashParams.has("fakeNative")) {
+	window.nativePlatform = hashParams.get("fakeNative")
 }
 else if (window.Capacitor) {
 	window.nativePlatform = Capacitor.getPlatform()
 }
-else if (document.referrer === "app-info://platform/microsoft-store") {
+else if (searchParams.get("app-install-source") === "microsoft-store") {
 	window.nativePlatform = "windows"
 }
 
@@ -1057,8 +1058,8 @@ window.stateManager.onJoinRoom = function(obj) {
 		return new Popups.Notification("Unable to Join Room", obj.message).show()
 	}
 	else {
-		if (showRestoreNotice && params.has("roomId") && params.get("roomId") !== obj.message) {
-			new Popups.Notification("Room Restored", "You followed a link to room " + params.get("roomId") + ", but were already in room " + obj.message + ". Your room has been restored - to join a new room, leave your current one. ").show()
+		if (showRestoreNotice && hashParams.has("roomId") && hashParams.get("roomId") !== obj.message) {
+			new Popups.Notification("Room Restored", "You followed a link to room " + hashParams.get("roomId") + ", but were already in room " + obj.message + ". Your room has been restored - to join a new room, leave your current one. ").show()
 			showRestoreNotice = false
 		}
 
