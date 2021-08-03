@@ -28,6 +28,5 @@ echo "On Android, use the Tools menu (up in the OS menu bar, and App Links Assis
 echo "On Android, configure icons using image assets tool - cordova-res only use for splash. "
 
 echo "On Android, to enable zoom in app, add the following to java/com.getcapacitor/BridgeActivity load function:"
-echo "May not be needed anymore. "
 echo "webView.getSettings().setBuiltInZoomControls(true);"
 echo "webView.getSettings().setDisplayZoomControls(false);"

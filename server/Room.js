@@ -381,7 +381,7 @@ class Room {
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + discardMessage, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
 							this.setAllInstructions([clientId], client.getNickname() + discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
 
-							client.addMessageToHistory("You" + discardMessage) //Make discards appear in history menu.
+							client.addMessageToHistory("You" + discardMessage.replace("is", "are")) //Make discards appear in history menu.
 
 							this.sendStateToClients()
 						}
