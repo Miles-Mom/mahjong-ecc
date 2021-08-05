@@ -133,7 +133,7 @@ class StateManager {
 			}
 			else if (window.navigator) {
 				return {
-					platform: window.Capacitor? window.Capacitor.getPlatform() : "web",
+					platform: window.nativePlatform || "web",
 					userAgent: navigator.userAgent //TODO: Capacitor can give us much easier to parse data, but async. Might be better to keep standardized though.
 				}
 			}

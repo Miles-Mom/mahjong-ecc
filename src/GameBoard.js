@@ -135,6 +135,7 @@ if (fullscreenControls.toggleElement) {
 	//If we can't, we will go fullscreen on first document click.
 	function callFullScreen() {
 	    //Check for mobile or currently being in fullscreen.
+		//TODO: This may be too aggressive on browsers. It can be annoying. 
 	    if ((window.innerWidth < 600 || window.innerHeight < 600)) {
 			fullscreenControls.goFullscreen()
 	    }
