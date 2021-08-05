@@ -788,12 +788,12 @@ else {
 		"assets/badges/googleplay.svg",
 		"Get Mahjong 4 Friends on Google Play"
 	)
-	//
-	// createButton(
-	// 	"https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
-	// 	"assets/badges/microsoft.svg",
-	// 	"Get Mahjong 4 Friends from Microsoft"
-	// )
+	
+	createButton(
+		"https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
+		"assets/badges/microsoft.svg",
+		"Get Mahjong 4 Friends from Microsoft"
+	)
 }
 
 
