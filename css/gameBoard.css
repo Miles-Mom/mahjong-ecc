@@ -122,7 +122,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #tilePlacemat img {
-	max-width: calc(calc(50vw - 9.52vh - 18vw - 4vw) / 2); /*Placemat centered, so smallest half. Find space between game buttons, minus margin between placemat slots*/
+	max-width: calc(calc(50vw - 9.52vh - 18vw - 4vw) / 3); /*Placemat centered, so smallest half. Find space between game buttons, minus margin between placemat slots*/
 	max-height: 11vh;
 }
 
