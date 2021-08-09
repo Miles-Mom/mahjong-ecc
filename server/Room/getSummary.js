@@ -16,7 +16,8 @@ function getSummary(mahjongClientId, options = {}) {
 
 		res[id] = {netpoints: 0, points: 0}
 
-		res[id].text = globalThis.serverStateManager.getClient(id).getNickname() + ": " + hand.wind
+		let casedWind = hand.wind.slice(0, 1).toUpperCase() + hand.wind.slice(1)
+		res[id].text = globalThis.serverStateManager.getClient(id).getNickname() + ": " + casedWind
 
 		if (this.state.settings.gameStyle === "chinese") {
 			if (hand.wind === "east") {res[id].text += " (net doubled)"}
