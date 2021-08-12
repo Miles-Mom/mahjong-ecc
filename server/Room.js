@@ -251,8 +251,11 @@ class Room {
 					else if (Sequence.isValidSequence(placement)) {
 						placement = new Sequence({exposed: true, tiles: placement})
 					}
+					else if (placement.length === 2) {
+						return client.message(obj.type, "Your two selected tiles do not match, sequences require 3 tiles, and discards are a single tile. Please review your selected tiles.", "error")
+					}
 					else {
-						return client.message(obj.type, "Unable to create a sequence, or match. Please check your tiles. ", "error")
+						return client.message(obj.type, "Your selected tiles do not form a sequence or match, and discards are a single tile. Please review your selected tiles. ", "error")
 					}
 				}
 				else {
