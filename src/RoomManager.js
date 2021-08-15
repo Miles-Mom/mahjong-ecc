@@ -763,7 +763,7 @@ else {
 	externalAppStoresDiv.id = "externalAppStoresDiv"
 	roomManager.appendChild(externalAppStoresDiv)
 
-	function createButton(href, src, text) {
+	function createButton({href, src, text}) {
 		let link = document.createElement("a")
 		link.href = href
 		link.target = "_blank"
@@ -777,23 +777,47 @@ else {
 		externalAppStoresDiv.appendChild(link)
 	}
 
-	createButton(
-		"https://apps.apple.com/us/app/mahjong-4-friends/id1552704332",
-		"assets/badges/appstore.svg",
-		"Get Mahjong 4 Friends on the App Store"
-	)
+	//We will display the current platform first.
+	//Ordering for other the non-current platform is currently ordered App Store/Windows/Google Play.
+	//Not sure if this is ideal or not. It aligns with the userbase relatively well (Android is smallest)
+	let buttons = [
+		{
+			href: "https://apps.apple.com/us/app/mahjong-4-friends/id1552704332",
+			src: "assets/badges/appstore.svg",
+			text: "Get Mahjong 4 Friends on the App Store",
+			strings: ["iPad", "iPhone", "Mac OS X"]
+		},
+		{
+			href: "https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
+			src: "assets/badges/microsoft.svg",
+			text: "Get Mahjong 4 Friends from Microsoft",
+			strings: "Windows"
+		},
+		{
+			href: "https://play.google.com/store/apps/details?id=com.mahjong4friends.twa",
+			src: "assets/badges/googleplay.svg",
+			text: "Get Mahjong 4 Friends on Google Play",
+			strings: ["Android", "CrOS"]
+		},
+	]
 
-	createButton(
-		"https://play.google.com/store/apps/details?id=com.mahjong4friends.twa",
-		"assets/badges/googleplay.svg",
-		"Get Mahjong 4 Friends on Google Play"
-	)
-	
-	createButton(
-		"https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
-		"assets/badges/microsoft.svg",
-		"Get Mahjong 4 Friends from Microsoft"
-	)
+	function getVal(button) {
+		if (!button.strings) {return 0}
+		if (!(button.strings instanceof Array)) {
+			button.strings = [button.strings]
+		}
+
+		for (let i=0;i<button.strings.length;i++) {
+			if (navigator?.userAgent?.includes(button.strings[i])) {
+				return 1
+			}
+		}
+		return -1
+	}
+
+	buttons.sort((a, b) => {
+		return getVal(b) - getVal(a)
+	}).forEach((button) => {createButton(button)})
 }
 
 
