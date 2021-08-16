@@ -223,7 +223,7 @@ module.exports = [
 
 					//911
 					newArr.push(createTiles({type: suit, value: 9, amount: 1}))
-					newArr.push(createTiles({type: suit, value: 9, amount: 2}))
+					newArr.push(createTiles({type: suit, value: 1, amount: 2}))
 				})
 			})
 		})

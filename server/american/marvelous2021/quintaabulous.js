@@ -60,7 +60,7 @@ module.exports = [
 
 				newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
 				newArr.push(createTiles({type: suitForSecond1, value: 1, amount: 1}))
-				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 			})
 		})
 
