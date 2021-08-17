@@ -305,7 +305,10 @@ function createSuggestedHands(hand, playerName = "") {
 
 		let cardName = stateManager.lastState.message.settings.card
 
-		if (cardName === "Other Card - Bots Use Random Card") {
+		if (cardName === undefined) {
+			return //Not American Mahjong.
+		}
+		else if (cardName === "Other Card - Bots Use Random Card") {
 			popup = new Popups.Notification(titleText, `This card does not support ${titleText}. `)
 		}
 		else if (stateManager.lastState.message.settings.disableHints) {
@@ -327,7 +330,7 @@ function createSuggestedHands(hand, playerName = "") {
 			else {
 				let elem = document.createElement("div")
 				let p = document.createElement("p")
-				p.innerHTML = isUser ? `Discard pile not analyzed` : `Only Exposed Tiles Considered`
+				p.innerHTML = isUser ? `Discard pile not analyzed` : `Only Visible Tiles Considered`
 				if (options.length > 1) {p.innerHTML += " - Scroll for more"}
 				elem.appendChild(p)
 
@@ -588,6 +591,8 @@ let nametags = nametagIds.map((id) => {
 	gameBoard.appendChild(nametag)
 	return nametag
 })
+
+//TODO: Maybe display a "Points Summary"/"Current Points" in Chinese?
 
 //TODO: Reading the nametags feels like REALLY bad practice. It works, but...
 //Probably not worth redoing unless there is a problem.
