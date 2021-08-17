@@ -330,7 +330,7 @@ function createSuggestedHands(hand, playerName = "") {
 			else {
 				let elem = document.createElement("div")
 				let p = document.createElement("p")
-				//TODO: Exposed tiles could imply that not all tiles are factored in after Mahjong is called. Visible, etc, implies discard is counted. 
+				//TODO: Exposed tiles could imply that not all tiles are factored in after Mahjong is called. Visible, etc, implies discard is counted.
 				p.innerHTML = isUser ? `Discard pile not analyzed` : `Only Exposed Tiles Considered`
 				if (options.length > 1) {p.innerHTML += " - Scroll for more"}
 				elem.appendChild(p)
@@ -379,10 +379,16 @@ function createSuggestedHands(hand, playerName = "") {
 					//The first ever that this is dismissed, inform user they can click on opponents' hands for insight.
 					let storageKey = "hasReceivedPossibleHandsHint"
 					if (!localStorage.getItem(storageKey)) {
-						popup.ondismissed = function() {
+						if (!isUser) {
+							//If the user happens to click on possible hands first, don't bother them. 
 							localStorage.setItem(storageKey, true)
-							new Popups.Notification("Gameplay Tip!", "Wondering what hands your opponents could be playing? <br>You can click on their tiles for a list of hands possible with their exposures!")
-								.show()
+						}
+						else {
+							popup.ondismissed = function() {
+								localStorage.setItem(storageKey, true)
+								new Popups.Notification("Gameplay Tip!", "Wondering what hands your opponents could be playing? <br>You can click on their tiles for a list of hands possible with their exposures!")
+									.show()
+							}
 						}
 					}
 				}
