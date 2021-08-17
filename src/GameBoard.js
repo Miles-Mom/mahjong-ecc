@@ -135,7 +135,7 @@ if (fullscreenControls.toggleElement) {
 	//If we can't, we will go fullscreen on first document click.
 	function callFullScreen() {
 	    //Check for mobile or currently being in fullscreen.
-		//TODO: This may be too aggressive on browsers. It can be annoying. 
+		//TODO: This may be too aggressive on browsers. It can be annoying.
 	    if ((window.innerWidth < 600 || window.innerHeight < 600)) {
 			fullscreenControls.goFullscreen()
 	    }
@@ -294,13 +294,22 @@ hintButton.id = "hintButton"
 hintButton.innerHTML = "Suggested Hands"
 gameBoard.appendChild(hintButton)
 
-hintButton.addEventListener("click", function() {
+function createSuggestedHands(hand, playerName = "") {
+	let isUser = !playerName
+	let titleText = isUser ? "Suggested Hands" : playerName + " Possible Hands"
+
 	let popup;
 	try {
+		let tiles = hand.contents.concat(hand.inPlacemat)
+		tiles = tiles.filter((tile) => {return !tile.evicting}).filter((tile) => {return !tile.faceDown})
+
 		let cardName = stateManager.lastState.message.settings.card
 
 		if (cardName === "Other Card - Bots Use Random Card") {
-			popup = new Popups.Notification("Suggested Hands", "This card does not support Suggested Hands. ")
+			popup = new Popups.Notification(titleText, `This card does not support ${titleText}. `)
+		}
+		else if (stateManager.lastState.message.settings.disableHints) {
+			popup = new Popups.Notification(titleText, `${titleText}/Hints are disabled by the host. `)
 		}
 		else {
 			const cards = require("../server/american/cards.js")
@@ -308,18 +317,18 @@ hintButton.addEventListener("click", function() {
 
 			let card = cards[cardName]
 
-			let tiles = userHand.contents.concat(userHand.inPlacemat.filter((tile) => {return !tile.evicting}))
 			console.time("Gen Options")
 			let options = utilities.getTileDifferential(card, tiles)
 			console.timeEnd("Gen Options")
 
 			if (options.length === 0) {
-				popup = new Popups.Notification("No Hands Found", ` - Your hand might be dead<br> - You might have selected the wrong card (using ${cardName}). <br> - Bots might only support a portion of your card`)
+				popup = new Popups.Notification("No Hands Found", ` - This hand might be dead<br> - You might be playing with the wrong card (using ${cardName}). <br> - Bots might only support a portion of your card`)
 			}
 			else {
 				let elem = document.createElement("div")
 				let p = document.createElement("p")
-				p.innerHTML = "(Sorted by Bot - Scroll to see more)"
+				p.innerHTML = isUser ? `Discard pile not analyzed` : `Only Exposed Tiles Considered`
+				if (options.length > 1) {p.innerHTML += " - Scroll for more"}
 				elem.appendChild(p)
 
 				//Progressively render 200 suggestions 2 at a time.
@@ -359,7 +368,21 @@ hintButton.addEventListener("click", function() {
 				table.className = "suggestedHandsTable"
 				console.log(elem)
 
-				popup = new Popups.Notification("Suggested Hands", elem)
+				popup = new Popups.Notification(titleText, elem)
+
+				//Wrap this in an additional try-catch - we're messing with localStorage, which might be wonky.
+				try {
+					//The first ever that this is dismissed, inform user they can click on opponents' hands for insight.
+					let storageKey = "hasReceivedPossibleHandsHint"
+					if (!localStorage.getItem(storageKey)) {
+						popup.ondismissed = function() {
+							localStorage.setItem(storageKey, true)
+							new Popups.Notification("Gameplay Tip!", "Wondering what hands your opponents could be playing? You can click on your opponents' hands to get a list of possible hands based on their exposures! ")
+								.show()
+						}
+					}
+				}
+				catch (e) {console.error(e)}
 			}
 		}
 	}
@@ -368,6 +391,10 @@ hintButton.addEventListener("click", function() {
 		popup = new Popups.Notification("Suggested Hands", "There was an error displaying suggested hands. Sorry. ")
 	}
 	popup.show()
+}
+
+hintButton.addEventListener("click", function() {
+	createSuggestedHands(userHand)
 })
 
 let claimButton = document.createElement("button")
@@ -553,12 +580,27 @@ let leftHand = new Hand({
 	handToRender: leftHandContainer
 })
 
+
 let nametagIds = ["bottomNametag", "rightNametag", "topNametag", "leftNametag"]
 let nametags = nametagIds.map((id) => {
 	let nametag = document.createElement("p")
 	nametag.id = id
 	gameBoard.appendChild(nametag)
 	return nametag
+})
+
+//TODO: Reading the nametags feels like REALLY bad practice. It works, but...
+//Probably not worth redoing unless there is a problem.
+topHandElem.addEventListener("click", function() {
+	createSuggestedHands(topHand, nametags[2].innerHTML)
+})
+
+leftHandContainer.addEventListener("click", function() {
+	createSuggestedHands(leftHand, nametags[3].innerHTML)
+})
+
+rightHandContainer.addEventListener("click", function() {
+	createSuggestedHands(rightHand, nametags[1].innerHTML)
 })
 
 
