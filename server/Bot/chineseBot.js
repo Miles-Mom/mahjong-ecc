@@ -244,10 +244,11 @@ function evaluateNextMove() {
 	}
 	else if (gameData.currentTurn.userTurn === this.clientId) {
 		//We need to choose a discard tile.
-		//TODO: We need to check if we should, and can, charleston (as of, we are east).
+		//TODO: If we can't make a sequence, throw a 4th tile for a kong if possible.
 
 		let breakdown = computeHandBreakdown(currentHand.contents, currentHand.wind, {chooseSecondarySuit: false, looseTileCost: 5})
 
+		//If we need to start the game, determine if we should charleston. 
 		if (currentHand.wind === "east" && room.state.settings.charleston.length > 0 && gameData.charleston !== false && room.state.settings.botSettings.canCharleston) {
 			let values = ["circle", "character", "bamboo", "honor"].map((str) => {
 				return breakdown[str]?.value || 0

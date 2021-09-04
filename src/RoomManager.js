@@ -836,11 +836,8 @@ copyrightNotice.id = "copyrightNotice"
 roomManager.appendChild(copyrightNotice)
 
 //TODO: Need a way to deal with reloads.
-//TODO: Use speechSynthesis onvoiceschange event (or whatever it is).
 if (window.speechSynthesis) {
 	try {
-		speechSynthesis?.getVoices()
-
 		//Workaround for iOS speechSynthesis weirdness.
 		const isiOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 		if (isiOS) {
@@ -857,51 +854,69 @@ if (window.speechSynthesis) {
 	catch (e) {console.error(e)}
 }
 
-let voiceChoices = {}
+let voiceChoices = {} //Voices selected by user.
+let availableVoices = {}; //Voice selection options
+function setVoices() {
+	availableVoices = {}
+	if (window.speechSynthesis) {
+		let voices = speechSynthesis.getVoices()
+		voices.forEach((voice) => {
+			let voiceName = `${voice.name} (${voice.lang})`
+			availableVoices[voiceName] = voice
+		})
+	}
+	window.dispatchEvent(new Event("voiceoptionschanged"))
+}
+
 window.voiceChoices = voiceChoices
+
+if (window.speechSynthesis) {
+	try {
+		speechSynthesis.onvoiceschanged = setVoices //iOS doesn't define speechSynthesis.addEventListener. Just do this.
+		setVoices()
+	}
+	catch (e) {console.warn("Voice Error", e)}
+}
 
 function VoiceSelector() {
 	let voiceOptionsSelect = document.createElement("select")
-	let availableVoices = [];
-	if (window.speechSynthesis) {
-		try {
-			availableVoices = speechSynthesis?.getVoices() || []
+
+	this.generateOptions = function() {
+		while (voiceOptionsSelect.firstChild) {voiceOptionsSelect.firstChild.remove()}
+
+		//We need to have a default, as some browsers (firefox) return an empty array for getVoices, but work.
+		let noneChoice = document.createElement("option")
+		noneChoice.value = "none"
+		noneChoice.innerHTML = "No Voice"
+		noneChoice.selected = true
+		voiceOptionsSelect.appendChild(noneChoice)
+
+		if (Object.keys(availableVoices).length > 0) {
+			let defaultChoice = document.createElement("option")
+			defaultChoice.value = "default"
+			defaultChoice.innerHTML = "Default Voice"
+			//defaultChoice.selected = true
+			voiceOptionsSelect.appendChild(defaultChoice)
+
+			for (let voiceName in availableVoices) {
+				let choice = document.createElement("option")
+				choice.value = voiceName
+				choice.innerHTML = voiceName
+				voiceOptionsSelect.appendChild(choice)
+			}
 		}
-		catch (e) {console.warn("Voice Error", e)}
 	}
 
-	console.log(availableVoices)
-
-	//We need to have a default, as some browsers (firefox) return an empty array for getVoices, but work.
-	let noneChoice = document.createElement("option")
-	noneChoice.value = "none"
-	noneChoice.innerHTML = "No Voice"
-	noneChoice.selected = true
-	voiceOptionsSelect.appendChild(noneChoice)
-
-	let defaultChoice = document.createElement("option")
-	defaultChoice.value = "default"
-	defaultChoice.innerHTML = "Default Voice"
-	//defaultChoice.selected = true
-	voiceOptionsSelect.appendChild(defaultChoice)
-
-	availableVoices.forEach((voice, index) => {
-		let choice = document.createElement("option")
-		choice.value = index
-		choice.innerHTML = voice.lang + "(" + voice.name + ")"
-		voiceOptionsSelect.appendChild(choice)
-	})
+	window.addEventListener("voiceoptionschanged", this.generateOptions)
+	this.generateOptions()
 
 	this.elem = voiceOptionsSelect
 
 	this.get = function() {
-		return  availableVoices[Number(voiceOptionsSelect.value)] || voiceOptionsSelect.value
+		return  availableVoices[voiceOptionsSelect.value] || voiceOptionsSelect.value
 	}
 	this.set = function(voiceSelection = "none") {
 		voiceOptionsSelect.value = voiceSelection
-		if (availableVoices.indexOf(voiceSelection) !== -1) {
-			voiceOptionsSelect.value = availableVoices.indexOf(voiceSelection)
-		}
 	}
 }
 

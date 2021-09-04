@@ -291,6 +291,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				//We will seed with roomId and first tile in placement.
 
 				let rngSeed = this.roomId + placement[0]?.type //There might not be a first element in placement.
+				//TODO: We MIGHT want to sort the files before shuffling.
+				//Currently, the order of tiles matters on blind passes - a 2, 6, 7 will not be treated the same way as a 2, 7, 6
 				Wall.shuffleArray(placement, rngSeed) //It's BLIND! Pick random!
 				placement.forEach((tile) => {
 					tiles.push(tile)
