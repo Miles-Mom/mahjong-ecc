@@ -380,7 +380,7 @@ function createSuggestedHands(hand, playerName = "") {
 					let storageKey = "hasReceivedPossibleHandsHint"
 					if (!localStorage.getItem(storageKey)) {
 						if (!isUser) {
-							//If the user happens to click on possible hands first, don't bother them. 
+							//If the user happens to click on possible hands first, don't bother them.
 							localStorage.setItem(storageKey, true)
 						}
 						else {
@@ -426,6 +426,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 })
 
 window.stateManager.onGameplayAlert = function(obj) {
+	//TODO: Messages about discards need to dissapear as soon as the next discard appears, and any applicible sound has already played.
+
 	//Play sound.
 	let sound = document.createElement("audio");
 
@@ -729,11 +731,11 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		nametag.innerHTML = client.nickname
 		nametag.style.color = ""
 
-		hand.handToRender.classList.remove("brightnessPulse")
+		hand.handToRender.classList.remove("currentTurnHand")
 
 		if (message.currentTurn && client.id === message.currentTurn.userTurn) {
 			currentTurnWind = client.wind
-			hand.handToRender.classList.add("brightnessPulse")
+			hand.handToRender.classList.add("currentTurnHand")
 			nametag.style.color = "red"
 		}
 	})
