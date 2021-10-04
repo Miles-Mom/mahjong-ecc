@@ -535,32 +535,6 @@ This means that something using bottom is off the page - hence we must use top. 
 	margin-left: calc(calc(calc(var(--vw) * 100) - calc(var(--vh) * 19.04)) / 17 / -10 * var(--negativeMarginMultiplier)); /*Negative margin of 10%. Allows even more tiles to fit. */
 }
 
-
-/*Note: These animations are eating up a very significant amount of CPU/GPU power. We may want to stop using them. */
-@keyframes handTurnPulse {
-  0% {
-    filter: brightness(1);
-  }
-  25% {
-    filter: brightness(0.8);
-  }
-  50% {
-	  filter: brightness(1);
-  }
-  75% {
-	  filter: brightness(1.25);
-  }
-  100% {
-	filter: brightness(1);
-  }
-}
-
-/*TODO: The flashing is too obnoxious*/
-.currentTurnHand {
-	animation: handTurnPulse 3s linear infinite;
-	animation-delay: 5s;
-}
-
 #tilePlacemat img {
 	margin-right: 2vw;
 	margin-right: calc(var(--vw) * 2);
@@ -580,7 +554,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 #tilePlacemat img.pending {
-	animation: discardSlotPulse 3s infinite;
+	animation: discardSlotPulse 4s infinite;
 }
 
 #compass {
@@ -859,7 +833,7 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 .scaleAnimation {
-	animation: animateScale 1.5s linear 6s infinite;
+	animation: animateScale 3s linear 6s infinite;
 }
 
 #endGameButton {
@@ -1070,8 +1044,11 @@ This means that something using bottom is off the page - hence we must use top. 
   0% {
 	  opacity: 1;
   }
-  20% {
+  50% {
 	  opacity: 1;
+  }
+  75% {
+	  opacity: 0.8;
   }
   100% {
 	  opacity: 0;

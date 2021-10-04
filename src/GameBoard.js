@@ -730,12 +730,9 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		let nametag = nametags[windPosition]
 		nametag.innerHTML = client.nickname
 		nametag.style.color = ""
-
-		hand.handToRender.classList.remove("currentTurnHand")
-
+		
 		if (message.currentTurn && client.id === message.currentTurn.userTurn) {
 			currentTurnWind = client.wind
-			hand.handToRender.classList.add("currentTurnHand")
 			nametag.style.color = "red"
 		}
 	})
