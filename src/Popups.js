@@ -51,15 +51,14 @@ class Notification {
 	}
 }
 
-let previousMessagePromise = new Promise((resolve) =>{resolve()});
 
-let counters = {
-	messages: 0,
-	optionalMessages: 0
-}
 
+let messageQueue = []
+
+//We will extend alerts to about 6 seconds, but early if a new alert comes in.
+//Optional alerts will be terminated instantly. Non-optional alerts will merely be shortened.
 class BlocklessAlert {
-	constructor(messageText, duration = 3200, config = {}) {
+	constructor(messageText, config = {}) {
 		let cover = document.createElement("div")
 		cover.classList.add("blocklessAlertCover")
 		cover.style.display = "none"
@@ -69,45 +68,72 @@ class BlocklessAlert {
 		message.innerHTML = messageText
 		cover.appendChild(message)
 
-		let onStart = previousMessagePromise
-		previousMessagePromise = new Promise((resolve) => {
-			counters.messages++
-			counters.optionalMessages += !!config.optional
+		this.cover = cover
 
-			function undoCounters(optionalTriggered = false) {
-				counters.messages--
-				counters.optionalMessages -= !!config.optional - optionalTriggered
-			}
+		this.optional = config.optional
+		this.duration = config.duration
+		this.shortened = false //Has the duration been shortened (halved?) as a result of new messages?
+		this.dismissed = false //Has this been dismissed?
+		cover.style.animation = "fadeInAndOut " + this.duration + "ms ease-in"
 
-			previousMessagePromise.then(() => {
-				const triggerLevel = 2 //More than 2, so 3 optional messages waiting. Once this threshold is exceeded once,
-				//we don't display more optional messages.
-				if (counters.optionalMessages > triggerLevel && config.optional) {
-					//Skip
-					undoCounters(true)
-					return resolve()
-				}
+		this.onStart = config.onStart
 
-				//Speed up alerts to eat through queue - if maxCounter exceeds triggerLevel, message volume is reduced, so we stop factoring in maxCounter
-				let newDuration = duration / Math.min(2.5, (Math.max(1, counters ** 0.7) || 1)) //2.5x speedup max.
-				duration = newDuration
-				cover.style.animation = "fadeInAndOut " + duration + "ms ease-in"
-				cover.style.display = ""
-				setTimeout(function() {
-					cover.remove()
-					undoCounters()
-					resolve()
-				}, duration)
-			})
+		messageQueue.forEach((message) => {
+			message.dismissIfOptional()
 		})
 
-		let onEnd = previousMessagePromise
-		return {
-			onStart,
-			onEnd
+		messageQueue.push(this)
+
+		//Show this item if it is the first item in the queue.
+		if (messageQueue[0] === this) {
+			this.show()
+		}
+	}
+
+	show() {
+		this.cover.style.display = ""
+		setTimeout(this.remove.bind(this), this.duration)
+		this.startTime = Date.now()
+		if (this.onStart) {this.onStart()}
+	}
+
+	remove(isOptionalDismissal = false) {
+		//Remove element, and remove this from queue.
+		let index = messageQueue.indexOf(this)
+		if (index !== -1) {
+			messageQueue.splice(index, 1)
+		}
+		this.cover.remove()
+		if (!isOptionalDismissal && !this.dismissed) {
+			this.dismissed = true
+			messageQueue?.[0]?.show()
+		}
+	}
+
+	dismissIfOptional() {
+		if (!this.shortened) {
+			//Shorten to half specified duration.
+			this.shortened = true
+			this.duration /= 2
+		}
+
+		if (this.startTime) {
+			//If currently being shown, trigger another setTimeout backdating to shortened duration, or end right now.
+			let dismissTimeFromNow = this.startTime + this.duration - Date.now()
+			//If optional, dismiss right now as well.
+			if (dismissTimeFromNow <= 0 || this.optional) {
+				this.remove()
+			}
+			else {
+				setTimeout(this.remove.bind(this), dismissTimeFromNow)
+			}
+		}
+		else if (this.optional) {
+			this.remove(true) //Pass true as this is a cancellation, not dismissal - the next item should not necessarily be called.
 		}
 	}
 }
+
 
 
 let openMessageBars; //Currently only allow one to be open at once. We should probably adjust to use increasing z-indexes, so multiple can overlap on different timelines.

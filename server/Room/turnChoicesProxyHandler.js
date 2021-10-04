@@ -385,7 +385,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 							let message = " placed a sequence of " + placement.tiles[0].type + "s"
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + message, {clientId, speech: "Chow"})
-							client.addMessageToHistory("You" + message)
+							client.message("roomActionGameplayAlert", "You" + message, {optional: true, durationMultiplier: 0.8})
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
@@ -414,7 +414,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 							let message = " placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s"
 							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + message, {clientId, speech: matchType})
-							client.addMessageToHistory("You" + message)
+							client.message("roomActionGameplayAlert", "You" + message, {optional: true, durationMultiplier: 0.8})
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
@@ -459,8 +459,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							}
 
 							matchInfo = " placed a " + matchInfo
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + matchInfo, {clientId, speech: "I'll take that"})
-							client.addMessageToHistory("You" + matchInfo)
+							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + matchInfo, {clientId, speech: "I'll take that", durationMultiplier: 1.4})
+							client.message("roomActionGameplayAlert", "You" + matchInfo, {optional: true, durationMultiplier: 0.8})
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})

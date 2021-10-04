@@ -454,25 +454,26 @@ window.stateManager.onGameplayAlert = function(obj) {
 		}, 2000)
 	}
 
-
-	console.log(obj)
-	let alert = new Popups.BlocklessAlert(obj.message, 4000 * (obj?.status?.durationMultiplier || 1), {optional: obj?.status?.optional})
-	alert.onStart.then(() => {
-		if (window.voiceChoices[obj?.status?.clientId] && obj?.status?.speech) {
-			//TODO: SPEAK!!!
-			let utterance = new SpeechSynthesisUtterance(obj.status.speech)
-			let voice = window.voiceChoices[obj.status.clientId].get()
-			console.log(window.voiceChoices[obj.status.clientId])
-			console.log(window.voiceChoices[obj.status.clientId].get())
-			console.log(voice)
-			if (typeof voice !== "string") {
-				try {
-					utterance.voice = voice
+	let alert = new Popups.BlocklessAlert(obj.message, {
+		duration: 4000 * (obj?.status?.durationMultiplier || 1),
+		optional: obj?.status?.optional,
+		onStart: function() {
+			if (window.voiceChoices[obj?.status?.clientId] && obj?.status?.speech) {
+				//TODO: SPEAK!!!
+				let utterance = new SpeechSynthesisUtterance(obj.status.speech)
+				let voice = window.voiceChoices[obj.status.clientId].get()
+				console.log(window.voiceChoices[obj.status.clientId])
+				console.log(window.voiceChoices[obj.status.clientId].get())
+				console.log(voice)
+				if (typeof voice !== "string") {
+					try {
+						utterance.voice = voice
+					}
+					catch(e) {console.error(e)}
 				}
-				catch(e) {console.error(e)}
-			}
-			if (voice !== "none") {
-				speechSynthesis.speak(utterance)
+				if (voice !== "none") {
+					speechSynthesis.speak(utterance)
+				}
 			}
 		}
 	})
@@ -730,7 +731,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		let nametag = nametags[windPosition]
 		nametag.innerHTML = client.nickname
 		nametag.style.color = ""
-		
+
 		if (message.currentTurn && client.id === message.currentTurn.userTurn) {
 			currentTurnWind = client.wind
 			nametag.style.color = "red"
