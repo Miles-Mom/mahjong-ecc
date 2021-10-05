@@ -27,9 +27,7 @@ function drawTile(clientId, doNotMessage = false) {
 		let drawMessage = "You drew " + ((pretty > 0?(pretty === 1)?"a pretty and a ":pretty + " prettys and a ":"a ")+ tile.getTileName(this.state.settings.gameStyle))
 
 		this.setInstructions(client.clientId, drawMessage + ". To discard, select a tile and press proceed. To kong, select 4 matching tiles and press Proceed. If you are Mahjong, press Mahjong. ")
-		client.addMessageToHistory(drawMessage) //Make draws appear in history menu.
-
-		//We won't provide any speech - it can expose information about your hand if other players are near you
+		
 		//TODO: Should do a blank message instead - simply clear the current message if no prettys?
 		client.message("roomActionGameplayAlert", drawMessage, {optional: pretty === 0})
 	}
