@@ -332,7 +332,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 			}
 		}
 		else {
-			this.messageAll([], "roomActionGameplayAlert", "The Charleston is Over", {optional: true})
+			this.messageAll([], "roomActionGameplayAlert", "The Charleston is Over")
 			this.setInstructions(this.gameData.currentTurn.userTurn, "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
 			this.setAllInstructions([this.gameData.currentTurn.userTurn], "The Charleston is over. Waiting on East Wind to make a play. ")
 			this.gameData.charleston = false //The charleston is over.
