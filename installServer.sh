@@ -82,10 +82,16 @@ sudo certbot --apache
 
 echo "Adding instructions to crontab. The server is currently scheduled to reboot periodically, which you may want to disable. "
 
-#Run server on reboot. Reboot every monday at 2AM EST (7AM UTC). Run certbot renew on each reboot.
+#Run server on reboot.
 (crontab -l ; echo "@reboot mkdir -p $HOME/mahjong/server/data/ && node $HOME/mahjong/server.js >> $HOME/mahjong/server/data/server.log") | sort - | uniq - | crontab -
-#Run restart code every 30 minutes to verify server is up.
+
+#Run restart code every 30 minutes to verify server is up (restarts if server is down)
 (crontab -l ; echo "*/30 * * * * node $HOME/mahjong/restartServer.js >> $HOME/mahjong/server/data/restartServer.log") | sort - | uniq - | crontab -
+
+#Keep certificate up to date.
 (crontab -l ; echo "@reboot sudo certbot renew") | sort - | uniq - | crontab -
+
+#Delete log files more than 7 days old. (runs daily)
+(crontab -l ; echo "0 0  *   *   *    find /home/tuckerwillenborg/mahjong/server/data/*  -mtime +7 -delete") | sort - | uniq - | crontab -
 
 echo "Rebooting now is recommended, and should start the site up properly. "
