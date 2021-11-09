@@ -92,6 +92,6 @@ echo "Adding instructions to crontab. The server is currently scheduled to reboo
 (crontab -l ; echo "@reboot sudo certbot renew") | sort - | uniq - | crontab -
 
 #Delete log files more than 7 days old. (runs daily)
-(crontab -l ; echo "0 0  *   *   *    find /home/tuckerwillenborg/mahjong/server/data/*  -mtime +7 -delete") | sort - | uniq - | crontab -
+(crontab -l ; echo "0 0  *   *   *    find /home/tuckerwillenborg/mahjong/server/data/ -mtime +7 -delete") | sort - | uniq - | crontab -
 
 echo "Rebooting now is recommended, and should start the site up properly. "
