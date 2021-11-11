@@ -467,3 +467,10 @@ This means that something using bottom is off the page - hence we must use top. 
 	height: 100vh;
 	background-color: #c3f6c3;
 }
+
+.settingsIcon {
+	position: absolute;
+	width: 32px;
+	top: 8px;
+	right: 8px;
+}

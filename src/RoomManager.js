@@ -428,17 +428,20 @@ async function saveOfflineGame() {
 		console.log(`Saving Game (${toSave.length} characters)`)
 		await writeSave(saveKey, toSave)
 
-		//Upload the offline game for debugging and analysis purposes.
-		//TODO: We don't want to do this constantly, as we could be uploading a bit.
-		//Also, there is no guarantee this goes through - we could legitimately be offline.
-		try {
-			console.log("Attempting Offline Upload")
-			stateManager.uploadOfflineSave({
-				saveId: serverStateManager.getRoom("Offline").logFileSaveId,
-				message: toSave
-			})
+		let allowCollection = await readSave("settingCollectDebuggingData")
+		if (allowCollection !== "false") {
+			//Upload the offline game for debugging and analysis purposes.
+			//TODO: We don't want to do this constantly, as we could be uploading a bit.
+			//Also, there is no guarantee this goes through - we could legitimately be offline.
+			try {
+				console.log("Attempting Offline Upload")
+				stateManager.uploadOfflineSave({
+					saveId: serverStateManager.getRoom("Offline").logFileSaveId,
+					message: toSave
+				})
+			}
+			catch (e) {console.error(e)}
 		}
-		catch (e) {console.error(e)}
 	}
 }
 
@@ -820,6 +823,12 @@ else {
 	}).forEach((button) => {createButton(button)})
 }
 
+try {
+	roomManager.appendChild(require("./settingsMenu.js")) //Add general settings menu. 	
+}
+catch (e) {
+	console.error(e)
+}
 
 setTimeout(function() {
 	if (stateManager.inRoom && stateManager.inRoom.includes("fbtest")) {
