@@ -32,9 +32,11 @@ let notInRoomContainer = document.createElement("div")
 notInRoomContainer.id = "notInRoomContainer"
 roomManager.appendChild(notInRoomContainer)
 
+
 let roomIdInput = document.createElement("input")
 roomIdInput.id = "roomIdInput"
 roomIdInput.placeholder = "Enter Room Name..."
+roomIdInput.setAttribute("enterkeyhint", "next")
 notInRoomContainer.appendChild(roomIdInput)
 
 //Put the nickname input on a new line.
@@ -42,8 +44,25 @@ notInRoomContainer.appendChild(document.createElement("br"))
 
 let nicknameInput = document.createElement("input")
 nicknameInput.id = "nicknameInput"
-nicknameInput.placeholder = "Choose a Nickname..."
+nicknameInput.placeholder = "Nickname (Optional)"
+nicknameInput.setAttribute("enterkeyhint", "done")
 notInRoomContainer.appendChild(nicknameInput)
+
+//Advance to nicknameInput when enter pressed.
+roomIdInput.addEventListener("keydown", function(event) {
+	if (event.keyCode === 13) {
+		roomIdInput.blur()
+		nicknameInput.focus()
+	}
+})
+
+//Blur nicknameInput when enter pressed.
+nicknameInput.addEventListener("keydown", function(event) {
+	if (event.keyCode === 13) {
+		nicknameInput.blur()
+	}
+})
+
 
 //Allow query params.
 let hashParams = new URLSearchParams(window.location.hash.slice(1))
@@ -824,7 +843,7 @@ else {
 }
 
 try {
-	roomManager.appendChild(require("./settingsMenu.js")) //Add general settings menu. 	
+	roomManager.appendChild(require("./settingsMenu.js")) //Add general settings menu.
 }
 catch (e) {
 	console.error(e)
