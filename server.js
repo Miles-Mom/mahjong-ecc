@@ -1,7 +1,105 @@
+//TODO: Do something better than this......
+const process = require("process")
+process
+  .on('unhandledRejection', (reason, p) => {
+    console.error(reason, 'Unhandled Rejection at Promise', p);
+  })
+
 const fs = require("fs")
 const path = require("path")
 const http = require("http")
+
+const os = require("os")
+const zlib = require("zlib")
+
+const compression = require('compression')
+const express = require('express')
+const serveIndex = require('serve-index') //Dev stuff - just viewing directories. Should probably be removed or replaced.
+
 const WebSocket = require('ws');
+
+
+let app = express()
+
+//Compress all responses
+app.use(compression({
+	level: zlib.Z_BEST_COMPRESSION,
+	filter: (req, res) => {
+		let type = res.getHeader("Content-Type")
+		if (
+			type === "image/jpeg"
+			|| type === "image/png"
+		) {
+			return false
+		}
+		else {
+			return true
+		}
+	},
+}))
+
+//app.set('trust proxy', 1) // trust first proxy
+
+//Gets the body of a request.
+function getData(request) {
+	return new Promise((resolve, reject) => {
+		let body = []
+		request.on("data", function(chunk) {
+			body.push(chunk)
+		})
+		request.on("end", function() {
+			resolve(Buffer.concat(body))
+		})
+	})
+}
+
+
+//Serve remaining files.
+app.use('*', (req, res, next) => {
+	res.set("Access-Control-Allow-Origin", "*");
+
+	let relativeSrc = req.originalUrl
+
+	let extensions = ["", ".html", "index.html"]
+	let src;
+	let extension = extensions.find((ext) => {
+		src = path.join(__dirname, relativeSrc + ext)
+		if (fs.existsSync(src)) {
+			return !fs.statSync(src).isDirectory()
+		}
+	})
+
+	if (fs.existsSync(src)) {
+		res.type(path.extname(src))
+		let readStream = fs.createReadStream(src)
+		readStream.pipe(res)
+	}
+	else {
+		next()
+	}
+})
+
+//serveIndex - can be removed.
+app.use("*", (req, res, next) => {
+	serveIndex(path.join(__dirname, req.originalUrl), {
+		'icons': true,
+		'view': "details" //Gives more info than tiles.
+	})(req, res, next)
+})
+
+app.use("*", (req, res, next) => {
+	res.status(404)
+	res.type("text/plain")
+	res.end("File Not Found")
+})
+
+const httpport = 8080
+app.listen(httpport)
+
+
+
+
+
 
 const findAllGuaranteed = require("./server/findAllGuaranteed.js")
 
@@ -47,6 +145,9 @@ if (process.argv.includes("--runBotClientAutoPlay")) {globalThis.runBotClientAut
 if (process.argv.includes("--simulatedGamesToRun")) {
 	globalThis.simulatedGamesToRun = Number(process.argv[process.argv.indexOf("--simulatedGamesToRun") + 1])
 }
+
+
+
 
 const httpserver = http.createServer();
 const websocketServer = new WebSocket.Server({
