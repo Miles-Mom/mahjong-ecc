@@ -383,8 +383,12 @@ input.switch + label {
   position: relative;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2) inset;
   font-family: inherit;
-  transition: all 0.1s ease-in-out;
 }
+
+input.switch.animate + label {
+	transition: all 0.1s ease-in-out;
+}
+
 input.switch + label:before {
   /* Label */
   text-transform: uppercase;

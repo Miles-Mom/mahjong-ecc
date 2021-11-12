@@ -58,6 +58,8 @@ settingsIcon.addEventListener("click", function() {
 		let canCollect = (savedData !== "false")
 		dataCollectionToggle.checked = canCollect
 
+		dataCollectionToggle.classList.add("animate") //Don't animate the initialization. 
+
 		if (canCollect) {
 			dataCollectionMessage.innerHTML = offlineDataCollectionEnabledMessage
 		}
