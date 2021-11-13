@@ -1,4 +1,6 @@
-//TODO: Do something better than this......
+//Setup express server to serve static files, etc.
+
+//TODO: Do something better than this for unhandledRejections
 const process = require("process")
 process
   .on('unhandledRejection', (reason, p) => {
@@ -23,19 +25,10 @@ let app = express()
 
 //Compress all responses
 app.use(compression({
-	level: zlib.Z_BEST_COMPRESSION,
-	filter: (req, res) => {
-		let type = res.getHeader("Content-Type")
-		if (
-			type === "image/jpeg"
-			|| type === "image/png"
-		) {
-			return false
-		}
-		else {
-			return true
-		}
-	},
+	//Max GZIP options.
+	level: 9,
+	memLevel: 9,
+	windowBits: 15,
 }))
 
 //app.set('trust proxy', 1) // trust first proxy
@@ -94,17 +87,14 @@ app.use("*", (req, res, next) => {
 })
 
 const httpport = 8080
-app.listen(httpport)
+const httpserver = app.listen(httpport)
 
 
 
 
-
+//Setup WebSocket server to handle multiplayer.
 
 const findAllGuaranteed = require("./server/findAllGuaranteed.js")
-
-const hostname = "0.0.0.0"
-const httpport = 7591
 
 let serverDataDirectory = path.join(__dirname, "server", "data")
 
@@ -143,13 +133,11 @@ if (process.argv.includes("--avoidFSWrites")) {globalThis.avoidFSWrites = true}
 if (process.argv.includes("--runBotClientAutoPlay")) {globalThis.runBotClientAutoPlay = true}
 
 if (process.argv.includes("--simulatedGamesToRun")) {
+	//TODO: This setting should be TOTALLY seperate from here.
 	globalThis.simulatedGamesToRun = Number(process.argv[process.argv.indexOf("--simulatedGamesToRun") + 1])
 }
 
 
-
-
-const httpserver = http.createServer();
 const websocketServer = new WebSocket.Server({
 	server: httpserver,
 	//TODO: How to test if permesssage-deflate is actually working? Not seeing it in consoles.
@@ -195,13 +183,3 @@ process.stdin.on("data", function(data) {
 		console.log(saveServerState(filePath))
 	}
 })
-
-
-try {
-	httpserver.listen(httpport, hostname, () => {
-	  console.log(`Server running at http://${hostname}:${httpport}/`);
-	});
-}
-catch(e) {
-	console.error(e)
-}
