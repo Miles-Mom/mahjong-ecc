@@ -46,20 +46,15 @@ require("drag-drop-touch")
 
 
 let url = new URL(window.location.origin + window.location.pathname)
-url.pathname = "/node"
 if (window.location.protocol === "https:") {
     url.protocol = "wss:"
 }
 else {
     url.protocol = "ws:"
 }
-if (["localhost", "127.0.0.1"].includes(window.location.hostname) || window.location.hostname.startsWith("192.168.1") || window.location.hostname.startsWith("10.")) {
-    //Local development
-    url.port = 7591
-}
 let websocketURL = url.toString()
 if (window.Capacitor) {
-    websocketURL = "wss://mahjong4friends.com/node"
+    websocketURL = "wss://mahjong4friends.com/"
 }
 window.stateManager = new StateManager(websocketURL)
 
