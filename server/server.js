@@ -1,6 +1,7 @@
 const Room = require("./Room.js")
 const Client = require("./Client.js")
 
+//Note that these native modules will be empty objects in the browser!
 let path = require("path")
 let fs = require("fs")
 let crypto = require("crypto")
