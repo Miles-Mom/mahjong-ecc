@@ -11,9 +11,6 @@ const fs = require("fs")
 const path = require("path")
 const http = require("http")
 
-const os = require("os")
-const zlib = require("zlib")
-
 const compression = require('compression')
 const express = require('express')
 const serveIndex = require('serve-index') //Dev stuff - just viewing directories. Should probably be removed or replaced.
