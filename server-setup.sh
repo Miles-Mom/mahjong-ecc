@@ -1,5 +1,5 @@
 #General Server Setup
-#Prepares server to host multiple sites. Does not actually add the site. 
+#Prepares server to host multiple sites. Does not actually add the site.
 
 #Install Docker
 sudo apt-get update
@@ -16,11 +16,9 @@ sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 
-
 #Install docker-compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-
 
 
 #Setup websites directory:
@@ -90,7 +88,6 @@ volumes:
 EOF
 
 curl https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl | sudo tee nginx.tmpl > /dev/null
-
 
 #Setup proxy
 sudo docker network create nginx-proxy

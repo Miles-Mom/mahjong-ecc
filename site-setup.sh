@@ -1,8 +1,14 @@
 pushd /srv/www
-#TODO: This needs to be cloned for install scripts to be accessed - do we want to redo scripts? One for setup if server setup,
-#one for setup if server not setup?
 sudo git clone https://github.com/ecc521/mahjong.git
-#sudo git checkbox express
+
+echo "Is the server already set up for multiple sites?"
+select yn in "Yes" "No"; do
+    case $yn in
+        No ) ./server-setup.sh; break;;
+        Yes ) exit;;
+    esac
+done
+
 pushd mahjong
 
 sudo docker build -t mahjong .
