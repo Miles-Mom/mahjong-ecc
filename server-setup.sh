@@ -1,5 +1,6 @@
 #General Server Setup
 #Prepares server to host multiple sites. Does not actually add the site.
+#Running this multiple times should be entirely safe (though would be a waste of bandwidth and time, and should be avoided)
 
 #Install Docker
 sudo apt-get update
@@ -92,3 +93,6 @@ curl https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl | s
 #Setup proxy
 sudo docker network create nginx-proxy
 sudo docker-compose up -d
+
+#Setup crontab to start server on reboot.
+(crontab -l ; echo "@reboot pushd /srv/www/nginx-proxy && sudo docker-compose up -d") | sort - | uniq - | crontab -
