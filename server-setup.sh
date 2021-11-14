@@ -1,11 +1,7 @@
 #General Server Setup
-
-#Based off of:
-#https://francoisromain.medium.com/host-multiple-websites-with-https-inside-docker-containers-on-a-single-server-18467484ab95
-#https://www.datanovia.com/en/lessons/how-host-multiple-https-websites-on-one-server/
+#Prepares server to host multiple sites. Does not actually add the site. 
 
 #Install Docker
-
 sudo apt-get update
 sudo apt-get install -y ca-certificates curl gnupg lsb-release
 
@@ -22,7 +18,6 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 
 #Install docker-compose
-
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
@@ -70,9 +65,9 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
 
-  nginx-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-letsencrypt
+  nginx-proxy-acme:
+    image: nginxproxy/acme-companion
+    container_name: nginx-proxy-acme
     restart: unless-stopped
     volumes:
       - ./conf.d:/etc/nginx/conf.d
@@ -80,13 +75,18 @@ services:
       - ./html:/usr/share/nginx/html
       - ./certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
     environment:
       NGINX_DOCKER_GEN_CONTAINER: "nginx-gen"
       NGINX_PROXY_CONTAINER: "nginx"
+
 networks:
   default:
     external:
       name: nginx-proxy
+
+volumes:
+    acme:
 EOF
 
 curl https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl | sudo tee nginx.tmpl > /dev/null
