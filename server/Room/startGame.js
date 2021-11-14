@@ -3,14 +3,8 @@ const Hand = require("../../src/Hand.js")
 
 const cards = require("../american/cards.js")
 
-let fs;
-let path;
-
-try {
-	fs = require("fs")
-	path = require("path")
-}
-catch (e) {}
+let path = require("path")
+let fs = require("fs")
 
 function startGame(obj) {
 	while (this.clientIds.length < 4) {

@@ -1,14 +1,9 @@
 const Room = require("./Room.js")
 const Client = require("./Client.js")
 
-let path, fs, crypto;
-
-try {
-	path = require("path")
-	fs = require("fs")
-	crypto = require("crypto")
-}
-catch (e) {}
+let path = require("path")
+let fs = require("fs")
+let crypto = require("crypto")
 
 function getMessage(type, message, status) {
 	return JSON.stringify({
