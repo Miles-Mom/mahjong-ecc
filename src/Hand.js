@@ -292,10 +292,11 @@ class Hand {
 						let baseVw = parseFloat(document.documentElement.style.getPropertyValue("--vw")) //Pixels.
 						baseVw /= hand.children.length / 14
 
-						hand.children.forEach((child) => {
+						for (let i=0;i<hand.children.length;i++) {
+							let child = hand.children[i]
 							child.style.setProperty("--vh", baseVh + "px")
 							child.style.setProperty("--vw", baseVw + "px")
-						})
+						}
 					}
 				}
 
