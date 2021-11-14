@@ -31,8 +31,6 @@ app.use(compression({
 	windowBits: 15,
 }))
 
-//app.set('trust proxy', 1) // trust first proxy
-
 //Gets the body of a request.
 function getData(request) {
 	return new Promise((resolve, reject) => {
