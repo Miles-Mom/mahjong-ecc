@@ -1,9 +1,9 @@
-let fs, path;
-try {
-	fs = require("fs")
-	path = require("path")
-}
-catch (e) {console.warn(e)}
+const fs = require("fs")
+const path = require("path")
+
+
+//TODO: Make this async.
+//Load from https://github.com/ecc521/mahjong-tutorials.git
 
 function processDir(dirSrc, res = {}, allowFiles = true) {
 	fs.readdirSync(dirSrc).forEach((itemName) => {
