@@ -89,8 +89,6 @@ const httpserver = app.listen(httpport)
 
 //Setup WebSocket server to handle multiplayer.
 
-const findAllGuaranteed = require("./server/findAllGuaranteed.js")
-
 let serverDataDirectory = path.join(__dirname, "server", "data")
 
 if (process.argv.includes("--serverDataDirectory")) {
@@ -116,8 +114,15 @@ catch (e) {
 	console.error(e)
 }
 
+const saveFileManager = require("./server/saveFileManager.js")
+function updateAvailableSaveFiles() {
+	saveFileManager.syncSaveFiles().then(() => {
+		fs.writeFileSync(path.join(__dirname, "guaranteedHands.json"), JSON.stringify(saveFileManager.findSaveFiles()))
+	})
+}
 try {
-	fs.writeFileSync(path.join(__dirname, "guaranteedHands.json"), JSON.stringify(findAllGuaranteed()))
+	updateAvailableSaveFiles()
+	setInterval(updateAvailableSaveFiles, 1000 * 60 * 60 * 24) //Run every 24 hours
 }
 catch (e) {
 	console.error(e)
