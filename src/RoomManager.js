@@ -32,10 +32,6 @@ let notInRoomContainer = document.createElement("div")
 notInRoomContainer.id = "notInRoomContainer"
 roomManager.appendChild(notInRoomContainer)
 
-let maintenanceMessage = document.createElement("h4")
-maintenanceMessage.innerHTML = "Online games will be down for maintenance at Noon (Eastern) on Saturday, November 20th"
-maintenanceMessage.style.marginTop = 0
-notInRoomContainer.appendChild(maintenanceMessage)
 
 let roomIdInput = document.createElement("input")
 roomIdInput.id = "roomIdInput"
