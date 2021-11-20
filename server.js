@@ -114,6 +114,31 @@ catch (e) {
 	console.error(e)
 }
 
+
+async function cleanUpLogFiles() {
+	//Delete all log files over 7 days old.
+	let maxAge = 1000 * 60 * 60 * 24 * 7
+	//TODO: Should we compress old files at some point, etc? Storing them might be useful in some way,
+	//and we might want to generate statistics for them before deleting them (would need to update data policy)
+
+	let files = await fs.promises.readdir(serverDataDirectory)
+	for (let i=0;i<files.length;i++) {
+		let file = path.join(serverDataDirectory, files[i])
+		let stats = await fs.promises.stat(file)
+		if (Date.now() - stats.mtime > maxAge) {
+			await fs.promises.unlink(file)
+		}
+	}
+}
+try {
+	cleanUpLogFiles()
+	setInterval(cleanUpLogFiles, 1000 * 60 * 60 * 24) //Run daily
+}
+catch (e) {
+	console.error(e)
+}
+
+
 const saveFileManager = require("./server/saveFileManager.js")
 function updateAvailableSaveFiles() {
 	saveFileManager.syncSaveFiles().then(() => {
