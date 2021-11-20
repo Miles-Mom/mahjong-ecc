@@ -1,7 +1,7 @@
 //Setup express server to serve static files, etc.
 
 //TODO: Do something better than this for unhandledRejections
-//TODO: This doesn't seem to be working all the time. 
+//TODO: This doesn't seem to be working all the time.
 const process = require("process")
 process
   .on('unhandledRejection', (reason, p) => {
@@ -47,7 +47,7 @@ function getData(request) {
 app.use('*', (req, res, next) => {
 	res.set("Access-Control-Allow-Origin", "*");
 
-	let relativeSrc = req.originalUrl
+    let relativeSrc = decodeURIComponent(req.originalUrl)
 
 	let extensions = ["", ".html", "index.html"]
 	let src;
