@@ -144,7 +144,19 @@ function getPriority(obj, key, exemptFromChecks = false) {
 		}
 
 		priority = 89 - getBackwardsDistance(placerWind, throwerWind)
-		if (obj[key].mahjong) {priority += 20}
+		if (obj[key].mahjong) {
+			priority += 20
+
+			//Mahjong detection.
+			hand.add(this.gameData.currentTurn.thrown)
+			let score = hand.score({type: "american", card: this.gameData.card})
+			hand.remove(this.gameData.currentTurn.thrown)
+
+			if (score.score === 0 && !exemptFromChecks) {
+				client.message("roomActionPlaceTiles", `Your hand does not appear to be Mahjong for the ${this.gameData.card.name} card. If you are Mahjong, click the Mahjong button again to override. Card selection can be changed by the host in Game Settings. `, "error")
+				return false
+			}
+		}
 	}
 	else {
 		hand.add(this.gameData.currentTurn.thrown)
