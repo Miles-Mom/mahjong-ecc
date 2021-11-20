@@ -1,6 +1,7 @@
 //Setup express server to serve static files, etc.
 
 //TODO: Do something better than this for unhandledRejections
+//TODO: This doesn't seem to be working all the time. 
 const process = require("process")
 process
   .on('unhandledRejection', (reason, p) => {
