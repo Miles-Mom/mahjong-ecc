@@ -210,7 +210,7 @@ uploadSaveButton.addEventListener("click", function() {
 
 	let tableContainer = document.createElement("div")
 	tableContainer.className = "guaranteedHandsTableContainer"
-	tableContainer.innerHTML = "Loading Guaranteed Hands..."
+	tableContainer.innerHTML = "Loading Tutorials and Challenges..."
 	elem.appendChild(tableContainer)
 
 	;((async function() {
@@ -221,7 +221,7 @@ uploadSaveButton.addEventListener("click", function() {
 			console.log(obj)
 		}
 		catch (e) {
-			tableContainer.innerHTML = "Error Loading Guaranteed Hands..."
+			tableContainer.innerHTML = "Error Loading Tutorials and Challenges..."
 			return
 		}
 
@@ -248,7 +248,7 @@ uploadSaveButton.addEventListener("click", function() {
 
 				for (let i=0;i<this.columns.length;i++) {
 					//Adjust text without adjusting other contents.
-					let columnKey = this.columns[i]?.replace("National Mahjongg League", "NMJL (In Development!)")
+					let columnKey = this.columns[i]
 
 					if (i === 2) {
 						columnKey = "#" + columnKey
@@ -326,7 +326,8 @@ uploadSaveButton.addEventListener("click", function() {
 						baseUrl = "https://mahjong4friends.com/"
 					}
 					console.log(this.columns)
-					baseUrl += encodeURI(`server/guaranteed/${this.columns.join("/")}.server.json`)
+					//TODO: The base URI needs to be included in the file.
+					baseUrl += encodeURI(`server/mahjong-tutorials/${this.columns.join("/")}.server.json`)
 					console.log(baseUrl)
 					;(async function() {
 						try {
@@ -344,8 +345,7 @@ uploadSaveButton.addEventListener("click", function() {
 			}
 		}
 
-		//Could use Object.keys(obj), but that doesn't get a custom ordering.
-		;["Tutorial", "2021 National Mahjongg League"].forEach((cardName) => {
+		Object.keys(obj).forEach((cardName) => {
 			let expandable = new ExpandableItem({obj, key: cardName})
 			expandable.addEmptyColumns(4)
 			table.appendChild(expandable.elem)

@@ -17,6 +17,13 @@ let config = {
 		path: __dirname,
 		filename: "[name]",
 	},
+	resolve: {
+		fallback: {
+			"fs": false,
+			"path": false,
+			"crypto": false,
+		}
+	},
 	optimization: {
 		minimizer: [new TerserPlugin({
 	      extractComments: false,

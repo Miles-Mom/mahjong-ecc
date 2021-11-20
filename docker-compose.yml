@@ -1,0 +1,18 @@
+version: '3.6'
+
+services:
+  mahjong:
+    image: mahjong
+    restart: always
+    environment:
+      - VIRTUAL_HOST=mahjong4friends.com
+      - VIRTUAL_PORT=8080
+      - LETSENCRYPT_HOST=mahjong4friends.com
+      - LETSENCRYPT_EMAIL=support@mahjong4friends.com
+    expose:
+      - 8080
+
+networks:
+  default:
+    external:
+      name: nginx-proxy

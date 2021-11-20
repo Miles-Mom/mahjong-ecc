@@ -3,14 +3,9 @@ const Hand = require("../../src/Hand.js")
 
 const cards = require("../american/cards.js")
 
-let fs;
-let path;
-
-try {
-	fs = require("fs")
-	path = require("path")
-}
-catch (e) {}
+//Note that these native modules will be empty objects in the browser!
+const path = require("path")
+const fs = require("fs")
 
 function startGame(obj) {
 	while (this.clientIds.length < 4) {
@@ -155,7 +150,8 @@ function startGame(obj) {
 	this.state.moves = []
 
 	this.logFileSaveId = this.roomId + "-" + Date.now()
-	if (fs && !globalThis.avoidFSWrites) {
+	//Check for fs.createWriteStream to confirm we are native.
+	if (fs.createWriteStream && !globalThis.avoidFSWrites) {
 		this.logFile = fs.createWriteStream(path.join(globalThis.serverStateManager.serverDataDirectory, this.logFileSaveId + ".room"))
 	}
 

@@ -1,14 +1,10 @@
 const Room = require("./Room.js")
 const Client = require("./Client.js")
 
-let path, fs, crypto;
-
-try {
-	path = require("path")
-	fs = require("fs")
-	crypto = require("crypto")
-}
-catch (e) {}
+//Note that these native modules will be empty objects in the browser!
+const path = require("path")
+const fs = require("fs")
+const crypto = require("crypto")
 
 function getMessage(type, message, status) {
 	return JSON.stringify({

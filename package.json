@@ -26,9 +26,7 @@
     "@babel/plugin-transform-runtime": "^7.11.0",
     "@bubblewrap/cli": "^1.5.0",
     "cordova-res": "^0.15.3",
-    "mobile-drag-drop": "^2.3.0-rc.2"
-  },
-  "dependencies": {
+    "mobile-drag-drop": "^2.3.0-rc.2",
     "@babel/core": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/runtime": "^7.11.0",
@@ -51,8 +49,13 @@
     "es6-promise-plugin": "^4.2.2",
     "ionic-plugin-deeplinks": "^1.0.22",
     "qrcode-generator": "^1.4.4",
+    "webpack": "^5.30.0"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
     "seed-random": "^2.2.0",
-    "webpack": "^5.30.0",
+    "serve-index": "^1.9.1",
     "ws": "^7.3.1"
   }
 }

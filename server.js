@@ -1,12 +1,93 @@
+//Setup express server to serve static files, etc.
+
+//TODO: Do something better than this for unhandledRejections
+const process = require("process")
+process
+  .on('unhandledRejection', (reason, p) => {
+    console.error(reason, 'Unhandled Rejection at Promise', p);
+  })
+
 const fs = require("fs")
 const path = require("path")
 const http = require("http")
+
+const compression = require('compression')
+const express = require('express')
+const serveIndex = require('serve-index') //Dev stuff - just viewing directories. Should probably be removed or replaced.
+
 const WebSocket = require('ws');
 
-const findAllGuaranteed = require("./server/findAllGuaranteed.js")
 
-const hostname = "0.0.0.0"
-const httpport = 7591
+let app = express()
+
+//Compress all responses
+app.use(compression({
+	//Max GZIP options.
+	level: 9,
+	memLevel: 9,
+	windowBits: 15,
+}))
+
+//Gets the body of a request.
+function getData(request) {
+	return new Promise((resolve, reject) => {
+		let body = []
+		request.on("data", function(chunk) {
+			body.push(chunk)
+		})
+		request.on("end", function() {
+			resolve(Buffer.concat(body))
+		})
+	})
+}
+
+
+//Serve remaining files.
+app.use('*', (req, res, next) => {
+	res.set("Access-Control-Allow-Origin", "*");
+
+	let relativeSrc = req.originalUrl
+
+	let extensions = ["", ".html", "index.html"]
+	let src;
+	let extension = extensions.find((ext) => {
+		src = path.join(__dirname, relativeSrc + ext)
+		if (fs.existsSync(src)) {
+			return !fs.statSync(src).isDirectory()
+		}
+	})
+
+	if (fs.existsSync(src)) {
+		res.type(path.extname(src))
+		let readStream = fs.createReadStream(src)
+		readStream.pipe(res)
+	}
+	else {
+		next()
+	}
+})
+
+//serveIndex - can be removed.
+app.use("*", (req, res, next) => {
+	serveIndex(path.join(__dirname, req.originalUrl), {
+		'icons': true,
+		'view': "details" //Gives more info than tiles.
+	})(req, res, next)
+})
+
+app.use("*", (req, res, next) => {
+	res.status(404)
+	res.type("text/plain")
+	res.end("File Not Found")
+})
+
+const httpport = 8080
+const httpserver = app.listen(httpport)
+
+
+
+
+//Setup WebSocket server to handle multiplayer.
 
 let serverDataDirectory = path.join(__dirname, "server", "data")
 
@@ -33,8 +114,15 @@ catch (e) {
 	console.error(e)
 }
 
+const saveFileManager = require("./server/saveFileManager.js")
+function updateAvailableSaveFiles() {
+	saveFileManager.syncSaveFiles().then(() => {
+		fs.writeFileSync(path.join(__dirname, "guaranteedHands.json"), JSON.stringify(saveFileManager.findSaveFiles()))
+	})
+}
 try {
-	fs.writeFileSync(path.join(__dirname, "guaranteedHands.json"), JSON.stringify(findAllGuaranteed()))
+	updateAvailableSaveFiles()
+	setInterval(updateAvailableSaveFiles, 1000 * 60 * 60 * 24) //Run every 24 hours
 }
 catch (e) {
 	console.error(e)
@@ -45,10 +133,11 @@ if (process.argv.includes("--avoidFSWrites")) {globalThis.avoidFSWrites = true}
 if (process.argv.includes("--runBotClientAutoPlay")) {globalThis.runBotClientAutoPlay = true}
 
 if (process.argv.includes("--simulatedGamesToRun")) {
+	//TODO: This setting should be TOTALLY seperate from here.
 	globalThis.simulatedGamesToRun = Number(process.argv[process.argv.indexOf("--simulatedGamesToRun") + 1])
 }
 
-const httpserver = http.createServer();
+
 const websocketServer = new WebSocket.Server({
 	server: httpserver,
 	//TODO: How to test if permesssage-deflate is actually working? Not seeing it in consoles.
@@ -94,13 +183,3 @@ process.stdin.on("data", function(data) {
 		console.log(saveServerState(filePath))
 	}
 })
-
-
-try {
-	httpserver.listen(httpport, hostname, () => {
-	  console.log(`Server running at http://${hostname}:${httpport}/`);
-	});
-}
-catch(e) {
-	console.error(e)
-}

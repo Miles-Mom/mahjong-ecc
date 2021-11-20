@@ -8,6 +8,6 @@ capacitorDir
 resources/ios/icon
 resources/ios/splash
 resources/android/splash
-server/guaranteed
+server/mahjong-tutorials
 guaranteedHands.json
 .gradle
