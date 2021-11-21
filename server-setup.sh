@@ -96,3 +96,16 @@ sudo docker-compose up -d
 
 #Setup crontab to start server on reboot.
 (crontab -l ; echo "@reboot cd /srv/www/nginx-proxy && sudo docker-compose up -d") | sort - | uniq - | crontab -
+
+
+
+#Add Swap - Google Cloud has none by default.
+#This isn't *needed* with enough RAM, but it can help prevent issues.
+#TODO: Make this optional.
+echo "Allocating swap"
+sudo fallocate -l 1G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+sudo swapon -s
+echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab > /dev/null
