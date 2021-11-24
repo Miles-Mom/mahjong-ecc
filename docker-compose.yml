@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.8'
 
 services:
   mahjong:
@@ -11,6 +11,10 @@ services:
       - LETSENCRYPT_EMAIL=support@mahjong4friends.com
     expose:
       - 8080
+    deploy:
+      resources:
+        limits:
+          memory: 250M
 
 networks:
   default:
