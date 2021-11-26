@@ -71,9 +71,19 @@ class StateManager {
 				console.warn(e)
 				if (e.code !== 1000) {
 					if (stateManager.offlineMode === false) {
-						if (popup) {popup.dismiss();popup = null}
+						//If we reconnect within disconnectDelayTime milliseconds, don't display any message.
+						let disconnectDelayTime = 1500
+
+						if (popup) {
+							disconnectDelayTime = 0  //Refreshing the existing message - no delay here.
+							popup.dismiss();
+							popup = null
+						}
+
 						popup = new Popups.MessageBar("You Disconnected from the Server. Attempting to Reconnect...")
-						popup.show(8000)
+						setTimeout(function() {
+							if (popup) {popup.show(8000)}
+						}, disconnectDelayTime)
 					}
 
 					//If not a normal closure, reestablish and sync.
