@@ -299,9 +299,11 @@ function createSuggestedHands(hand, playerName = "") {
 
 	let popup;
 	try {
+		//TODO: The card setting (like all settings) is sent even when not applicable to the game mode.
+		//Can this be fixed such that we can merely check cardName === undefined?
 		let cardName = stateManager.lastState.message.settings.card
 
-		if (cardName === undefined) {
+		if (stateManager.lastState.message.settings.gameStyle !== "american") {
 			//Not American Mahjong - must be Chinese/Panama.
 			let titleText = (isUser ? "Your" : playerName + "'s") + " Point Summary"
 
