@@ -778,9 +778,12 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	delete userHand.wind //Make sure this is cleared - if we are spectating, we don't want this to be defined.
 	clients.forEach((client) => {
 		if (client.hand) {
-			let tempHand = Hand.fromString(client.hand)
-			userHand.syncContents(tempHand.contents,  charlestonStart && message?.currentTurn?.charleston)
-			userHand.wind = tempHand.wind
+			client.hand = Hand.fromString(client.hand)
+		}
+
+		if (client.id === window.clientId) {
+			userHand.syncContents(client.hand.contents, charlestonStart && message?.currentTurn?.charleston)
+			userHand.wind = client.hand.wind
 		}
 	})
 
@@ -809,14 +812,15 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let currentTurnWind;
 	clients.forEach((client) => {
 		let windPosition = 0;
-		if (client.wind) {
-			windPosition = windOrder.indexOf(client.wind)
+		if (client.hand.wind) {
+			windPosition = windOrder.indexOf(client.hand.wind)
 		}
+
 		let hand = hands[windPosition]
 
-		if (client.visibleHand && client.wind) {
-			hand.syncContents(Hand.convertStringsToTiles(client.visibleHand))
-			hand.wind = client.wind
+		if (client.hand && client.id !== window.clientId) {
+			hand.syncContents(client.hand.contents)
+			hand.wind = client.hand.wind
 		}
 
 		let nametag = nametags[windPosition]
@@ -824,7 +828,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		nametag.style.color = ""
 
 		if (message.currentTurn && client.id === message.currentTurn.userTurn) {
-			currentTurnWind = client.wind
+			currentTurnWind = client.hand.wind
 			nametag.style.color = "red"
 		}
 	})
