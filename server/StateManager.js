@@ -2,15 +2,6 @@ const Room = require("./Room.js")
 const Client = require("./Client.js")
 const Bot = require("./Bot.js")
 
-//For state saving.
-let fs, path;
-
-try {
-	fs = require("fs")
-	path = require("path")
-}
-catch (e) {}
-
 class StateManager {
 	constructor(rooms = {}, clients = {}) {
 
@@ -127,22 +118,11 @@ class StateManager {
 	}
 
 	static getHostInfo() {
-		try {
-			if (fs) {
-				return; //Actual server.
+		if (globalThis.window) {
+			return {
+				platform: window.nativePlatform || "web",
+				userAgent: window.navigator?.userAgent //TODO: Capacitor can give us much easier to parse data, but async. Might be better to keep standardized though.
 			}
-			else if (window.navigator) {
-				return {
-					platform: window.nativePlatform || "web",
-					userAgent: navigator.userAgent //TODO: Capacitor can give us much easier to parse data, but async. Might be better to keep standardized though.
-				}
-			}
-			else {
-				throw "Unknown Platform"
-			}
-		}
-		catch (e) {
-			console.error(e)
 		}
 	}
 }
