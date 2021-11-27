@@ -4,8 +4,7 @@ An application to allow users to play mahjong over the internet.
 
 Website, PWA, Android App, and iOS App. 
 
-
-Insallation (Development):
+#### Insallation (Development):
 ```
 git clone https://github.com/ecc521/mahjong.git
 cd mahjong
@@ -18,8 +17,5 @@ The server will automatically start on port 8080. Please make sure it is unused.
 You can also build and run the Docker image if you prefer. 
 
 
-
-
-
-Installation (Server): 
+#### Installation (Server): 
 Run ```bash site-setup.sh``` and follow instructions
