@@ -296,19 +296,108 @@ gameBoard.appendChild(hintButton)
 
 function createSuggestedHands(hand, playerName = "") {
 	let isUser = !playerName
-	let titleText = isUser ? "Suggested Hands" : playerName + " Possible Hands"
 
 	let popup;
 	try {
-		let tiles = hand.contents.concat(hand.inPlacemat)
-		tiles = tiles.filter((tile) => {return !tile.evicting}).filter((tile) => {return !tile.faceDown})
-
 		let cardName = stateManager.lastState.message.settings.card
 
 		if (cardName === undefined) {
-			return //Not American Mahjong.
+			//Not American Mahjong - must be Chinese/Panama.
+			let titleText = (isUser ? "Your" : playerName + "'s") + " Point Summary"
+
+			//TODO: Identify if hand is Mahjong - pass those details into hand.score
+			//This requires server code changes as well.
+			let results = hand.score()
+
+			let scoreSummary = document.createElement("div")
+			scoreSummary.className = "scoreSummary"
+
+			gameBoard.appendChild(scoreSummary)
+
+			let header = document.createElement("p")
+			header.innerHTML = titleText
+			header.className = "scoreSummaryHeader"
+			scoreSummary.appendChild(header)
+
+			let closeButton = document.createElement("span")
+			closeButton.addEventListener("click", function() {
+				scoreSummary.remove()
+			})
+			closeButton.innerHTML = "×"
+			closeButton.className = "scoreSummaryClose"
+			scoreSummary.appendChild(closeButton)
+			console.log(closeButton)
+
+			let itemTableContainer = document.createElement("div")
+			itemTableContainer.className = "itemTableContainer"
+
+			scoreSummary.appendChild(itemTableContainer)
+
+			function createTable(items) {
+				let tableContainer = document.createElement("div")
+				tableContainer.className = "tableContainer"
+
+				let table = document.createElement("table")
+				tableContainer.appendChild(table)
+
+				function createData(tr) {
+					let td = document.createElement("td")
+					tr.appendChild(td)
+					return td
+				}
+
+				let headerRow = document.createElement("tr")
+				table.appendChild(headerRow)
+
+				createData(headerRow).innerHTML = "Item"
+				createData(headerRow).innerHTML = "Pts"
+				createData(headerRow).innerHTML = "Dbs"
+
+				items.forEach((item) => {
+					let tr = document.createElement("tr")
+					table.appendChild(tr)
+
+					if (item.text) {
+						//Display text label.
+						createData(tr).innerHTML = item.text
+					}
+					else {
+						let td = createData(tr)
+						//Display the tile images as label.
+						itemContent = document.createElement("span")
+						item.match.tiles.flat().forEach((tile) => {
+							td.appendChild(tile.createImageElem({
+								gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+							}))
+						})
+					}
+
+					createData(tr).innerHTML = item.points
+					createData(tr).innerHTML = item.doubles
+				})
+
+				return tableContainer
+			}
+
+			let matchesTable = createTable(results.matchItems)
+			let otherTable = createTable(results.otherItems)
+
+			itemTableContainer.appendChild(matchesTable)
+			itemTableContainer.appendChild(otherTable)
+
+			let bottomMessage = document.createElement("p")
+			bottomMessage.innerHTML = results.scoreText
+			scoreSummary.appendChild(bottomMessage)
+
+			return
 		}
-		else if (cardName === "Other Card - Bots Use Random Card") {
+
+		let titleText = isUser ? "Suggested Hands" : playerName + " Possible Hands"
+
+		let tiles = hand.contents.concat(hand.inPlacemat)
+		tiles = tiles.filter((tile) => {return !tile.evicting}).filter((tile) => {return !tile.faceDown})
+
+		if (cardName === "Other Card - Bots Use Random Card") {
 			popup = new Popups.Notification(titleText, `This card does not support ${titleText}. `)
 		}
 		else if (stateManager.lastState.message.settings.disableHints) {
@@ -602,8 +691,6 @@ let nametags = nametagIds.map((id) => {
 	return nametag
 })
 
-//TODO: Maybe display a "Points Summary"/"Current Points" in Chinese?
-
 //TODO: Reading the nametags feels like REALLY bad practice. It works, but...
 //Probably not worth redoing unless there is a problem.
 topHandElem.addEventListener("click", function() {
@@ -616,6 +703,10 @@ leftHandContainer.addEventListener("click", function() {
 
 rightHandContainer.addEventListener("click", function() {
 	createSuggestedHands(rightHand, nametags[1].innerHTML)
+})
+
+userHandExposed.addEventListener("click", function() {
+	createSuggestedHands(userHand)
 })
 
 
