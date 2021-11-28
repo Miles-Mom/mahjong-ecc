@@ -35,6 +35,11 @@ function goMahjong(clientId, options = {}) {
 		}
 	}
 
+	hand.status = {
+		status: "mahjong",
+		drewOwnTile: !this.gameData.previousTurnPickedUp
+	}
+
 	if (!ignoreMahjong) {
 		//The game is over.
 		this.gameData.currentTurn.userTurn = clientId

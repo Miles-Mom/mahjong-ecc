@@ -727,7 +727,7 @@ function clearSyncCache() {
 }
 
 window.stateManager.onRevertState = clearSyncCache
-window.stateManager.addEventListener("onEndGame", clearSyncCache) //This is basically irrelevant, as 4+ tiles almost always vary between draws. 
+window.stateManager.addEventListener("onEndGame", clearSyncCache) //This is basically irrelevant, as 4+ tiles almost always vary between draws.
 
 
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
@@ -796,8 +796,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		}
 
 		if (client.id === window.clientId) {
-			userHand.syncContents(client.hand.contents, message?.currentTurn?.charleston)
-			userHand.wind = client.hand.wind
+			userHand.sync(client.hand, message?.currentTurn?.charleston)
 		}
 	})
 
@@ -829,8 +828,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		let hand = hands[windPosition]
 
 		if (client.hand && client.id !== window.clientId) {
-			hand.syncContents(client.hand.contents)
-			hand.wind = client.hand.wind
+			hand.sync(client.hand, message?.currentTurn?.charleston)
 		}
 
 		let nametag = nametags[windPosition]

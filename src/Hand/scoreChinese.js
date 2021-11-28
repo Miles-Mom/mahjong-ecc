@@ -3,7 +3,8 @@ const Tile = require("../Tile.js")
 const Pretty = require("../Pretty.js")
 const TileContainer = require("../TileContainer.js")
 
-function scoreChinese(config = {}) {
+function scoreChinese() {
+	//Reads hand.status (bound, so this.status) to determine if Mahjong (could do w/ tile count and tiles), and drewOwnTile
 	let oldContents = this.contents.slice(0) //Copy the old hand contents to reset back.
 
 	let hasSequence = false
@@ -65,14 +66,14 @@ function scoreChinese(config = {}) {
 		hasSequence = hasSequence || match.isSequence
 	}
 
-	if (config.isMahjong) {
+	if (this.status?.status === "mahjong") {
 		otherItems.push({
 			text: "Mahjong",
 			doubles: 0,
 			points: 20
 		})
 
-		if (config.drewOwnTile) {
+		if (this.status?.drewOwnTile) {
 			otherItems.push({
 				text: "Self-Draw",
 				doubles: 0,

@@ -23,6 +23,13 @@ class Hand {
 		this.inPlacemat = [] //Additional contents of hand. In placemat.
 
 		this.syncContents = (require("./Hand/syncContents.js")).bind(this)
+		this.sync = (function(hand, addAdditionsToPlacematIfOpen) {
+			//Used to sync from server. 
+			this.syncContents(hand.contents, addAdditionsToPlacematIfOpen)
+			this.wind = hand.wind
+			this.status = hand.status
+		}).bind(this)
+
 		this.score = (require("./Hand/score.js")).bind(this)
 		this.getClearHandInfo = (require("./Hand/getClearHandInfo.js")).bind(this)
 		this.isMahjong = (require("./Hand/isMahjong.js")).bind(this)
@@ -543,7 +550,8 @@ class Hand {
 	toJSON() {
 		return JSON.stringify({
 			wind: this.wind,
-			contents: this.contents
+			contents: this.contents,
+			status: this.status
 		})
 	}
 
@@ -583,6 +591,7 @@ class Hand {
 		let wind = obj.wind
 
 		let hand = new Hand({wind: obj.wind})
+		hand.status = obj.status
 		hand.contents = Hand.convertStringsToTiles(obj.contents)
 		return hand
 	}
