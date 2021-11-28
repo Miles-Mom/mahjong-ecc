@@ -714,9 +714,22 @@ userHandExposed.addEventListener("click", function() {
 
 let showSpectating = true
 
-//We place the changed tiles into the placemat during charleston. We employ this check to stop the initial state sync after a reload or
-//game start in american mahjong from filling the placemat with the first 3 tiles in the hand (as the entire hand changed)
-let charlestonStart = false;
+
+
+function clearSyncCache() {
+	//Clear contents, but don't render the changes
+	//This forces the next sync to sync the entire hand contents,
+	//which prevents it from being treated as a Charleston.
+
+	//Without this, reverts into an American Mahjong charleston might result
+	//in the changed tiles going into the placemat.
+	userHand.contents = []
+}
+
+window.stateManager.onRevertState = clearSyncCache
+window.stateManager.addEventListener("onEndGame", clearSyncCache) //This is basically irrelevant, as 4+ tiles almost always vary between draws. 
+
+
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	goMahjongButton.innerHTML = "Mahjong"
 	if (window.stateManager.isHost) {
@@ -754,7 +767,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	if (!message.inGame) {
 		document.body.style.overflow = ""
-		charlestonStart = false
 		return
 	};
 	document.body.style.overflow = "hidden"
@@ -784,14 +796,10 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		}
 
 		if (client.id === window.clientId) {
-			userHand.syncContents(client.hand.contents, charlestonStart && message?.currentTurn?.charleston)
+			userHand.syncContents(client.hand.contents, message?.currentTurn?.charleston)
 			userHand.wind = client.hand.wind
 		}
 	})
-
-	if (message?.currentTurn?.charleston) {
-		charlestonStart = true
-	}
 
 	let userWindIndex = winds.indexOf(userHand.wind)
 

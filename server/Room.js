@@ -124,6 +124,7 @@ class Room {
 			}
 
 			this.messageAll([], "roomActionGameplayAlert", `${client.getNickname()} reverted to move ${turnNumber} (${this.state.moves.length - 1 - turnNumber} moves)`)
+			this.messageAll([], "roomActionRevertState") //Notifies client code about change - currently used to distinguish between charleston passes and reverts. 
 
 			globalThis.serverStateManager.deleteRoom(this.roomId)
 			this.state.moves = this.state.moves.slice(0, turnNumber)
