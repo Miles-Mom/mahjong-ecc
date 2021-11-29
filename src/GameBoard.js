@@ -305,11 +305,11 @@ function createSuggestedHands(hand, playerName = "") {
 
 		if (stateManager.lastState.message.settings.gameStyle !== "american") {
 			//Not American Mahjong - must be Chinese/Panama.
-			let titleText = (isUser ? "Your" : playerName + "'s") + " Point Summary"
 
 			//TODO: Identify if hand is Mahjong - pass those details into hand.score
 			//This requires server code changes as well.
 			let results = hand.score()
+			let titleText = results.scoreText //To save space, we'll display scoreText as the header.
 
 			let scoreSummary = document.createElement("div")
 			scoreSummary.className = "scoreSummary"
@@ -386,10 +386,6 @@ function createSuggestedHands(hand, playerName = "") {
 
 			itemTableContainer.appendChild(matchesTable)
 			itemTableContainer.appendChild(otherTable)
-
-			let bottomMessage = document.createElement("p")
-			bottomMessage.innerHTML = results.scoreText
-			scoreSummary.appendChild(bottomMessage)
 
 			return
 		}
