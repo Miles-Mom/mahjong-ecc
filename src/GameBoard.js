@@ -296,19 +296,106 @@ gameBoard.appendChild(hintButton)
 
 function createSuggestedHands(hand, playerName = "") {
 	let isUser = !playerName
-	let titleText = isUser ? "Suggested Hands" : playerName + " Possible Hands"
 
 	let popup;
 	try {
+		//TODO: The card setting (like all settings) is sent even when not applicable to the game mode.
+		//Can this be fixed such that we can merely check cardName === undefined?
+		let cardName = stateManager.lastState.message.settings.card
+
+		if (stateManager.lastState.message.settings.gameStyle !== "american") {
+			//Not American Mahjong - must be Chinese/Panama.
+
+			//TODO: Identify if hand is Mahjong - pass those details into hand.score
+			//This requires server code changes as well.
+			let results = hand.score()
+			let titleText = results.scoreText //To save space, we'll display scoreText as the header.
+
+			let scoreSummary = document.createElement("div")
+			scoreSummary.className = "scoreSummary"
+
+			gameBoard.appendChild(scoreSummary)
+
+			let header = document.createElement("p")
+			header.innerHTML = titleText
+			header.className = "scoreSummaryHeader"
+			scoreSummary.appendChild(header)
+
+			let closeButton = document.createElement("span")
+			closeButton.addEventListener("click", function() {
+				scoreSummary.remove()
+			})
+			closeButton.innerHTML = "×"
+			closeButton.className = "scoreSummaryClose"
+			scoreSummary.appendChild(closeButton)
+			console.log(closeButton)
+
+			let itemTableContainer = document.createElement("div")
+			itemTableContainer.className = "itemTableContainer"
+
+			scoreSummary.appendChild(itemTableContainer)
+
+			function createTable(items) {
+				let tableContainer = document.createElement("div")
+				tableContainer.className = "tableContainer"
+
+				let table = document.createElement("table")
+				tableContainer.appendChild(table)
+
+				function createData(tr) {
+					let td = document.createElement("td")
+					tr.appendChild(td)
+					return td
+				}
+
+				let headerRow = document.createElement("tr")
+				table.appendChild(headerRow)
+
+				createData(headerRow).innerHTML = "Item"
+				createData(headerRow).innerHTML = "Pts"
+				createData(headerRow).innerHTML = "Dbs"
+
+				items.forEach((item) => {
+					let tr = document.createElement("tr")
+					table.appendChild(tr)
+
+					if (item.text) {
+						//Display text label.
+						createData(tr).innerHTML = item.text
+					}
+					else {
+						let td = createData(tr)
+						//Display the tile images as label.
+						itemContent = document.createElement("span")
+						item.match.tiles.flat().forEach((tile) => {
+							td.appendChild(tile.createImageElem({
+								gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
+							}))
+						})
+					}
+
+					createData(tr).innerHTML = item.points
+					createData(tr).innerHTML = item.doubles
+				})
+
+				return tableContainer
+			}
+
+			let matchesTable = createTable(results.matchItems)
+			let otherTable = createTable(results.otherItems)
+
+			itemTableContainer.appendChild(matchesTable)
+			itemTableContainer.appendChild(otherTable)
+
+			return
+		}
+
+		let titleText = isUser ? "Suggested Hands" : playerName + " Possible Hands"
+
 		let tiles = hand.contents.concat(hand.inPlacemat)
 		tiles = tiles.filter((tile) => {return !tile.evicting}).filter((tile) => {return !tile.faceDown})
 
-		let cardName = stateManager.lastState.message.settings.card
-
-		if (cardName === undefined) {
-			return //Not American Mahjong.
-		}
-		else if (cardName === "Other Card - Bots Use Random Card") {
+		if (cardName === "Other Card - Bots Use Random Card") {
 			popup = new Popups.Notification(titleText, `This card does not support ${titleText}. `)
 		}
 		else if (stateManager.lastState.message.settings.disableHints) {
@@ -602,8 +689,6 @@ let nametags = nametagIds.map((id) => {
 	return nametag
 })
 
-//TODO: Maybe display a "Points Summary"/"Current Points" in Chinese?
-
 //TODO: Reading the nametags feels like REALLY bad practice. It works, but...
 //Probably not worth redoing unless there is a problem.
 topHandElem.addEventListener("click", function() {
@@ -618,12 +703,29 @@ rightHandContainer.addEventListener("click", function() {
 	createSuggestedHands(rightHand, nametags[1].innerHTML)
 })
 
+userHandExposed.addEventListener("click", function() {
+	createSuggestedHands(userHand)
+})
+
 
 let showSpectating = true
 
-//We place the changed tiles into the placemat during charleston. We employ this check to stop the initial state sync after a reload or
-//game start in american mahjong from filling the placemat with the first 3 tiles in the hand (as the entire hand changed)
-let charlestonStart = false;
+
+
+function clearSyncCache() {
+	//Clear contents, but don't render the changes
+	//This forces the next sync to sync the entire hand contents,
+	//which prevents it from being treated as a Charleston.
+
+	//Without this, reverts into an American Mahjong charleston might result
+	//in the changed tiles going into the placemat.
+	userHand.contents = []
+}
+
+window.stateManager.onRevertState = clearSyncCache
+window.stateManager.addEventListener("onEndGame", clearSyncCache) //This is basically irrelevant, as 4+ tiles almost always vary between draws.
+
+
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	goMahjongButton.innerHTML = "Mahjong"
 	if (window.stateManager.isHost) {
@@ -661,7 +763,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	if (!message.inGame) {
 		document.body.style.overflow = ""
-		charlestonStart = false
 		return
 	};
 	document.body.style.overflow = "hidden"
@@ -687,15 +788,13 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	delete userHand.wind //Make sure this is cleared - if we are spectating, we don't want this to be defined.
 	clients.forEach((client) => {
 		if (client.hand) {
-			let tempHand = Hand.fromString(client.hand)
-			userHand.syncContents(tempHand.contents,  charlestonStart && message?.currentTurn?.charleston)
-			userHand.wind = tempHand.wind
+			client.hand = Hand.fromString(client.hand)
+		}
+
+		if (client.id === window.clientId) {
+			userHand.sync(client.hand, message?.currentTurn?.charleston)
 		}
 	})
-
-	if (message?.currentTurn?.charleston) {
-		charlestonStart = true
-	}
 
 	let userWindIndex = winds.indexOf(userHand.wind)
 
@@ -718,14 +817,14 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let currentTurnWind;
 	clients.forEach((client) => {
 		let windPosition = 0;
-		if (client.wind) {
-			windPosition = windOrder.indexOf(client.wind)
+		if (client.hand.wind) {
+			windPosition = windOrder.indexOf(client.hand.wind)
 		}
+
 		let hand = hands[windPosition]
 
-		if (client.visibleHand && client.wind) {
-			hand.syncContents(Hand.convertStringsToTiles(client.visibleHand))
-			hand.wind = client.wind
+		if (client.hand && client.id !== window.clientId) {
+			hand.sync(client.hand, message?.currentTurn?.charleston)
 		}
 
 		let nametag = nametags[windPosition]
@@ -733,7 +832,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		nametag.style.color = ""
 
 		if (message.currentTurn && client.id === message.currentTurn.userTurn) {
-			currentTurnWind = client.wind
+			currentTurnWind = client.hand.wind
 			nametag.style.color = "red"
 		}
 	})

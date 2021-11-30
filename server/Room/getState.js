@@ -1,3 +1,5 @@
+const Hand = require("../../src/Hand.js")
+
 function getState(requestingClientId) {
 	//Generate the game state visible to requestingClientId
 	let state = {}
@@ -54,20 +56,20 @@ function getState(requestingClientId) {
 		}
 		if (this.inGame) {
 			let hand = this.gameData.playerHands[currentClientId]
-			if (requestingClientId === currentClientId) {
-				//One can see all of their own tiles.
+			//If this is the user's hand, or if the hand is no longer active (game over, dead, etc), show all tiles.
+			if (
+				(requestingClientId === currentClientId)
+				|| this.gameData.isMahjong
+				|| this.gameData.wall.isEmpty
+			) {
 				visibleClientState.hand = hand
 			}
 			else {
-				if (!this.gameData.isMahjong && !this.gameData.wall.isEmpty) {
-					//One can only see exposed tiles of other players. True says to include other tiles as face down.
-					visibleClientState.visibleHand = hand.getExposedTiles(true)
-				}
-				else {
-					//Game over. Show all.
-					visibleClientState.visibleHand = hand.contents
-				}
-				visibleClientState.wind = hand.wind
+				//Only show exposed tiles.
+				let tempHand = new Hand()
+				tempHand.contents = hand.getExposedTiles(true) //Pass true to include other tiles as face down.
+				tempHand.wind = hand.wind
+				visibleClientState.hand = tempHand
 			}
 		}
 		state.clients.push(visibleClientState)

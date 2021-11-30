@@ -474,3 +474,53 @@ This means that something using bottom is off the page - hence we must use top. 
 	top: 8px;
 	right: 8px;
 }
+
+
+
+
+.scoreSummary {
+	z-index: 1000;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	background: lightgoldenrodyellow;
+	font-size: 2em;
+	text-align: center;
+}
+
+.scoreSummary p {
+	margin: 0.25em;
+}
+
+.scoreSummaryHeader {
+	display: inline-block;
+}
+
+.scoreSummaryClose {
+	float: right;
+	cursor: pointer;
+	font-size: 1.25em;
+	margin-right: 0.5em;
+}
+
+.tableContainer {
+	display: inline-block;
+	width: 50%;
+	vertical-align: top;
+}
+
+.tableContainer table {
+	width: 100%;
+	border-spacing: 1px;
+}
+
+.tableContainer td {
+	border: 1px solid black;
+}
+
+.itemTableContainer img {
+	max-width: 8vw;
+	max-height: calc(calc(100vh - 3em - 24px - 1.5em) / 5);
+}

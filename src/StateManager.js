@@ -44,6 +44,9 @@ class StateManager {
 			else if (obj.type === "roomActionPlaceTiles") {
 				if (this.onPlaceTiles instanceof Function) {this.onPlaceTiles(obj)}
 			}
+			else if (obj.type === "roomActionRevertState") {
+				if (this.onRevertState instanceof Function) {this.onRevertState(obj)}
+			}
 			else if (obj.type === "roomActionGameplayAlert") {
 				if (this.onGameplayAlert instanceof Function) {this.onGameplayAlert(obj)}
 			}

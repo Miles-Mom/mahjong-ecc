@@ -21,12 +21,7 @@ function getSummary(mahjongClientId, options = {}) {
 
 		if (this.state.settings.gameStyle === "chinese") {
 			if (hand.wind === "east") {res[id].text += " (net doubled)"}
-			if (id === mahjongClientId) {
-				res[id].points += hand.score({isMahjong: true, drewOwnTile: !this.gameData.previousTurnPickedUp})
-			}
-			else {
-				res[id].points += hand.score()
-			}
+			res[id].points += hand.score().score
 			res[id].text += `, ${res[id].points} points`
 
 			//Apply limits.

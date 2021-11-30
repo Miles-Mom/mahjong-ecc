@@ -1,47 +1,116 @@
 const Match = require("../Match.js")
 const Tile = require("../Tile.js")
+const Pretty = require("../Pretty.js")
+const TileContainer = require("../TileContainer.js")
 
-function scoreChinese(config = {}) {
-	let doubles = 0
-	let score = 0
-	let sequences = false
+function scoreChinese() {
+	//Reads hand.status (bound, so this.status) to determine if Mahjong (could do w/ tile count and tiles), and drewOwnTile
+	let oldContents = this.contents.slice(0) //Copy the old hand contents to reset back.
 
-	let oldContents = this.contents.slice(0)
+	let hasSequence = false
 
+	let flowersItem = {
+		match: new TileContainer({tiles: []}),
+		doubles: 0,
+		points: 0,
+	}
+	let seasonsItem = {
+		match: new TileContainer({tiles: []}),
+		doubles: 0,
+		points: 0,
+	}
+
+	let otherItems = [flowersItem, seasonsItem]
+	let matchItems = [];
+
+	contentsLoop:
 	for (let i=0;i<this.contents.length;i++) {
 		let match = this.contents[i]
 
 		//If we have empty tiles laying around, let's try and create the largest matches possible, as we clearly aren't mahjong.
 		if (match instanceof Tile) {
-			[4,3,2].forEach(((amount) => {
-				if (!(match instanceof Tile)) {return} //Already matched.
-				if (this.removeMatchingTilesFromHand(match, amount)) {
+			//Attempt to make matches - kong, then pong, then pair.
+			//j is amount of tiles in match.
+			for (let j=4;j>=1;j--) {
+				if (j === 1) {continue contentsLoop;} //Tile can't be matched
+
+				if (this.removeMatchingTilesFromHand(match, j)) {
 					i-- //Counteract position shifting.
-					match = new Match({amount, type: match.type, value: match.value, exposed: false})
+					match = new Match({amount: j, type: match.type, value: match.value, exposed: false})
+					break;
 				}
-			}).bind(this))
+			}
 		}
 
-		doubles += match.isDouble(this.wind)
-		score += match.getPoints(this.wind)
-		sequences = sequences || match.isSequence
+		let matchDoubles = Number(match.isDouble(this.wind))
+		let matchPoints = match.getPoints(this.wind)
+
+		if (match instanceof Pretty) {
+			//Add to existing flower or season item.
+			//We collapse these to save space.
+			let itemToAdd = (match.seasonOrFlower === "flower") ? flowersItem : seasonsItem
+			itemToAdd.match.tiles.push(match)
+			itemToAdd.doubles += matchDoubles
+			itemToAdd.points += matchPoints
+
+			if (itemToAdd.match.tiles.length === 4) {itemToAdd.doubles += 2} //All seasons or all flowers is 2 extra doubles (3 total)
+			continue;
+		}
+
+		matchItems.push({
+			match: match,
+			doubles: matchDoubles,
+			points: matchPoints,
+		})
+
+		hasSequence = hasSequence || match.isSequence
 	}
 
-	if (config.isMahjong) {
-		score += 20
-		if (config.drewOwnTile) {
-			score += 2
+	if (this.status?.status === "mahjong") {
+		otherItems.push({
+			text: "Mahjong",
+			doubles: 0,
+			points: 20
+		})
+
+		if (this.status?.drewOwnTile) {
+			otherItems.push({
+				text: "Self-Draw",
+				doubles: 0,
+				points: 2
+			})
 		}
-		if (!sequences) {
-			score += 10
+		if (!hasSequence) {
+			otherItems.push({
+				text: "No Sequence",
+				doubles: 0,
+				points: 10
+			})
 		}
 	}
+
+	let clearHandInfo = this.getClearHandInfo()
+	otherItems.push({
+		text: clearHandInfo.type,
+		doubles: clearHandInfo.doubles,
+		points: 0
+	})
+
+	//Filter out all items not worth doubles or points.
+	matchItems = matchItems.filter((item) => {return (item.doubles + item.points)})
+	otherItems = otherItems.filter((item) => {return (item.doubles + item.points)})
+
+	let items = [...matchItems.concat(otherItems)]
+
+	let points = items.reduce((total, item) => {return total + item.points}, 0)
+	let doubles = items.reduce((total, item) => {return total + item.doubles}, 0)
+
+	let score = points * (2**doubles)
+	let scoreText = `${points} points × 2<sup>${doubles} double${doubles === 1 ? "":"s"}</sup> = ${score} points`
 
 	this.contents = oldContents //Reset any modifications
 
-	doubles += this.getClearHandDoubles()
-
-	return score * (2**doubles)
+	return {matchItems, otherItems, items, points, doubles, score, scoreText}
 }
 
 module.exports = scoreChinese

@@ -39,6 +39,7 @@ function syncContents(syncContents, addAdditionsToPlacematIfOpen = false) {
 	}
 
 	//Everything that matches is now nulled out, so we remove everything remaining in currentContentsStrings, and add everything remaining in syncContentsStrings.
+	//Removal should be done first so the placemat is be cleared out in case additions are placed there.
 	for (let i=0;i<currentContentsStrings.length;i++) {
 		let item = currentContentsStrings[i]
 		if (item) {
@@ -46,16 +47,25 @@ function syncContents(syncContents, addAdditionsToPlacematIfOpen = false) {
 		}
 	}
 
-	//We run this after removal so that the placemat can be cleared out for addAdditionsToPlacematIfOpen
+
+	let numberOfAdditions = syncContentsStrings.filter(item => item).length
+
+	if (numberOfAdditions > 3) {
+		//With initial state syncs (reload, revert, game start), etc, we don't want to fill the placemat with the first 3 tiles in the hand.
+		//To counteract this, we will measure the number of tiles that need to be added to the placemat (new additions).
+		//If the number is greater than 3, we will refuse to add to placemat (as its clearly not just a charleston).
+
+		addAdditionsToPlacematIfOpen = false
+	}
+
 	for (let i=0;i<syncContentsStrings.length;i++) {
 		let item = syncContentsStrings[i]
-		if (item) {
-			if (addAdditionsToPlacematIfOpen && this.inPlacemat.length < 3 && syncContents[i] instanceof Tile) {
-				this.inPlacemat.push(syncContents[i])
-			}
-			else {
-				this.add(syncContents[i])
-			}
+		if (!item) {continue;}
+		if (addAdditionsToPlacematIfOpen && this.inPlacemat.length < 3 && syncContents[i] instanceof Tile) {
+			this.inPlacemat.push(syncContents[i])
+		}
+		else {
+			this.add(syncContents[i])
 		}
 	}
 }
