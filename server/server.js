@@ -12,8 +12,61 @@ function getMessage(type, message, status) {
 	})
 }
 
+
+
+let staticMessageBar;
+
+function getMessageBarText() {
+	let timeStamp = staticMessageBar?.timeStamp
+	let message = staticMessageBar?.message
+	if (message && timeStamp) {
+		//Substitute in remainingTime (if it is included in the string)
+		//This allows for dynamic messages ("Maintenance in X minutes"), and can help prevent time zone confusion.
+		let stringToReplace = "${remainingTime}"
+		let substitutionString = ""
+		if (timeStamp) {
+			let deltaTime = new Date(timeStamp).getTime() - Date.now() //Positive - time in future that timeStamp is.
+			let deltaTimeMinutes = deltaTime / 1000 / 60
+			let deltaTimeHours = deltaTimeMinutes / 60
+			let deltaTimeDays = deltaTimeHours / 24
+
+			deltaTimeMinutes %= 60
+			deltaTimeHours %= 24
+
+			deltaTimeMinutes = Math.floor(deltaTimeMinutes)
+			deltaTimeHours = Math.floor(deltaTimeHours)
+			deltaTimeDays = Math.floor(deltaTimeDays)
+
+			if (deltaTimeDays) {
+				substitutionString += `${deltaTimeDays} ${deltaTimeDays > 1 ? "days":"day"}`
+			}
+
+			if (deltaTimeHours) {
+				if (substitutionString) {substitutionString += ", "}
+				substitutionString += `${deltaTimeHours} ${deltaTimeHours > 1 ? "hours":"hour"}`
+			}
+
+			if (deltaTimeMinutes) {
+				if (substitutionString) {substitutionString += " and "}
+				substitutionString += `${deltaTimeMinutes} ${deltaTimeMinutes > 1 ? "minutes":"minute"}`
+			}
+
+			substitutionString = substitutionString.trim()
+		}
+		let composedMessage = message.replace(stringToReplace, substitutionString)
+		return composedMessage
+	}
+	else {
+		return message
+	}
+}
+
+
+
 function onConnection(websocket) {
 	let clientId;
+
+	let lastMessageBarText = ""; //The last message bar text sent to this user.
 
 	websocket.on('message', function incoming(message) {
 		try {
@@ -25,22 +78,39 @@ function onConnection(websocket) {
 				return websocket.send(getMessage("error", "Message must be valid JSON"))
 			}
 
-			//Admin actions for triggering maintenance.
-			//A Warning! If the server is killed, you only have 60 seconds to bring it back up before the server will reboot.
-			//restartServer.js will not reboot again for 90 minutes.
 
-			//Example:
-			//var auth = "" //Insert real password.
+			try {
+				//Update the message bar if it has changed.
+				//This is used for announcing maintenances, etc.
+				let newMessageBarText = getMessageBarText()
+				if (lastMessageBarText !== newMessageBarText) {
+					websocket.send(getMessage("setStaticMessageBar", newMessageBarText))
+					lastMessageBarText = newMessageBarText
+				}
+			}
+			catch (e) {
+				console.error(e)
+			}
+
+
+			//Admin actions:
+
+			//let auth = "" //Insert real password.
+
+			//Set static message bar - useful for scheduling events like maintenance, or other important info to users.
+			//${remainingTime} is substituted with the time remaining before timeStamp (if passed).
+			//Pass an empty string as message to clear static message bar.
+			//stateManager.setStaticMessageBar({auth, message: "Maintenance in ${remainingTime} - online games will be lost", timeStamp: MaintenanceTime})
+
+			//Send a message to all users currently in online games.
 			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Server Update", body: "Mahjong 4 Friends is entering maintenance in a few minutes to perform a server update. Online games will be unavailable for about 30 seconds (offline unaffected). Feel free to continue playing - all games will be restored after the update (assuming all goes well)"})
 
+			//Call a server save.
 			//stateManager.callServerSave(auth, "update")
 
-			//Then apply the update, and start the server loading from the state.
-			//That should probably be done by editing crontab before reboot, then editing back.
 
-			//stateManager.messageAllServerClients({onlineOnly: true, auth, title: "Reconnected", body: "Mahjong 4 Friends is online. Please report any issues to support@mahjong4friends.com"})
-
-			if (obj.type === "callServerSave" || obj.type === "messageAllServerClients") {
+			//TODO: callServerSave is basically useless now - we don't have a system to load from a state.
+			if (obj.type === "callServerSave" || obj.type === "messageAllServerClients" || obj.type === "setStaticMessageBar") {
 				if (!obj.auth) {
 					return websocket.send(getMessage("displayMessage", {title: "Auth Error", body: "This command must be authed"}))
 				}
@@ -57,6 +127,11 @@ function onConnection(websocket) {
 					globalThis.serverStateManager.getAllClients().forEach((client) => {
 						client.message("displayMessage", {title: obj.title, body: obj.body, onlineOnly: obj.onlineOnly})
 					})
+				}
+				else if (obj.type === "setStaticMessageBar") {
+					//TODO: We should send the updated staticMessageBar text to all clients immediently,
+					//rather than waiting for them to send a message to the server before checking.
+					staticMessageBar = {message: obj.message, timeStamp: obj.timeStamp}
 				}
 				return;
 			}
