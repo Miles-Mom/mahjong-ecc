@@ -24,7 +24,7 @@ class Hand {
 
 		this.syncContents = (require("./Hand/syncContents.js")).bind(this)
 		this.sync = (function(hand, addAdditionsToPlacematIfOpen) {
-			//Used to sync from server. 
+			//Used to sync from server.
 			this.syncContents(hand.contents, addAdditionsToPlacematIfOpen)
 			this.wind = hand.wind
 			this.status = hand.status
@@ -260,8 +260,32 @@ class Hand {
 						if (this.interactive) {
 							currentElem.classList.remove("animateTile")
 							if (displayElevated && tile.matches(displayElevated)) {
-								displayElevated = undefined
-								currentElem.classList.add("animateTile")
+								displayElevated = undefined //Only animate the very first tile that matches - don't animate ALL 1 bamboos, etc.
+
+								//Keep the new tile transparent, and delay animating until the new image loads.
+								//Previously the tile could change mid-animation, which could
+								//be incredibly annoying, deceiving users into thinking they received another
+								//copy of a tile already in their hand.
+
+								let priorSrc = currentElem.src
+
+								if (!window.transparentTileSrc) {
+									let transparentTile = document.createElement("canvas")
+									transparentTile.width = 96
+									transparentTile.height = 128
+									window.transparentTileSrc = transparentTile.toDataURL("image/png")
+								}
+
+								currentElem.src = window.transparentTileSrc
+
+								function beginAnimation() {
+									currentElem.classList.add("animateTile")
+								}
+
+								currentElem.addEventListener("load", function() {
+									currentElem.addEventListener("load", beginAnimation, {once: true})
+									currentElem.src = priorSrc
+								}, {once: true})
 							}
 							currentElem.draggable = true
 							currentElem.onclick = (function() {
