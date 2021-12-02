@@ -53,6 +53,9 @@ class StateManager {
 			else if (obj.type === "roomActionGetMessageHistory") {
 				if (this.onGetMessageHistory instanceof Function) {this.onGetMessageHistory(obj)}
 			}
+			else if (obj.type === "setStaticMessageBar") {
+				if (this.onSetStaticMessageBar instanceof Function) {this.onSetStaticMessageBar(obj)}
+			}
 			else {
 				console.log("Unknown Type " + obj.type)
 			}
@@ -304,6 +307,15 @@ class StateManager {
 				title,
 				body,
 				onlineOnly
+			}))
+		}
+
+		this.setStaticMessageBar = function({auth, timeStamp = undefined, message}) {
+			this.sendMessage(JSON.stringify({
+				type: "setStaticMessageBar",
+				auth,
+				timeStamp,
+				message
 			}))
 		}
 

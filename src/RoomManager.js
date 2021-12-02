@@ -32,6 +32,21 @@ let notInRoomContainer = document.createElement("div")
 notInRoomContainer.id = "notInRoomContainer"
 roomManager.appendChild(notInRoomContainer)
 
+//Intended for maintenance warnings, etc.
+let staticMessageBar = document.createElement("h4")
+staticMessageBar.style.marginTop = 0
+staticMessageBar.style.display = "none"
+notInRoomContainer.appendChild(staticMessageBar)
+
+window.stateManager.onSetStaticMessageBar = function({message}) {
+	if (message) {
+		staticMessageBar.innerHTML = message
+		staticMessageBar.style.display = ""
+	}
+	else {
+		staticMessageBar.style.display = "none"
+	}
+}
 
 let roomIdInput = document.createElement("input")
 roomIdInput.id = "roomIdInput"
