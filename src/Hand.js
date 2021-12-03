@@ -267,25 +267,14 @@ class Hand {
 								//be incredibly annoying, deceiving users into thinking they received another
 								//copy of a tile already in their hand.
 
-								let priorSrc = currentElem.src
-
-								if (!window.transparentTileSrc) {
-									let transparentTile = document.createElement("canvas")
-									transparentTile.width = 96
-									transparentTile.height = 128
-									window.transparentTileSrc = transparentTile.toDataURL("image/png")
-								}
-
-								currentElem.src = window.transparentTileSrc
+								currentElem.style.opacity = "0"
 
 								function beginAnimation() {
 									currentElem.classList.add("animateTile")
+									currentElem.style.opacity = ""
 								}
 
-								currentElem.addEventListener("load", function() {
-									currentElem.addEventListener("load", beginAnimation, {once: true})
-									currentElem.src = priorSrc
-								}, {once: true})
+								currentElem.addEventListener("load", beginAnimation, {once: true})
 							}
 							currentElem.draggable = true
 							currentElem.onclick = (function() {
