@@ -294,6 +294,8 @@ hintButton.id = "hintButton"
 hintButton.innerHTML = "Suggested Hands"
 gameBoard.appendChild(hintButton)
 
+
+const scoringHintStorageKey = "hasReceivedScoringHint"
 function createSuggestedHands(hand, playerName = "") {
 	let isUser = !playerName
 
@@ -304,6 +306,13 @@ function createSuggestedHands(hand, playerName = "") {
 		let cardName = stateManager.lastState.message.settings.card
 
 		if (stateManager.lastState.message.settings.gameStyle !== "american") {
+			try {
+				if (!localStorage.getItem(scoringHintStorageKey)) {
+					localStorage.setItem(scoringHintStorageKey, true)
+				}
+			}
+			catch (e) {console.error(e)}
+
 			//Not American Mahjong - must be Chinese/Panama.
 
 			//TODO: Identify if hand is Mahjong - pass those details into hand.score
@@ -907,6 +916,21 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		proceedButton.disabled = ""
 		goMahjongButton.innerHTML = "Scores"
 		goMahjongButton.disabled = ""
+
+		if (message.settings.gameStyle === "chinese") {
+			//Alert user about Scoring if in Chinese/Panama.
+
+			//Wrap this in an additional try-catch - we're messing with localStorage, which might be wonky.
+			//The first time that a game ends, alert to user as to how scores are calculated.
+			try {
+				if (!localStorage.getItem(scoringHintStorageKey)) {
+					localStorage.setItem(scoringHintStorageKey, true)
+					new Popups.Notification("Gameplay Tip!", "Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. ")
+					.show()
+				}
+			}
+			catch (e) {console.error(e)}
+		}
 	}
 })
 
