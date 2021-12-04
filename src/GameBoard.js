@@ -344,7 +344,7 @@ function createSuggestedHands(hand, playerName = "") {
 
 			scoreSummary.appendChild(itemTableContainer)
 
-			function createTable(items) {
+			function createTable(items, isSetsTable = false) {
 				let tableContainer = document.createElement("div")
 				tableContainer.className = "tableContainer"
 
@@ -360,7 +360,7 @@ function createSuggestedHands(hand, playerName = "") {
 				let headerRow = document.createElement("tr")
 				table.appendChild(headerRow)
 
-				createData(headerRow).innerHTML = "Item"
+				createData(headerRow).innerHTML = isSetsTable ? "Sets (In-Hand Blue)" : "Bonuses"
 				createData(headerRow).innerHTML = "Pts"
 				createData(headerRow).innerHTML = "Dbs"
 
@@ -376,6 +376,11 @@ function createSuggestedHands(hand, playerName = "") {
 						let td = createData(tr)
 						//Display the tile images as label.
 						itemContent = document.createElement("span")
+
+						if (isSetsTable) {
+							tr.style.backgroundColor = (item.match.exposed) ? "rgb(210, 235, 209)" : "rgb(214, 226, 231)"
+						}
+
 						item.match.tiles.flat().forEach((tile) => {
 							td.appendChild(tile.createImageElem({
 								gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
@@ -390,7 +395,7 @@ function createSuggestedHands(hand, playerName = "") {
 				return tableContainer
 			}
 
-			let matchesTable = createTable(results.matchItems)
+			let matchesTable = createTable(results.matchItems, true)
 			let otherTable = createTable(results.otherItems)
 
 			itemTableContainer.appendChild(matchesTable)

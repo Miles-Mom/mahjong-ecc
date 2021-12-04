@@ -61,10 +61,18 @@ function scoreChinese() {
 			match: match,
 			doubles: matchDoubles,
 			points: matchPoints,
+			exposed: match.exposed
 		})
 
 		hasSequence = hasSequence || match.isSequence
 	}
+
+	//We'll sort matchItems by exposed/not exposed, then doubles, then points.
+	function calcSortValue(item) {
+		return (1e6 * Number(item.exposed)) + (1e3 * item.doubles) + (item.points)
+	}
+
+	matchItems.sort((a, b) => {return calcSortValue(b) - calcSortValue(a)})
 
 	if (this.status?.status === "mahjong") {
 		otherItems.push({
