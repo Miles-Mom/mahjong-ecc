@@ -377,8 +377,8 @@ function createSuggestedHands(hand, playerName = "") {
 						//Display the tile images as label.
 						itemContent = document.createElement("span")
 
-						if (isSetsTable) {
-							tr.style.backgroundColor = (item.match.exposed) ? "rgb(210, 235, 209)" : "rgb(214, 226, 231)"
+						if (isSetsTable && !item.match.exposed) {
+							tr.style.backgroundColor = "rgb(214, 226, 231)"
 						}
 
 						item.match.tiles.flat().forEach((tile) => {
