@@ -7,6 +7,9 @@ function scoreChinese() {
 	//Reads hand.status (bound, so this.status) to determine if Mahjong (could do w/ tile count and tiles), and drewOwnTile
 	let oldContents = this.contents.slice(0) //Copy the old hand contents to reset back.
 
+	//Calculate clear hand data before the hand contents are modified.
+	let clearHandInfo = this.getClearHandInfo()
+	
 	let hasSequence = false
 
 	let flowersItem = {
@@ -97,7 +100,6 @@ function scoreChinese() {
 		}
 	}
 
-	let clearHandInfo = this.getClearHandInfo()
 	otherItems.push({
 		text: clearHandInfo.type,
 		doubles: clearHandInfo.doubles,
