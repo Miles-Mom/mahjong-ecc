@@ -12,7 +12,7 @@ function getRandomCard() {
 	return cards[cardNames[Math.floor(Math.random() * cardNames.length)]]
 }
 
-Object.defineProperty(cards, 'Other Card - Bots Use Random Card', {
+Object.defineProperty(cards, 'Random', {
 	get: getRandomCard
 });
 

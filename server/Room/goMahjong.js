@@ -30,7 +30,7 @@ function goMahjong(clientId, options = {}) {
 
 		let score = hand.score({type: "american", card: this.gameData.card})
 
-		if (score.score === 0 && !options.override) {
+		if (score.score === 0 && !options.override && !this.state.settings.unknownCard) {
 			return client.message("roomActionPlaceTiles", `Your hand does not appear to be Mahjong for the ${this.gameData.card.name} card. If you are Mahjong, click the Mahjong button again to override. Card selection can be changed by the host in Game Settings. `, "error")
 		}
 	}

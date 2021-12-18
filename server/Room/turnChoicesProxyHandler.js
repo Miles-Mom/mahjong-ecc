@@ -152,7 +152,7 @@ function getPriority(obj, key, exemptFromChecks = false) {
 			let score = hand.score({type: "american", card: this.gameData.card})
 			hand.remove(this.gameData.currentTurn.thrown)
 
-			if (score.score === 0 && !exemptFromChecks) {
+			if (score.score === 0 && !exemptFromChecks && !this.state.settings.unknownCard) {
 				client.message("roomActionPlaceTiles", `Your hand does not appear to be Mahjong for the ${this.gameData.card.name} card. If you are Mahjong, click the Mahjong button again to override. Card selection can be changed by the host in Game Settings. `, "error")
 				return false
 			}
