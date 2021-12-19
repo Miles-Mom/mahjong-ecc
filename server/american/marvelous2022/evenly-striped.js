@@ -3,7 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
-//Supported (of 7): #1, #2, #3, #4
+//Supported (of 7): #1, #2, #3, #4, #5
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
@@ -123,6 +123,54 @@ module.exports = [
 					newArr.push(createTiles({type: suitOrder[2], value: num, amount: 2}))
 				})
 			})
+		})
+
+		return {
+			tiles,
+			score: 30,
+			concealed: false,
+		}
+	},
+	function(tiles = []) {
+
+		allSuitArrangements.forEach((suitOrder) => {
+			let newArr = []
+			tiles.push(newArr)
+
+			//2022
+			newArr.push(createTiles({type: "character", value: 2, amount: 1}))
+			newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+			newArr.push(createTiles({type: "bamboo", value: 2, amount: 1}))
+			newArr.push(createTiles({type: "circle", value: 2, amount: 1}))
+
+			//444
+			newArr.push(createTiles({type: suitOrder[0], value: 4, amount: 3}))
+
+			//666
+			newArr.push(createTiles({type: suitOrder[1], value: 6, amount: 3}))
+
+			//8888
+			newArr.push(createTiles({type: suitOrder[2], value: 8, amount: 4}))
+		})
+
+		allSuits.forEach((suit) => {
+			let newArr = []
+			tiles.push(newArr)
+
+			//2022
+			newArr.push(createTiles({type: "character", value: 2, amount: 1}))
+			newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+			newArr.push(createTiles({type: "bamboo", value: 2, amount: 1}))
+			newArr.push(createTiles({type: "circle", value: 2, amount: 1}))
+
+			//444
+			newArr.push(createTiles({type: suit, value: 4, amount: 3}))
+
+			//666
+			newArr.push(createTiles({type: suit, value: 6, amount: 3}))
+
+			//8888
+			newArr.push(createTiles({type: suit, value: 8, amount: 4}))
 		})
 
 		return {
