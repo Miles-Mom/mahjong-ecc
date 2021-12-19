@@ -6,6 +6,7 @@ let cards = {
 let cardNames = Object.keys(cards) //Bots will not pick Marvelous as a random card.
 
 cards["2021 Marvelous Mahjongg"] =  require("./marvelous2021.js")
+cards["2022 Marvelous Mahjongg"] =  require("./marvelous2022.js")
 
 
 function getRandomCard() {
