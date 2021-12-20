@@ -3,7 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
-//All 7 hands supported. 
+//All 7 hands supported.
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
@@ -232,24 +232,25 @@ module.exports = [
 	},
 	function(tiles = []) {
 		allSuits.forEach((suitFor1) => {
-			let newArr = []
-			tiles.push(newArr)
+			allSuits.forEach((suitFor2s) => {
+				let newArr = []
+				tiles.push(newArr)
 
-			//222
-			//TODO: Must the twos be characters? Or any suit?
-			newArr.push(createTiles({type: "character", value: 2, amount: 3}))
+				//222
+				newArr.push(createTiles({type: suitFor2s, value: 2, amount: 3}))
 
-			//OOO
-			newArr.push(createTiles({type: "dragon", value: "white", amount: 3}))
+				//OOO
+				newArr.push(createTiles({type: "dragon", value: "white", amount: 3}))
 
-			//NNN
-			newArr.push(createTiles({type: "wind", value: "north", amount: 3}))
+				//NNN
+				newArr.push(createTiles({type: "wind", value: "north", amount: 3}))
 
-			//II
-			newArr.push(createTiles({type: suitFor1, value: 1, amount: 2}))
+				//II
+				newArr.push(createTiles({type: suitFor1, value: 1, amount: 2}))
 
-			//EEE
-			newArr.push(createTiles({type: "wind", value: "east", amount: 3}))
+				//EEE
+				newArr.push(createTiles({type: "wind", value: "east", amount: 3}))
+			})
 		})
 
 		return {
