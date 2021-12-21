@@ -1,4 +1,4 @@
-const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential, permutations}
 = require("../utilities.js");
 
 
@@ -141,6 +141,38 @@ module.exports = [
 					//88
 					newArr.push(createTiles({type: suitOrder[2], value: num, amount: 2}))
 				})
+			})
+		})
+
+		return {
+			tiles,
+			score: 30,
+			concealed: false,
+		}
+	},
+	function(tiles = []) {
+		allSuitArrangements.forEach((suitOrder) => {
+			//TODO: Half of permutations are duplicate combos (we ignore items 4 and 5)
+			permutations(oddOptions).forEach((oddNums) => {
+				let newArr = []
+				tiles.push(newArr)
+
+				//2022
+				newArr.push(createTiles({type: "character", value: 2, amount: 1}))
+				newArr.push(createTiles({type: "dragon", value: "white", amount: 1}))
+				newArr.push(createTiles({type: "bamboo", value: 2, amount: 1}))
+				newArr.push(createTiles({type: "circle", value: 2, amount: 1}))
+
+				//Any 3 diff odd in diff suits
+
+				//333
+				newArr.push(createTiles({type: suitOrder[0], value: oddNums[0], amount: 3}))
+
+				//5555
+				newArr.push(createTiles({type: suitOrder[1], value: oddNums[1], amount: 4}))
+
+				//777
+				newArr.push(createTiles({type: suitOrder[2], value: oddNums[2], amount: 3}))
 			})
 		})
 

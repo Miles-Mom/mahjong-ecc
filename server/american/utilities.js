@@ -441,4 +441,4 @@ nonJokerTiles.push(new Tile({type: "flower"}))
 let allTiles = nonJokerTiles.slice(0)
 allTiles.push(new Tile({type: "joker"})) //TODO: Test with these - could be weird.
 
-module.exports = {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential}
+module.exports = {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential, permutations}
