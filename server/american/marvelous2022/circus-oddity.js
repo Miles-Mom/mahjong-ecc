@@ -3,6 +3,7 @@ const {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddO
 
 
 //Each function will return an array. Each array will contain every possible matching combo in the form of an array of tiles.
+//All 7 hands supported.
 module.exports = [
 	function(tiles = []) {
 		allSuitArrangements.forEach((suitOrder) => {
@@ -179,6 +180,98 @@ module.exports = [
 		return {
 			tiles,
 			score: 30,
+			concealed: false,
+		}
+	},
+	function(tiles = []) {
+		allSuitArrangements.forEach((suitOrder) => {
+			let newArr = []
+			tiles.push(newArr)
+
+			//FFF
+			newArr.push(createTiles({type: "flower", amount: 3}))
+
+			//MJ
+			newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+			newArr.push(createTiles({type: "joker", amount: 1}))
+
+			//3
+			newArr.push(createTiles({type: suitOrder[0], value: 3, amount: 1}))
+
+			//55
+			newArr.push(createTiles({type: suitOrder[1], value: 5, amount: 2}))
+
+			//777 999
+			newArr.push(createTiles({type: suitOrder[2], value: 7, amount: 3}))
+			newArr.push(createTiles({type: suitOrder[2], value: 9, amount: 3}))
+		})
+
+		allSuits.forEach((suit) => {
+			let newArr = []
+			tiles.push(newArr)
+
+			//FFF
+			newArr.push(createTiles({type: "flower", amount: 3}))
+
+			//MJ
+			newArr.push(createTiles({type: "wind", value: "west", amount: 1}))
+			newArr.push(createTiles({type: "joker", amount: 1}))
+
+			//3
+			newArr.push(createTiles({type: suit, value: 3, amount: 1}))
+
+			//55
+			newArr.push(createTiles({type: suit, value: 5, amount: 2}))
+
+			//777 999
+			newArr.push(createTiles({type: suit, value: 7, amount: 3}))
+			newArr.push(createTiles({type: suit, value: 9, amount: 3}))
+		})
+
+		return {
+			tiles,
+			score: 35,
+			concealed: false,
+		}
+	},
+	function(tiles = []) {
+		allSuits.forEach((suitFor2) => {
+			allSuits.forEach((suitFor1) => {
+				allSuitArrangements.forEach((suitsFor7s) => {
+					allSuits.forEach((suitForSecond1) => {
+						allSuits.forEach((suitForThird1) => {
+							let newArr = []
+							tiles.push(newArr)
+
+							//21GER
+							newArr.push(createTiles({type: suitFor2, value: 2, amount: 1}))
+							newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
+							newArr.push(createTiles({type: "dragon", value: "green", amount: 1}))
+							newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+							newArr.push(createTiles({type: "dragon", value: "red", amount: 1}))
+
+							//LLL
+							newArr.push(createTiles({type: suitsFor7s[0], value: 7, amount: 3}))
+
+							//I
+							newArr.push(createTiles({type: suitForSecond1, value: 1, amount: 1}))
+
+							//LLL
+							newArr.push(createTiles({type: suitsFor7s[1], value: 7, amount: 3}))
+
+							//IE
+							newArr.push(createTiles({type: suitForThird1, value: 1, amount: 1}))
+							newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
+
+						})
+					})
+				})
+			})
+		})
+
+		return {
+			tiles,
+			score: 40,
 			concealed: false,
 		}
 	},
