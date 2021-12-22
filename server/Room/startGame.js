@@ -130,10 +130,12 @@ function startGame(obj) {
 
 		if (cards[obj?.settings?.card]) {
 			this.state.settings.card = obj?.settings?.card
+			delete this.state.settings.unknownCard
 		}
 		else {
 			console.error("Unknown Card", obj?.settings?.card)
-			this.state.settings.card = "2021 National Mahjongg League"
+			this.state.settings.unknownCard = true
+			this.state.settings.card = "Random"
 		}
 		this.gameData.card = cards[this.state.settings.card]
 

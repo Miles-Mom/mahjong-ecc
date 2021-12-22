@@ -30,16 +30,13 @@ app.use(compression({
 	windowBits: 15,
 }))
 
-app.all("*", (req, res, next) => {
-    let resPath = path.join(__dirname, req.path)
-    if (resPath.startsWith(__dirname)) {
-        next()
+function assureRelativePathSafe(relSrc) {
+    let hypoDir = "/a/b"
+    let absSrc = path.join(hypoDir, relSrc)
+    if (!absSrc.startsWith(hypoDir)) {
+        throw "Path Traversal Forbidden"
     }
-    else {
-        res.status(403)
-        res.end("Path Traversal Not Permitted")
-    }
-})
+}
 
 //Gets the body of a request.
 function getData(request) {
@@ -56,14 +53,16 @@ function getData(request) {
 
 
 //Serve remaining files.
-app.use('*', (req, res, next) => {
+app.all('*', (req, res, next) => {
 	res.set("Access-Control-Allow-Origin", "*");
 
-    let relativeSrc = decodeURIComponent(url.parse(decodeURIComponent(req.originalUrl)).pathname)
+    let relativeSrc = req.path
 	let extensions = ["", ".html", "index.html"]
 	let src;
 	let extension = extensions.find((ext) => {
-		src = path.join(__dirname, relativeSrc + ext)
+        let relPath = relativeSrc + ext
+        assureRelativePathSafe(relPath)
+		src = path.join(__dirname, relPath)
 		if (fs.existsSync(src)) {
 			return !fs.statSync(src).isDirectory()
 		}
@@ -80,14 +79,14 @@ app.use('*', (req, res, next) => {
 })
 
 //serveIndex - can be removed.
-app.use("*", (req, res, next) => {
-	serveIndex(path.join(__dirname, req.originalUrl), {
+app.all("*", (req, res, next) => {
+	serveIndex(path.join(__dirname, req.path), {
 		'icons': true,
 		'view': "details" //Gives more info than tiles.
 	})(req, res, next)
 })
 
-app.use("*", (req, res, next) => {
+app.all("*", (req, res, next) => {
 	res.status(404)
 	res.type("text/plain")
 	res.end("File Not Found")
