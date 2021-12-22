@@ -11,6 +11,18 @@ function permutations(xs) {
   });
 }
 
+//Generate all possible pairs for array arr
+function getPairs(arr, pairs = []) {
+    let pairingItem = arr.pop()
+    pairs.push([pairingItem, pairingItem])
+    if (arr.length === 0) {return}
+    arr.forEach((item) => {
+        pairs.push([pairingItem, item])
+    })
+    getPairs(arr, pairs)
+    return pairs
+}
+
 let tileCache = {} //We'll use references to the same exact tile. It's slightly faster, and isn't an issue.
 function createTiles({type, value, amount}) {
     if (!tileCache[type]) {tileCache[type] = {}}
@@ -441,4 +453,4 @@ nonJokerTiles.push(new Tile({type: "flower"}))
 let allTiles = nonJokerTiles.slice(0)
 allTiles.push(new Tile({type: "joker"})) //TODO: Test with these - could be weird.
 
-module.exports = {allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential, permutations}
+module.exports = {getPairs, allTiles, nonJokerTiles, createTiles, allSuits, allSuitArrangements, oddOptions, evenOptions, allOptions, windOptions, windArrangments, dragonOptions, dragonArrangments, suitDragonConversion, outputExpander, getTileDifferential, permutations}
