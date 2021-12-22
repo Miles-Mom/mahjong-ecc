@@ -301,7 +301,7 @@ function CardSelector() {
 			value: "2021 Marvelous Mahjongg"
 		},
 		{
-			name: "2022 Marvelous Mah Jongg (Beta)",
+			name: "2022 Marvelous Mah Jongg",
 			value: "2022 Marvelous Mahjongg"
 		}
 	]
