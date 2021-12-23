@@ -1,5 +1,4 @@
 //TODO: Update client side code to rename guaranteedHands as well.
-//TODO: Acutally insert code to call syncSaveFiles periodicially.
 const fs = require("fs")
 const path = require("path")
 
