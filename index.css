@@ -34,6 +34,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	background-color: black;
+	color: black; /*For some reason, the default font color on iOS is a darkish-blue*/
 }
 
 body {
