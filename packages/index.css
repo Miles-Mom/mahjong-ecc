@@ -1287,7 +1287,10 @@ html, body {
 	margin: 0;
 	padding: 0;
 	background-color: black;
-	color: black; /*For some reason, the default font color on iOS is a darkish-blue*/
+}
+
+button, select {
+    color: black; /*iOS seems to use some darkish-blue color as the default now*/
 }
 
 body {
