@@ -168,7 +168,7 @@ offlineGameDiv.appendChild(offlineSinglePlayer)
 
 function resumeOfflineGame(saveText, resumeAtStart = false) {
 	serverStateManager.init(saveText)
-	//TODO: We need to reset clientId back after offline games are closed. 
+	//TODO: We need to reset clientId back after offline games are closed.
 	//Set our clientId to the offline mode clientId. Note that clientId should be static now.
 	window.clientId = serverStateManager.getRoom("Offline").clientIds.find((clientId) => {
 		if (!serverStateManager.getClient(clientId).isBot) {return clientId}
@@ -337,7 +337,7 @@ uploadSaveButton.addEventListener("click", function() {
 			setExpanded(status) {
 				if (status !== false) {
 					//We were clicked.
-					let baseUrl = window.location.href
+					let baseUrl = window.location.origin + window.location.pathname
 					if (window.Capacitor) {
 						baseUrl = "https://mahjong4friends.com/"
 					}
