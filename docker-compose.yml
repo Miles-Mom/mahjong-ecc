@@ -16,6 +16,17 @@ services:
         limits:
           memory: 300M
 
+
+  www-redirect:
+    image: schmunk42/nginx-redirect
+    container_name: mahjong-www-redirect
+    environment:
+      - VIRTUAL_HOST=www.mahjong4friends.com
+      - LETSENCRYPT_HOST=www.mahjong4friends.com
+      - LETSENCRYPT_EMAIL=support@mahjong4friends.com
+      - SERVER_REDIRECT=mahjong4friends.com
+      - SERVER_REDIRECT_SCHEME=https
+
 networks:
   default:
     external:
