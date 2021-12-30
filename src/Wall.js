@@ -2,6 +2,9 @@ const Tile = require("./Tile.js")
 const Pretty = require("./Pretty.js")
 const SeedRandom = require("seed-random")
 
+const {updateTilesInContainer} = require("./updateTilesInContainer.js")
+const {displayCenterTilePopup} = require("./displayCenterTilePopup.js")
+
 class Wall {
 	constructor(seed = Math.random(), config = {}) {
 		this.drawFirst = function() {
@@ -99,22 +102,23 @@ class Wall {
 		}
 	}
 
-	static renderWall(div, tilesRemaining) {
-		//TODO: Only render changes, instead of re-rendering entire wall.
-		while (div.firstChild) {div.firstChild.remove()} //Delete any existing tiles.
-
-		if (tilesRemaining.length === 0) {return} //Don't write "0" to the screen.
-		//Write the number of tiles that remain.
-		let elem = document.createElement("p")
-		elem.innerHTML = tilesRemaining.length
-		div.appendChild(elem)
-
-		for (let i=0;i<tilesRemaining.length;i++) {
-			let tile = tilesRemaining[i]
-			div.appendChild(tile.createImageElem({
-				gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
-			}))
+	static renderWall(div, tiles) {
+		if (tiles.length === 0) {
+			//The wall is out. Don't render anything.
+			while (div.firstChild) {div.firstChild.remove()}
+			return
 		}
+
+		//Update existing paragraph elem, or create if none.
+		let elem = div.querySelector("p")
+		if (!elem) {
+			let elem = document.createElement("p")
+			div.insertBefore(elem, div.firstChild)
+		}
+		elem.innerHTML = tiles.length
+
+		//Update the tiles.
+		updateTilesInContainer(div, tiles)
 
 		window.requestAnimationFrame(function() {
 			//Set an animation frame so the tiles are rendered before the class change is applied.
@@ -122,7 +126,7 @@ class Wall {
 
 			//We need both to be in requestAnimationFrame as guaranteed hands call revert state sync, which would otherwise
 			//result in smallView being set when not correct.
-			if (tilesRemaining.length > 30) {
+			if (tiles.length > 30) {
 				div.className = "wall"
 			}
 			else {
@@ -131,11 +135,7 @@ class Wall {
 		})
 
 		div.onclick = function() {
-			let elem = document.createElement("div")
-			let wallPreview = div.cloneNode(true)
-			elem.appendChild(wallPreview)
-			wallPreview.className = "wall wallPopupView"
-			new Popups.Notification("Wall View", elem).show()
+			displayCenterTilePopup(tiles, `Wall View (${tiles.length} tile${tiles.length === 1 ? "":"s"} left)`)
 		}
 	}
 

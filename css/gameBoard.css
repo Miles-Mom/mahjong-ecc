@@ -233,14 +233,19 @@ This means that something using bottom is off the page - hence we must use top. 
 	font-size: calc(1.1 * calc(1.6vw + 1.6vmin - 1.3vmax));
 }
 
+
 .wall.wallPopupView img {
-	width: 3.5vw;
+	width: auto;
+	max-height: initial;
+	max-width: initial;
 }
 
-.wall.wallPopupView p {
-	width: 7vw;
-	font-size: 4vw;
+
+.wall.wallPopupView {
+	display: flex;
+	justify-content: center;
 }
+
 
 .wall.smallView {
 	position: fixed;
@@ -476,29 +481,36 @@ This means that something using bottom is off the page - hence we must use top. 
 }
 
 
-
-
-.scoreSummary {
+.panel {
 	z-index: 1000;
 	top: 0;
+	bottom: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	right: 0;
 	position: absolute;
 	background: lightgoldenrodyellow;
 	font-size: 2em;
 	text-align: center;
 }
 
-.scoreSummary p {
+.fitToBoardArea {
+	top: 12vh;
+	bottom: 27vh;
+	left: 10.5vh;
+	right: 10.5vh;
+}
+
+.panel p {
 	margin: 0.25em;
 }
 
-.scoreSummaryHeader {
-	display: inline-block;
+.panelHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 
-.scoreSummaryClose {
+.panelClose {
 	float: right;
 	cursor: pointer;
 	font-size: 1.25em;

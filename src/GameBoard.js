@@ -5,6 +5,9 @@ const Popups = require("./Popups.js")
 const Sequence = require("./Sequence.js")
 const Match = require("./Match.js")
 
+const {updateTilesInContainer} = require("./updateTilesInContainer.js")
+const {displayCenterTilePopup} = require("./displayCenterTilePopup.js")
+
 let gameBoard = document.createElement("div")
 gameBoard.id = "gameBoard"
 document.body.appendChild(gameBoard)
@@ -314,35 +317,16 @@ function createSuggestedHands(hand, playerName = "") {
 			catch (e) {console.error(e)}
 
 			//Not American Mahjong - must be Chinese/Panama.
-
-			//TODO: Identify if hand is Mahjong - pass those details into hand.score
-			//This requires server code changes as well.
 			let results = hand.score()
 			let titleText = results.scoreText //To save space, we'll display scoreText as the header.
 
-			let scoreSummary = document.createElement("div")
-			scoreSummary.className = "scoreSummary"
-
-			gameBoard.appendChild(scoreSummary)
-
-			let header = document.createElement("p")
-			header.innerHTML = titleText
-			header.className = "scoreSummaryHeader"
-			scoreSummary.appendChild(header)
-
-			let closeButton = document.createElement("span")
-			closeButton.addEventListener("click", function() {
-				scoreSummary.remove()
-			})
-			closeButton.innerHTML = "×"
-			closeButton.className = "scoreSummaryClose"
-			scoreSummary.appendChild(closeButton)
-			console.log(closeButton)
+			let panel = new Popups.Panel(titleText)
 
 			let itemTableContainer = document.createElement("div")
 			itemTableContainer.className = "itemTableContainer"
 
-			scoreSummary.appendChild(itemTableContainer)
+			panel.panel.appendChild(itemTableContainer)
+
 
 			function createTable(items, isSetsTable = false) {
 				let tableContainer = document.createElement("div")
@@ -400,6 +384,8 @@ function createSuggestedHands(hand, playerName = "") {
 
 			itemTableContainer.appendChild(matchesTable)
 			itemTableContainer.appendChild(otherTable)
+
+			panel.show(gameBoard)
 
 			return
 		}
@@ -648,24 +634,11 @@ function renderDiscardPile(tileStrings) {
 	let tiles = tileStrings.map((str) => {return Tile.fromJSON(str)})
 	tiles = Hand.sortTiles(tiles)
 
-	while (discardPile.children.length > tiles.length) {
-		discardPile.lastChild.remove()
+	updateTilesInContainer(discardPile, tiles)
+
+	discardPile.onclick = function() {
+		displayCenterTilePopup(tiles, `Discard Pile (${tiles.length} tile${tiles.length === 1 ? "":"s"})`)
 	}
-
-	tiles.forEach((tile, index) => {
-		let refElem = tile.createImageElem({
-			gameStyle: stateManager?.lastState?.message?.settings?.gameStyle
-		})
-
-		let current = discardPile.children[index]
-		if (current) {
-			current.src = refElem.src
-			current.title = refElem.title
-		}
-		else {
-			discardPile.appendChild(refElem)
-		}
-	})
 }
 
 

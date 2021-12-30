@@ -52,6 +52,40 @@ class Notification {
 }
 
 
+class Panel {
+	constructor(titleText) {
+		//Uses scoreSummary classes for some of the popup code.
+
+		let panel = document.createElement("div")
+		panel.className = "panel" //fitToBoardArea
+
+		let header = document.createElement("div")
+		header.className = "panelHeader"
+		panel.appendChild(header)
+
+		header.appendChild(document.createElement("span")) //For flexbox spacing
+
+		let titleSpan = document.createElement("span")
+		titleSpan.innerHTML = titleText
+		header.appendChild(titleSpan)
+
+		//Event listener for close button added later.
+		let closeButton = document.createElement("span")
+		closeButton.innerHTML = "×"
+		closeButton.className = "panelClose"
+		header.appendChild(closeButton)
+
+		this.panel = panel
+		this.show = function(appendTo) {
+			appendTo.appendChild(panel)
+		}
+		function remove() {panel.remove()}
+		this.dismiss = remove
+		closeButton.addEventListener("click", remove)
+	}
+}
+
+
 
 let messageQueue = []
 
@@ -171,5 +205,6 @@ class MessageBar {
 module.exports = {
 	Notification,
 	MessageBar,
-	BlocklessAlert
+	BlocklessAlert,
+	Panel
 }
