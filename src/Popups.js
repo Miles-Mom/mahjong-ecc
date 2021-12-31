@@ -9,10 +9,24 @@ class Notification {
 		popup.id = "errorPopup"
 		cover.appendChild(popup)
 
-		let error = document.createElement("p")
-		error.innerHTML = errorText
-		error.id = "errorText"
-		popup.appendChild(error)
+
+
+		let header = document.createElement("div")
+		header.className = "panelHeader"
+
+		header.appendChild(document.createElement("span")) //For flexbox spacing
+
+		let headerText = document.createElement("span")
+		headerText.innerHTML = errorText
+		headerText.className = "headerText"
+		header.appendChild(headerText)
+
+		let dismissButton = document.createElement("span")
+		dismissButton.className = "headerText panelClose"
+		dismissButton.innerHTML = "×"
+		header.appendChild(dismissButton)
+
+		popup.appendChild(header)
 
 		if (typeof messageText === "string") {
 			let message = document.createElement("p")
@@ -24,11 +38,6 @@ class Notification {
 			popup.appendChild(messageText) //Allow appending divs to this.
 			messageText.id = "messageText"
 		}
-
-		let dismissButton = document.createElement("button")
-		dismissButton.id = "dismissButton"
-		dismissButton.innerHTML = "Dismiss"
-		popup.appendChild(dismissButton)
 
 		let dismiss = (function dismiss(ev) {
 			if (this.ondismissed) {this.ondismissed()}
@@ -54,8 +63,6 @@ class Notification {
 
 class Panel {
 	constructor(titleText) {
-		//Uses scoreSummary classes for some of the popup code.
-
 		let panel = document.createElement("div")
 		panel.className = "panel" //fitToBoardArea
 

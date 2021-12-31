@@ -14,20 +14,18 @@
 }
 
 #errorPopup {
-	min-height: 25vh;
 	max-width: 72vw;
 	background-color: #368a36;
 	border: 5px solid #ffbd17;
 	border-radius: 1vh;
 	text-align: center;
-	padding-left: 8px;
-	padding-right: 8px;
+	padding: 8px;
 }
 
-#errorPopup #errorText {
+#errorPopup .headerText {
 	font-size: 2.3em;
 	color: #ffe100;
-	margin-block-start: 2.25vh;
+	margin-block-start: 0;
 	margin-block-end: 0;
 }
 
@@ -36,16 +34,6 @@
 	color: white;
 	margin-bottom: 0;
 	margin-block-start: 0.5em;
-}
-
-#errorPopup #dismissButton {
-	border-radius: 250000px;
-	font-size: 1.7em;
-	margin-top: 1vh;
-	margin-bottom: 1.5vh;
-	background: linear-gradient(45deg, orange, yellow, lightgreen);
-	border: 2px solid black;
-	padding: 5px 20px 5px 20px;
 }
 
 
