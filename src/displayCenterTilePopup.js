@@ -8,10 +8,12 @@ function displayCenterTilePopup(tiles, headerText) {
 	panel.panel.classList.add("fitToBoardArea")
 
 	let wallPreview = document.createElement("div")
+	wallPreview.classList.add("tileGridPopupView")
 	updateTilesInContainer(wallPreview, tiles)
 	panel.panel.appendChild(wallPreview)
 
 	panel.show(gameBoard)
+
 
 	let panelDims = panel.panel.getBoundingClientRect()
 	let wallPreviewDims = wallPreview.getBoundingClientRect()

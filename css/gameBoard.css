@@ -208,11 +208,17 @@ This means that something using bottom is off the page - hence we must use top. 
 	top: calc(12vh + 1vh);
 }
 
-.wall {
+.tileGridPopupView, .wall {
 	display: flex;
-	align-items: center;
-	justify-content: left;
 	flex-wrap: wrap;
+}
+
+.tileGridPopupView {
+	justify-content: center;
+}
+
+.wall {
+	align-items: center; /*For the number prefix*/
 }
 
 .wall, .wall img {
@@ -232,20 +238,6 @@ This means that something using bottom is off the page - hence we must use top. 
 	text-align: center;
 	font-size: calc(1.1 * calc(1.6vw + 1.6vmin - 1.3vmax));
 }
-
-
-.wall.wallPopupView img {
-	width: auto;
-	max-height: initial;
-	max-width: initial;
-}
-
-
-.wall.wallPopupView {
-	display: flex;
-	justify-content: center;
-}
-
 
 .wall.smallView {
 	position: fixed;

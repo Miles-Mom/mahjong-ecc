@@ -317,6 +317,7 @@ function createSuggestedHands(hand, playerName = "") {
 			catch (e) {console.error(e)}
 
 			//Not American Mahjong - must be Chinese/Panama.
+
 			let results = hand.score()
 			let titleText = results.scoreText //To save space, we'll display scoreText as the header.
 
