@@ -567,23 +567,13 @@ window.stateManager.onGameplayAlert = function(obj) {
 	})
 }
 
-
-let endGameButton = document.createElement("button")
-endGameButton.id = "endGameButton"
-gameBoard.appendChild(endGameButton)
-
-let newGameNoLobbyButton = document.createElement("button")
-newGameNoLobbyButton.id = "newGameNoLobbyButton"
-newGameNoLobbyButton.innerHTML = "New Game"
-gameBoard.appendChild(newGameNoLobbyButton)
-
 let shouldConfirm = true;
-endGameButton.addEventListener("click", function() {
+function endGame(confirmMessage) {
 	//Require confirmation unless the game is over. Note that this might be slightly bugged with revert.
 	if (
 		endGameButton.innerHTML === "Leave Room" //Spectating
 		|| !shouldConfirm
-		|| confirm("Are you absolutely sure you want to end the game?")
+		|| confirm(confirmMessage)
 	) {
 		let lastMessage = stateManager.lastState.message
 		window.stateManager.endGame()
@@ -600,13 +590,28 @@ endGameButton.addEventListener("click", function() {
 			}
 		}
 		catch (e) {console.error(e)}
+		return true
 	}
+	return false
+}
+
+let endGameButton = document.createElement("button")
+endGameButton.id = "endGameButton"
+gameBoard.appendChild(endGameButton)
+
+let newGameNoLobbyButton = document.createElement("button")
+newGameNoLobbyButton.id = "newGameNoLobbyButton"
+newGameNoLobbyButton.innerHTML = "New Game"
+gameBoard.appendChild(newGameNoLobbyButton)
+
+endGameButton.addEventListener("click", function() {
+	endGame("Are you sure you want to end the game?")
 })
 
 newGameNoLobbyButton.addEventListener("click", function() {
-	endGameButton.click()
-	//Calling startGame when in a game does nothing, so it's fine to call it without guards.
-	document.getElementById("startGameButton").click() //Clicks button on RoomManager - not currently visible.
+	if (endGame("Are you sure you want to start a new game?")) {
+		document.getElementById("startGameButton").click() //Clicks button on RoomManager - not currently visible.
+	}
 })
 
 let goMahjongButton = document.createElement("button")
