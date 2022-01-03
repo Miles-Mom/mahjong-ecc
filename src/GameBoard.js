@@ -298,7 +298,6 @@ hintButton.innerHTML = "Suggested Hands"
 gameBoard.appendChild(hintButton)
 
 
-const scoringHintStorageKey = "hasReceivedScoringHint"
 function createSuggestedHands(hand, playerName = "") {
 	let isUser = !playerName
 
@@ -309,12 +308,7 @@ function createSuggestedHands(hand, playerName = "") {
 		let cardName = stateManager.lastState.message.settings.card
 
 		if (stateManager.lastState.message.settings.gameStyle !== "american") {
-			try {
-				if (!localStorage.getItem(scoringHintStorageKey)) {
-					localStorage.setItem(scoringHintStorageKey, true)
-				}
-			}
-			catch (e) {console.error(e)}
+			window.settings.hasReceivedScoringHint.value = true //The user has opened the scoring menu, so we don't need to give the hint.
 
 			//Not American Mahjong - must be Chinese/Panama.
 
@@ -462,25 +456,20 @@ function createSuggestedHands(hand, playerName = "") {
 
 				popup = new Popups.Notification(titleText, elem)
 
-				//Wrap this in an additional try-catch - we're messing with localStorage, which might be wonky.
-				try {
-					//The first ever that this is dismissed, inform user they can click on opponents' hands for insight.
-					let storageKey = "hasReceivedPossibleHandsHint"
-					if (!localStorage.getItem(storageKey)) {
-						if (!isUser) {
-							//If the user happens to click on possible hands first, don't bother them.
-							localStorage.setItem(storageKey, true)
-						}
-						else {
-							popup.ondismissed = function() {
-								localStorage.setItem(storageKey, true)
-								new Popups.Notification("Gameplay Tip!", "Wondering what hands your opponents could be playing? <br>You can click on their tiles for a list of hands possible with their exposures!")
-									.show()
-							}
+				//The first ever that Suggested Hands is dismissed, inform user they can click on opponents' hands for insight.
+				if (!window.settings.hasReceivedPossibleHandsHint.value) {
+					if (!isUser) {
+						//The user opened possible hands. We don't need to tell them about it.
+						window.settings.hasReceivedPossibleHandsHint.value = true
+					}
+					else {
+						popup.ondismissed = function() {
+							window.settings.hasReceivedPossibleHandsHint.value = true
+							new Popups.Notification("Gameplay Tip!", "Wondering what hands your opponents could be playing? <br>You can click on their tiles for a list of hands possible with their exposures!")
+							.show()
 						}
 					}
 				}
-				catch (e) {console.error(e)}
 			}
 		}
 	}
@@ -514,8 +503,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 })
 
 window.stateManager.onGameplayAlert = function(obj) {
-	//TODO: Messages about discards need to dissapear as soon as the next discard appears, and any applicible sound has already played.
-
 	//Play sound.
 	let sound = document.createElement("audio");
 
@@ -523,14 +510,14 @@ window.stateManager.onGameplayAlert = function(obj) {
 	let urls = [];
 	if (obj.message.includes("thrown")) {
 		sound.volume = 0.5
-		//urls = ["tile-drop-table.mp3"]
+		urls = ["tile-drop-table.mp3"]
 	}
 	else if (obj.message.includes("mahjong")) {
 		sound.volume = 1
-		//urls = ["tiles-dropping-table.mp3"]
+		urls = ["tiles-dropping-table.mp3"]
 	}
 
-	if (urls.length > 0) {
+	if (urls.length > 0 && window.settings.soundEffects.value) {
 		sound.src = baseUrl + urls[Math.floor(Math.random() * urls.length)];
 		sound.setAttribute("preload", "auto");
 		sound.setAttribute("controls", "none");
@@ -907,8 +894,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			//Wrap this in an additional try-catch - we're messing with localStorage, which might be wonky.
 			//The first time that a game ends, alert to user as to how scores are calculated.
 			try {
-				if (!localStorage.getItem(scoringHintStorageKey)) {
-					localStorage.setItem(scoringHintStorageKey, true)
+				if (!window.settings.hasReceivedScoringHint.value) {
+					window.settings.hasReceivedScoringHint.value = true
 					new Popups.Notification("Gameplay Tip!", "Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. ")
 					.show()
 				}

@@ -1,6 +1,6 @@
 const Popups = require("./Popups.js")
 const SettingsMenu = require("./RoomManager/SettingsMenu.js")
-const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
+const {readSave, writeSave, deleteSave} = require("./SaveManager.js") //TODO: Should we use a Setting to store saves instead of [read/write/delete]Save?
 
 const QRCode = require("qrcode-generator")
 
@@ -463,8 +463,7 @@ async function saveOfflineGame() {
 		console.log(`Saving Game (${toSave.length} characters)`)
 		await writeSave(saveKey, toSave)
 
-		let allowCollection = await readSave("settingCollectDebuggingData")
-		if (allowCollection !== "false") {
+		if (window.singlePlayerDebuggingData.value) {
 			//Upload the offline game for debugging and analysis purposes.
 			//TODO: We don't want to do this constantly, as we could be uploading a bit.
 			//Also, there is no guarantee this goes through - we could legitimately be offline.
@@ -672,7 +671,7 @@ startGameButton.addEventListener("click", function() {
 	//We want users to play offline if they are doing single player games.
 	//Give them the option to switch now.
 	try {
-		if (!stateManager.offlineMode && localStorage.getItem("overruledOnlineSinglePlayerAlert") === null) {
+		if (!stateManager.offlineMode && !window.settings.overruledOnlineSinglePlayerAlert.value) {
 			let nonBotCount = 0
 			stateManager.lastState.message.clients.forEach((client) => {
 				if (!client.isBot) {nonBotCount++}
@@ -712,7 +711,7 @@ startGameButton.addEventListener("click", function() {
 				let stayOnlineButton = document.createElement("button")
 				stayOnlineButton.innerHTML = "Stay Online"
 				stayOnlineButton.addEventListener("click", function() {
-					localStorage.setItem("overruledOnlineSinglePlayerAlert", "yes")
+					window.settings.overruledOnlineSinglePlayerAlert.value = true
 					start()
 					popup.dismiss()
 				})

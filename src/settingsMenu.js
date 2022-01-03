@@ -1,69 +1,4 @@
-const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
-
-
-//General
-let singlePlayerDebuggingData = new BooleanSetting("settingCollectDebuggingData", true)
-let tipOfTheDay = new BooleanSetting("settingTipOfTheDay", true)
-let soundEffects = new BooleanSetting("settingSoundEffects", false)
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//
-// let gameStyleSetting = new StringSetting("gameStyle") //Default undefined - force user to select something first.
-//
-//
-// //Multiple Variants
-//
-// //Chinese
-// let chineseTableLimitEnabled = new BooleanSetting("chinese.tableLimitEnabled", false)
-// let chineseTableLimit = new NumberSetting("chinese.tableLimit", 500)
-// let chineseAllow4thTilePickup = new BooleanSetting("chinese.allow4thTilePickup", true)
-// let chineseBotCanStartCharleston = new BooleanSetting("chinese.botCanStartCharleston", false)
-// let chinesePickupDiscardForDraw = new BooleanSetting("chinese.pickupDiscardForDraw", false)
-//
-// //American
-// let americanCard = new StringSetting("american.card", "2021 National Mahjong League")
-// let americanSuggestedHandsEnabled = new BooleanSetting("american.suggestedHands", true)
-// let americanBotDifficulty = new RangeSetting("american.botDifficulty", 50)
-// let americanIgnoreBotMahjong = new BooleanSetting("american.ignoreBotMahjong", false)
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const Popup = require("./Popups.js")
-
-//We need to use SaveManager because localStorage doesn't persist on iOS (and maybe not on Android)
-const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
-
-const debuggingDataSavePath = "settingCollectDebuggingData"
-
 
 let settingsIcon = document.createElement("img")
 if (window?.Capacitor) {
@@ -76,9 +11,7 @@ else {
 settingsIcon.className = "settingsIcon"
 settingsIcon.addEventListener("click", async function() {
 
-	await singlePlayerDebuggingData.loaded
-
-
+	await window.settings.singlePlayerDebuggingData.loaded
 
 	let elem = document.createElement("div")
 
@@ -87,8 +20,9 @@ settingsIcon.addEventListener("click", async function() {
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
 
-
-	singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
+	window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
+	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
+	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
 	//Add offline data collection setting.
 	let offlineDataCollectionEnabledMessage = "Debugging data is collected for all games. "
@@ -99,7 +33,7 @@ settingsIcon.addEventListener("click", async function() {
 	settingsMenuDiv.appendChild(dataCollectionMessage)
 
 	function setDataCollectionMessage() {
-		if (singlePlayerDebuggingData.value) {
+		if (window.settings.singlePlayerDebuggingData.value) {
 			dataCollectionMessage.innerHTML = offlineDataCollectionEnabledMessage
 		}
 		else {
@@ -107,8 +41,7 @@ settingsIcon.addEventListener("click", async function() {
 		}
 	}
 	setDataCollectionMessage()
-	singlePlayerDebuggingData.onValueSet = setDataCollectionMessage
-
+	window.settings.singlePlayerDebuggingData.onValueSet = setDataCollectionMessage
 
 	//Add button to delete collected data.
 	let deleteDataButton = document.createElement("button")

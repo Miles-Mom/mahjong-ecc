@@ -1,3 +1,4 @@
+//We need to use SaveManager because localStorage doesn't persist on iOS (and maybe not on Android)
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
 
 class Setting {
@@ -81,9 +82,14 @@ class BooleanSetting extends Setting {
 			this.value = booleanSettingToggle.checked
 		}).bind(this))
 
-		appendToElem.appendChild(booleanSettingLabel)
-		appendToElem.appendChild(booleanSettingToggle)
-		appendToElem.appendChild(booleanSettingToggleLabel)
+		let container = document.createElement("div")
+		container.appendChild(booleanSettingLabel)
+		container.appendChild(booleanSettingToggle)
+		container.appendChild(booleanSettingToggleLabel)
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
 	}
 }
 

@@ -24,6 +24,77 @@ if ('serviceWorker' in navigator) {
     }
 }
 
+
+
+
+
+const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
+
+
+//Data Storage
+let hasReceivedPossibleHandsHint = new BooleanSetting("hasReceivedPossibleHandsHint", false)
+let hasReceivedScoreSummaryHint = new BooleanSetting("hasReceivedScoringHint", false)
+let overruledOnlineSinglePlayerAlert = new BooleanSetting("overruledOnlineSinglePlayerAlert", false)
+
+
+//General Settings
+let singlePlayerDebuggingData = new BooleanSetting("settingCollectDebuggingData", true)
+let displayTips = new BooleanSetting("settingDisplayTips", true)
+let soundEffects = new BooleanSetting("settingSoundEffects", false)
+
+
+//Game Settings
+
+
+
+//
+//
+//
+//
+// let gameStyleSetting = new StringSetting("gameStyle") //Default undefined - force user to select something first.
+//
+//
+// //Multiple Variants
+//
+// //Chinese
+// let chineseTableLimitEnabled = new BooleanSetting("chinese.tableLimitEnabled", false)
+// let chineseTableLimit = new NumberSetting("chinese.tableLimit", 500)
+// let chineseAllow4thTilePickup = new BooleanSetting("chinese.allow4thTilePickup", true)
+// let chineseBotCanStartCharleston = new BooleanSetting("chinese.botCanStartCharleston", false)
+// let chinesePickupDiscardForDraw = new BooleanSetting("chinese.pickupDiscardForDraw", false)
+//
+// //American
+// let americanCard = new StringSetting("american.card", "2021 National Mahjong League")
+// let americanSuggestedHandsEnabled = new BooleanSetting("american.suggestedHands", true)
+// let americanBotDifficulty = new RangeSetting("american.botDifficulty", 50)
+// let americanIgnoreBotMahjong = new BooleanSetting("american.ignoreBotMahjong", false)
+//
+//
+//
+
+
+
+window.settings = {
+    singlePlayerDebuggingData,
+    displayTips,
+    soundEffects,
+    american: {
+
+    },
+    chinese: {
+
+    },
+    hasReceivedPossibleHandsHint,
+    hasReceivedScoreSummaryHint,
+    overruledOnlineSinglePlayerAlert,
+}
+
+
+
+
+
+
+
 document.title = "Mahjong 4 Friends - Free Mahjong, Friends and/or Bots"
 
 require("./appUpdates.js")
