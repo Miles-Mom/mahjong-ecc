@@ -59,25 +59,32 @@ module.exports = [
 	function(tiles = []) {
 		allSuits.forEach((suit) => {
 			windOptions.forEach((wind) => {
-				oddOptions.slice(0, -2).forEach((num) => {
-					let newArr = []
-					tiles.push(newArr)
+				//TODO: Any 3 odds or any 3 diff odds?
+				oddOptions.forEach((num1, i) => {
+					oddOptions.forEach((num2, i) => {
+						if (num2 === num1) {return} //Remove if any 3 odds
+						oddOptions.forEach((num3, i) => {
+							if (num3 === num1 || num3 === num2) {return} //Remove if any 3 odds
+							let newArr = []
+							tiles.push(newArr)
 
-					//AA
-					newArr.push(createTiles({type: "any", value: "any", amount: 2}))
+							//AA
+							newArr.push(createTiles({type: "any", value: "any", amount: 2}))
 
-					//EEE
-					newArr.push(createTiles({type: "wind", value: wind, amount: 3}))
+							//EEE
+							newArr.push(createTiles({type: "wind", value: wind, amount: 3}))
 
-					//333
-					newArr.push(createTiles({type: suit, value: num + 0, amount: 3}))
+							//333
+							newArr.push(createTiles({type: suit, value: num1, amount: 3}))
 
-					//555
-					newArr.push(createTiles({type: suit, value: num + 2, amount: 3}))
+							//555
+							newArr.push(createTiles({type: suit, value: num2, amount: 3}))
 
-					//777
-					newArr.push(createTiles({type: suit, value: num + 4, amount: 3}))
-				})
+							//777
+							newArr.push(createTiles({type: suit, value: num3, amount: 3}))
+						});
+					});
+				});
 			})
 		})
 
