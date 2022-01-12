@@ -30,68 +30,35 @@ if ('serviceWorker' in navigator) {
 
 const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
 
-
-//Data Storage
-let hasReceivedPossibleHandsHint = new BooleanSetting("hasReceivedPossibleHandsHint", false)
-let hasReceivedScoreSummaryHint = new BooleanSetting("hasReceivedScoringHint", false)
-let overruledOnlineSinglePlayerAlert = new BooleanSetting("overruledOnlineSinglePlayerAlert", false)
-
-
-//General Settings
-let singlePlayerDebuggingData = new BooleanSetting("settingCollectDebuggingData", true)
-let displayTips = new BooleanSetting("settingDisplayTips", true)
-let soundEffects = new BooleanSetting("settingSoundEffects", false)
-
-
-//Game Settings
-
-
-
-//
-//
-//
-//
-// let gameStyleSetting = new StringSetting("gameStyle") //Default undefined - force user to select something first.
-//
-//
-// //Multiple Variants
-//
-// //Chinese
-// let chineseTableLimitEnabled = new BooleanSetting("chinese.tableLimitEnabled", false)
-// let chineseTableLimit = new NumberSetting("chinese.tableLimit", 500)
-// let chineseAllow4thTilePickup = new BooleanSetting("chinese.allow4thTilePickup", true)
-// let chineseBotCanStartCharleston = new BooleanSetting("chinese.botCanStartCharleston", false)
-// let chinesePickupDiscardForDraw = new BooleanSetting("chinese.pickupDiscardForDraw", false)
-//
-// //American
-// let americanCard = new StringSetting("american.card", "2021 National Mahjong League")
-// let americanSuggestedHandsEnabled = new BooleanSetting("american.suggestedHands", true)
-// let americanBotDifficulty = new RangeSetting("american.botDifficulty", 50)
-// let americanIgnoreBotMahjong = new BooleanSetting("american.ignoreBotMahjong", false)
-//
-//
-//
-
-
-
 window.settings = {
-    singlePlayerDebuggingData,
-    displayTips,
-    soundEffects,
-    american: {
+    //Global Settings
+    singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
+    displayTips: new BooleanSetting("settingDisplayTips", true),
+    soundEffects: new BooleanSetting("settingSoundEffects", false),
 
-    },
-    chinese: {
+    //Game Settings
+    gameStyleSetting: new Setting("gameStyle"), //Default undefined - force user to select something first.
 
-    },
-    hasReceivedPossibleHandsHint,
-    hasReceivedScoreSummaryHint,
-    overruledOnlineSinglePlayerAlert,
+    //Data storage
+    hasReceivedPossibleHandsHint: new BooleanSetting("hasReceivedPossibleHandsHint", false),
+    hasReceivedScoreSummaryHint: new BooleanSetting("hasReceivedScoringHint", false),
+    overruledOnlineSinglePlayerAlert: new BooleanSetting("overruledOnlineSinglePlayerAlert", false),
 }
 
+window.settings.chinese = {
+    tableLimitEnabled: new BooleanSetting("chinese.tableLimitEnabled", false),
+    tableLimit: new NumberSetting("chinese.tableLimit", 500),
+    allow4thTilePickup: new BooleanSetting("chinese.allow4thTilePickup", true),
+    botCanStartCharleston: new BooleanSetting("chinese.botCanStartCharleston", false),
+    pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false)
+}
 
-
-
+window.settings.american = {
+    card: new Setting("american.card", "2021 National Mahjong League"),
+    suggestedHands: new BooleanSetting("american.suggestedHands", true),
+    botDifficulty: new NumberSliderSetting("american.botDifficulty", 50),
+    ignoreBotMahjong: new BooleanSetting("american.ignoreBotMahjong", false)
+}
 
 
 

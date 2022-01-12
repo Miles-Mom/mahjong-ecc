@@ -463,7 +463,7 @@ async function saveOfflineGame() {
 		console.log(`Saving Game (${toSave.length} characters)`)
 		await writeSave(saveKey, toSave)
 
-		if (window.singlePlayerDebuggingData.value) {
+		if (window.settings.singlePlayerDebuggingData.value) {
 			//Upload the offline game for debugging and analysis purposes.
 			//TODO: We don't want to do this constantly, as we could be uploading a bit.
 			//Also, there is no guarantee this goes through - we could legitimately be offline.
