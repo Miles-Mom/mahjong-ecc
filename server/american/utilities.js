@@ -78,7 +78,7 @@ function processHand(handOption, hand, options) {
                 anyValueSingletons.push(...item)
                 continue;
             }
-            if (item.length > 1 && anyType && anyValue) {
+            if (item.length > 1 && (anyType || anyValue)) {
                 let uniqueTiles = []
                 hand.forEach((handItem) => {
                     let tile;
@@ -87,6 +87,7 @@ function processHand(handOption, hand, options) {
                     else {tile = handItem}
 
                     if (tile.type === "any" || tile.value === "any") {return false} //We are simulating all possible tiles. Any tiles are not a tile.
+                    if (!item[0].matches(tile, true)) {return false} //If this "any" selector does not match the tile, continue - any bamboo should not match characters.
 
                     let isUnique = !(uniqueTiles.some((uniqueTile) => {
                         return uniqueTile.matches(tile)
