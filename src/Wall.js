@@ -112,7 +112,7 @@ class Wall {
 		//Update existing paragraph elem, or create if none.
 		let elem = div.querySelector("p")
 		if (!elem) {
-			let elem = document.createElement("p")
+			elem = document.createElement("p")
 			div.insertBefore(elem, div.firstChild)
 		}
 		elem.innerHTML = tiles.length
