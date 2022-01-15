@@ -56,7 +56,7 @@
       id="layer1"
       inkscape:label="Layer 1"
       inkscape:groupmode="layer"
-      transform="translate(-344.94 -314.12)"
+      transform="scale(1, -1) translate(0, -55.625) translate(-344.94,-314.12)"
     >
     <path
         id="path3768"
