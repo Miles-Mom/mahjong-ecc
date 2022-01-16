@@ -470,10 +470,10 @@ async function saveOfflineGame() {
 			//Also, there is no guarantee this goes through - we could legitimately be offline.
 			try {
 				console.log("Attempting Offline Upload")
-				// stateManager.uploadOfflineSave({
-				// 	saveId: serverStateManager.getRoom("Offline").logFileSaveId,
-				// 	message: toSave
-				// })
+				stateManager.uploadOfflineSave({
+					saveId: serverStateManager.getRoom("Offline").logFileSaveId,
+					message: toSave
+				})
 			}
 			catch (e) {console.error(e)}
 		}
