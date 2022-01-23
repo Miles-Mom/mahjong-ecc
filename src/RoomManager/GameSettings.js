@@ -105,7 +105,19 @@ class SettingsMenu {
 	}
 
 	getChoices() {
-		//TODO!!!
+		let gameStyle = window.settings.gameStyle.value
+		if (gameStyle === "panama") {gameStyle = "chinese"}
+
+		let settingsToExtract = window.settings[gameStyle]
+
+		let outputObj = {
+			gameStyle
+		}
+
+		for (let prop in settingsToExtract) {
+			outputObj[prop] = settingsToExtract[prop].value
+		}
+		return outputObj
 	}
 }
 
