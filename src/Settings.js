@@ -55,12 +55,17 @@ class Setting {
 		let selectElem = document.createElement("select")
 		container.appendChild(selectElem)
 
-		optionsArr.forEach((option) => {
+		optionsArr.forEach((option, index) => {
 			if (typeof option === "string") {
 				option = {name: option, value: option}
 			}
 
 			let optionElem = document.createElement("option")
+
+			if (option.value === undefined) {
+				optionElem.disabled = true
+			}
+
 			optionElem.value = option.value
 			optionElem.innerHTML = option.name
 			selectElem.appendChild(optionElem)

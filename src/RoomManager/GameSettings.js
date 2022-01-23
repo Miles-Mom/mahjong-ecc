@@ -1,7 +1,7 @@
 const Popups = require("../Popups.js")
 
 const variants = [
-	"Please Select Variant...",
+	{name: "Please Select Variant..."},
 	{
 		name: "American (NMJL/Marvelous)",
 		value: "american"
@@ -18,7 +18,7 @@ const variants = [
 
 
 const cardOptions = [
-	"Select Card:",
+	{name: "Please Select Card..."},
 	"2021 National Mahjongg League",
 	{
 		name: "2022 Marvelous Mah Jongg",
