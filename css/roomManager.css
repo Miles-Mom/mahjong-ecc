@@ -199,7 +199,7 @@
 	cursor: pointer;
 }
 
-#startGameButton, #addBotButton, #leaveRoomButton, #closeRoomButton, #settingsMenuButton {
+#startGameButton, #addBotButton, #leaveRoomButton, #settingsMenuButton {
 	font-size: 1.5em;
 	border-radius: 250000px;
 	padding: 10px;
@@ -234,10 +234,6 @@
 #resumeSaveNowButton {
 	margin-left: 5px;
 	padding: 5px 15px;
-}
-
-#closeRoomButton {
-	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 
 #leaveRoomButton, #stayOnlineButton {

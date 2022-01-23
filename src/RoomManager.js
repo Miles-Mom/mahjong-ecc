@@ -634,17 +634,6 @@ leaveRoomButton.addEventListener("click", function() {
 	window.stateManager.leaveRoom(window.stateManager.roomId)
 })
 
-
-let closeRoomButton = document.createElement("button")
-closeRoomButton.innerHTML = "Close Room"
-closeRoomButton.id = "closeRoomButton"
-closeRoomButton.style.display = "none"
-inRoomContainer.appendChild(closeRoomButton)
-
-closeRoomButton.addEventListener("click", function() {
-	window.stateManager.closeRoom(window.stateManager.roomId)
-})
-
 let addBotButton = document.createElement("button")
 addBotButton.innerHTML = "Add Bot"
 addBotButton.id = "addBotButton"
@@ -704,7 +693,7 @@ startGameButton.addEventListener("click", function() {
 				goOfflineButton.innerHTML = "Go Offline"
 				goOfflineButton.addEventListener("click", function() {
 					stateManager.addEventListener("onLeaveRoom", startOfflineGame)
-					closeRoomButton.click()
+					leaveRoomButton.click()
 
 					function startOfflineGame() {
 						offlineSinglePlayer.click()
@@ -1187,7 +1176,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	if (window.stateManager.isHost) {
 		startGameButton.style.display = ""
 		addBotButton.style.display = ""
-		closeRoomButton.style.display = ""
 		leaveRoomButton.style.display = ""
 
 		if (obj.message.clients.length === 1) {
@@ -1202,7 +1190,6 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	}
 	else {
 		addBotButton.style.display = "none"
-		closeRoomButton.style.display = "none"
 		startGameButton.style.display = "none"
 		leaveRoomButton.style.display = ""
 	}
