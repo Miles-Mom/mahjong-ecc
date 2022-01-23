@@ -21,7 +21,6 @@ settingsIcon.addEventListener("click", async function() {
 	elem.appendChild(settingsMenuDiv)
 
 	window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
-	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
 	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
 	//Add offline data collection setting.
@@ -55,7 +54,7 @@ settingsIcon.addEventListener("click", async function() {
 
 
 	//Display elem inside a popup.
-	popup = new Popups.Notification("Settings", elem)
+	popup = new Popups.Notification("General Settings", elem)
 	let popupElem = popup.show()
 	popupElem.style.width = "100vw" //Force max width allowed. Prevents jumping.
 })

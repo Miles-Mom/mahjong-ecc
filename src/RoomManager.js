@@ -1,5 +1,5 @@
 const Popups = require("./Popups.js")
-const SettingsMenu = require("./RoomManager/SettingsMenu.js")
+const SettingsMenu = require("./RoomManager/GameSettings.js")
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js") //TODO: Should we use a Setting to store saves instead of [read/write/delete]Save?
 
 const QRCode = require("qrcode-generator")
@@ -613,13 +613,13 @@ inRoomContainer.id = "inRoomContainer"
 inRoomContainer.style.display = "none"
 roomManager.appendChild(inRoomContainer)
 
-let currentRoom = document.createElement("h2")
-currentRoom.id = "currentRoom"
-inRoomContainer.appendChild(currentRoom)
+let roomInfo = document.createElement("h2")
+roomInfo.id = "roomInfo"
+inRoomContainer.appendChild(roomInfo)
 
-let playerCount = document.createElement("h2")
-playerCount.id = "playerCount"
-inRoomContainer.appendChild(playerCount)
+let gameSettingsElem = document.createElement("div")
+gameSettingsElem.id = "gameSettingsElem"
+inRoomContainer.appendChild(gameSettingsElem)
 
 let playerView = document.createElement("div")
 playerView.id = "playerView"
@@ -661,7 +661,17 @@ startGameButton.id = "startGameButton"
 startGameButton.style.display = "none"
 inRoomContainer.appendChild(startGameButton)
 
-let gameSettings;
+let gameSettings = new SettingsMenu(gameSettingsElem)
+
+let settingsMenuButton = document.createElement("button")
+settingsMenuButton.innerHTML = "Settings"
+settingsMenuButton.id = "settingsMenuButton"
+inRoomContainer.appendChild(settingsMenuButton)
+
+settingsMenuButton.addEventListener("click", function() {
+	gameSettings.openMenu()
+})
+
 startGameButton.addEventListener("click", function() {
 
 	function start() {
@@ -730,10 +740,6 @@ startGameButton.addEventListener("click", function() {
 
 	start()
 })
-
-let gameSettingsElem = document.createElement("div")
-gameSettingsElem.id = "gameSettingsElem"
-inRoomContainer.appendChild(gameSettingsElem)
 
 let inviteYourFriendsElem = document.createElement("div")
 inviteYourFriendsElem.id = "inviteYourFriendsElem"
@@ -1052,6 +1058,7 @@ function getRoomLink() {
 }
 
 function enterRoom() {
+	heading.style.fontSize = "0.7em" //Shrink heading slightly.
 	inRoomContainer.style.display = "block"
 	notInRoomContainer.style.display = "none"
 
@@ -1061,9 +1068,7 @@ function enterRoom() {
 	joinRoomLink.innerHTML = joinRoomLink.href //We want the full URL, not just the hash.
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
-	//Link room name when online.
-	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
-	currentRoom.innerHTML = `You are in room ${roomNameText}`
+
 
 	try {
 		let dpi = 4
@@ -1130,6 +1135,7 @@ function enterRoom() {
 }
 
 function exitRoom() {
+	heading.style.fontSize = "" //Set heading back to default size.
 	inRoomContainer.style.display = "none"
 	notInRoomContainer.style.display = "block"
 }
@@ -1173,18 +1179,16 @@ window.stateManager.addEventListener("onLeaveRoom", function(obj) {
 })
 
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
-	playerCount.innerHTML = obj.message.clients.length + " Players are Present"
-
-	let choices = gameSettings?.getChoices()
+	//Link room name when online.
+	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
+	let playerCount = obj.message.clients.length
+	roomInfo.innerHTML = `${playerCount} player${playerCount > 1 ? "s are":" is"} in room ${roomNameText}`
 
 	if (window.stateManager.isHost) {
 		startGameButton.style.display = ""
 		addBotButton.style.display = ""
 		closeRoomButton.style.display = ""
 		leaveRoomButton.style.display = ""
-
-		gameSettings = new SettingsMenu(gameSettingsElem, true)
-		gameSettings.setChoices(choices)
 
 		if (obj.message.clients.length === 1) {
 			//This player is the only one in the room. (So if they aren't host, there's a bug)
@@ -1201,12 +1205,9 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		closeRoomButton.style.display = "none"
 		startGameButton.style.display = "none"
 		leaveRoomButton.style.display = ""
-
-		gameSettings = new SettingsMenu(gameSettingsElem, false)
-		gameSettings.setChoices(choices)
 	}
 
-	window.gameSettings = gameSettings //FOR TESTING!
+	gameSettings.setHost(window.stateManager.isHost)
 
 	renderPlayerView(obj.message.clients, function kickUserCallback(userId) {
 		window.stateManager.kickUser(window.stateManager.roomId, userId)

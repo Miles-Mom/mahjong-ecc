@@ -8,6 +8,8 @@ class Setting {
 	//this.value - value of setting, has getters and settings
 	//this.loaded - Promise that resolved when setting loaded from disk.
 	//this.saved - Promise that resolves when setting saves to disk.
+
+	//this.onValueSet - If set, this callback will be called with the new value whenever the value is SET (doesn't necessarily change).
 	constructor(saveKey, defaultValue) {
 		this.saveKey = saveKey
 		this.defaultValue = String(defaultValue)
@@ -42,6 +44,39 @@ class Setting {
 
 	get value() {return this.getValue()}
 	set value(newValue) {this.setValue(newValue)}
+
+	createSelector(labelText, optionsArr, appendToElem) {
+		let container = document.createElement("div")
+
+		let settingLabel = document.createElement("label")
+		settingLabel.innerHTML = labelText
+		container.appendChild(settingLabel)
+
+		let selectElem = document.createElement("select")
+		container.appendChild(selectElem)
+
+		optionsArr.forEach((option) => {
+			if (typeof option === "string") {
+				option = {name: option, value: option}
+			}
+
+			let optionElem = document.createElement("option")
+			optionElem.value = option.value
+			optionElem.innerHTML = option.name
+			selectElem.appendChild(optionElem)
+		})
+
+		selectElem.value = this.value
+
+		selectElem.addEventListener("change", (function() {
+			this.value = selectElem.value
+		}).bind(this))
+
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
+	}
 }
 
 class BooleanSetting extends Setting {

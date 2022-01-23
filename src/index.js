@@ -37,7 +37,7 @@ window.settings = {
     soundEffects: new BooleanSetting("settingSoundEffects", false),
 
     //Game Settings
-    gameStyleSetting: new Setting("gameStyle"), //Default undefined - force user to select something first.
+    gameStyle: new Setting("gameStyle"),
 
     //Data storage
     hasReceivedPossibleHandsHint: new BooleanSetting("hasReceivedPossibleHandsHint", false),

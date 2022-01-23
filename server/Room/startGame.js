@@ -28,8 +28,8 @@ function startGame(obj) {
 	}
 	else {
 		return {
-			title: "Please Select Settings",
-			body: "You must select either Chinese or American Mahjong in Game Settings (scroll down if not visible). "
+			title: "Please Select Variant",
+			body: "You must select a game variant to play. "
 		}
 	}
 
