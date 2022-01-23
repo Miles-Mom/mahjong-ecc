@@ -1176,22 +1176,14 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	if (window.stateManager.isHost) {
 		startGameButton.style.display = ""
 		addBotButton.style.display = ""
-		leaveRoomButton.style.display = ""
 
-		if (obj.message.clients.length === 1) {
-			//This player is the only one in the room. (So if they aren't host, there's a bug)
-			//If they leave, the room closes. Hide the leave room button.
-			leaveRoomButton.style.display = "none"
-		}
-		else if (obj.message.clients.length >= 4) {
+		if (obj.message.clients.length >= 4) {
 			addBotButton.style.display = "none" //No reason to allow adding bots when game is full.
 		}
-
 	}
 	else {
 		addBotButton.style.display = "none"
 		startGameButton.style.display = "none"
-		leaveRoomButton.style.display = ""
 	}
 
 	gameSettings.setHost(window.stateManager.isHost)
