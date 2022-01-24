@@ -21,7 +21,7 @@
 	text-align: center;
 	padding: 8px;
 	max-height: 100vh;
-	overflow: scroll;
+	overflow-y: scroll;
 }
 
 #errorPopup .headerText {

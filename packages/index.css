@@ -1161,7 +1161,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	padding: 8px;
 	max-height: 100vh;
 	max-height: calc(var(--vh) * 100);
-	overflow: scroll;
+	overflow-y: scroll;
 }
 
 #errorPopup .headerText {
