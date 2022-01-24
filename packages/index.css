@@ -67,8 +67,7 @@
 
 #joinRoom, #createRoom, #offlineSinglePlayer, #uploadSaveButton {
 	min-width: 200px;
-	border-radius: 3.5vh;
-	border-radius: calc(var(--vh) * 3.5);
+	border-radius: 0.6em;
 	font-size: 1.7em;
 	padding: 10px;
 }
@@ -129,7 +128,7 @@
 	background: #fed601;
 	margin: auto;
 	margin-top: 5px;
-	border-radius: 20px;
+	border-radius: 0.6em;
 }
 
 #roomManager #roomInfo {
