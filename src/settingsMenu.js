@@ -21,7 +21,7 @@ settingsIcon.addEventListener("click", async function() {
 	elem.appendChild(settingsMenuDiv)
 
 	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
-	window.settings.insertTilesAtEnd.createSelector("Insert Tiles at End: ", settingsMenuDiv)
+	window.settings.insertTilesAtEnd.createSelector("Disable Auto-Sort: ", settingsMenuDiv)
 	//window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
 	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
