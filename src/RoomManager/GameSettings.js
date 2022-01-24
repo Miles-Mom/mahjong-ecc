@@ -86,7 +86,7 @@ class SettingsMenu {
 			info = "Most variants should be supported - self-scoring and overrides may be needed. Can't play your way? Send an email to support@mahjong4friends.com!"
 
 			window.settings.chinese.maximumSequences.createSelector("Maximum Sequences: ", settingsMenuDiv)
-			window.settings.chinese.checkForCalling.createSelector("Check and Alert for Calling/Ready Hands", settingsMenuDiv)
+			window.settings.chinese.checkForCalling.createSelector("Check and Alert for Ready Hands", settingsMenuDiv)
 			window.settings.chinese.botCanStartCharleston.createSelector("Bots Can Initiate Charleston: ", settingsMenuDiv)
 			window.settings.chinese.allow4thTilePickup.createSelector("Allow 4th Tile Pickup: ", settingsMenuDiv)
 			window.settings.chinese.pickupDiscardForDraw.createSelector("Pickup Discard for Draw: ", settingsMenuDiv)
