@@ -119,13 +119,13 @@ class SettingsMenu {
 
 	getChoices() {
 		let gameStyle = window.settings.gameStyle.value
-		if (gameStyle === "panama") {gameStyle = "chinese"}
-
-		let settingsToExtract = window.settings[gameStyle]
-
 		let outputObj = {
 			gameStyle
 		}
+
+		//Currently, all panama settings are duplicated from Chinese as panama is a subset of Chinese. Read from settings.chinese if panama. 
+		if (gameStyle === "panama") {gameStyle = "chinese"}
+		let settingsToExtract = window.settings[gameStyle]
 
 		for (let prop in settingsToExtract) {
 			outputObj[prop] = settingsToExtract[prop].value
