@@ -308,7 +308,7 @@ function createSuggestedHands(hand, playerName = "") {
 		let cardName = stateManager.lastState.message.settings.card
 
 		if (stateManager.lastState.message.settings.gameStyle !== "american") {
-			window.settings.hasReceivedScoringHint.value = true //The user has opened the scoring menu, so we don't need to give the hint.
+			window.settings.hasReceivedScoreSummaryHint.value = true //The user has opened the scoring menu, so we don't need to give the hint.
 
 			//Not American Mahjong - must be Chinese/Panama.
 
@@ -894,8 +894,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			//Wrap this in an additional try-catch - we're messing with localStorage, which might be wonky.
 			//The first time that a game ends, alert to user as to how scores are calculated.
 			try {
-				if (!window.settings.hasReceivedScoringHint.value) {
-					window.settings.hasReceivedScoringHint.value = true
+				if (!window.settings.hasReceivedScoreSummaryHint.value) {
+					window.settings.hasReceivedScoreSummaryHint.value = true
 					new Popups.Notification("Gameplay Tip!", "Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. ")
 					.show()
 				}

@@ -42,7 +42,7 @@ window.settings = {
 
     //Data storage
     hasReceivedPossibleHandsHint: new BooleanSetting("hasReceivedPossibleHandsHint", false),
-    hasReceivedScoreSummaryHint: new BooleanSetting("hasReceivedScoringHint", false),
+    hasReceivedScoreSummaryHint: new BooleanSetting("hasReceivedScoreSummaryHint", false),
     overruledOnlineSinglePlayerAlert: new BooleanSetting("overruledOnlineSinglePlayerAlert", false),
 }
 
