@@ -51,7 +51,8 @@ window.settings.chinese = {
     allow4thTilePickup: new BooleanSetting("chinese.allow4thTilePickup", true),
     botCanStartCharleston: new BooleanSetting("chinese.botCanStartCharleston", false),
     pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false),
-    maximumSequences: new NumberSetting("chinese.maximumSequences", 4)
+    maximumSequences: new NumberSetting("chinese.maximumSequences", 4),
+    checkForCalling: new BooleanSetting("chinese.checkForCalling", true)
 }
 
 window.settings.american = {
