@@ -100,8 +100,6 @@ class SettingsMenu {
 			window.settings.chinese.tableLimit.createSelector("Table Limit Amount: ", settingsMenuDiv)
 		}
 
-		window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
-
 		let infoDisplayElem = document.createElement("p")
 		infoDisplayElem.innerHTML = info
 		elem.appendChild(infoDisplayElem)
@@ -123,7 +121,7 @@ class SettingsMenu {
 			gameStyle
 		}
 
-		//Currently, all panama settings are duplicated from Chinese as panama is a subset of Chinese. Read from settings.chinese if panama. 
+		//Currently, all panama settings are duplicated from Chinese as panama is a subset of Chinese. Read from settings.chinese if panama.
 		if (gameStyle === "panama") {gameStyle = "chinese"}
 		let settingsToExtract = window.settings[gameStyle]
 

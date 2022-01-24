@@ -31,10 +31,11 @@ if ('serviceWorker' in navigator) {
 const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
 
 window.settings = {
-    //Global Settings
+    //Global Settings (Game-mode independent)
     singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
     displayTips: new BooleanSetting("settingDisplayTips", true),
     soundEffects: new BooleanSetting("settingSoundEffects", false),
+    insertTilesAtEnd: new BooleanSetting("settingInsertTilesAtEnd", false),
 
     //Game Settings
     gameStyle: new Setting("gameStyle"),

@@ -351,6 +351,11 @@ class Hand {
 	add(obj) {
 		//We will insert the tile where our sorting algorithm would find it most appropriate.
 		//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
+
+		if (window.settings.insertTilesAtEnd.value) {
+			return this.contents.push(obj)
+		}
+
 		let newItemScore;
 		if (obj instanceof Sequence) {
 			newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in sequence.

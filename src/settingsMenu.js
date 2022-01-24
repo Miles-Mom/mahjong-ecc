@@ -20,7 +20,9 @@ settingsIcon.addEventListener("click", async function() {
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
 
-	window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
+	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
+	window.settings.insertTilesAtEnd.createSelector("Insert Tiles at End: ", settingsMenuDiv)
+	//window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
 	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
 	//Add offline data collection setting.
