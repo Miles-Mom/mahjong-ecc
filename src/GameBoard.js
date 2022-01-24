@@ -393,7 +393,7 @@ function createSuggestedHands(hand, playerName = "") {
 		if (cardName === "Random") {
 			popup = new Popups.Notification(titleText, `'Other Card' does not support ${titleText}. `)
 		}
-		else if (stateManager.lastState.message.settings.disableHints) {
+		else if (!stateManager.lastState.message.settings.suggestedHands) {
 			popup = new Popups.Notification(titleText, `${titleText}/Hints are disabled by the host. `)
 		}
 		else {
@@ -724,7 +724,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	hintButton.style.display = ""
 	proceedButton.classList.add("shrinkForHintButton")
 
-	if (message?.settings?.disableHints) {
+	if (!message?.settings?.suggestedHands) {
 		hintButton.style.display = "none"
 		proceedButton.classList.remove("shrinkForHintButton")
 	}

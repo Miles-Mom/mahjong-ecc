@@ -72,7 +72,7 @@ class SettingsMenu {
 
 			window.settings.american.suggestedHands.createSelector("Suggested Hands: ", settingsMenuDiv)
 			//window.settings.american.botDifficulty.createSelector("Bot Difficulty: ", settingsMenuDiv)
-			window.settings.american.suggestedHands.createSelector("Ignore Bot Mahjong: ", settingsMenuDiv)
+			window.settings.american.ignoreBotMahjong.createSelector("Ignore Bot Mahjong: ", settingsMenuDiv)
 		}
 		else if (gameStyle === "chinese") {
 			info = "Most variants should be supported - self-scoring and overrides may be needed. Can't play your way? Send an email to support@mahjong4friends.com!"

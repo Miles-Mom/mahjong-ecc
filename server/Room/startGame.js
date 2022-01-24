@@ -18,7 +18,7 @@ function startGame(obj) {
 			gameStyle: "chinese",
 			checkForCalling: true,
 			allow4thTilePickup: true,
-			botSettings: {canCharleston: true},
+			botCanStartCharleston: true,
 			maximumSequences: 1,
 		}
 	}
@@ -71,18 +71,19 @@ function startGame(obj) {
 		]
 	]
 
-
-	this.state.settings.botSettings = this.state.settings.botSettings || {}
-
-	this.state.settings.disableHints = obj?.settings?.disableHints || false
-
-	this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston ?? false
+	this.state.settings.suggestedHands = obj?.settings?.suggestedHands ?? true
+	
+	this.state.settings.botCanStartCharleston = obj?.settings?.botCanStartCharleston ?? false
 
 	this.state.settings.windAssignments = this.state.settings.windAssignments || {}
 
 	this.state.settings.checkForCalling = obj?.settings?.checkForCalling ?? true
 
-	this.state.settings.tableLimit = Number(obj?.settings?.tableLimit) || Infinity //Default Infinity - || as 0 should mean infinity.
+	this.state.settings.tableLimit = Number(obj?.settings?.tableLimit)
+
+	if (!obj?.settings?.tableLimitEnabled) {
+		this.state.settings.tableLimit = Infinity
+	}
 
 	this.state.settings.allow4thTilePickup = obj?.settings?.allow4thTilePickup ?? true
 
