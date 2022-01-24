@@ -29,7 +29,10 @@ const cardOptions = [
 		name: "2021 Marvelous Mah Jongg",
 		value: "2021 Marvelous Mahjongg"
 	},
-	"Other Card - Bots Use Random Card"
+	{
+		name: "Other Card - Bots Use Random Card",
+		value: "Other"
+	}
 ]
 
 

@@ -390,8 +390,8 @@ function createSuggestedHands(hand, playerName = "") {
 		let tiles = hand.contents.concat(hand.inPlacemat)
 		tiles = tiles.filter((tile) => {return !tile.evicting}).filter((tile) => {return !tile.faceDown})
 
-		if (cardName === "Other Card - Bots Use Random Card") {
-			popup = new Popups.Notification(titleText, `This card does not support ${titleText}. `)
+		if (cardName === "Random") {
+			popup = new Popups.Notification(titleText, `'Other Card' does not support ${titleText}. `)
 		}
 		else if (stateManager.lastState.message.settings.disableHints) {
 			popup = new Popups.Notification(titleText, `${titleText}/Hints are disabled by the host. `)

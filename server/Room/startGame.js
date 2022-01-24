@@ -33,6 +33,24 @@ function startGame(obj) {
 		}
 	}
 
+	if (this.state.settings.gameStyle === "american") {
+		if (cards[obj?.settings?.card]) {
+			this.state.settings.card = obj?.settings?.card
+			delete this.state.settings.unknownCard
+		}
+		else if (obj?.settings?.card === "Other"){
+			this.state.settings.unknownCard = true
+			this.state.settings.card = "Random"
+		}
+		else {
+			return {
+				title: "Please Select Card",
+				body: "You must select a card to play American Mahjong. Select 'Other Card' if your card is not available. "
+			}
+		}
+		this.gameData.card = cards[this.state.settings.card]
+	}
+
 	this.inGame = true
 	this.messageAll([], obj.type, "Game Started", "success")
 
@@ -127,17 +145,6 @@ function startGame(obj) {
 				}
 			]
 		]
-
-		if (cards[obj?.settings?.card]) {
-			this.state.settings.card = obj?.settings?.card
-			delete this.state.settings.unknownCard
-		}
-		else {
-			console.error("Unknown Card", obj?.settings?.card)
-			this.state.settings.unknownCard = true
-			this.state.settings.card = "Random"
-		}
-		this.gameData.card = cards[this.state.settings.card]
 
 		this.gameData.charleston = {
 			directions: this.state.settings.charleston.slice(0)

@@ -54,7 +54,7 @@ window.settings.chinese = {
 }
 
 window.settings.american = {
-    card: new Setting("american.card", "2021 National Mahjong League"),
+    card: new Setting("american.card"),
     suggestedHands: new BooleanSetting("american.suggestedHands", true),
     botDifficulty: new NumberSliderSetting("american.botDifficulty", 50),
     ignoreBotMahjong: new BooleanSetting("american.ignoreBotMahjong", false)
