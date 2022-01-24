@@ -56,7 +56,7 @@ function getData(request) {
 app.all('*', (req, res, next) => {
 	res.set("Access-Control-Allow-Origin", "*");
 
-    let relativeSrc = req.path
+    let relativeSrc = decodeURIComponent(req.path)
 	let extensions = ["", ".html", "index.html"]
 	let src;
 	let extension = extensions.find((ext) => {
