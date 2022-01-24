@@ -54,10 +54,11 @@ function goMahjong(clientId, options = {}) {
 		}
 	}
 
-	this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has gone mahjong" , {clientId, speech: "Mahjong"})
+	this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " went mahjong!" , {clientId, speech: "Mahjong"})
+	client.message("roomActionGameplayAlert", "You went mahjong!", {durationMultiplier: 1})
 
-	this.setAllInstructions([this.hostClientId], client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
-	this.setInstructions(this.hostClientId, client.getNickname() + " has gone mahjong!\nPress End Game to return everybody to the room screen. ")
+	this.setAllInstructions([clientId], client.getNickname() + " went mahjong!\nPress End Game to return everybody to the room screen. ")
+	this.setInstructions(clientId, "You went mahjong!\nPress End Game to return everybody to the room screen. ")
 
 	this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options)}, "success")
 	setTimeout((function() {

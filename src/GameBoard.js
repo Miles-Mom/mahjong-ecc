@@ -508,7 +508,7 @@ window.stateManager.onGameplayAlert = function(obj) {
 
 	let baseUrl = "assets/sounds/"
 	let urls = [];
-	if (obj.message.includes("thrown")) {
+	if (obj.message.includes("threw")) {
 		sound.volume = 0.5
 		urls = ["tile-drop-table.mp3"]
 	}
