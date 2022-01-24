@@ -68,7 +68,7 @@ class SettingsMenu {
 
 		let info = ""
 		if (gameStyle === "american") {
-			//info = "Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!<br>You can purchase cards from the <a target='_blank' href='https://www.nationalmahjonggleague.org/'>National Mah Jongg League</a> or from <a target='_blank' href='https://marvelousmahjongg.com/'>Marvelous Mah Jongg</a>"
+			info = "You can play with any card you want - just pick Other Card!<br>You can purchase cards from the <a target='_blank' href='https://www.nationalmahjonggleague.org/'>National Mah Jongg League</a> or from <a target='_blank' href='https://marvelousmahjongg.com/'>Marvelous Mah Jongg</a>"
 			window.settings.american.botDifficulty.createSelector("Bot Difficulty: ", {
 				min: {
 					value: 0,
