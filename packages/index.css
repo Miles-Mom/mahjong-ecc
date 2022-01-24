@@ -77,8 +77,12 @@
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
-#uploadSaveButton, #settingsMenuButton {
+#uploadSaveButton {
 	background: linear-gradient(45deg, #ffe304, #ffcb00, #ffafa0);
+}
+
+#settingsMenuButton {
+	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
 #uploadSaveButton, #offlineSinglePlayer {
@@ -249,7 +253,11 @@
 	padding: 5px 15px;
 }
 
-#leaveRoomButton, #stayOnlineButton {
+#leaveRoomButton {
+	background: linear-gradient(45deg, orange, yellow, lightgreen);
+}
+
+#stayOnlineButton {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
