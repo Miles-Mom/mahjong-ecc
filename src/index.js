@@ -50,7 +50,8 @@ window.settings.chinese = {
     tableLimit: new NumberSetting("chinese.tableLimit", 500),
     allow4thTilePickup: new BooleanSetting("chinese.allow4thTilePickup", true),
     botCanStartCharleston: new BooleanSetting("chinese.botCanStartCharleston", false),
-    pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false)
+    pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false),
+    maximumSequences: new NumberSetting("chinese.maximumSequences", 4)
 }
 
 window.settings.american = {

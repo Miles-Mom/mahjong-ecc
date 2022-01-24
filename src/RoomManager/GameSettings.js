@@ -69,25 +69,34 @@ class SettingsMenu {
 		let info = ""
 		if (gameStyle === "american") {
 			//info = "Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!<br>You can purchase cards from the <a target='_blank' href='https://www.nationalmahjonggleague.org/'>National Mah Jongg League</a> or from <a target='_blank' href='https://marvelousmahjongg.com/'>Marvelous Mah Jongg</a>"
-
+			window.settings.american.botDifficulty.createSelector("Bot Difficulty: ", {
+				min: {
+					value: 0,
+					label: "Bot Difficulty:  Medium"
+				},
+				max: {
+					value: 100,
+					label: "Superhuman"
+				}
+			}, settingsMenuDiv)
 			window.settings.american.suggestedHands.createSelector("Suggested Hands: ", settingsMenuDiv)
-			//window.settings.american.botDifficulty.createSelector("Bot Difficulty: ", settingsMenuDiv)
 			window.settings.american.ignoreBotMahjong.createSelector("Ignore Bot Mahjong: ", settingsMenuDiv)
 		}
 		else if (gameStyle === "chinese") {
 			info = "Most variants should be supported - self-scoring and overrides may be needed. Can't play your way? Send an email to support@mahjong4friends.com!"
 
-			window.settings.chinese.tableLimitEnabled.createSelector("Table Limit: ", settingsMenuDiv)
-			//window.settings.chinese.tableLimit.createSelector("Table Limit Amount: ", settingsMenuDiv)
+			window.settings.chinese.maximumSequences.createSelector("Maximum Sequences: ", settingsMenuDiv)
 			window.settings.chinese.allow4thTilePickup.createSelector("Allow 4th Tile Pickup: ", settingsMenuDiv)
 			window.settings.chinese.botCanStartCharleston.createSelector("Bots Can Initiate Charleston: ", settingsMenuDiv)
 			window.settings.chinese.pickupDiscardForDraw.createSelector("Pickup Discard for Draw: ", settingsMenuDiv)
+			window.settings.chinese.tableLimitEnabled.createSelector("Table Limit: ", settingsMenuDiv)
+			window.settings.chinese.tableLimit.createSelector("Table Limit Amount: ", settingsMenuDiv)
 		}
 		else if (gameStyle === "panama") {
 			info = "Chinese, but with a limit of 1 sequence/chow, and an optional 3 pass charleston (decided by East wind)"
 
 			window.settings.chinese.tableLimitEnabled.createSelector("Table Limit: ", settingsMenuDiv)
-			//window.settings.chinese.tableLimit.createSelector("Table Limit Amount: ", settingsMenuDiv)
+			window.settings.chinese.tableLimit.createSelector("Table Limit Amount: ", settingsMenuDiv)
 		}
 
 		window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)

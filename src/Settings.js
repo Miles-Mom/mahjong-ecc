@@ -143,12 +143,62 @@ class NumberSetting extends Setting {
 		return Number(this.getValue())
 	}
 	set value(newValue) {this.setValue(newValue)}
+
+	createSelector(labelText, appendToElem) {
+		let settingLabel = document.createElement("label")
+		settingLabel.innerHTML = labelText
+
+		let inputElem = document.createElement("input")
+		inputElem.type = "number"
+		inputElem.value = this.value
+
+		inputElem.addEventListener("change", (function() {
+			this.value = inputElem.value
+		}).bind(this))
+
+		let container = document.createElement("div")
+		container.appendChild(settingLabel)
+		container.appendChild(inputElem)
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
+	}
 }
 
 
 class NumberSliderSetting extends NumberSetting {
 	constructor(saveKey, defaultValue) {
 		super(saveKey, String(defaultValue))
+	}
+
+	createSelector(labelText, bounds, appendToElem) {
+		let input = document.createElement("input")
+		input.type = "range"
+		input.min = bounds.min.value
+		input.max = bounds.max.value
+
+		let label = document.createElement("label")
+		label.innerHTML = bounds.min.label
+
+		//Right now, no browser supports labeled tick marks, so we'll just do this.
+		let label2 = document.createElement("label")
+		label2.innerHTML = bounds.max.label
+
+		input.value = this.value
+
+		input.addEventListener("change", (function() {
+			this.value = input.value
+		}).bind(this))
+
+		let container = document.createElement("div")
+		container.appendChild(label)
+		container.appendChild(input)
+		container.appendChild(label2)
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
 	}
 }
 
