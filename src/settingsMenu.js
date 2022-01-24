@@ -1,13 +1,7 @@
 const Popup = require("./Popups.js")
 
 let settingsIcon = document.createElement("img")
-if (window?.Capacitor) {
-	//Until app is updated.
-	settingsIcon.src = "https://mahjong4friends.com/assets/settings.svg"
-}
-else {
-	settingsIcon.src = "assets/settings.svg"
-}
+settingsIcon.src = "assets/settings.svg"
 settingsIcon.className = "settingsIcon"
 settingsIcon.addEventListener("click", async function() {
 
