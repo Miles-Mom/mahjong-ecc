@@ -352,7 +352,8 @@ class Hand {
 		//We will insert the tile where our sorting algorithm would find it most appropriate.
 		//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
 
-		if (window.settings.insertTilesAtEnd.value) {
+		//This detection code must work on server and client!
+		if (globalThis?.settings?.insertTilesAtEnd?.value) {
 			return this.contents.push(obj)
 		}
 
