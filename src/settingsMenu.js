@@ -1,11 +1,5 @@
 const Popup = require("./Popups.js")
 
-//We need to use SaveManager because localStorage doesn't persist on iOS (and maybe not on Android)
-const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
-
-const debuggingDataSavePath = "settingCollectDebuggingData"
-
-
 let settingsIcon = document.createElement("img")
 if (window?.Capacitor) {
 	//Until app is updated.
@@ -15,7 +9,10 @@ else {
 	settingsIcon.src = "assets/settings.svg"
 }
 settingsIcon.className = "settingsIcon"
-settingsIcon.addEventListener("click", function() {
+settingsIcon.addEventListener("click", async function() {
+
+	await window.settings.singlePlayerDebuggingData.loaded
+
 	let elem = document.createElement("div")
 
 	//Create a container div for the actual settings inside the settings menu. This will be left justified. TODO: Right justify checkboxes/sliders
@@ -23,6 +20,8 @@ settingsIcon.addEventListener("click", function() {
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
 
+	window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
+	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
 	//Add offline data collection setting.
 	let offlineDataCollectionEnabledMessage = "Debugging data is collected for all games. "
@@ -30,58 +29,18 @@ settingsIcon.addEventListener("click", function() {
 
 	let dataCollectionMessage = document.createElement("p")
 
-	let dataCollectionLabel = document.createElement("label")
-
-	let dataCollectionToggle = document.createElement("input")
-	dataCollectionToggle.type = "checkbox"
-	dataCollectionToggle.classList.add("switch")
-	dataCollectionToggle.id = "dataCollectionToggle"
-
-
-	//<label for="switch3" data-on-label="Yes" data-off-label="No"></label>
-	let dataCollectionToggleLabel = document.createElement("label")
-	dataCollectionToggleLabel.setAttribute("for", "dataCollectionToggle")
-	dataCollectionToggleLabel.setAttribute("data-on-label", "Yes")
-	dataCollectionToggleLabel.setAttribute("data-off-label", "No")
-
-
-	settingsMenuDiv.appendChild(dataCollectionLabel)
-	settingsMenuDiv.appendChild(dataCollectionToggle)
-	settingsMenuDiv.appendChild(dataCollectionToggleLabel)
 	settingsMenuDiv.appendChild(dataCollectionMessage)
 
-	async function updateDataCollectionSetting() {
-		let savedData = await readSave(debuggingDataSavePath)
-
-		dataCollectionLabel.innerHTML = "Single Player Debugging Data: " //Don't set the text until we load the checkbox properly.
-
-		let canCollect = (savedData !== "false")
-		dataCollectionToggle.checked = canCollect
-
-		dataCollectionToggle.classList.add("animate") //Don't animate the initialization. 
-
-		if (canCollect) {
+	function setDataCollectionMessage() {
+		if (window.settings.singlePlayerDebuggingData.value) {
 			dataCollectionMessage.innerHTML = offlineDataCollectionEnabledMessage
 		}
 		else {
 			dataCollectionMessage.innerHTML = offlineDataCollectionDisabledMessage
 		}
 	}
-	updateDataCollectionSetting()
-
-	dataCollectionToggle.addEventListener("click", async function() {
-		if (dataCollectionToggle.checked) {
-			//Data collection enabled.
-			await deleteSave(debuggingDataSavePath)
-			updateDataCollectionSetting()
-		}
-		else {
-			//Data collection disabled.
-			await writeSave(debuggingDataSavePath, "false")
-			updateDataCollectionSetting()
-		}
-	})
-
+	setDataCollectionMessage()
+	window.settings.singlePlayerDebuggingData.onValueSet = setDataCollectionMessage
 
 	//Add button to delete collected data.
 	let deleteDataButton = document.createElement("button")
@@ -95,7 +54,7 @@ settingsIcon.addEventListener("click", function() {
 
 
 	//Display elem inside a popup.
-	popup = new Popups.Notification("Settings", elem)
+	popup = new Popups.Notification("General Settings", elem)
 	let popupElem = popup.show()
 	popupElem.style.width = "100vw" //Force max width allowed. Prevents jumping.
 })

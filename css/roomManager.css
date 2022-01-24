@@ -59,7 +59,7 @@
 
 #joinRoom, #createRoom, #offlineSinglePlayer, #uploadSaveButton {
 	min-width: 200px;
-	border-radius: 3.5vh;
+	border-radius: 0.6em;
 	font-size: 1.7em;
 	padding: 10px;
 }
@@ -70,6 +70,10 @@
 
 #uploadSaveButton {
 	background: linear-gradient(45deg, #ffe304, #ffcb00, #ffafa0);
+}
+
+#settingsMenuButton {
+	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
 #uploadSaveButton, #offlineSinglePlayer {
@@ -94,15 +98,6 @@
 	color: #ffbd17;
 }
 
-#roomManager #inRoomContainer {
-	min-height: 40vh;
-}
-
-#roomManager #currentRoom {
-	font-size: 1.7em;
-	margin: 0;
-}
-
 #connectionStatus {
 	font-size: 1.7em;
 	width: fit-content;
@@ -124,11 +119,11 @@
 	background: #fed601;
 	margin: auto;
 	margin-top: 5px;
-	border-radius: 20px;
+	border-radius: 0.6em;
 }
 
-#roomManager #playerCount {
-	font-size: 1.5em;
+#roomManager #roomInfo {
+	margin: 0;
 }
 
 #roomManager #playerView {
@@ -183,16 +178,12 @@
 	text-align: center;
 }
 
-#roomManager #roomSaveIdEl {
-	text-align: center;
-}
-
 #roomManager .playerViewKickButton {
-	background: linear-gradient(45deg, #f23f3f,#eeb972);
-	border-radius: 250000px;
-	padding: 5px 20px;
+	background: linear-gradient(45deg, #f16262, #eeb972);
+	padding: 2px 6px;
 	font-size: 1em;
 	cursor: pointer;
+	border-radius: 0.4em;
 }
 
 #deleteSaveNowButton {
@@ -208,9 +199,9 @@
 	cursor: pointer;
 }
 
-#startGameButton, #addBotButton, #leaveRoomButton, #closeRoomButton {
+#startGameButton, #addBotButton, #leaveRoomButton, #settingsMenuButton {
 	font-size: 1.5em;
-	border-radius: 250000px;
+	border-radius: 1em;
 	padding: 10px;
 }
 
@@ -245,11 +236,11 @@
 	padding: 5px 15px;
 }
 
-#closeRoomButton {
+#leaveRoomButton {
 	background: linear-gradient(45deg, orange, yellow, lightgreen);
 }
 
-#leaveRoomButton, #stayOnlineButton {
+#stayOnlineButton {
 	background: linear-gradient(45deg, #ffff39, #5bff5b, #609fff);
 }
 
@@ -263,13 +254,18 @@
 	line-height: 30px;
 }
 
-#inviteYourFriendsEl {
+#inviteYourFriendsElem {
 	background-color: #2fcb29;
 	border-radius: 10px;
-	margin-top: 10px;
-	padding: 10px;
+	margin-top: 6px;
+	padding: 6px;
 	padding-top: 0;
 	overflow: hidden;
+}
+
+#QRImageElement {
+	margin-left: 20px;
+	margin-top: calc(1em - 6px);
 }
 
 #inviteYourFriendsDiv {
@@ -278,12 +274,7 @@
 	vertical-align: top;
 }
 
-#QRImageElent {
-	margin-left: 20px;
-	margin-top: 1em;
-}
-
-#joinRoomLinkEl {
+#joinRoomLinkElem {
 	font-size: 1.5em;
 	margin: 0;
 }
@@ -304,8 +295,12 @@
 #gameSettingsElem {
 	background-color: #2fcb29;
 	border-radius: 10px;
-	padding: 10px;
-	margin-top: 10px;
+	padding: 5px;
+	margin: 5px 0px;
+}
+
+#gameSettingsElem select, #gameSettingsElem label {
+	font-size: 1.25em;
 }
 
 .guaranteedHandsTableContainer {

@@ -9,7 +9,7 @@ async function readSave(path) {
 		}
 		catch (e) {
 			console.error("Failed to Read", e)
-			return null
+			return null //Return null if empty (like localStorage.getItem())
 		}
 	}
 	else {
@@ -30,12 +30,11 @@ async function writeSave(path, text, directory = "DATA") {
 	else {
 		localStorage.setItem(path, text)
 	}
-	console.log("Written!")
 }
 
 async function deleteSave(path) {
 	if (window.Capacitor) {
-		Capacitor.Plugins.Filesystem.deleteFile({
+		await Capacitor.Plugins.Filesystem.deleteFile({
 			path,
 			directory: "DATA"
 		})

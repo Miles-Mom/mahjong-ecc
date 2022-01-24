@@ -24,6 +24,46 @@ if ('serviceWorker' in navigator) {
     }
 }
 
+
+
+
+
+const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
+
+window.settings = {
+    //Global Settings
+    singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
+    displayTips: new BooleanSetting("settingDisplayTips", true),
+    soundEffects: new BooleanSetting("settingSoundEffects", false),
+
+    //Game Settings
+    gameStyle: new Setting("gameStyle"),
+
+    //Data storage
+    hasReceivedPossibleHandsHint: new BooleanSetting("hasReceivedPossibleHandsHint", false),
+    hasReceivedScoreSummaryHint: new BooleanSetting("hasReceivedScoringHint", false),
+    overruledOnlineSinglePlayerAlert: new BooleanSetting("overruledOnlineSinglePlayerAlert", false),
+}
+
+window.settings.chinese = {
+    tableLimitEnabled: new BooleanSetting("chinese.tableLimitEnabled", false),
+    tableLimit: new NumberSetting("chinese.tableLimit", 500),
+    allow4thTilePickup: new BooleanSetting("chinese.allow4thTilePickup", true),
+    botCanStartCharleston: new BooleanSetting("chinese.botCanStartCharleston", false),
+    pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false),
+    maximumSequences: new NumberSetting("chinese.maximumSequences", 4),
+    checkForCalling: new BooleanSetting("chinese.checkForCalling", true)
+}
+
+window.settings.american = {
+    card: new Setting("american.card"),
+    suggestedHands: new BooleanSetting("american.suggestedHands", true),
+    botDifficulty: new NumberSliderSetting("american.botDifficulty", 50),
+    ignoreBotMahjong: new BooleanSetting("american.ignoreBotMahjong", false)
+}
+
+
+
 document.title = "Mahjong 4 Friends - Free Mahjong, Friends and/or Bots"
 
 require("./appUpdates.js")

@@ -248,8 +248,8 @@ function evaluateNextMove() {
 
 		let breakdown = computeHandBreakdown(currentHand.contents, currentHand.wind, {chooseSecondarySuit: false, looseTileCost: 5})
 
-		//If we need to start the game, determine if we should charleston. 
-		if (currentHand.wind === "east" && room.state.settings.charleston.length > 0 && gameData.charleston !== false && room.state.settings.botSettings.canCharleston) {
+		//If we need to start the game, determine if we should charleston.
+		if (currentHand.wind === "east" && room.state.settings.charleston.length > 0 && gameData.charleston !== false && room.state.settings.botCanStartCharleston) {
 			let values = ["circle", "character", "bamboo", "honor"].map((str) => {
 				return breakdown[str]?.value || 0
 			})
