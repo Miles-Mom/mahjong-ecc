@@ -99,6 +99,9 @@ class SettingsMenu {
 			window.settings.chinese.tableLimitEnabled.createSelector("Table Limit: ", settingsMenuDiv)
 			window.settings.chinese.tableLimit.createSelector("Table Limit Amount: ", settingsMenuDiv)
 		}
+		else {
+			info = "Additional settings may display depending on selected Mahjong Variant. "
+		}
 
 		let infoDisplayElem = document.createElement("p")
 		infoDisplayElem.innerHTML = info
