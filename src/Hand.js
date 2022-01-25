@@ -208,6 +208,9 @@ class Hand {
 					processingIndex = 0
 				}
 
+
+				let tileToAnimate; //We'll animate the last tile that matches.
+
 				let drawTile = (function(tile, indexInGroup) {
 					let handBeingUsed = this.handToRender;
 					if (type === "exposed" && this.handForExposed) {
@@ -260,21 +263,7 @@ class Hand {
 						if (this.interactive) {
 							currentElem.classList.remove("animateTile")
 							if (displayElevated && tile.matches(displayElevated)) {
-								displayElevated = undefined //Only animate the very first tile that matches - don't animate ALL 1 bamboos, etc.
-
-								//Keep the new tile transparent, and delay animating until the new image loads.
-								//Previously the tile could change mid-animation, which could
-								//be incredibly annoying, deceiving users into thinking they received another
-								//copy of a tile already in their hand.
-
-								currentElem.style.opacity = "0"
-
-								function beginAnimation() {
-									currentElem.classList.add("animateTile")
-									currentElem.style.opacity = ""
-								}
-
-								currentElem.addEventListener("load", beginAnimation, {once: true})
+								tileToAnimate = currentElem
 							}
 							currentElem.draggable = true
 							currentElem.onclick = (function() {
@@ -300,6 +289,24 @@ class Hand {
 						drawTile(tile)
 					}
 				}
+
+
+				if (tileToAnimate) {
+					//Keep the new tile transparent, and delay animating until the new image loads.
+					//Previously the tile could change mid-animation, which could
+					//be incredibly annoying, deceiving users into thinking they received another
+					//copy of a tile already in their hand.
+
+					tileToAnimate.style.opacity = "0"
+
+					function beginAnimation() {
+						tileToAnimate.classList.add("animateTile")
+						tileToAnimate.style.opacity = ""
+					}
+
+					tileToAnimate.addEventListener("load", beginAnimation, {once: true})
+				}
+
 
 				//Note: If the window is resized, tiles will not adjust until the hand is redrawn.
 
