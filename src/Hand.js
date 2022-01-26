@@ -5,6 +5,7 @@ const Pretty = require("./Pretty.js")
 const Wall = require("./Wall.js")
 const TileContainer = require("./TileContainer.js")
 const calculateJokerAmount = require("./Hand/calculateJokerAmount.js")
+const {i18n} = require("./i18nHelper.js")
 
 class Hand {
 	constructor(config = {}) {
@@ -184,7 +185,7 @@ class Hand {
 							exposedTiles.push(items)
 						}
 						else {
-							console.log(items)
+							// console.log(items)
 							unexposedTiles.push(items)
 						}
 					}
@@ -416,7 +417,7 @@ class Hand {
 			if (placematIndex === -1) {
 				//Moving from hand to placemat.
 				if (this.inPlacemat.length >= this.placematLength) {
-					alert("Placemat is already full. ")
+					alert(i18n.__("Placemat is already full. "))
 					return
 				}
 				else {
@@ -426,7 +427,7 @@ class Hand {
 			else {
 				//Moving from placemat to hand.
 				if (placematIndex === 0 && this.inPlacemat[0].evicting) {
-					alert("This tile was discarded. To claim it, select the tiles you would like to match with it, then hit proceed. ")
+					alert(i18n.__({format: ["This tile was discarded. ", "To claim it, select the tiles you would like to match with it, then hit proceed. "]}))
 					return;
 				}
 				let currentTile = this.inPlacemat.splice(placematIndex, 1)[0]

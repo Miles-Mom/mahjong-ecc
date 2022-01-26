@@ -1,4 +1,5 @@
 const Tile = require("./Tile.js") //We call the createImageElem method. TODO: Pretty should be a subclass of tile, though instanceof Tile checking might make that hard. 
+const {i18n} = require("./i18nHelper.js")
 
 class Pretty {
 	constructor(config = {}) {
@@ -37,6 +38,15 @@ class Pretty {
 		this.isSequence = false
 		this.isPongOrKong = false
 		this.isPair = false
+	}
+
+	getTileName(gameStyle = "chinese", locale ) {
+			if (typeof locale === "undefined") {
+				locale = i18n.getLocale()
+				// if this is used on the client side, great; if on the server side, no harm is done.
+			}
+
+			return i18n.__({phrase: "Pretty", locale: locale})
 	}
 
 	getTileValue() {return this.value || 0}

@@ -1,6 +1,7 @@
 const Tile = require("./Tile.js")
 const Pretty = require("./Pretty.js")
 const SeedRandom = require("seed-random")
+const {i18n} = require("./i18nHelper.js")
 
 const {updateTilesInContainer} = require("./updateTilesInContainer.js")
 const {displayCenterTilePopup} = require("./displayCenterTilePopup.js")
@@ -135,7 +136,7 @@ class Wall {
 		})
 
 		div.onclick = function() {
-			displayCenterTilePopup(tiles, `Wall View (${tiles.length} tile${tiles.length === 1 ? "":"s"} left)`)
+			displayCenterTilePopup(tiles, i18n.__n("Wall View %s tile(s) left", tiles.length))
 		}
 	}
 

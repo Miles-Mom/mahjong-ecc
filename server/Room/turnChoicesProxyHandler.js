@@ -4,6 +4,7 @@ const Tile = require("../../src/Tile.js")
 const Hand = require("../../src/Hand.js")
 const TileContainer = require("../../src/TileContainer.js")
 const Wall = require("../../src/Wall.js")
+const localizeTileName = require("../localizeJustInTime.js").localizeTileName	
 
 let windOrder = ["north", "east", "south", "west"]
 const getBackwardsDistance = require("./getBackwardsDistance.js")
@@ -395,9 +396,10 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							hand.add(placement)
 							placement.exposed = true
 
-							let message = " placed a sequence of " + placement.tiles[0].type + "s"
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + message, {clientId, speech: "Chow"})
-							client.message("roomActionGameplayAlert", "You" + message, {optional: true, durationMultiplier: 0.8})
+							let message = "%(player)s placed a sequence of %(tile)s"
+							let tileType = placement.tiles[0].type
+							this.messageAll([clientId], "roomActionGameplayAlert", {format:message, args:{player:client.getNickname()}, argsI18n:{tile:tileType}}, {clientId, speech: "Chow"})
+							client.message("roomActionGameplayAlert", {format:message, argsI18n:{player:"You", tile:tileType}}, {optional: true, durationMultiplier: 0.8})
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
@@ -423,10 +425,11 @@ function calculateNextTurn(obj, exemptFromChecks) {
 							hand.add(placement)
 							placement.exposed = true
 							let matchType = [,,"pair","pong","kong"][placement.amount]
-
-							let message = " placed a " + matchType + " of " + placement.getTileName(this.state.settings.gameStyle) + "s"
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + message, {clientId, speech: matchType})
-							client.message("roomActionGameplayAlert", "You" + message, {optional: true, durationMultiplier: 0.8})
+							
+							let tileObj = placement.tiles[0].toJSON()
+							let message = "%(player)s placed a %(match)s of %(tile)s"
+							this.messageAll([clientId], "roomActionGameplayAlert", {format:message, args:{player:client.getNickname(), tile:tileObj}, argsI18n:{match:matchType}, argsOption:{tile:localizeTileName}}, {clientId, speech: matchType})
+							client.message("roomActionGameplayAlert", {format:message, args:{tile:tileObj}, argsI18n:{player:"You", match:matchType}, argsOption:{tile:localizeTileName}}, {optional: true, durationMultiplier: 0.8})
 
 							if (placement.mahjong) {
 								this.goMahjong(clientId, {override: exemptFromChecks.includes(clientId)})
@@ -503,7 +506,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				}
 				else if (placement === "Claim") {
 					if (utilized === true) {
-						client.message("roomActionPlaceTiles", "This tile was called - your draw was skipped. ", "error")
+						client.message("roomActionPlaceTiles", "This tile was claimed - your draw was skipped. ", "error")
 						continue;
 					}
 					utilized = true
@@ -511,7 +514,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					hand.add(tile)
 					this.lastDrawn = tile
 					this.gameData.currentTurn.userTurn = clientId
-					let message = client.getNickname() + " called for a " + tile.getTileName(this.state.settings.gameStyle)
+					let tileObj = tile.fromJson()
+					let message = {format:"%(player) claimed for a %(tile)", args:{player:client.getNickname(), tile:tileObj}, argsOption:{tile:localizeTileName}}
 					this.messageAll([], "roomActionGameplayAlert", message, {clientId, speech: "I'll take that tile"})
 				}
 				else {
@@ -556,7 +560,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 
 		if (!(this.gameData.isMahjong || this.gameData.wall.isEmpty)) {
 			let currentTurnClient = globalThis.serverStateManager.getClient(this.gameData.currentTurn.userTurn)
-			this.setAllInstructions([currentTurnClient.clientId], `Waiting on ${currentTurnClient.getNickname()} to make a move. \n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! `)
+
+			this.setAllInstructions([currentTurnClient.clientId], {format: ["Waiting on %s to make a move. ", "\n\n", "Is someone's game frozen? Clicking the sync icon (below this message) might fix that! "], args:currentTurnClient.getNickname()})
 		}
 
 		this.gameData.currentTurn.thrown = false
@@ -593,7 +598,6 @@ module.exports = function(obj, prop, value) {
 	}
 	else {
 		//Calculate who hasn't entered an action.
-		let message = "Waiting on: "
 		let guiltyParties = []
 		this.clientIds.slice(0, 4).forEach((clientId) => {
 			if (!obj[clientId]) {
@@ -605,9 +609,7 @@ module.exports = function(obj, prop, value) {
 			return globalThis.serverStateManager.getClient(clientId).getNickname()
 		})
 
-		message += guiltyPartyNames.join(", ")
-
-		message += "\n\nIs someone's game frozen? Clicking the sync icon (below this message) might fix that! "
+		let message = {format: ["Waiting on: %s", "\n\n", "Is someone's game frozen? Clicking the sync icon (below this message) might fix that! "], args: guiltyPartyNames.join(", ")}
 
 		this.setAllInstructions(guiltyParties, message) //Message everybody that has entered a turn - don't overwrite other instructions.
 	}

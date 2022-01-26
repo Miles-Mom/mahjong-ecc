@@ -24,24 +24,21 @@ if ('serviceWorker' in navigator) {
     }
 }
 
-
-
-
-
-const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
+const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting, SelectSetting} = require("./Settings.js")
 
 window.settings = {
     //Global Settings
     singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
     displayTips: new BooleanSetting("settingDisplayTips", true),
     soundEffects: new BooleanSetting("settingSoundEffects", false),
+    locale: new SelectSetting("settingLocale"), // default undefined - otherwise behavior with Settings becomes rather strange.
 
     //Game Settings
     gameStyleSetting: new Setting("gameStyle"), //Default undefined - force user to select something first.
 
     //Data storage
     hasReceivedPossibleHandsHint: new BooleanSetting("hasReceivedPossibleHandsHint", false),
-    hasReceivedScoreSummaryHint: new BooleanSetting("hasReceivedScoringHint", false),
+    hasReceivedScoringHint: new BooleanSetting("hasReceivedScoringHint", false),
     overruledOnlineSinglePlayerAlert: new BooleanSetting("overruledOnlineSinglePlayerAlert", false),
 }
 
@@ -60,9 +57,14 @@ window.settings.american = {
     ignoreBotMahjong: new BooleanSetting("american.ignoreBotMahjong", false)
 }
 
+const {i18n, initClientLocale} = require("./i18nHelper.js")
 
+let i18n_chain = initClientLocale()
 
-document.title = "Mahjong 4 Friends - Free Mahjong, Friends and/or Bots"
+i18n_chain.then( 
+    document.title = i18n.
+    __("Mahjong 4 Friends - Free Mahjong, Friends and/or Bots")
+ )
 
 require("./appUpdates.js")
 require("./universalLinks.js")
@@ -101,9 +103,10 @@ window.stateManager = new StateManager(websocketURL)
     window[className] = require("./" + className + ".js")
 })
 
-let roomManager = require("./RoomManager.js")
-let gameBoard = require("./GameBoard.js")
-
+i18n_chain.then(function() {
+    let roomManager = require("./RoomManager.js")
+    let gameBoard = require("./GameBoard.js")
+})
 
 //While viewport relative units work fine on desktop, some mobile browsers will not show the entire viewport, due to the url bar.
 //See https://nicolas-hoizey.com/articles/2015/02/18/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers/

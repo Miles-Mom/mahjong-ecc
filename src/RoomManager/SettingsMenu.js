@@ -1,25 +1,28 @@
+
+const {i18n} = require("../i18nHelper.js")	
+
 //TODO: Only upload settings available for the selected game mode.
 function SettingsMenu(settingsDiv, isHost = false) {
 	while (settingsDiv.firstChild) {settingsDiv.firstChild.remove()}
 
 	//Construct header.
 	let header = document.createElement("h2")
-	header.innerHTML = "Game Settings"
+	header.innerHTML = i18n.__("Game Settings")
 	header.style.marginTop = "0"
 	header.style.marginBottom = "0.5em"
 	settingsDiv.appendChild(header)
 
 	//Appended later, so these are last.
 	let americanMahjongInfo = document.createElement("p")
-	americanMahjongInfo.innerHTML = "2021 Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!<br>You can purchase cards from the <a target='_blank' href='https://www.nationalmahjonggleague.org/'>National Mah Jongg League</a> or from <a target='_blank' href='https://marvelousmahjongg.com/'>Marvelous Mah Jongg</a>"
+	americanMahjongInfo.innerHTML = i18n.__("%s Card Now Supported! Play with bots or friends (link and/or QR below!) You can play with any card you want - just pick Other Card!<br>You can purchase cards from the %s or from %s", "2021", "<a target='_blank' href='https://www.nationalmahjonggleague.org/'>National Mah Jongg League</a>", "<a target='_blank' href='https://marvelousmahjongg.com/'>Marvelous Mah Jongg</a>")
 	americanMahjongInfo.style.fontSize = "1.3em"
 
 	let chineseMahjongInfo = document.createElement("p")
-	chineseMahjongInfo.innerHTML = "Most variants should be supported, although overrides may be needed, and you might need to score your own hands. Can't play your way? Have suggestions? Need different bots? Send an email to support@mahjong4friends.com!"
+	chineseMahjongInfo.innerHTML = i18n.__("Most variants should be supported, although overrides may be needed, and you might need to score your own hands. Can't play your way? Have suggestions? Need different bots? Send an email to %s!", "support@mahjong4friends.com")
 	chineseMahjongInfo.style.fontSize = "1.3em"
 
 	let panamaRulesInfo = document.createElement("p")
-	panamaRulesInfo.innerHTML = "Chinese, but with a limit of 1 sequence/chow, and an optional 3 pass charleston (decided by East wind)"
+	panamaRulesInfo.innerHTML = i18n.__("Chinese, but with a limit of 1 sequence/chow, and an optional 3 pass charleston (decided by East wind)")
 	panamaRulesInfo.style.fontSize = "1.3em"
 
 	let options = {}
@@ -105,19 +108,19 @@ function GameStyleSelector(allSettingsSelectors, {americanMahjongInfo, chineseMa
 	elem.style.marginBottom = "10px"
 
 	let chinese = document.createElement("button")
-	chinese.innerHTML = "Chinese/British/HK Mahjong"
+	chinese.innerHTML = i18n.__("Chinese/British/HK Mahjong")
 	chinese.value = "chinese"
 	chinese.id = "selectChineseMahjong"
 	elem.appendChild(chinese)
 
 	let american = document.createElement("button")
-	american.innerHTML = "American Mahjong"
+	american.innerHTML = i18n.__("American Mahjong")
 	american.value = "american"
 	american.id = "selectAmericanMahjong"
 	elem.appendChild(american)
 
 	let panama = document.createElement("button")
-	panama.innerHTML = "Panama Rules"
+	panama.innerHTML = i18n.__("Panama Rules")
 	panama.value = "panama"
 	panama.id = "selectPanamaRules"
 	elem.appendChild(panama)
@@ -181,7 +184,7 @@ function CheckForCallingSelector() {
 
 	let label = document.createElement("label")
 	label.for = "checkForCallingSelectorCheckbox"
-	label.innerHTML = "Check and Alert for Calling/Ready Hands"
+	label.innerHTML = i18n.__("Check and Alert for Calling/Ready Hands")
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
@@ -211,7 +214,7 @@ function MaximumSequencesSelector() {
 
 	let label = document.createElement("label")
 	label.for = "maximumSequencesSelector"
-	label.innerHTML = "Maximum Sequences/Chows: "
+	label.innerHTML = i18n.__("Maximum Sequences/Chows: ")
 
 	label.style.fontSize = "1.4em"
 	input.style.fontSize = "1.4em"
@@ -238,7 +241,7 @@ function BotSettings() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Allow bot to charleston"
+	label.innerHTML = i18n.__("Allow bot to charleston")
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
@@ -267,7 +270,7 @@ function TableLimitSelector() {
 	input.type = "number"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Max Points (type 0 for Infinty): "
+	label.innerHTML = i18n.__("Max Points (type 0 for Infinty): ")
 
 	label.style.fontSize = "1.4em"
 	input.style.fontSize = "1.4em"
@@ -316,7 +319,7 @@ function CardSelector() {
 	})
 
 	let label = document.createElement("label")
-	label.innerHTML = "Select Mahjong Card: "
+	label.innerHTML =i18n.__( "Select Mahjong Card: ")
 	label.style.fontSize = "1.4em"
 
 	this.elem = elem
@@ -343,11 +346,11 @@ function AmericanBotDifficulty() {
 	input.max = 100
 
 	let label = document.createElement("label")
-	label.innerHTML = "Bot Difficulty:  Medium"
+	label.innerHTML =i18n.__( "Bot Difficulty:  Medium")
 
 	//Right now, no browser supports labeled tick marks, so we'll just do this.
 	let label2 = document.createElement("label")
-	label2.innerHTML = "Superhuman"
+	label2.innerHTML = i18n.__("Superhuman")
 
 	this.elem = elem
 	elem.appendChild(label)
@@ -371,7 +374,7 @@ function DisableHintsSelector() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Disable Hints/Suggested Hands"
+	label.innerHTML = i18n.__("Disable Hints/Suggested Hands")
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
@@ -398,7 +401,7 @@ function IgnoreBotMahjongSelector() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Allow Play after Bot Mahjong"
+	label.innerHTML = i18n.__("Allow Play after Bot Mahjong")
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
@@ -425,7 +428,7 @@ function Allow4thTilePickupSelector() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Automatically call 4th tile for exposed pong"
+	label.innerHTML = i18n.__( "Automatically call 4th tile for exposed pong")
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"
@@ -452,7 +455,7 @@ function PickupDiscardForDrawSelector() {
 	checkbox.type = "checkbox"
 
 	let label = document.createElement("label")
-	label.innerHTML = "Allow claiming discard from prior player instead of draw"
+	label.innerHTML = i18n.__("Allow claiming discard from prior player instead of draw")
 	label.addEventListener("click", function() {checkbox.click()})
 
 	label.style.fontSize = "1.4em"

@@ -7,6 +7,7 @@ const Match = require("./Match.js")
 
 const {updateTilesInContainer} = require("./updateTilesInContainer.js")
 const {displayCenterTilePopup} = require("./displayCenterTilePopup.js")
+const {i18n} = require("./i18nHelper.js")	
 
 let gameBoard = document.createElement("div")
 gameBoard.id = "gameBoard"
@@ -102,7 +103,7 @@ function FullscreenControls(elementId) {
 		//Confirm that fullscreen is supported.
 		this.toggleElement = document.createElement("img")
 		this.toggleElement.id = elementId
-		this.toggleElement.title = "Toggle Full Screen"
+		this.toggleElement.title = i18n.__("Toggle Full Screen")
 
 		let setIcon = (async function setIcon() {
 			if (await this.isFullscreen()) {
@@ -162,7 +163,7 @@ if (fullscreenControls.toggleElement) {
 let syncButton = document.createElement("img")
 syncButton.src = "assets/reload-icon.svg"
 syncButton.id = "syncButton"
-syncButton.title = "Sync (Reload)"
+syncButton.title = i18n.__("Sync (Reload)")
 gameBoard.appendChild(syncButton)
 
 syncButton.addEventListener("click", async function() {
@@ -193,21 +194,21 @@ gameBoard.appendChild(tilePlacemat)
 
 let revertStateButton = document.createElement("button")
 revertStateButton.id = "revertStateButton"
-revertStateButton.innerHTML = "History"
+revertStateButton.innerHTML = i18n.__("History")
 gameBoard.appendChild(revertStateButton)
 
 revertStateButton.addEventListener("click", function() {
 	let elem = document.createElement("div")
 	let p = document.createElement("p")
-	p.innerHTML = "Loading Game History... (This should only take a second or two - otherwise, close menu and try again)"
+	p.innerHTML = i18n.__("Loading Game History... (This should only take a second or two - otherwise, close menu and try again)")
 	elem.appendChild(p)
 
-	let popup = new Popups.Notification("History", elem)
+	let popup = new Popups.Notification(i18n.__("History"), elem)
 	popup.show()
 
 	stateManager.getMessageHistory().then((obj) => {
 		let history = obj.message
-		p.innerHTML = "Click to reset the game back in history: "
+		p.innerHTML = i18n.__("Click to reset the game back in history: ")
 
 		let buttonContainer = document.createElement("div")
 		buttonContainer.className = "historyMenuButtonContainer"
@@ -215,11 +216,13 @@ revertStateButton.addEventListener("click", function() {
 
 		history.forEach((move) => {
 			let btn = document.createElement("button")
-			btn.innerHTML = `Move ${move.move} - ${move.message}`
+			btn.innerHTML = i18n.__("Move %d", move.move) +  ` - ${move.message}` 
 
 			buttonContainer.appendChild(btn)
 			btn.addEventListener("click", function() {
-				if (confirm(`Are you sure you would like to revert the game state to move ${move.move}? This will affect ALL players, and can't be undone!`)) {
+				let msg = i18n.__("Are you sure you would like to revert the game state to move %s? ", move.move)
+				msg += i18n.__("This will affect ALL players, and can't be undone!")
+				if (confirm(msg)) {
 					window.stateManager.revertState(move.move)
 					popup.dismiss()
 				}
@@ -232,7 +235,7 @@ revertStateButton.addEventListener("click", function() {
 
 let swapJokerButton = document.createElement("button")
 swapJokerButton.id = "swapJokerButton"
-swapJokerButton.innerHTML = "Swap Joker"
+swapJokerButton.innerHTML = i18n.__("Swap Joker")
 gameBoard.appendChild(swapJokerButton)
 
 swapJokerButton.addEventListener("click", function() {
@@ -269,7 +272,7 @@ swapJokerButton.addEventListener("click", function() {
 
 let proceedButton = document.createElement("button")
 proceedButton.id = "proceedButton"
-proceedButton.innerHTML = "Proceed"
+proceedButton.innerHTML = i18n.__("Proceed")
 gameBoard.appendChild(proceedButton)
 
 proceedButton.addEventListener("click", function() {
@@ -288,7 +291,7 @@ proceedButton.addEventListener("click", function() {
 
 window.stateManager.onPlaceTiles = function(obj) {
 	if (obj.status === "error") {
-		new Popups.Notification("Error Placing Tiles", obj.message).show()
+		new Popups.Notification(i18n.__("Error Placing Tiles"), obj.message).show()
 	}
 }
 
@@ -338,10 +341,10 @@ function createSuggestedHands(hand, playerName = "") {
 
 				let headerRow = document.createElement("tr")
 				table.appendChild(headerRow)
-
-				createData(headerRow).innerHTML = isSetsTable ? "Sets (In-Hand Blue)" : "Bonuses"
-				createData(headerRow).innerHTML = "Pts"
-				createData(headerRow).innerHTML = "Dbs"
+				
+				createData(headerRow).innerHTML = i18n.__(isSetsTable ? "Sets (In-Hand Blue)" : "Bonuses")
+				createData(headerRow).innerHTML = i18n.__("Pts")
+				createData(headerRow).innerHTML = i18n.__("Dbs")
 
 				items.forEach((item) => {
 					let tr = document.createElement("tr")
@@ -465,7 +468,7 @@ function createSuggestedHands(hand, playerName = "") {
 					else {
 						popup.ondismissed = function() {
 							window.settings.hasReceivedPossibleHandsHint.value = true
-							new Popups.Notification("Gameplay Tip!", "Wondering what hands your opponents could be playing? <br>You can click on their tiles for a list of hands possible with their exposures!")
+							new Popups.Notification(i18n.__("Gameplay Tip!"), i18n.__("Wondering what hands your opponents could be playing? <br>You can click on their tiles for a list of hands possible with their exposures!"))
 							.show()
 						}
 					}
@@ -486,7 +489,7 @@ hintButton.addEventListener("click", function() {
 
 let claimButton = document.createElement("button")
 claimButton.id = "claimButton"
-claimButton.innerHTML = "Claim"
+claimButton.innerHTML = i18n.__("Claim")
 claimButton.addEventListener("click", function() {
 	stateManager.placeTiles("Claim")
 })
@@ -558,7 +561,7 @@ let shouldConfirm = true;
 function endGame(confirmMessage) {
 	//Require confirmation unless the game is over. Note that this might be slightly bugged with revert.
 	if (
-		endGameButton.innerHTML === "Leave Room" //Spectating
+		endGameButton.innerHTML === i18n.__("Leave Room") //Spectating
 		|| !shouldConfirm
 		|| confirm(confirmMessage)
 	) {
@@ -588,15 +591,15 @@ gameBoard.appendChild(endGameButton)
 
 let newGameNoLobbyButton = document.createElement("button")
 newGameNoLobbyButton.id = "newGameNoLobbyButton"
-newGameNoLobbyButton.innerHTML = "New Game"
+newGameNoLobbyButton.innerHTML = i18n.__("New Game")
 gameBoard.appendChild(newGameNoLobbyButton)
 
 endGameButton.addEventListener("click", function() {
-	endGame("Are you sure you want to end the game?")
+	endGame(i18n.__("Are you sure you want to end the game?"))
 })
 
 newGameNoLobbyButton.addEventListener("click", function() {
-	if (endGame("Are you sure you want to start a new game?")) {
+	if (endGame(i18n.__("Are you sure you want to start a new game?"))) {
 		document.getElementById("startGameButton").click() //Clicks button on RoomManager - not currently visible.
 	}
 })
@@ -707,7 +710,7 @@ window.stateManager.addEventListener("onEndGame", clearSyncCache) //This is basi
 
 
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
-	goMahjongButton.innerHTML = "Mahjong"
+	goMahjongButton.innerHTML = i18n.__("Mahjong!")		// EXC Note to Tucker: Note the ! is to differentiate the two Mahjong translations, as a game, or as goMahjong
 	if (window.stateManager.isHost) {
 		newGameNoLobbyButton.style.display = ""
 	}
@@ -782,16 +785,16 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	if (!userHand.wind) {
 		//Must be spectating.
 		compass.setDirectionForUserWind(windOrder[0])
-		endGameButton.innerHTML = "Leave Room"
+		endGameButton.innerHTML = i18n.__("Leave Room")
 
 		if (showSpectating) {
-			new Popups.MessageBar("You are spectating (message will close automatically)").show(10000)
+			new Popups.MessageBar(i18n.__("You are spectating (message will close automatically)")).show(10000)
 			showSpectating = false
 		}
 	}
 	else {
 		compass.setDirectionForUserWind(userHand.wind)
-		endGameButton.innerHTML = "End Game"
+		endGameButton.innerHTML = i18n.__("End Game")
 	}
 
 	let currentTurnWind;
@@ -837,7 +840,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		}
 
 		swapJokerButton.disabled = "disabled"
-		proceedButton.innerHTML = "Proceed (" + message.currentTurn.playersReady.length + "/4)"
+		proceedButton.innerHTML = i18n.__("Proceed (%s/4)", message.currentTurn.playersReady.length)
 		//If you haven't thrown, are not in charleston, and it is your turn, override and enable.
 		if (!message.currentTurn.thrown && !message.currentTurn.charleston && message.currentTurn.userTurn === clientId) {proceedButton.disabled = ""}
 		if (message.currentTurn.charleston && message.currentTurn.userTurn !== clientId) {
@@ -853,7 +856,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 		hideClaimButton()
 		proceedButton.disabled = ""
 		goMahjongButton.disabled = ""
-		proceedButton.innerHTML = "Proceed"
+		proceedButton.innerHTML = i18n.__("Proceed")
 
 		//The person has not yet thrown a tile.
 		if (message.currentTurn.charleston) {
@@ -883,9 +886,9 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 
 	if (message.isGameOver) {
 		//Enable proceedButton and goMahjongButton as View Scores
-		proceedButton.innerHTML = "View Scores"
+		proceedButton.innerHTML = i18n.__("View Scores")
 		proceedButton.disabled = ""
-		goMahjongButton.innerHTML = "Scores"
+		goMahjongButton.innerHTML = i18n.__("Scores")
 		goMahjongButton.disabled = ""
 
 		if (message.settings.gameStyle === "chinese") {
@@ -896,7 +899,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			try {
 				if (!window.settings.hasReceivedScoringHint.value) {
 					window.settings.hasReceivedScoringHint.value = true
-					new Popups.Notification("Gameplay Tip!", "Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. ")
+					new Popups.Notification(i18n.__("Gameplay Tip!"), i18n.__("Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. "))
 					.show()
 				}
 			}

@@ -16,6 +16,7 @@ class Setting {
 
 	async getValueFromDisk() {
 		this.currentValue = await readSave(this.saveKey)
+		return this.currentValue
 	}
 
 	async setValueToDisk() {
@@ -57,7 +58,8 @@ class BooleanSetting extends Setting {
 	}
 	set value(newValue) {this.setValue(newValue)}
 
-	createSelector(labelText, appendToElem) {
+	// EXC Note to Tucker:  chicken and egg problem, settings comes before i18n in initialization, but we need the yes/no text, hence the change. 
+	createSelector(labelText, yesText, noText, appendToElem) {
 		let booleanSettingLabel = document.createElement("label")
 		booleanSettingLabel.innerHTML = labelText
 
@@ -71,8 +73,8 @@ class BooleanSetting extends Setting {
 		//<label for="switch3" data-on-label="Yes" data-off-label="No"></label>
 		let booleanSettingToggleLabel = document.createElement("label")
 		booleanSettingToggleLabel.setAttribute("for", tempId)
-		booleanSettingToggleLabel.setAttribute("data-on-label", "Yes")
-		booleanSettingToggleLabel.setAttribute("data-off-label", "No")
+		booleanSettingToggleLabel.setAttribute("data-on-label", yesText)		
+		booleanSettingToggleLabel.setAttribute("data-off-label", noText)
 
 		//Initialize
 		booleanSettingToggle.checked = this.value
@@ -113,4 +115,47 @@ class NumberSliderSetting extends NumberSetting {
 }
 
 
-module.exports = {BooleanSetting, Setting, NumberSetting, NumberSliderSetting}
+// added multiple choices setting
+class SelectSetting extends Setting {
+
+	constructor(saveKey, defaultValue) {
+		super(saveKey, String(defaultValue))
+	}
+	
+	// eg: createSelector("Choose Language: ", [{value:"en", text:"English"}, {value:"zh", text:"Chinese"}], appendToElem)
+	createSelector(labelText, choices, appendToElem ) {
+		let settingLabel = document.createElement("label")
+		settingLabel.innerHTML = labelText
+
+		let tempId = "ListSetting" + (Math.random() * (2**52)) //TODO: Should probably utilize labelText to eliminate any possibility of collisions.
+
+		let settingSelect = document.createElement("select")
+		settingSelect.id = tempId
+	
+		for (let i=0; i<choices.length; i++) {
+			let settingOption = document.createElement("option")
+			settingOption.value = choices[i].value
+			settingOption.text = choices[i].text
+			settingSelect.appendChild(settingOption)
+		}
+
+		//Initialize
+		settingSelect.value = this.value
+
+		settingSelect.addEventListener("change", (function() {
+			this.value = settingSelect.value
+		}).bind(this))
+
+		let container = document.createElement("div")
+		container.appendChild(settingLabel)
+		container.appendChild(settingSelect)
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
+	}
+
+}
+
+
+module.exports = {BooleanSetting, Setting, NumberSetting, NumberSliderSetting, SelectSetting}
