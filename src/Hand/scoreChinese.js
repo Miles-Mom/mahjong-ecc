@@ -103,7 +103,7 @@ function scoreChinese() {
 	}
 
 	otherItems.push({
-		text: clearHandInfo.type,
+		text: i18n.__(clearHandInfo.type),
 		doubles: clearHandInfo.doubles,
 		points: 0
 	})

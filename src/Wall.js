@@ -136,7 +136,7 @@ class Wall {
 		})
 
 		div.onclick = function() {
-			displayCenterTilePopup(tiles, i18n.__n("Wall View %s tile(s) left", tiles.length))
+			displayCenterTilePopup(tiles, i18n.__n(`Wall View %s tile${tiles.length === 1 ? "":"s"} left`, tiles.length))
 		}
 	}
 
