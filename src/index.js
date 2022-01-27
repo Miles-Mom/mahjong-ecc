@@ -62,8 +62,7 @@ const {i18n, initClientLocale} = require("./i18nHelper.js")
 let i18n_chain = initClientLocale()
 
 i18n_chain.then( 
-    document.title = i18n.
-    __("Mahjong 4 Friends - Free Mahjong, Friends and/or Bots")
+    document.title = i18n.__("Mahjong 4 Friends - Free Mahjong, Friends and/or Bots")
  )
 
 require("./appUpdates.js")

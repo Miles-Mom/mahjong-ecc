@@ -4,7 +4,7 @@
 	"Hello {{name}}": "{{name}} 你好",
 	"Hello %(name-only-works-client-msg-our-own-not-generic-i18n-unless-i-fix-it)s": "%(name)s 你好",
 
-	"localization credit":"本地化编程和中文翻译是按原样由小弋,晓雯,芳提供的。",
+	"localization credit":"本地化编程和中文翻译是按原样由小弋, 晓雯, 芳提供的。",
 	
 	"Mahjong": "麻将",
 	"4 Friends": "合家福",
@@ -332,6 +332,8 @@
 	"East": "东家", 
 	"South": "南家",
 	"West": "西家",
+	"Unable to go mahjong with this hand. If you play by different rules, try again to override. "
+	: "这手牌不可以福。如果您用不同的规则，请再次点击来覆盖。 ",
 
 	"------- hand ----":"xx",
 	"Placemat is already full. ":"放牌处已经满了。",
