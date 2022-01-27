@@ -63,10 +63,16 @@ function getImports(inputText) {
 
 
 let indexCSSPath = path.join(__dirname, "index.css")
+let outputDir = path.join(__dirname, "packages")
+
+if (!fs.existsSync(outputDir)) {
+	fs.mkdirSync(outputDir, {recursive: true})
+}
+
 function buildCSS() {
 	let startTime = Date.now()
 	let indexCSS = fs.readFileSync(indexCSSPath, {encoding: "utf8"})
-	fs.writeFileSync(path.join(__dirname, "packages", "index.css"), reformatCSSForViewportBug(indexCSS))
+	fs.writeFileSync(path.join(outputDir, "index.css"), reformatCSSForViewportBug(indexCSS))
 	console.log("Built CSS! (" + (Date.now() - startTime) + "ms)")
 }
 
