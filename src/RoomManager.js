@@ -775,7 +775,7 @@ roomManager.appendChild(documentation)
 
 let supportInfo = document.createElement("p")
 supportInfo.id = "supportInfo"
-supportInfo.innerHTML = i18n.__("Questions, Comments, or Concerns? ") + i18n.__("Contact %s", "<a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>")	
+supportInfo.innerHTML = i18n.__("Questions, Comments, or Concerns? ") + i18n.__("Contact %s", "<a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>")
 
 roomManager.appendChild(supportInfo)
 
@@ -792,12 +792,12 @@ if (window.nativePlatform) {
 		link = "https://play.google.com/store/apps/details?id=com.mahjong4friends.twa"
 		prompt = "leave a review on Google Play"
 	}
-	else if (window.nativePlatform === "windows") {	
+	else if (window.nativePlatform === "windows") {
 		link = "ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P"
 		prompt = "leave a review in the Microsoft Store"
 	}
-	link =  `href="${link}" target="_blank"`		// this is the <a ---> link anchor part
-	ratingPrompt.innerHTML = i18n.__("Enjoying Mahjong 4 Friends? Please <a %s>%s</a>", link, i18n.__(prompt) )
+	link =  `href="${link}" target="_blank"` //Properties for anchor element
+	ratingPrompt.innerHTML = i18n.__("Enjoying Mahjong 4 Friends? Please <a %s>%s</a>", link, i18n.__(prompt))
 	roomManager.appendChild(ratingPrompt)
 }
 else {
@@ -1145,7 +1145,7 @@ window.stateManager.onJoinRoom = function(obj) {
 	}
 	else {
 		if (showRestoreNotice && hashParams.has("roomId") && hashParams.get("roomId") !== obj.message) {
-			
+
 			new Popups.Notification(i18n.__("Room Restored"), i18n.__("You followed a link to room %1%s, but were already in room %2%s. Your room has been restored - to join a new room, leave your current one. ", hashParams.get("roomId"), obj.message)).show()
 			showRestoreNotice = false
 		}
@@ -1182,7 +1182,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
 	let playerCount = obj.message.clients.length
 	roomInfo.innerHTML = i18n.__(`%d player${playerCount > 1 ? "s are":" is"} present in room %s`, playerCount, roomNameText)
-	
+
 	if (window.stateManager.isHost) {
 		startGameButton.style.display = ""
 		addBotButton.style.display = ""
