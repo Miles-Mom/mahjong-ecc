@@ -20,7 +20,7 @@ let config = {
 	resolve: {
 		fallback: {
 			"fs": false,
-			"path": require.resolve('path-browserify'),	
+			"path": false,
 			"url": false, 	
 			"crypto": false,
 		}

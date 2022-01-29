@@ -785,17 +785,18 @@ if (window.nativePlatform) {
 	let link
 	let prompt
 	if (window.nativePlatform === "ios") {
-		link = "href=\"https://apps.apple.com/us/app/mahjong-4-friends/id1552704332\" target=\"_blank\""
+		link = `href="https://apps.apple.com/us/app/mahjong-4-friends/id1552704332"`
 		prompt = "rate us in the App Store"
 	}
-	else if (window.nativePlatform === "android") {
-		link = "href=\"https://play.google.com/store/apps/details?id=com.mahjong4friends.twa\" target=\"_blank\""
+	else if ( window.nativePlatform === "android") {
+		link = `href="https://play.google.com/store/apps/details?id=com.mahjong4friends.twa"`
 		prompt = "leave a review on Google Play"
 	}
 	else if (window.nativePlatform === "windows") {	
-		link = "href=\"ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P\" target=\"_blank\""
+		link = `href="ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P"`
 		prompt = "leave a review in the Microsoft Store"
 	}
+	link +=  ` target="_blank"`
 	ratingPrompt.innerHTML = i18n.__("Enjoying Mahjong 4 Friends? Please <a %s>%s</a>", link, i18n.__(prompt) )
 	roomManager.appendChild(ratingPrompt)
 }
@@ -878,7 +879,7 @@ setTimeout(function() {
 }, 2000)
 
 let copyrightNotice = document.createElement("p")
-copyrightNotice.innerHTML = i18n.__("Copyright © 2021, All Rights Reserved")
+copyrightNotice.innerHTML = i18n.__("Copyright © 2022, All Rights Reserved")
 copyrightNotice.id = "copyrightNotice"
 roomManager.appendChild(copyrightNotice)
 

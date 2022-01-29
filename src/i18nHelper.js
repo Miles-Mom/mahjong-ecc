@@ -24,7 +24,8 @@ const i18n = new I18n({
   staticCatalog: {
     zh: require('../assets/locales/zh.json'),
     en: require('../assets/locales/en.json')
-  }
+  },
+  directory: ""     // this is to avoid i18n to demand path-browserify, it should not, given staticCatalog.
 })
 
 // ------------------------------------------------
