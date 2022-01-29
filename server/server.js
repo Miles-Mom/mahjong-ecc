@@ -172,6 +172,10 @@ function onConnection(websocket) {
 				}
 			}
 
+			if (obj.locale) {
+				client.setLocale(obj.locale)
+			}
+
 			if (obj.type === "createRoom") {
 				if (typeof obj.roomId !== "string") {
 					return websocket.send(getMessage("createRoom", "roomId must be a string", "error"))
@@ -181,20 +185,18 @@ function onConnection(websocket) {
 				}
 				else {
 					client.setNickname(obj.nickname)
-					client.setLocale(obj.locale)		
 					globalThis.serverStateManager.createRoom(obj.roomId).addClient(clientId)
 					return websocket.send(getMessage("createRoom", client.getRoomId(), "success"))
 				}
 			}
 			else if (obj.type === "joinRoom") {
-		
+
 				if (!globalThis.serverStateManager.getRoom(obj.roomId)) {
 
-					return websocket.send(getMessage("joinRoom", i18n.__({ phrase: "Room %s does not exist. You can click the Create Room button to create it!", 
+					return websocket.send(getMessage("joinRoom", i18n.__({ phrase: "Room %s does not exist. You can click the Create Room button to create it!",
 																															   locale: obj.locale}, obj.roomId), "error"))
 				}
 				client.setNickname(obj.nickname)
-				client.setLocale(obj.locale)
 				return globalThis.serverStateManager.getRoom(obj.roomId).addClient(clientId)
 			}
 			else if (obj.type === "getCurrentRoom") {

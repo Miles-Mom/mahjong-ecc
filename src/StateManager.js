@@ -155,24 +155,22 @@ class StateManager {
 		this.isHost = false
 		this.inGame = false
 
-		this.joinRoom = function(roomId, nickname, locale) {
+		this.joinRoom = function(roomId, nickname) {
 			this.sendMessage(JSON.stringify({
 				type: "joinRoom",
 				clientId: window.clientId,
 				roomId,
 				nickname,
-				locale
-			}))	
+			}))
 		}
 
-		this.createRoom = function(roomId, nickname, locale) {
+		this.createRoom = function(roomId, nickname) {
 			this.sendMessage(JSON.stringify({
 				type: "createRoom",
 				clientId: window.clientId,
 				roomId,
 				nickname,
-				locale
-			}))	
+			}))
 		}
 
 		this.kickUser = function(roomId, userId) {
@@ -239,20 +237,12 @@ class StateManager {
 			}))
 		}
 
-		this.setLocale = function(locale, targetId = window.clientId) {
-			this.sendMessage(JSON.stringify({
-				type: "roomActionChangeLocale",
-				clientId: window.clientId,
-				locale,
-				targetId
-			}))		
-		}
-
 		this.getCurrentRoom = (function() {
 			//Get our room.
 			this.sendMessage(JSON.stringify({
 				"type": "getCurrentRoom",
-				clientId: window.clientId
+				clientId: window.clientId,
+				locale: i18n.getLocale()
 			}))
 		}).bind(this)
 

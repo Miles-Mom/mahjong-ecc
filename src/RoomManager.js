@@ -119,7 +119,7 @@ joinRoom.addEventListener("click", function() {
 	if (roomIdInput.value.trim().length === 0) {
 		return new Popups.Notification(i18n.__("Whoops!"), i18n.__("Please enter the name of the room you would like to join into the box labeled \"Enter Room Name\"")).show()
 	}
-	window.stateManager.joinRoom(roomIdInput.value.toLowerCase(), nicknameInput.value, i18n.getLocale())
+	window.stateManager.joinRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
 joinCreateSpan.appendChild(joinRoom)
 joinCreateSpan.style.position = "relative"
@@ -137,7 +137,7 @@ createRoom.id = "createRoom"
 createRoom.innerHTML = i18n.__("Create Room")
 createRoom.addEventListener("click", function() {
 	stateManager.offlineMode = false
-	window.stateManager.createRoom(roomIdInput.value.toLowerCase(), nicknameInput.value, i18n.getLocale())
+	window.stateManager.createRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
 joinCreateSpan.appendChild(createRoom)
 
@@ -160,7 +160,7 @@ offlineSinglePlayer.addEventListener("click", function() {
 
 	let nickname = nicknameInput.value || "Player 1"
 
-	window.stateManager.createRoom(roomId, nickname, i18n.getLocale())
+	window.stateManager.createRoom(roomId, nickname)
 
 	for (let i=0;i<3;i++) {
 		window.stateManager.addBot()
