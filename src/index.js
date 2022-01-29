@@ -26,7 +26,7 @@ if ('serviceWorker' in navigator) {
 
 const {i18n, initToBrowserLocale, initToClientLocale} = require("./i18nHelper.js")
 
-// bootstrap i18n using browser detected locale, note this is before user overide setting is applied. 
+// bootstrap i18n using browser detected locale, note this is before user overide setting is applied.
 // this is needed as settings itself need localization support
 let browserLocale = initToBrowserLocale()
 

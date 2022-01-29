@@ -20,7 +20,7 @@ class Notification {
 		headerText.innerHTML = errorText
 		headerText.className = "headerText"
 		header.appendChild(headerText)
-
+		
 		let dismissButton = document.createElement("span")
 		dismissButton.className = "headerText panelClose"
 		dismissButton.innerHTML = "×"

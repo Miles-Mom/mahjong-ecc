@@ -7,7 +7,7 @@ const Match = require("./Match.js")
 
 const {updateTilesInContainer} = require("./updateTilesInContainer.js")
 const {displayCenterTilePopup} = require("./displayCenterTilePopup.js")
-const {i18n} = require("./i18nHelper.js")	
+const {i18n} = require("./i18nHelper.js")
 
 let gameBoard = document.createElement("div")
 gameBoard.id = "gameBoard"
@@ -216,7 +216,7 @@ revertStateButton.addEventListener("click", function() {
 
 		history.forEach((move) => {
 			let btn = document.createElement("button")
-			btn.innerHTML = i18n.__("Move %d", move.move) +  ` - ${move.message}` 
+			btn.innerHTML = i18n.__("Move %d", move.move) +  ` - ${move.message}`
 
 			buttonContainer.appendChild(btn)
 			btn.addEventListener("click", function() {
@@ -341,7 +341,7 @@ function createSuggestedHands(hand, playerName = "") {
 
 				let headerRow = document.createElement("tr")
 				table.appendChild(headerRow)
-				
+
 				createData(headerRow).innerHTML = i18n.__(isSetsTable ? "Sets (In-Hand Blue)" : "Bonuses")
 				createData(headerRow).innerHTML = i18n.__("Pts")
 				createData(headerRow).innerHTML = i18n.__("Dbs")

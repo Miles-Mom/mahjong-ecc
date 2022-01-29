@@ -2,7 +2,7 @@ const Popup = require("./Popups.js")
 
 const {i18n, initToClientLocale} = require("./i18nHelper.js")
 
-let localeSettingChanged = false	
+let localeSettingChanged = false
 
 let settingsIcon = document.createElement("img")
 if (window?.Capacitor) {
@@ -20,12 +20,12 @@ settingsIcon.addEventListener("click", async function() {
 
 	let elem = document.createElement("div")
 
-	//Create a container div for the actual settings inside the settings menu. This will be left justified. TODO: Right justify checkboxes/sliders
+	//Create a container div for the actual settings inside the settings menu. This container is left justified. 
 	let settingsMenuDiv = document.createElement("div")
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
 
-	// language choices translations are not provided, to avoid users getting stuck in the wrong language. 
+	//Language choices are displayed in the target language, to allow users to recognize languages they know (and not get stuck)
 	const choices = [
 		{
 			name: "English",
@@ -44,14 +44,14 @@ settingsIcon.addEventListener("click", async function() {
 		if (oldLocale !== newLocale){
 			localeSettingChanged = true
 		}
-	}	
+	}
 	window.settings.locale.createSelector("Choose Language: ", choices, settingsMenuDiv)
 	window.settings.locale.onValueSet = updateLocaleSetting
 
 	let langCredit = document.createElement("p")
 	langCredit.innerHTML = i18n.__("localization credit")
-	settingsMenuDiv.appendChild(langCredit)		
-	
+	settingsMenuDiv.appendChild(langCredit)
+
 	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
 	window.settings.insertTilesAtEnd.createSelector("Disable Auto-Sort: ", settingsMenuDiv)
 	//window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
@@ -82,7 +82,7 @@ settingsIcon.addEventListener("click", async function() {
 	deleteDataButton.innerHTML = i18n.__("Delete Collected Data")
 	deleteDataButton.className = "deleteDataButton"
 	deleteDataButton.addEventListener("click", function() {
-		let dataPolicyPopup = new Popups.Notification(i18n.__("Data Storage Policy"), 
+		let dataPolicyPopup = new Popups.Notification(i18n.__("Data Storage Policy"),
 			i18n.__("All server logs are anonymous and deleted within 7 days, unless you specified a game to be pulled for debugging - if so, please email %s if you wish for that game to be deleted. ", "<a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>"))
 		dataPolicyPopup.show()
 	})
@@ -91,7 +91,7 @@ settingsIcon.addEventListener("click", async function() {
 	//refresh screen upon i18n changes
 	function refreshScreen() {
 		if (localeSettingChanged) {
-			window.location.reload(true)	
+			window.location.reload(true)
 		}
 	}
 

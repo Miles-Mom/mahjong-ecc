@@ -1,6 +1,6 @@
 //We need to use SaveManager because localStorage doesn't persist on iOS (and maybe not on Android)
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
-const {i18n} = require("./i18nHelper.js")		
+const {i18n} = require("./i18nHelper.js")
 
 class Setting {
 	//Setting class converts all data types to strings (other data types won't store on disk)
@@ -42,7 +42,7 @@ class Setting {
 			return this.saved
 		}
 	}
-
+	
 	get value() {return this.getValue()}
 	set value(newValue) {this.setValue(newValue)}
 
@@ -112,7 +112,7 @@ class BooleanSetting extends Setting {
 		//<label for="switch3" data-on-label="Yes" data-off-label="No"></label>
 		let booleanSettingToggleLabel = document.createElement("label")
 		booleanSettingToggleLabel.setAttribute("for", tempId)
-		booleanSettingToggleLabel.setAttribute("data-on-label", i18n.__("Yes"))		
+		booleanSettingToggleLabel.setAttribute("data-on-label", i18n.__("Yes"))
 		booleanSettingToggleLabel.setAttribute("data-off-label", i18n.__("No"))
 
 		//Initialize
