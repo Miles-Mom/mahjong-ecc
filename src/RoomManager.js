@@ -785,18 +785,18 @@ if (window.nativePlatform) {
 	let link
 	let prompt
 	if (window.nativePlatform === "ios") {
-		link = `href="https://apps.apple.com/us/app/mahjong-4-friends/id1552704332"`
+		link = "https://apps.apple.com/us/app/mahjong-4-friends/id1552704332"
 		prompt = "rate us in the App Store"
 	}
 	else if ( window.nativePlatform === "android") {
-		link = `href="https://play.google.com/store/apps/details?id=com.mahjong4friends.twa"`
+		link = "https://play.google.com/store/apps/details?id=com.mahjong4friends.twa"
 		prompt = "leave a review on Google Play"
 	}
 	else if (window.nativePlatform === "windows") {	
-		link = `href="ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P"`
+		link = "ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P"
 		prompt = "leave a review in the Microsoft Store"
 	}
-	link +=  ` target="_blank"`
+	link =  `href="${link}" target="_blank"`		// this is the <a ---> link anchor part
 	ratingPrompt.innerHTML = i18n.__("Enjoying Mahjong 4 Friends? Please <a %s>%s</a>", link, i18n.__(prompt) )
 	roomManager.appendChild(ratingPrompt)
 }
