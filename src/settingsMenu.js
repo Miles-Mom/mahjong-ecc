@@ -25,13 +25,14 @@ settingsIcon.addEventListener("click", async function() {
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
 
+	// language choices translations are not provided, to avoid users getting stuck in the wrong language. 
 	const choices = [
 		{
 			name: "English",
 			value: "en"
 		},
 		{
-			name: "Chinese",
+			name: "中文",
 			value: "zh"
 		}
 	]
