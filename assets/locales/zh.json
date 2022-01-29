@@ -189,7 +189,7 @@
 	"History" : "游戏历史",
 	"Proceed" : "继续 - 下一家",	
 	"-- internal Proceed ToDo --": "继续 - 下一家 (? ToDo) for one, and 继续 - 过或要 for the other",
-	"Proceed (%s/4)" : "继续 - (%s/4)",
+	"Proceed (%s/4)" : "继续 (%s/4)",
 	"-- internal Proceed2 ToDo --" : "继续 - 过或Pong, Gung, Yao? ToDo ",
 	"New Game" : "新的游戏",
 	"End Game" : "结束游戏",
@@ -243,6 +243,9 @@
 	"Gameplay Tip!":"游戏提示!",
 	"Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. "
 		:"对得分感到困惑？ 您可以点击对手的牌，或点击你暴明的牌，去查看分数汇总! 如果需要更多详细信息, 您可以从主菜单的链接去查看学习教程（如果见不到，请滚动屏幕)。",
+
+	"Discard Pile (%s tiles)" : "丢的牌(%s个)",
+	"Discard Pile (%s tile)" : "丢的牌(%s个)",
 
 	"----- room internal temp -----": "xx", 
 	"Already in room" : "已经上桌子了",

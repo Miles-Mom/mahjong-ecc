@@ -633,7 +633,7 @@ function renderDiscardPile(tileStrings) {
 	updateTilesInContainer(discardPile, tiles)
 
 	discardPile.onclick = function() {
-		displayCenterTilePopup(tiles, `Discard Pile (${tiles.length} tile${tiles.length === 1 ? "":"s"})`)
+		displayCenterTilePopup(tiles, i18n.__(`Discard Pile (%s tile${tiles.length === 1 ? "":"s"})`, tiles.length))
 	}
 }
 
