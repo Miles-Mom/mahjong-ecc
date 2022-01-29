@@ -1,4 +1,5 @@
 const Popups = require("./Popups.js")
+const {i18n} = require("./i18nHelper.js")
 
 class StateManager {
 	constructor(websocketURL) {
@@ -86,7 +87,7 @@ class StateManager {
 							popup = null
 						}
 
-						popup = new Popups.MessageBar("You Disconnected from the Server. Attempting to Reconnect...")
+						popup = new Popups.MessageBar(i18n.__("You are disconnected from the Server. Attempting to Reconnect..."))
 						setTimeout(function() {
 							if (popup) {popup.show(8000)}
 						}, disconnectDelayTime)
@@ -154,22 +155,24 @@ class StateManager {
 		this.isHost = false
 		this.inGame = false
 
-		this.joinRoom = function(roomId, nickname) {
+		this.joinRoom = function(roomId, nickname, locale) {
 			this.sendMessage(JSON.stringify({
 				type: "joinRoom",
 				clientId: window.clientId,
 				roomId,
-				nickname
-			}))
+				nickname,
+				locale
+			}))	
 		}
 
-		this.createRoom = function(roomId, nickname) {
+		this.createRoom = function(roomId, nickname, locale) {
 			this.sendMessage(JSON.stringify({
 				type: "createRoom",
 				clientId: window.clientId,
 				roomId,
-				nickname
-			}))
+				nickname,
+				locale
+			}))	
 		}
 
 		this.kickUser = function(roomId, userId) {
@@ -234,6 +237,15 @@ class StateManager {
 				nickname,
 				targetId
 			}))
+		}
+
+		this.setLocale = function(locale, targetId = window.clientId) {
+			this.sendMessage(JSON.stringify({
+				type: "roomActionChangeLocale",
+				clientId: window.clientId,
+				locale,
+				targetId
+			}))		
 		}
 
 		this.getCurrentRoom = (function() {

@@ -1,4 +1,5 @@
 const Hand = require("../../src/Hand.js")
+const localizeSummary = require("../localizeJustInTime.js").localizeSummary
 
 //TODO: Mahjong validation code currently needs to be located in two places - once in turnChoicesProxyHandler to determine if a hand will BECOME mahjong, then again
 //in here to determine if a hand IS mahjong. (so seperate paths calling for mahjong, vs in hand mahjong, due to need to verify all moves before advancing with turns)
@@ -54,13 +55,15 @@ function goMahjong(clientId, options = {}) {
 		}
 	}
 
-	this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " went mahjong!" , {clientId, speech: "Mahjong"})
-	client.message("roomActionGameplayAlert", "You went mahjong!", {durationMultiplier: 1})
+	this.messageAll([clientId], "roomActionGameplayAlert", {format: "%s went mahjong!", args:client.getNickname()}, {clientId, speech: "Mahjong"})
+	
+	this.setAllInstructions([clientId], {format: ["%s went mahjong!", "\n", "Press End Game to return everybody to the room screen. "], args:client.getNickname()})
+	this.setInstructions(clientId, {format: ["%s went mahjong!", "\n", "Press End Game to return everybody to the room screen. "], argsI18n:"You"})
 
-	this.setAllInstructions([clientId], client.getNickname() + " went mahjong!\nPress End Game to return everybody to the room screen. ")
-	this.setInstructions(clientId, "You went mahjong!\nPress End Game to return everybody to the room screen. ")
+	this.getSummary(clientId, options)	
 
-	this.messageAll([], "displayMessage", {title: "Mahjong!", body: this.getSummary(clientId, options)}, "success")
+	this.messageAll([], "displayMessage", {title: "Mahjong!", body: {format:"%(summary)s", args:{summary:"placeholder"}, argsOption:{summary:localizeSummary}}}, "success")
+	
 	setTimeout((function() {
 		//Offset this call for bots (which are synchronus) to avoid infinite recursion if their Mahjong is ignored.
 		this.sendStateToClients()

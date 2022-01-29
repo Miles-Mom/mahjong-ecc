@@ -1,5 +1,6 @@
 //We need to use SaveManager because localStorage doesn't persist on iOS (and maybe not on Android)
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
+const {i18n} = require("./i18nHelper.js")		
 
 class Setting {
 	//Setting class converts all data types to strings (other data types won't store on disk)
@@ -49,7 +50,7 @@ class Setting {
 		let container = document.createElement("div")
 
 		let settingLabel = document.createElement("label")
-		settingLabel.innerHTML = labelText
+		settingLabel.innerHTML = i18n.__(labelText)
 		container.appendChild(settingLabel)
 
 		let selectElem = document.createElement("select")
@@ -67,7 +68,7 @@ class Setting {
 			}
 
 			optionElem.value = option.value
-			optionElem.innerHTML = option.name
+			optionElem.innerHTML = i18n.__(option.name)
 			selectElem.appendChild(optionElem)
 		})
 
@@ -99,7 +100,7 @@ class BooleanSetting extends Setting {
 
 	createSelector(labelText, appendToElem) {
 		let booleanSettingLabel = document.createElement("label")
-		booleanSettingLabel.innerHTML = labelText
+		booleanSettingLabel.innerHTML = i18n.__(labelText)
 
 		let tempId = "booleanSetting" + (Math.random() * (2**52)) //TODO: Should probably utilize labelText to eliminate any possibility of collisions.
 
@@ -111,8 +112,8 @@ class BooleanSetting extends Setting {
 		//<label for="switch3" data-on-label="Yes" data-off-label="No"></label>
 		let booleanSettingToggleLabel = document.createElement("label")
 		booleanSettingToggleLabel.setAttribute("for", tempId)
-		booleanSettingToggleLabel.setAttribute("data-on-label", "Yes")
-		booleanSettingToggleLabel.setAttribute("data-off-label", "No")
+		booleanSettingToggleLabel.setAttribute("data-on-label", i18n.__("Yes"))		
+		booleanSettingToggleLabel.setAttribute("data-off-label", i18n.__("No"))
 
 		//Initialize
 		booleanSettingToggle.checked = this.value
@@ -146,7 +147,7 @@ class NumberSetting extends Setting {
 
 	createSelector(labelText, appendToElem) {
 		let settingLabel = document.createElement("label")
-		settingLabel.innerHTML = labelText
+		settingLabel.innerHTML = i18n.__(labelText)
 
 		let inputElem = document.createElement("input")
 		inputElem.type = "number"
@@ -179,11 +180,11 @@ class NumberSliderSetting extends NumberSetting {
 		input.max = bounds.max.value
 
 		let label = document.createElement("label")
-		label.innerHTML = bounds.min.label
+		label.innerHTML = i18n.__(bounds.min.label)
 
 		//Right now, no browser supports labeled tick marks, so we'll just do this.
 		let label2 = document.createElement("label")
-		label2.innerHTML = bounds.max.label
+		label2.innerHTML = i18n.__(bounds.max.label)
 
 		input.value = this.value
 

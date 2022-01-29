@@ -2,6 +2,8 @@ const Match = require("../Match.js")
 const Tile = require("../Tile.js")
 const Pretty = require("../Pretty.js")
 const TileContainer = require("../TileContainer.js")
+const {i18n} = require("../i18nHelper")		
+const doubleHarness = require("../../server/american/marvelous2021/double-harness.js")
 
 function scoreChinese() {
 	//Reads hand.status (bound, so this.status) to determine if Mahjong (could do w/ tile count and tiles), and drewOwnTile
@@ -79,21 +81,21 @@ function scoreChinese() {
 
 	if (this.status?.status === "mahjong") {
 		otherItems.push({
-			text: "Mahjong",
+			text: i18n.__("Mahjong!"),
 			doubles: 0,
 			points: 20
 		})
 
 		if (this.status?.drewOwnTile) {
 			otherItems.push({
-				text: "Self-Draw",
+				text: i18n.__("Self-Draw"),
 				doubles: 0,
 				points: 2
 			})
 		}
 		if (!hasSequence) {
 			otherItems.push({
-				text: "No Sequence",
+				text: i18n.__("No Sequence"),
 				doubles: 0,
 				points: 10
 			})
@@ -101,7 +103,7 @@ function scoreChinese() {
 	}
 
 	otherItems.push({
-		text: clearHandInfo.type,
+		text: i18n.__(clearHandInfo.type),
 		doubles: clearHandInfo.doubles,
 		points: 0
 	})
@@ -116,8 +118,8 @@ function scoreChinese() {
 	let doubles = items.reduce((total, item) => {return total + item.doubles}, 0)
 
 	let score = points * (2**doubles)
-	let scoreText = `${points} points × 2<sup>${doubles} double${doubles === 1 ? "":"s"}</sup> = ${score} points`
 
+	let scoreText = i18n.__(`%s points x 2<sup>%s double${doubles === 1 ? "":"s"}</sup> = %s points`, points, doubles, score)
 	this.contents = oldContents //Reset any modifications
 
 	return {matchItems, otherItems, items, points, doubles, score, scoreText}

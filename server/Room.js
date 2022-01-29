@@ -5,6 +5,7 @@ const Match = require("../src/Match.js")
 const Pretty = require("../src/Pretty.js")
 const Sequence = require("../src/Sequence.js")
 const TileContainer = require("../src/TileContainer.js")
+const localizeTileName = require("./localizeJustInTime.js").localizeTileName	
 
 class Room {
 	constructor(roomId, state = {}) {
@@ -24,7 +25,8 @@ class Room {
 			if (!this?.gameData?.instructions) {
 				this.gameData.instructions = {}
 			}
-			this.gameData.instructions[clientId] = instructions
+			let client = globalThis.serverStateManager.getClient(clientId)	
+			this.gameData.instructions[clientId] = client.localizeMessage(instructions)		
 		}).bind(this)
 
 		this.setAllInstructions = (function(excludeClientIds, instructions) {
@@ -122,8 +124,8 @@ class Room {
 			if (isNaN(turnNumber) || turnNumber < 0) {
 				return client.message("roomActionGameplayAlert", "Revert Error: Invalid Revert turnNumber", "success")
 			}
-
-			this.messageAll([], "roomActionGameplayAlert", `${client.getNickname()} reverted to move ${turnNumber} (${this.state.moves.length - 1 - turnNumber} moves)`)
+			this.messageAll([], "roomActionGameplayAlert", {format:"%(client)s reverted to move %(turn)s (%(move)s moves)", args:{client:client.getNickname(), turn:turnNumber, move:this.state.moves.length - 1 - turnNumber}} )
+			
 			this.messageAll([], "roomActionRevertState") //Notifies client code about change - currently used to distinguish between charleston passes and reverts. 
 
 			globalThis.serverStateManager.deleteRoom(this.roomId)
@@ -168,7 +170,7 @@ class Room {
 			if (clientId) {
 				let client = globalThis.serverStateManager.getClient(clientId)
 				//Tell players who ended the game.
-				gameEndMessage = "The game has been ended by " + client.getNickname() + "."
+				gameEndMessage = {format: "The game has been ended by %s.", args: client.getNickname()}
 			}
 			if (this.shouldRotateWinds) {this.rotateWinds()}
 			this.shouldRotateWinds = true
@@ -201,10 +203,12 @@ class Room {
 			let hand = this.gameData.playerHands[clientId]
 
 			if (this.gameData.isMahjong) {
-				return client.message("displayMessage", {title: "Mahjong!", body: this.lastSummary})
+				
+				return client.message("displayMessage", {title: "Mahjong!", body: this.lastSummary[client.locale]})
 			}
 			else if (this.gameData.wall.isEmpty) {
-				return client.message("displayMessage", {title: "Game Over - Wall Empty", body: this.lastSummary})
+				
+				return client.message("displayMessage", {title: "Game Over - Wall Empty", body: this.lastSummary[client.locale]})
 			}
 
 			if (!hand) {
@@ -253,10 +257,10 @@ class Room {
 						placement = new Sequence({exposed: true, tiles: placement})
 					}
 					else if (placement.length === 2) {
-						return client.message(obj.type, "Your two selected tiles do not match, sequences require 3 tiles, and discards are a single tile. Please review your selected tiles.", "error")
+						return client.message(obj.type, {format:["Your two selected tiles do not match, sequences require 3 tiles, and discards are a single tile. ", "Please review your selected tiles. "]}, "error")
 					}
 					else {
-						return client.message(obj.type, "Your selected tiles do not form a sequence or match, and discards are a single tile. Please review your selected tiles. ", "error")
+						return client.message(obj.type, {format:["Your selected tiles do not form a sequence or match, and discards are a single tile. ", "Please review your selected tiles. "]}, "error")
 					}
 				}
 				else {
@@ -303,7 +307,7 @@ class Room {
 							}
 							return false
 						}).bind(this))) {
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + " has upgraded an exposed pong into a kong. ", {clientId, speech: "Make that a kong", durationMultiplier: 1.1}) //Add duation. Long speech.
+							this.messageAll([clientId], "roomActionGameplayAlert", {format:"%s has upgraded an exposed pong into a kong. ", args:client.getNickname()}, {clientId, speech: "Make that a kong", durationMultiplier: 1.1}) //Add duation. Long speech.
 							this.sendStateToClients()
 							return;
 						}
@@ -366,8 +370,10 @@ class Room {
 						//Bots can pass true to auto-detect and not receive errors on fail.
 						//Confirm this is either a bot or a normal discard - if a person fails to joker swap, we refund their tile.
 						if (!obj.swapJoker || obj.swapJoker === true) {
-							let tileName = placement.getTileName(this.state.settings.gameStyle)
-							let discardMessage = " threw a " + tileName
+							let tileObj = placement.toJSON()
+							let tileName = placement.getTileName(this.state.settings.gameStyle) 	// until we revise speech
+							let discardMessage = "%(client)s threw a %(tile)s"	
+
 							//We're also going to check if the discarder is calling.
 							let durationMultiplier = 1;
 							if (this.state.settings.checkForCalling && !hand.calling && hand.isCalling(this.gameData.discardPile, this.state.settings.maximumSequences)) {
@@ -381,12 +387,12 @@ class Room {
 							delete this.lastDrawn
 							this.gameData.currentTurn.turnChoices[clientId] = "Next"
 							placerMahjongOverride = false
+											
+							this.messageAll([clientId], "roomActionGameplayAlert", {format: discardMessage, args: {client:client.getNickname(), tile:tileObj}, argsOption: {tile: localizeTileName} }, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
+							this.setAllInstructions([clientId], {format: [discardMessage, ".", "To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). "], args: {client:client.getNickname(), tile:tileObj}, argsOption: {tile:localizeTileName} })
 
-							this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + discardMessage, {clientId, speech: tileName, durationMultiplier, optional: !hand.calling})
-							this.setAllInstructions([clientId], client.getNickname() + discardMessage + ". To skip, press Proceed. To claim this tile, select the tiles you are placing it with, and press Proceed (or Mahjong if this tile makes you Mahjong). ")
-
-							client.addMessageToHistory("You" + discardMessage.replace("is", "are")) //Make discards appear in history menu.
-
+							client.addMessageToHistory({format: discardMessage.replace("is", "are"), args: {tile:tileObj}, argsI18n:{client:"You"}, argsOption:{tile: localizeTileName}}) //Make discards appear in history menu.
+			
 							this.sendStateToClients()
 						}
 					}
@@ -406,9 +412,11 @@ class Room {
 						//Draw them another tile.
 						this.drawTile(clientId)
 						this.sendStateToClients()
-						let placeMessage = " placed an in-hand kong of " + placement.getTileName(this.state.settings.gameStyle) + "s"
-						this.messageAll([clientId], "roomActionGameplayAlert", client.getNickname() + placeMessage, {clientId, speech: "kong"})
-						client.addMessageToHistory("You" + placeMessage)
+						let placeMessage = "%(player)s placed an in-hand kong of %(tile)ss" 
+						let tileObj = placement.tiles[0].toJSON()
+
+						this.messageAll([clientId], "roomActionGameplayAlert", {format:placeMessage, args:{player:client.getNickname(), tile:tileObj}, argsOption:{tile:localizeTileName}}, {clientId, speech: "kong"})
+						client.addMessageToHistory({format:placeMessage, args:{tile:tileObj}, argsI18n:{player:"You"}, argsOption:{tile:localizeTileName}})
 						console.log("Kong")
 						return
 					}
@@ -455,7 +463,9 @@ class Room {
 
 					if (sequenceCount >= this.state.settings.maximumSequences) {
 						placerSequenceOverride = true //TODO: We should probably turn this override off at some point.
-						return client.message(obj.type, "Host game settings allow only " + this.state.settings.maximumSequences + " sequence(s). Repeat your same move to ignore this setting, and place this sequence. Overriding this setting may cause minor issues in scoring, and may require a Mahjong override. ", "error")
+
+
+						return client.message(obj.type, {format: ["Host game settings allow only %d sequence(s). ", "Repeat your same move to ignore this setting, and place this sequence. ", "Overriding this setting may cause minor issues in scoring, and may require a Mahjong override. "], args:this.state.settings.maximumSequences}, "error")
 					}
 				}
 

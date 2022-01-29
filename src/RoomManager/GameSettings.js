@@ -1,4 +1,5 @@
 const Popups = require("../Popups.js")
+const {i18n} = require("../i18nHelper.js")	
 
 const variants = [
 	{name: "Please Select Variant..."},
@@ -86,7 +87,7 @@ class SettingsMenu {
 			info = "Most variants should be supported - self-scoring and overrides may be needed. Can't play your way? Send an email to support@mahjong4friends.com!"
 
 			window.settings.chinese.maximumSequences.createSelector("Maximum Sequences: ", settingsMenuDiv)
-			window.settings.chinese.checkForCalling.createSelector("Check and Alert for Ready Hands", settingsMenuDiv)
+			window.settings.chinese.checkForCalling.createSelector("Check and Alert for Ready Hands: ", settingsMenuDiv)
 			window.settings.chinese.botCanStartCharleston.createSelector("Bots Can Initiate Charleston: ", settingsMenuDiv)
 			window.settings.chinese.allow4thTilePickup.createSelector("Allow 4th Tile Pickup: ", settingsMenuDiv)
 			window.settings.chinese.pickupDiscardForDraw.createSelector("Pickup Discard for Draw: ", settingsMenuDiv)
@@ -104,11 +105,11 @@ class SettingsMenu {
 		}
 
 		let infoDisplayElem = document.createElement("p")
-		infoDisplayElem.innerHTML = info
+		infoDisplayElem.innerHTML = i18n.__(info)
 		elem.appendChild(infoDisplayElem)
 
 		//Display elem inside a popup.
-		let popup = new Popups.Notification("Game Settings", elem)
+		let popup = new Popups.Notification(i18n.__("Game Settings"), elem)
 		let popupElem = popup.show()
 		popupElem.style.width = "100vw" //Force max width allowed. Prevents jumping.
 	}

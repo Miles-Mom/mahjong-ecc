@@ -1,3 +1,6 @@
+const {i18n} = require("./i18nHelper.js")	
+
+// Note this is mix-usage by both client+server sides
 class Tile {
 	constructor(config = {}) {
 		this.type = config.type //Ex. wind, bamboo, character, pretty, dragon
@@ -20,8 +23,14 @@ class Tile {
 		"circle": "dot"
 	}
 
-	getTileName(gameStyle = "chinese") {
-		let tileName = this.value + " " + this.type
+	getTileName(gameStyle = "chinese", locale ) {
+
+		if (typeof locale === "undefined") {
+			locale = i18n.getLocale()
+			// if this is used on the client side, great; if on the server side, no harm is done.
+		}
+
+		let tileName;
 
 		if (gameStyle === "american") {
 			if (["flower", "season"].includes(this.type)) {
@@ -31,14 +40,26 @@ class Tile {
 				tileName = this.value + " " + (Tile.americanTranslations[this.type] || this.type)
 			}
 		}
+		else {
+			tileName =  this.type
+			
+			if (tileName === "dragon" || tileName === "wind" || tileName === "flower" || tileName === "season") {
+				tileName = this.value + " " + tileName
+				tileName = i18n.__({phrase: tileName, locale: locale})
+			} 
+			else {
+				tileName = i18n.__n({singular: "%d " + tileName, plural: "%d " + tileName, locale: locale, count: this.value})
+			}
+		}
+
 
 		if (this.faceDown) {
 			//Some face down tiles might be part of a kong.
 			if (this.value && this.type) {
-				tileName = "Face Down " + tileName
+				tileName = i18n.__({phrase: "Face Down %s" , locale: locale}, tileName)	
 			}
 			else {
-				tileName = "Face Down Tile"
+				tileName = i18n.__({phrase: "Face Down Tile", locale: locale})
 			}
 		}
 

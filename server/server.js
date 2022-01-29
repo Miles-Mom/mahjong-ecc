@@ -6,6 +6,8 @@ const path = require("path")
 const fs = require("fs")
 const crypto = require("crypto")
 
+const {i18n} = require("../src/i18nHelper.js")
+
 function getMessage(type, message, status) {
 	return JSON.stringify({
 		type, message, status
@@ -179,15 +181,20 @@ function onConnection(websocket) {
 				}
 				else {
 					client.setNickname(obj.nickname)
+					client.setLocale(obj.locale)		
 					globalThis.serverStateManager.createRoom(obj.roomId).addClient(clientId)
 					return websocket.send(getMessage("createRoom", client.getRoomId(), "success"))
 				}
 			}
 			else if (obj.type === "joinRoom") {
+		
 				if (!globalThis.serverStateManager.getRoom(obj.roomId)) {
-					return websocket.send(getMessage("joinRoom", `Room ${obj.roomId} does not exist. You can click the Create Room button to create it!`, "error"))
+
+					return websocket.send(getMessage("joinRoom", i18n.__({ phrase: "Room %s does not exist. You can click the Create Room button to create it!", 
+																															   locale: obj.locale}, obj.roomId), "error"))
 				}
 				client.setNickname(obj.nickname)
+				client.setLocale(obj.locale)
 				return globalThis.serverStateManager.getRoom(obj.roomId).addClient(clientId)
 			}
 			else if (obj.type === "getCurrentRoom") {

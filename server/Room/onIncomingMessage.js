@@ -101,6 +101,24 @@ function onIncomingMessage(clientId, obj) {
 		}
 		return
 	}
+	else if (obj.type === "roomActionChangeLocale") {		
+		let message; //Message will remain undefined if the user does not have permission to rename.
+		let target = globalThis.serverStateManager.getClient(obj.targetId)
+
+		if (obj.targetId === clientId) {
+			message = target.getNickname() + " locale changed to " + obj.locale
+		}
+		else if (isHost) {
+			message = "The host locale changed to " + obj.locale
+		}
+
+		if (message) {
+			target.setLocale(obj.locale)
+			this.messageAll([clientId], "roomActionChangeLocale", message, "success" )
+			this.sendStateToClients()
+		}
+		return
+	}
 }
 
 module.exports = onIncomingMessage

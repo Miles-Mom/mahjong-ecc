@@ -1,3 +1,6 @@
+const {i18n} = require("../src/i18nHelper.js")		
+const vsprintf = require('sprintf-js').vsprintf		
+
 let Bot; //Don't want both scripts importing each other.
 
 class Client {
@@ -6,10 +9,130 @@ class Client {
 		this.nickname = clientId.slice(0,7)
 		this.websocket = websocket
 
+		this.locale = "en";		
+	
 		this.clearMessageHistory()
 	}
 
+	// massage message object: translate per client's locale & flatten object with locale info to plain string
+	// note this is used by Room.Instruction too.
+	localizeMessage(message) {
+
+		if (typeof message === "string" ) {
+			// plain simple text: client.message(.., "this is a test to be xlated")		
+			message = i18n.__({phrase:message, locale:this.locale})
+		}	
+		else if (typeof message === "object" && message.format) {
+			// * text with runtime data supplied - use the object notation.
+			let fmt = message.format
+
+			if (typeof fmt === "string" ) {
+				// client.message(.., {format: "this is a test for %s", args: varData})		
+				// client.message(.., {format: "this is a test for %{namedVar}s", args:{namedVar: varData}})		
+				fmt = i18n.__({phrase:fmt, locale:this.locale})
+			} 
+			else if (fmt instanceof Array ) {
+				// concatenated multiple sentences, w/ or w/o runtime data. - note the object notation, and array format.
+				// client.message(.., {foramt: ["first with %(param1)s.", "second with %(param2)s."], args: {param1:Xxx, param2: Yyy})
+				fmt = fmt.map((item) => {return i18n.__({phrase:item, locale: this.locale})} )
+				fmt = fmt.join("")			
+			}
+			else {
+				console.error(`internal error bad format ${fmt}`)
+				return message
+			}
+			
+			// let's make a copy of the arg before we set out to modify it
+			let args = {}		// assume named value
+			if (typeof message.args === "string") {
+				args = []		// positional
+				args.push(message.args)		// to avoid turning string into an array of chars via next method
+			}
+			else if (typeof message.args === "object") {
+				args = Object.assign({}, message.args)		
+			}
+
+			// some of the dynamic data itself need to be localized first
+			// eg: message(.., {format:"test %(param1)s, %(param2)s", args:{param1:Xxx}, args_i18n:{param2:Yyy-toBeLocalized}})
+			// note that mixing positional and named placeholders is not supported in sprintf therefore us
+			if (typeof message.argsI18n === "object") {
+				let argsI18n = message.argsI18n
+				for (let key in argsI18n) {	
+					// save the localized data to the new combined args
+					args[key] = i18n.__({phrase:argsI18n[key], locale: this.locale})
+				}
+			} 
+
+			// "2 bamboo" case: if args themselves need to be handled, provide additional callback functions as option
+			// client.message(.., {foramt: "test %(tile)s.", args: {tile: tileJsonObj}, argsOption: {tile:localizeTileName_CallBackFunction} }
+			if (typeof message.argsOption === "object") {
+				// additional processing callback option are specified, let's run it on the correponding args
+				let callbackFunctions = message.argsOption
+				for (let key in callbackFunctions) {
+					try {
+						args[key] = callbackFunctions[key].call(this, args[key])	// late bind to this client
+					}
+					catch (e) {
+						console.error(e)
+					}
+
+				} 
+			}
+
+			if (fmt.includes("%") && typeof args === "undefined") {
+				console.error(`internal error: bad format ${fmt}`)
+			} 
+			else {
+				// options here
+				// A) vsprintf() which supports %(name)s, does not support {{name}}, does not support mixed-position-named
+				// B) or i18n.__ which does NOT support %(name)s, does {{name}}, no mixed. we can request fixing i18n...
+				// like A) for now, less cycle, even though consistency with B) is appealing.
+				try {
+					message = vsprintf(fmt, args)
+					// message = i18n.__(fmt, args)	
+				}
+				catch(e) {
+					console.error(e)	// gotta be internal error
+					message = fmt  	// try to get something back
+				}
+			}
+		} 
+
+		return message
+	}
+
+	// client message usages: 
+	// plain, concat, printf with data, data itself needs handling, callback function on args aka 3-bamboo handling
+	/* plain:		
+					message(type, "plain message", status)
+			printf with data: 
+					message(.., {format:"msg sprintf format %(var1)s etc", args: {var1, var2}}, ..)
+					message(.., {format:"this is a test for %{namedVar}s", args:{namedVar: varData}})	
+			concat: 
+					message(.., {foramt:["test %(param1)s.", "concat with %(param2)s."], args: {param1:Xxx, param2: Yyy})
+			data itself needs generic translation:
+					message(.., {format:"test %(param1)s, %(param2)s", args:{param1:Xxx}, args_i18n:{param2:Yyy-toBeLocalized}})
+			data itself needs special handling via callback functions, aka "3-bamboo" handling:
+				message(.., {foramt:"test %(tile)s.", args: {tile: tileJsonObj}, argsOption: {tile:localizeTile_CallBackFunc} }
+	*/
 	message(type, message, status) {
+
+		// our changes shall do NO harm to existing code
+		// Here, getCurrentRoom, joinRoom:  the message is the room name, we must not toich that. 
+		if (type !== "getCurrentRoom" && type !== "joinRoom" && !globalThis.runBotClientAutoPlay) {
+			if (type === "displayMessage") {
+					if (typeof message.title !== "undefined") {
+						message.title = this.localizeMessage(message.title)
+					}
+					if (typeof message.body !== "undefined") {
+						message.body = this.localizeMessage(message.body)
+					}
+			} 
+			else {
+				message = this.localizeMessage(message)
+			}
+		}
+
 		//Add these to message history so that we can revert based on them.
 		if (type === "roomActionGameplayAlert") {
 			this.addMessageToHistory(message)
@@ -142,9 +265,14 @@ class Client {
 
 	clearMessageHistory() {
 		this.messageHistory = []
-		this.messageHistory.push({message: "Game Started", move: 0})
+		let msg = this.localizeMessage("Game Started")
+		this.messageHistory.push({message: msg, move: 0})
 	}
 	addMessageToHistory(message, offset = 0) {
+
+		// yes, msg needs to be localized before putting to history
+		message = this.localizeMessage(message)
+
 		//Offset can be used if the message is for the previous turn, etc.
 		this.messageHistory.push({message, move: this?.getRoom()?.state?.moves?.length + offset})
 	}
@@ -161,6 +289,9 @@ class Client {
 	}
 
 	getNickname() {return this.nickname}
+
+	setLocale(locale) { this.locale = locale}
+	getLocale() { return this.locale}
 
 	suppressed = false
 	suppress() {this.suppressed = true}
@@ -195,6 +326,7 @@ class Client {
 		let obj = {
 			clientId: this.clientId,
 			nickname: this.nickname,
+			locale: this.locale,
 			roomId: this.roomId,
 			isBot: this.isBot
 		}
@@ -214,6 +346,7 @@ class Client {
 			client = new Client(obj.clientId)
 		}
 		client.setNickname(obj.nickname)
+		client.setLocale(obj.locale)
 
 		client.setRoomId(obj.roomId)
 
