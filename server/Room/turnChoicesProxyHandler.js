@@ -506,7 +506,7 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				}
 				else if (placement === "Claim") {
 					if (utilized === true) {
-						client.message("roomActionPlaceTiles", "This tile was claimed - your draw was skipped. ", "error")
+						client.message("roomActionPlaceTiles", "This tile was called - your draw was skipped. ", "error")
 						continue;
 					}
 					utilized = true
@@ -514,8 +514,8 @@ function calculateNextTurn(obj, exemptFromChecks) {
 					hand.add(tile)
 					this.lastDrawn = tile
 					this.gameData.currentTurn.userTurn = clientId
-					let tileObj = tile.fromJson()
-					let message = {format:"%(player) claimed for a %(tile)", args:{player:client.getNickname(), tile:tileObj}, argsOption:{tile:localizeTileName}}
+					let tileObj = tile.toJSON()
+					let message = {format:"%(player)s called for a %(tile)s", args:{player:client.getNickname(), tile:tileObj}, argsOption:{tile:localizeTileName}}
 					this.messageAll([], "roomActionGameplayAlert", message, {clientId, speech: "I'll take that tile"})
 				}
 				else {

@@ -24,21 +24,28 @@ if ('serviceWorker' in navigator) {
     }
 }
 
-const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting, SelectSetting} = require("./Settings.js")
+const {i18n, initToBrowserLocale, initToClientLocale} = require("./i18nHelper.js")
+
+// bootstrap i18n using browser detected locale, note this is before user overide setting is applied. 
+// this is needed as settings itself need localization support
+let browserLocale = initToBrowserLocale()
+
+const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
 
 window.settings = {
-    //Global Settings
+    //Global Settings (Game-mode independent)
     singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
     displayTips: new BooleanSetting("settingDisplayTips", true),
     soundEffects: new BooleanSetting("settingSoundEffects", false),
-    locale: new SelectSetting("settingLocale"), // default undefined - otherwise behavior with Settings becomes rather strange.
+    insertTilesAtEnd: new BooleanSetting("settingInsertTilesAtEnd", false),
+	locale: new Setting("settingLocale", browserLocale),
 
     //Game Settings
-    gameStyleSetting: new Setting("gameStyle"), //Default undefined - force user to select something first.
+    gameStyle: new Setting("gameStyle"),
 
     //Data storage
     hasReceivedPossibleHandsHint: new BooleanSetting("hasReceivedPossibleHandsHint", false),
-    hasReceivedScoringHint: new BooleanSetting("hasReceivedScoringHint", false),
+    hasReceivedScoreSummaryHint: new BooleanSetting("hasReceivedScoreSummaryHint", false),
     overruledOnlineSinglePlayerAlert: new BooleanSetting("overruledOnlineSinglePlayerAlert", false),
 }
 
@@ -47,23 +54,25 @@ window.settings.chinese = {
     tableLimit: new NumberSetting("chinese.tableLimit", 500),
     allow4thTilePickup: new BooleanSetting("chinese.allow4thTilePickup", true),
     botCanStartCharleston: new BooleanSetting("chinese.botCanStartCharleston", false),
-    pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false)
+    pickupDiscardForDraw: new BooleanSetting("chinese.pickupDiscardForDraw", false),
+    maximumSequences: new NumberSetting("chinese.maximumSequences", 4),
+    checkForCalling: new BooleanSetting("chinese.checkForCalling", true)
 }
 
 window.settings.american = {
-    card: new Setting("american.card", "2021 National Mahjong League"),
+    card: new Setting("american.card"),
     suggestedHands: new BooleanSetting("american.suggestedHands", true),
     botDifficulty: new NumberSliderSetting("american.botDifficulty", 50),
     ignoreBotMahjong: new BooleanSetting("american.ignoreBotMahjong", false)
 }
 
-const {i18n, initClientLocale} = require("./i18nHelper.js")
+// get user set locale
+let i18n_chain = window.settings.locale.loaded
 
-let i18n_chain = initClientLocale()
-
-i18n_chain.then( 
+i18n_chain.then(() => {
+    initToClientLocale()
     document.title = i18n.__("Mahjong 4 Friends - Free Mahjong, Friends and/or Bots")
- )
+})
 
 require("./appUpdates.js")
 require("./universalLinks.js")

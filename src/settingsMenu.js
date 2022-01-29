@@ -1,6 +1,6 @@
 const Popup = require("./Popups.js")
 
-const {i18n} = require("./i18nHelper.js")
+const {i18n, initToClientLocale} = require("./i18nHelper.js")
 
 let localeSettingChanged = false	
 
@@ -25,28 +25,37 @@ settingsIcon.addEventListener("click", async function() {
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
 
-	let choices = [{value:"en", text:i18n.__("English")}, {value:"zh", text:i18n.__("Chinese")}]
-	window.settings.locale.createSelector(i18n.__("Choose Language: "), choices, settingsMenuDiv)
-	window.settings.locale.value = i18n.getLocale()
+	const choices = [
+		{
+			name: "English",
+			value: "en"
+		},
+		{
+			name: "Chinese",
+			value: "zh"
+		}
+	]
 
 	function updateLocaleSetting() {
 		let oldLocale = i18n.getLocale()
-		let newLocale = window.settings.locale.getValue()
-		if (oldLocale !== newLocale)
-		{
-			i18n.setLocale(newLocale)
+		i18n.setLocale(window.settings.locale.getValue())
+		let newLocale = i18n.getLocale()
+		if (oldLocale !== newLocale){
 			localeSettingChanged = true
 		}
-	}
+	}	
+	window.settings.locale.createSelector("Choose Language: ", choices, settingsMenuDiv)
 	window.settings.locale.onValueSet = updateLocaleSetting
 
 	let langCredit = document.createElement("p")
 	langCredit.innerHTML = i18n.__("localization credit")
-	settingsMenuDiv.appendChild(langCredit)			// EXC note to Tucker: add localization byline okay?
+	settingsMenuDiv.appendChild(langCredit)		
+	
+	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
+	window.settings.insertTilesAtEnd.createSelector("Disable Auto-Sort: ", settingsMenuDiv)
+	//window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
+	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
-	window.settings.displayTips.createSelector(i18n.__("Display Tips: "), i18n.__("Yes"), i18n.__("No"), settingsMenuDiv)
-	window.settings.soundEffects.createSelector(i18n.__("Sound Effects: "), i18n.__("Yes"), i18n.__("No"), settingsMenuDiv)
-	window.settings.singlePlayerDebuggingData.createSelector(i18n.__("Single Player Debugging Data: "), i18n.__("Yes"), i18n.__("No"), settingsMenuDiv)
 
 	//Add offline data collection setting.
 	let offlineDataCollectionEnabledMessage = i18n.__("Debugging data is collected for all games. ")
@@ -86,9 +95,8 @@ settingsIcon.addEventListener("click", async function() {
 	}
 
 	//Display elem inside a popup.
-	popup = new Popups.Notification(i18n.__("Settings"), elem)
+	popup = new Popups.Notification(i18n.__("General Settings"), elem)
 	popup.ondismissed = refreshScreen
-
 	let popupElem = popup.show()
 	popupElem.style.width = "100vw" //Force max width allowed. Prevents jumping.
 })

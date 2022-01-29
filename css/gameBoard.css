@@ -279,6 +279,7 @@ This means that something using bottom is off the page - hence we must use top. 
 	max-height: 5vh;
 	max-width: 5vw;
 	z-index: 1;
+	transform: scaleX(-1);
 }
 
 #revertStateButton {

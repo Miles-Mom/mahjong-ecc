@@ -1,5 +1,6 @@
 //We need to use SaveManager because localStorage doesn't persist on iOS (and maybe not on Android)
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js")
+const {i18n} = require("./i18nHelper.js")		
 
 class Setting {
 	//Setting class converts all data types to strings (other data types won't store on disk)
@@ -8,6 +9,8 @@ class Setting {
 	//this.value - value of setting, has getters and settings
 	//this.loaded - Promise that resolved when setting loaded from disk.
 	//this.saved - Promise that resolves when setting saves to disk.
+
+	//this.onValueSet - If set, this callback will be called with the new value whenever the value is SET (doesn't necessarily change).
 	constructor(saveKey, defaultValue) {
 		this.saveKey = saveKey
 		this.defaultValue = String(defaultValue)
@@ -16,7 +19,6 @@ class Setting {
 
 	async getValueFromDisk() {
 		this.currentValue = await readSave(this.saveKey)
-		return this.currentValue
 	}
 
 	async setValueToDisk() {
@@ -43,6 +45,44 @@ class Setting {
 
 	get value() {return this.getValue()}
 	set value(newValue) {this.setValue(newValue)}
+
+	createSelector(labelText, optionsArr, appendToElem) {
+		let container = document.createElement("div")
+
+		let settingLabel = document.createElement("label")
+		settingLabel.innerHTML = i18n.__(labelText)
+		container.appendChild(settingLabel)
+
+		let selectElem = document.createElement("select")
+		container.appendChild(selectElem)
+
+		optionsArr.forEach((option, index) => {
+			if (typeof option === "string") {
+				option = {name: option, value: option}
+			}
+
+			let optionElem = document.createElement("option")
+
+			if (option.value === undefined) {
+				optionElem.disabled = true
+			}
+
+			optionElem.value = option.value
+			optionElem.innerHTML = i18n.__(option.name)
+			selectElem.appendChild(optionElem)
+		})
+
+		selectElem.value = this.value
+
+		selectElem.addEventListener("change", (function() {
+			this.value = selectElem.value
+		}).bind(this))
+
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
+	}
 }
 
 class BooleanSetting extends Setting {
@@ -58,10 +98,9 @@ class BooleanSetting extends Setting {
 	}
 	set value(newValue) {this.setValue(newValue)}
 
-	// EXC Note to Tucker:  chicken and egg problem, settings comes before i18n in initialization, but we need the yes/no text, hence the change. 
-	createSelector(labelText, yesText, noText, appendToElem) {
+	createSelector(labelText, appendToElem) {
 		let booleanSettingLabel = document.createElement("label")
-		booleanSettingLabel.innerHTML = labelText
+		booleanSettingLabel.innerHTML = i18n.__(labelText)
 
 		let tempId = "booleanSetting" + (Math.random() * (2**52)) //TODO: Should probably utilize labelText to eliminate any possibility of collisions.
 
@@ -73,8 +112,8 @@ class BooleanSetting extends Setting {
 		//<label for="switch3" data-on-label="Yes" data-off-label="No"></label>
 		let booleanSettingToggleLabel = document.createElement("label")
 		booleanSettingToggleLabel.setAttribute("for", tempId)
-		booleanSettingToggleLabel.setAttribute("data-on-label", yesText)		
-		booleanSettingToggleLabel.setAttribute("data-off-label", noText)
+		booleanSettingToggleLabel.setAttribute("data-on-label", i18n.__("Yes"))		
+		booleanSettingToggleLabel.setAttribute("data-off-label", i18n.__("No"))
 
 		//Initialize
 		booleanSettingToggle.checked = this.value
@@ -105,6 +144,27 @@ class NumberSetting extends Setting {
 		return Number(this.getValue())
 	}
 	set value(newValue) {this.setValue(newValue)}
+
+	createSelector(labelText, appendToElem) {
+		let settingLabel = document.createElement("label")
+		settingLabel.innerHTML = i18n.__(labelText)
+
+		let inputElem = document.createElement("input")
+		inputElem.type = "number"
+		inputElem.value = this.value
+
+		inputElem.addEventListener("change", (function() {
+			this.value = inputElem.value
+		}).bind(this))
+
+		let container = document.createElement("div")
+		container.appendChild(settingLabel)
+		container.appendChild(inputElem)
+		if (appendToElem) {
+			appendToElem.appendChild(container)
+		}
+		return container
+	}
 }
 
 
@@ -112,50 +172,36 @@ class NumberSliderSetting extends NumberSetting {
 	constructor(saveKey, defaultValue) {
 		super(saveKey, String(defaultValue))
 	}
-}
 
+	createSelector(labelText, bounds, appendToElem) {
+		let input = document.createElement("input")
+		input.type = "range"
+		input.min = bounds.min.value
+		input.max = bounds.max.value
 
-// added multiple choices setting
-class SelectSetting extends Setting {
+		let label = document.createElement("label")
+		label.innerHTML = i18n.__(bounds.min.label)
 
-	constructor(saveKey, defaultValue) {
-		super(saveKey, String(defaultValue))
-	}
-	
-	// eg: createSelector("Choose Language: ", [{value:"en", text:"English"}, {value:"zh", text:"Chinese"}], appendToElem)
-	createSelector(labelText, choices, appendToElem ) {
-		let settingLabel = document.createElement("label")
-		settingLabel.innerHTML = labelText
+		//Right now, no browser supports labeled tick marks, so we'll just do this.
+		let label2 = document.createElement("label")
+		label2.innerHTML = i18n.__(bounds.max.label)
 
-		let tempId = "ListSetting" + (Math.random() * (2**52)) //TODO: Should probably utilize labelText to eliminate any possibility of collisions.
+		input.value = this.value
 
-		let settingSelect = document.createElement("select")
-		settingSelect.id = tempId
-	
-		for (let i=0; i<choices.length; i++) {
-			let settingOption = document.createElement("option")
-			settingOption.value = choices[i].value
-			settingOption.text = choices[i].text
-			settingSelect.appendChild(settingOption)
-		}
-
-		//Initialize
-		settingSelect.value = this.value
-
-		settingSelect.addEventListener("change", (function() {
-			this.value = settingSelect.value
+		input.addEventListener("change", (function() {
+			this.value = input.value
 		}).bind(this))
 
 		let container = document.createElement("div")
-		container.appendChild(settingLabel)
-		container.appendChild(settingSelect)
+		container.appendChild(label)
+		container.appendChild(input)
+		container.appendChild(label2)
 		if (appendToElem) {
 			appendToElem.appendChild(container)
 		}
 		return container
 	}
-
 }
 
 
-module.exports = {BooleanSetting, Setting, NumberSetting, NumberSliderSetting, SelectSetting}
+module.exports = {BooleanSetting, Setting, NumberSetting, NumberSliderSetting}

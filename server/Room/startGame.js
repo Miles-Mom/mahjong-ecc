@@ -18,7 +18,7 @@ function startGame(obj) {
 			gameStyle: "chinese",
 			checkForCalling: true,
 			allow4thTilePickup: true,
-			botSettings: {canCharleston: true},
+			botCanStartCharleston: true,
 			maximumSequences: 1,
 		}
 	}
@@ -28,9 +28,27 @@ function startGame(obj) {
 	}
 	else {
 		return {
-			title: "Please Select Settings",
-			body: "You must select either Chinese or American Mahjong in Game Settings (scroll down if not visible). "
+			title: "Please Select Variant",
+			body: "You must select a game variant to play. "
 		}
+	}
+
+	if (this.state.settings.gameStyle === "american") {
+		if (cards[obj?.settings?.card]) {
+			this.state.settings.card = obj?.settings?.card
+			delete this.state.settings.unknownCard
+		}
+		else if (obj?.settings?.card === "Other"){
+			this.state.settings.unknownCard = true
+			this.state.settings.card = "Random"
+		}
+		else {
+			return {
+				title: "Please Select Card",
+				body: "You must select a card to play American Mahjong. Select 'Other Card' if your card is not available. "
+			}
+		}
+		this.gameData.card = cards[this.state.settings.card]
 	}
 
 	this.inGame = true
@@ -53,18 +71,19 @@ function startGame(obj) {
 		]
 	]
 
-
-	this.state.settings.botSettings = this.state.settings.botSettings || {}
-
-	this.state.settings.disableHints = obj?.settings?.disableHints || false
-
-	this.state.settings.botSettings.canCharleston = obj?.settings?.botSettings?.canCharleston ?? false
+	this.state.settings.suggestedHands = obj?.settings?.suggestedHands ?? true
+	
+	this.state.settings.botCanStartCharleston = obj?.settings?.botCanStartCharleston ?? false
 
 	this.state.settings.windAssignments = this.state.settings.windAssignments || {}
 
 	this.state.settings.checkForCalling = obj?.settings?.checkForCalling ?? true
 
-	this.state.settings.tableLimit = Number(obj?.settings?.tableLimit) || Infinity //Default Infinity - || as 0 should mean infinity.
+	this.state.settings.tableLimit = Number(obj?.settings?.tableLimit)
+
+	if (!obj?.settings?.tableLimitEnabled) {
+		this.state.settings.tableLimit = Infinity
+	}
 
 	this.state.settings.allow4thTilePickup = obj?.settings?.allow4thTilePickup ?? true
 
@@ -127,17 +146,6 @@ function startGame(obj) {
 				}
 			]
 		]
-
-		if (cards[obj?.settings?.card]) {
-			this.state.settings.card = obj?.settings?.card
-			delete this.state.settings.unknownCard
-		}
-		else {
-			console.error("Unknown Card", obj?.settings?.card)
-			this.state.settings.unknownCard = true
-			this.state.settings.card = "Random"
-		}
-		this.gameData.card = cards[this.state.settings.card]
 
 		this.gameData.charleston = {
 			directions: this.state.settings.charleston.slice(0)

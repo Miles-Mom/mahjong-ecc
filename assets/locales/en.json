@@ -10,16 +10,8 @@
 
 	"Mahjong!" : "Mahjong",
 
-	"%s Players are Present": {
-		"one": "%s Player is Present",
-		"other": "%s Players are Present"
-	},
 	"Wall View %s tile(s) left" : {
 		"one": "Wall View 1 tile left",
 		"other": "Wall View %s tiles left"
-	},
-	"You drew a %d pretty and a %(tile)s" : {
-		"one" : "You drew a %d pretty and a %(tile)s",
-		"other": "[0]You drew a %(tile)s|You drew %d prettys and a %(tile)s"
 	}
 }

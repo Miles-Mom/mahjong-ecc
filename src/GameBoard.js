@@ -311,7 +311,7 @@ function createSuggestedHands(hand, playerName = "") {
 		let cardName = stateManager.lastState.message.settings.card
 
 		if (stateManager.lastState.message.settings.gameStyle !== "american") {
-			window.settings.hasReceivedScoringHint.value = true //The user has opened the scoring menu, so we don't need to give the hint.
+			window.settings.hasReceivedScoreSummaryHint.value = true //The user has opened the scoring menu, so we don't need to give the hint.
 
 			//Not American Mahjong - must be Chinese/Panama.
 
@@ -393,10 +393,10 @@ function createSuggestedHands(hand, playerName = "") {
 		let tiles = hand.contents.concat(hand.inPlacemat)
 		tiles = tiles.filter((tile) => {return !tile.evicting}).filter((tile) => {return !tile.faceDown})
 
-		if (cardName === "Other Card - Bots Use Random Card") {
-			popup = new Popups.Notification(titleText, `This card does not support ${titleText}. `)
+		if (cardName === "Random") {
+			popup = new Popups.Notification(titleText, `'Other Card' does not support ${titleText}. `)
 		}
-		else if (stateManager.lastState.message.settings.disableHints) {
+		else if (!stateManager.lastState.message.settings.suggestedHands) {
 			popup = new Popups.Notification(titleText, `${titleText}/Hints are disabled by the host. `)
 		}
 		else {
@@ -511,7 +511,7 @@ window.stateManager.onGameplayAlert = function(obj) {
 
 	let baseUrl = "assets/sounds/"
 	let urls = [];
-	if (obj.message.includes("thrown")) {
+	if (obj.message.includes(i18n.__("threw"))) {
 		sound.volume = 0.5
 		urls = ["tile-drop-table.mp3"]
 	}
@@ -727,7 +727,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	hintButton.style.display = ""
 	proceedButton.classList.add("shrinkForHintButton")
 
-	if (message?.settings?.disableHints) {
+	if (!message?.settings?.suggestedHands) {
 		hintButton.style.display = "none"
 		proceedButton.classList.remove("shrinkForHintButton")
 	}
@@ -897,8 +897,8 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 			//Wrap this in an additional try-catch - we're messing with localStorage, which might be wonky.
 			//The first time that a game ends, alert to user as to how scores are calculated.
 			try {
-				if (!window.settings.hasReceivedScoringHint.value) {
-					window.settings.hasReceivedScoringHint.value = true
+				if (!window.settings.hasReceivedScoreSummaryHint.value) {
+					window.settings.hasReceivedScoreSummaryHint.value = true
 					new Popups.Notification(i18n.__("Gameplay Tip!"), i18n.__("Confused about scoring? Click on an opponents hand, or on your exposed tiles, for a score summary! You can check the tutorial, linked off the main menu (scroll if not visible), for more details. "))
 					.show()
 				}

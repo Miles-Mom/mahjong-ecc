@@ -136,7 +136,7 @@ module.exports = [
 				newArr.push(createTiles({type: "joker", amount: 1}))
 				newArr.push(createTiles({type: "wind", value: "north", amount: 1}))
 				newArr.push(createTiles({type: "dragon", value: "green", amount: 1}))
-				newArr.push(createTiles({type: suitFor7, value: 1, amount: 1}))
+				newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
 				newArr.push(createTiles({type: "wind", value: "east", amount: 1}))
 			});
 		})
@@ -196,7 +196,7 @@ module.exports = [
 					newArr.push(createTiles({type: "dragon", value: "green", amount: 1}))
 					newArr.push(createTiles({type: suitFor1, value: 1, amount: 1}))
 					newArr.push(createTiles({type: "dragon", value: "red", amount: 1}))
-					newArr.push(createTiles({type: suitFor7, value: 1, amount: 1}))
+					newArr.push(createTiles({type: suitFor7, value: 7, amount: 1}))
 				});
 			});
 		})

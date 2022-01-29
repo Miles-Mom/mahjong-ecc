@@ -1,5 +1,5 @@
 const Popups = require("./Popups.js")
-const SettingsMenu = require("./RoomManager/SettingsMenu.js")
+const SettingsMenu = require("./RoomManager/GameSettings.js")
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js") //TODO: Should we use a Setting to store saves instead of [read/write/delete]Save?
 const {i18n} = require("./i18nHelper.js")
 
@@ -250,10 +250,10 @@ uploadSaveButton.addEventListener("click", function() {
 
 		let header = document.createElement("tr")
 		table.appendChild(header)
-		addColumn(header, "Card")
-		addColumn(header, "Section")
-		addColumn(header, "Option")
-		addColumn(header, "Item")
+		addColumn(header, i18n.__("Card"))
+		addColumn(header, i18n.__("Section"))
+		addColumn(header, i18n.__("Option"))
+		addColumn(header, i18n.__("Item"))
 
 		class ExpandableItem {
 			constructor({obj, key, columns = [], depth = 0}) {
@@ -471,10 +471,10 @@ async function saveOfflineGame() {
 			//Also, there is no guarantee this goes through - we could legitimately be offline.
 			try {
 				console.log("Attempting Offline Upload")
-				stateManager.uploadOfflineSave({
-					saveId: serverStateManager.getRoom("Offline").logFileSaveId,
-					message: toSave
-				})
+				// stateManager.uploadOfflineSave({
+				// 	saveId: serverStateManager.getRoom("Offline").logFileSaveId,
+				// 	message: toSave
+				// })
 			}
 			catch (e) {console.error(e)}
 		}
@@ -491,7 +491,7 @@ try {
 			savedGameDiv.style.display = ""
 
 			let span = document.createElement("span")
-			span.innerHTML = i18n.__("Saved Game: ")
+			span.innerHTML = "Saved Game: "
 			span.style.fontSize = "1.7em"
 			savedGameDiv.appendChild(span)
 
@@ -615,13 +615,13 @@ inRoomContainer.id = "inRoomContainer"
 inRoomContainer.style.display = "none"
 roomManager.appendChild(inRoomContainer)
 
-let currentRoom = document.createElement("h2")
-currentRoom.id = "currentRoom"
-inRoomContainer.appendChild(currentRoom)
+let roomInfo = document.createElement("h2")
+roomInfo.id = "roomInfo"
+inRoomContainer.appendChild(roomInfo)
 
-let playerCount = document.createElement("h2")
-playerCount.id = "playerCount"
-inRoomContainer.appendChild(playerCount)
+let gameSettingsElem = document.createElement("div")
+gameSettingsElem.id = "gameSettingsElem"
+inRoomContainer.appendChild(gameSettingsElem)
 
 let playerView = document.createElement("div")
 playerView.id = "playerView"
@@ -636,17 +636,6 @@ leaveRoomButton.addEventListener("click", function() {
 	window.stateManager.leaveRoom(window.stateManager.roomId)
 })
 
-
-let closeRoomButton = document.createElement("button")
-closeRoomButton.innerHTML = i18n.__("Close Room")
-closeRoomButton.id = "closeRoomButton"
-closeRoomButton.style.display = "none"
-inRoomContainer.appendChild(closeRoomButton)
-
-closeRoomButton.addEventListener("click", function() {
-	window.stateManager.closeRoom(window.stateManager.roomId)
-})
-
 let addBotButton = document.createElement("button")
 addBotButton.innerHTML = i18n.__("Add Bot")
 addBotButton.id = "addBotButton"
@@ -658,12 +647,22 @@ addBotButton.addEventListener("click", function() {
 })
 
 let startGameButton = document.createElement("button")
-startGameButton.innerHTML = i18n.__("Start Game")
+startGameButton.innerHTML =i18n.__( "Start Game")
 startGameButton.id = "startGameButton"
 startGameButton.style.display = "none"
 inRoomContainer.appendChild(startGameButton)
 
-let gameSettings;
+let gameSettings = new SettingsMenu(gameSettingsElem)
+
+let settingsMenuButton = document.createElement("button")
+settingsMenuButton.innerHTML = i18n.__("Settings")
+settingsMenuButton.id = "settingsMenuButton"
+inRoomContainer.appendChild(settingsMenuButton)
+
+settingsMenuButton.addEventListener("click", function() {
+	gameSettings.openMenu()
+})
+
 startGameButton.addEventListener("click", function() {
 
 	function start() {
@@ -696,7 +695,7 @@ startGameButton.addEventListener("click", function() {
 				goOfflineButton.innerHTML = i18n.__("Go Offline")
 				goOfflineButton.addEventListener("click", function() {
 					stateManager.addEventListener("onLeaveRoom", startOfflineGame)
-					closeRoomButton.click()
+					leaveRoomButton.click()
 
 					function startOfflineGame() {
 						offlineSinglePlayer.click()
@@ -732,10 +731,6 @@ startGameButton.addEventListener("click", function() {
 
 	start()
 })
-
-let gameSettingsElem = document.createElement("div")
-gameSettingsElem.id = "gameSettingsElem"
-inRoomContainer.appendChild(gameSettingsElem)
 
 let inviteYourFriendsElem = document.createElement("div")
 inviteYourFriendsElem.id = "inviteYourFriendsElem"
@@ -1061,6 +1056,7 @@ function getRoomLink() {
 }
 
 function enterRoom() {
+	heading.style.fontSize = "0.7em" //Shrink heading slightly.
 	inRoomContainer.style.display = "block"
 	notInRoomContainer.style.display = "none"
 
@@ -1070,9 +1066,6 @@ function enterRoom() {
 	joinRoomLink.innerHTML = joinRoomLink.href //We want the full URL, not just the hash.
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
-	//Link room name when online.
-	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
-	currentRoom.innerHTML = i18n.__("You are in room %s", roomNameText)
 
 	try {
 		let dpi = 4
@@ -1139,6 +1132,7 @@ function enterRoom() {
 }
 
 function exitRoom() {
+	heading.style.fontSize = "" //Set heading back to default size.
 	inRoomContainer.style.display = "none"
 	notInRoomContainer.style.display = "block"
 }
@@ -1183,40 +1177,25 @@ window.stateManager.addEventListener("onLeaveRoom", function(obj) {
 })
 
 window.stateManager.addEventListener("onStateUpdate", function(obj) {
-	playerCount.innerHTML = i18n.__n("%s Players are Present", obj.message.clients.length)
-
-	let choices = gameSettings?.getChoices()
-
+	//Link room name when online.
+	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
+	let playerCount = obj.message.clients.length
+	roomInfo.innerHTML = i18n.__(`%d player${playerCount > 1 ? "s are":" is"} present in room %s`, playerCount, roomNameText)
+	
 	if (window.stateManager.isHost) {
 		startGameButton.style.display = ""
 		addBotButton.style.display = ""
-		closeRoomButton.style.display = ""
-		leaveRoomButton.style.display = ""
 
-		gameSettings = new SettingsMenu(gameSettingsElem, true)
-		gameSettings.setChoices(choices)
-
-		if (obj.message.clients.length === 1) {
-			//This player is the only one in the room. (So if they aren't host, there's a bug)
-			//If they leave, the room closes. Hide the leave room button.
-			leaveRoomButton.style.display = "none"
-		}
-		else if (obj.message.clients.length >= 4) {
+		if (obj.message.clients.length >= 4) {
 			addBotButton.style.display = "none" //No reason to allow adding bots when game is full.
 		}
-
 	}
 	else {
 		addBotButton.style.display = "none"
-		closeRoomButton.style.display = "none"
 		startGameButton.style.display = "none"
-		leaveRoomButton.style.display = ""
-
-		gameSettings = new SettingsMenu(gameSettingsElem, false)
-		gameSettings.setChoices(choices)
 	}
 
-	window.gameSettings = gameSettings //FOR TESTING!
+	gameSettings.setHost(window.stateManager.isHost)
 
 	renderPlayerView(obj.message.clients, function kickUserCallback(userId) {
 		window.stateManager.kickUser(window.stateManager.roomId, userId)

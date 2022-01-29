@@ -32,7 +32,7 @@ app.use(compression({
 
 function assureRelativePathSafe(relSrc) {
     let hypoDir = "/a/b"
-		let hypoDirSame = "\\a\\b"		// windows path.join will return "\\a\\b\\" from joining of "/a/b" and "/"
+    let hypoDirSame = "\\a\\b"		// windows path.join will return "\\a\\b\\" from joining of "/a/b" and "/"
     let absSrc = path.join(hypoDir, relSrc)
     if (! (absSrc.startsWith(hypoDir) || absSrc.startsWith(hypoDirSame))) {
         throw "Path Traversal Forbidden"
@@ -57,7 +57,7 @@ function getData(request) {
 app.all('*', (req, res, next) => {
 	res.set("Access-Control-Allow-Origin", "*");
 
-    let relativeSrc = req.path
+    let relativeSrc = decodeURIComponent(req.path)
 	let extensions = ["", ".html", "index.html"]
 	let src;
 	let extension = extensions.find((ext) => {
@@ -81,7 +81,7 @@ app.all('*', (req, res, next) => {
 
 //serveIndex - can be removed.
 app.all("*", (req, res, next) => {
-	serveIndex(path.join(__dirname, req.path), {
+	serveIndex(__dirname, {
 		'icons': true,
 		'view': "details" //Gives more info than tiles.
 	})(req, res, next)

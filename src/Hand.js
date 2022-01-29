@@ -185,7 +185,7 @@ class Hand {
 							exposedTiles.push(items)
 						}
 						else {
-							// console.log(items)
+							console.log(items)
 							unexposedTiles.push(items)
 						}
 					}
@@ -208,6 +208,9 @@ class Hand {
 				else {
 					processingIndex = 0
 				}
+
+
+				let tileToAnimate; //We'll animate the last tile that matches.
 
 				let drawTile = (function(tile, indexInGroup) {
 					let handBeingUsed = this.handToRender;
@@ -261,21 +264,7 @@ class Hand {
 						if (this.interactive) {
 							currentElem.classList.remove("animateTile")
 							if (displayElevated && tile.matches(displayElevated)) {
-								displayElevated = undefined //Only animate the very first tile that matches - don't animate ALL 1 bamboos, etc.
-
-								//Keep the new tile transparent, and delay animating until the new image loads.
-								//Previously the tile could change mid-animation, which could
-								//be incredibly annoying, deceiving users into thinking they received another
-								//copy of a tile already in their hand.
-
-								currentElem.style.opacity = "0"
-
-								function beginAnimation() {
-									currentElem.classList.add("animateTile")
-									currentElem.style.opacity = ""
-								}
-
-								currentElem.addEventListener("load", beginAnimation, {once: true})
+								tileToAnimate = currentElem
 							}
 							currentElem.draggable = true
 							currentElem.onclick = (function() {
@@ -301,6 +290,24 @@ class Hand {
 						drawTile(tile)
 					}
 				}
+
+
+				if (tileToAnimate) {
+					//Keep the new tile transparent, and delay animating until the new image loads.
+					//Previously the tile could change mid-animation, which could
+					//be incredibly annoying, deceiving users into thinking they received another
+					//copy of a tile already in their hand.
+
+					tileToAnimate.style.opacity = "0"
+
+					function beginAnimation() {
+						tileToAnimate.classList.add("animateTile")
+						tileToAnimate.style.opacity = ""
+					}
+
+					tileToAnimate.addEventListener("load", beginAnimation, {once: true})
+				}
+
 
 				//Note: If the window is resized, tiles will not adjust until the hand is redrawn.
 
@@ -352,6 +359,12 @@ class Hand {
 	add(obj) {
 		//We will insert the tile where our sorting algorithm would find it most appropriate.
 		//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
+
+		//This detection code must work on server and client!
+		if (globalThis?.settings?.insertTilesAtEnd?.value) {
+			return this.contents.push(obj)
+		}
+
 		let newItemScore;
 		if (obj instanceof Sequence) {
 			newItemScore = obj.tiles[0].getTileValue() //Use value of first tile in sequence.
