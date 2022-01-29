@@ -825,19 +825,19 @@ else {
 	let buttons = [
 		{
 			href: "https://apps.apple.com/us/app/mahjong-4-friends/id1552704332",
-			src: "assets/badges/appstore.svg",
+			src: `assets/badges/${i18n.locale}/appstore.svg`,
 			text: "Get Mahjong 4 Friends on the App Store",
 			strings: ["iPad", "iPhone", "Mac OS X"]
 		},
 		{
 			href: "https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
-			src: "assets/badges/microsoft.svg",
+			src: `assets/badges/${i18n.locale}/microsoft.svg`,
 			text: "Get Mahjong 4 Friends from Microsoft",
 			strings: "Windows"
 		},
 		{
 			href: "https://play.google.com/store/apps/details?id=com.mahjong4friends.twa",
-			src: "assets/badges/googleplay.svg",
+			src: `assets/badges/${i18n.locale}/googleplay.svg`,
 			text: "Get Mahjong 4 Friends on Google Play",
 			strings: ["Android", "CrOS"]
 		},
