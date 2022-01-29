@@ -1178,6 +1178,10 @@ This means that something using bottom is off the page - hence we must use top. 
 	margin-block-start: 0.5em;
 }
 
+#errorPopup #messageText input, #errorPopup #messageText select {
+	font-size: 0.75em;
+}
+
 
 #notificationBar {
 	position: absolute;
