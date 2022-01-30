@@ -210,7 +210,7 @@ if (process.argv.includes("--loadState")) {
 	if (filePath) {
 		let inputPath = path.join(serverDataDirectory, filePath) + ".server.json"
 		console.log("Loading state from " + inputPath)
-		globalThis.serverStateManager.init(fs.readFileSync(inputPath))
+		globalThis.serverStateManager.loadState(fs.readFileSync(inputPath)).startRooms()
 	}
 }
 

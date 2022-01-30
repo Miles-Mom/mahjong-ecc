@@ -171,16 +171,21 @@ offlineSinglePlayer.addEventListener("click", function() {
 offlineGameDiv.appendChild(offlineSinglePlayer)
 
 function resumeOfflineGame(saveText, resumeAtStart = false) {
-	serverStateManager.init(saveText)
+	let {startRooms} = serverStateManager.loadState(saveText)
+
 	//TODO: We need to reset clientId back after offline games are closed.
 	//Set our clientId to the offline mode clientId. Note that clientId should be static now.
 
 	let roomId = serverStateManager.getAllRoomIds()[0] //Room ID could be "Offline", or a translated version of it.
-	window.clientId = serverStateManager.getRoom(roomId).clientIds.find((clientId) => {
-		if (!serverStateManager.getClient(clientId).isBot) {return clientId}
-	})
+	window.clientId = serverStateManager.getAllClients().find((client) => {
+		console.log(client)
+		if (!client.isBot) {return true}
+	}).clientId
 	stateManager.offlineMode = true
-	stateManager.getCurrentRoom()
+	stateManager.getCurrentRoom() //Sync locale
+	startRooms()
+
+	stateManager.getCurrentRoom() //Sync (room now exists, so will load room)
 
 	if (resumeAtStart) {
 		stateManager.revertState(0)

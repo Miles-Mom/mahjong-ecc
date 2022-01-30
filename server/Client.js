@@ -9,10 +9,10 @@ class Client {
 		this.nickname = clientId.slice(0,7)
 		this.websocket = websocket
 
-		this.locale = "en";
-
 		this.clearMessageHistory()
 	}
+
+	locale = "en"
 
 	// massage message object: translate per client's locale & flatten object with locale info to plain string
 	// note this is used by Room.Instruction too.
@@ -300,7 +300,7 @@ class Client {
 
 	getNickname() {return this.nickname}
 
-	setLocale(locale) {this.locale = locale}
+	setLocale(locale) {this.locale = locale || this.locale}
 	getLocale() {return this.locale}
 
 	suppressed = false
@@ -356,12 +356,7 @@ class Client {
 			client = new Client(obj.clientId)
 		}
 		client.setNickname(obj.nickname)
-
-		if (obj.locale) {
-			//Old save files do not contain locale. 
-			client.setLocale(obj.locale)
-		}
-
+		client.setLocale(obj.locale)
 		client.setRoomId(obj.roomId)
 
 		return client

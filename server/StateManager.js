@@ -74,9 +74,12 @@ class StateManager {
 			return Object.keys(originalRooms)
 		}
 
-		this.init = (function fromJSON(str) {
+		this.loadState = (function fromJSON(str) {
 			//Load clients and rooms from a saved state.
-			console.time("Initializing server state... ")
+			//We will load clients first, then return a callback to load rooms.
+
+			//This will allow for modifications to clients to be made before loading rooms (like when loading from save files)
+			console.time("Initializing server clients... ")
 			let obj = JSON.parse(str)
 			let loadClients = obj.clients
 			let loadRooms = obj.rooms
@@ -84,13 +87,19 @@ class StateManager {
 			for (let clientId in loadClients) {
 				clients[clientId] = Client.fromJSON(loadClients[clientId])
 			}
+			console.timeEnd("Initializing server clients... ")
 
-			for (let roomId in loadRooms) {
-				rooms[roomId] = Room.fromJSON(loadRooms[roomId])
-				rooms[roomId].init()
-				console.log(globalThis.serverStateManager.getRoom(roomId))
+			return {
+				startRooms: function startRooms() {
+					console.time("Initializing server rooms... ")
+					for (let roomId in loadRooms) {
+						rooms[roomId] = Room.fromJSON(loadRooms[roomId])
+						rooms[roomId].init()
+						console.log(globalThis.serverStateManager.getRoom(roomId))
+					}
+					console.timeEnd("Initializing server rooms... ")
+				}
 			}
-			console.timeEnd("Initializing server state... ")
 		}).bind(this)
 
 		this.toJSON = (function() {
