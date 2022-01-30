@@ -69,6 +69,7 @@ app.all('*', (req, res, next) => {
 		}
 	})
 
+    //TODO: Use something more like startsWith, not includes
     if (src.includes("assets")) {
         res.set("Cache-Control", `max-age=${60 * 60 * 24 * 7}`); //Cache for 7 days
     }
