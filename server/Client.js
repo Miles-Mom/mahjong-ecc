@@ -1,5 +1,5 @@
-const {i18n} = require("../src/i18nHelper.js")		
-const vsprintf = require('sprintf-js').vsprintf		
+const {i18n} = require("../src/i18nHelper.js")
+const vsprintf = require('sprintf-js').vsprintf
 
 let Bot; //Don't want both scripts importing each other.
 
@@ -9,8 +9,8 @@ class Client {
 		this.nickname = clientId.slice(0,7)
 		this.websocket = websocket
 
-		this.locale = "en";		
-	
+		this.locale = "en";
+
 		this.clearMessageHistory()
 	}
 
@@ -19,29 +19,29 @@ class Client {
 	localizeMessage(message) {
 
 		if (typeof message === "string" ) {
-			// plain simple text: client.message(.., "this is a test to be xlated")		
+			// plain simple text: client.message(.., "this is a test to be xlated")
 			message = i18n.__({phrase:message, locale:this.locale})
-		}	
+		}
 		else if (typeof message === "object" && message.format) {
 			// * text with runtime data supplied - use the object notation.
 			let fmt = message.format
 
 			if (typeof fmt === "string" ) {
-				// client.message(.., {format: "this is a test for %s", args: varData})		
-				// client.message(.., {format: "this is a test for %{namedVar}s", args:{namedVar: varData}})		
+				// client.message(.., {format: "this is a test for %s", args: varData})
+				// client.message(.., {format: "this is a test for %{namedVar}s", args:{namedVar: varData}})
 				fmt = i18n.__({phrase:fmt, locale:this.locale})
-			} 
+			}
 			else if (fmt instanceof Array ) {
 				// concatenated multiple sentences, w/ or w/o runtime data. - note the object notation, and array format.
 				// client.message(.., {foramt: ["first with %(param1)s.", "second with %(param2)s."], args: {param1:Xxx, param2: Yyy})
 				fmt = fmt.map((item) => {return i18n.__({phrase:item, locale: this.locale})} )
-				fmt = fmt.join("")			
+				fmt = fmt.join("")
 			}
 			else {
 				console.error(`internal error bad format ${fmt}`)
 				return message
 			}
-			
+
 			// let's make a copy of the arg before we set out to modify it
 			let args = {}		// assume named value
 			if (typeof message.args === "string") {
@@ -49,7 +49,7 @@ class Client {
 				args.push(message.args)		// to avoid turning string into an array of chars via next method
 			}
 			else if (typeof message.args === "object") {
-				args = Object.assign({}, message.args)		
+				args = Object.assign({}, message.args)
 			}
 
 			// some of the dynamic data itself need to be localized first
@@ -57,11 +57,11 @@ class Client {
 			// note that mixing positional and named placeholders is not supported in sprintf therefore us
 			if (typeof message.argsI18n === "object") {
 				let argsI18n = message.argsI18n
-				for (let key in argsI18n) {	
+				for (let key in argsI18n) {
 					// save the localized data to the new combined args
 					args[key] = i18n.__({phrase:argsI18n[key], locale: this.locale})
 				}
-			} 
+			}
 
 			// "2 bamboo" case: if args themselves need to be handled, provide additional callback functions as option
 			// client.message(.., {foramt: "test %(tile)s.", args: {tile: tileJsonObj}, argsOption: {tile:localizeTileName_CallBackFunction} }
@@ -76,12 +76,12 @@ class Client {
 						console.error(e)
 					}
 
-				} 
+				}
 			}
 
 			if (fmt.includes("%") && typeof args === "undefined") {
 				console.error(`internal error: bad format ${fmt}`)
-			} 
+			}
 			else {
 				// options here
 				// A) vsprintf() which supports %(name)s, does not support {{name}}, does not support mixed-position-named
@@ -89,26 +89,26 @@ class Client {
 				// like A) for now, less cycle, even though consistency with B) is appealing.
 				try {
 					message = vsprintf(fmt, args)
-					// message = i18n.__(fmt, args)	
+					// message = i18n.__(fmt, args)
 				}
 				catch(e) {
 					console.error(e)	// gotta be internal error
 					message = fmt  	// try to get something back
 				}
 			}
-		} 
+		}
 
 		return message
 	}
 
-	// client message usages: 
+	// client message usages:
 	// plain, concat, printf with data, data itself needs handling, callback function on args aka 3-bamboo handling
-	/* plain:		
+	/* plain:
 					message(type, "plain message", status)
-			printf with data: 
+			printf with data:
 					message(.., {format:"msg sprintf format %(var1)s etc", args: {var1, var2}}, ..)
-					message(.., {format:"this is a test for %{namedVar}s", args:{namedVar: varData}})	
-			concat: 
+					message(.., {format:"this is a test for %{namedVar}s", args:{namedVar: varData}})
+			concat:
 					message(.., {foramt:["test %(param1)s.", "concat with %(param2)s."], args: {param1:Xxx, param2: Yyy})
 			data itself needs generic translation:
 					message(.., {format:"test %(param1)s, %(param2)s", args:{param1:Xxx}, args_i18n:{param2:Yyy-toBeLocalized}})
@@ -118,7 +118,7 @@ class Client {
 	message(type, message, status) {
 
 		// our changes shall do NO harm to existing code
-		// Here, getCurrentRoom, joinRoom:  the message is the room name, we must not toich that. 
+		// Here, getCurrentRoom, joinRoom:  the message is the room name, we must not toich that.
 		if (type !== "getCurrentRoom" && type !== "joinRoom" && !globalThis.runBotClientAutoPlay) {
 			if (type === "displayMessage") {
 					if (typeof message.title !== "undefined") {
@@ -127,7 +127,7 @@ class Client {
 					if (typeof message.body !== "undefined") {
 						message.body = this.localizeMessage(message.body)
 					}
-			} 
+			}
 			else {
 				message = this.localizeMessage(message)
 			}
@@ -290,8 +290,8 @@ class Client {
 
 	getNickname() {return this.nickname}
 
-	setLocale(locale) { this.locale = locale}
-	getLocale() { return this.locale}
+	setLocale(locale) {this.locale = locale}
+	getLocale() {return this.locale}
 
 	suppressed = false
 	suppress() {this.suppressed = true}
