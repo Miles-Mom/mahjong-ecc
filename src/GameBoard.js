@@ -297,7 +297,7 @@ window.stateManager.onPlaceTiles = function(obj) {
 
 let hintButton = document.createElement("button")
 hintButton.id = "hintButton"
-hintButton.innerHTML = "Suggested Hands"
+hintButton.innerHTML = i18n.__("Suggested Hands")
 gameBoard.appendChild(hintButton)
 
 

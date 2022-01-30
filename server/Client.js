@@ -53,13 +53,24 @@ class Client {
 			}
 
 			// some of the dynamic data itself need to be localized first
-			// eg: message(.., {format:"test %(param1)s, %(param2)s", args:{param1:Xxx}, args_i18n:{param2:Yyy-toBeLocalized}})
+			// eg: message(.., {format:"test %(param1)s, %(param2)s", args:{param1:Xxx}, argsI18n:{param2:Yyy-toBeLocalized}})
 			// note that mixing positional and named placeholders is not supported in sprintf therefore us
 			if (typeof message.argsI18n === "object") {
 				let argsI18n = message.argsI18n
 				for (let key in argsI18n) {
 					// save the localized data to the new combined args
 					args[key] = i18n.__({phrase:argsI18n[key], locale: this.locale})
+				}
+			} 
+			else if (typeof message.argsI18n === "string" ) {
+				// eg: message(.., {format:"test %s", argsI18n:var_to_be_localized})
+				// if argsI18n is provided, but is not a named object, then, it has to be a single value, used in lieu of args.
+				if (typeof message.args === "undefined") {
+					args = []	
+					args.push(i18n.__({phrase:message.argsI18n, locale: this.locale}))	
+				} 
+				else {
+					console.warn("internal error bad args: " + message.args + " " + message.argsI18n)
 				}
 			}
 
@@ -75,9 +86,8 @@ class Client {
 					catch (e) {
 						console.error(e)
 					}
-
 				}
-			}
+			} 
 
 			if (fmt.includes("%") && typeof args === "undefined") {
 				console.error(`internal error: bad format ${fmt}`)
