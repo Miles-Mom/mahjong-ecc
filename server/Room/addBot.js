@@ -14,7 +14,7 @@ function addBot(obj = {}) {
 			let hostLocale = global.serverStateManager.getClient(this.hostClientId).locale
 			let currentNames = this.clientIds.map((clientId) => {return global.serverStateManager.getClient(clientId).getNickname()})
 			for (let i=1;;i++) {
-				let name = i18n.__n({singular: "Bot %d", plural: "Bot %d", locale: hostLocale}, i)
+				let name = i18n.__n({singular: "Bot %d", plural: "Bot %d", locale: hostLocale, count:i})
 
 				if (!currentNames.includes(name)) {
 					client.setNickname(name)
