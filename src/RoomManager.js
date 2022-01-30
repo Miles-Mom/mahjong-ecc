@@ -174,7 +174,9 @@ function resumeOfflineGame(saveText, resumeAtStart = false) {
 	serverStateManager.init(saveText)
 	//TODO: We need to reset clientId back after offline games are closed.
 	//Set our clientId to the offline mode clientId. Note that clientId should be static now.
-	window.clientId = serverStateManager.getRoom("Offline").clientIds.find((clientId) => {
+
+	let roomId = serverStateManager.getAllRoomIds()[0] //Room ID could be "Offline", or a translated version of it. 
+	window.clientId = serverStateManager.getRoom(roomId).clientIds.find((clientId) => {
 		if (!serverStateManager.getClient(clientId).isBot) {return clientId}
 	})
 	stateManager.offlineMode = true
