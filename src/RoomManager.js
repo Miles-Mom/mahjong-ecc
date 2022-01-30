@@ -156,11 +156,11 @@ offlineSinglePlayer.innerHTML = i18n.__("Single Player")
 offlineSinglePlayer.addEventListener("click", function() {
 	stateManager.offlineMode = true //Send to local server.
 
-	stateManager.getCurrentRoom() //This syncs locale to the offline server. 
+	stateManager.getCurrentRoom() //This syncs locale to the offline server.
 
-	let roomId = "Offline"
+	let roomId = i18n.__("Offline")
 
-	let nickname = nicknameInput.value || "Player 1"
+	let nickname = nicknameInput.value || i18n.__("Player 1")
 
 	window.stateManager.createRoom(roomId, nickname)
 
