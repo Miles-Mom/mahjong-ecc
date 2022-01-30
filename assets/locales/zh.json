@@ -38,7 +38,7 @@
 	"4 season" : "冬",
 	"Face Down %s" : "杠了的%s",
 	"Face Down Tile" : "盖着的牌",
-	
+
 	"pair":"对子",
 	"sequence":"順子",
 	"chow":"吃",
@@ -54,7 +54,7 @@
 	"No":"不是",
 	"Display Tips: " : "显示提示: ",
 	"Sound Effects: " : "声音特效: ",
-	"Disable Auto-Sort: " : "不自动将牌排序位: ",
+	"Auto-Sort Tiles: " : "自动将牌排序位: ",
 	"Debugging data is collected for all games. " : "收集所有游戏的调试数据。",
 	"Debugging data is collected for multiplayer games only. " : "只收集多人游戏的调试数据。",
 	"Single Player Debugging Data: " : "单人游戏调试数据: ",
