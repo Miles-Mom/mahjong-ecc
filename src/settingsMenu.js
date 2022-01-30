@@ -5,13 +5,7 @@ const {i18n, initToClientLocale} = require("./i18nHelper.js")
 let localeSettingChanged = false
 
 let settingsIcon = document.createElement("img")
-if (window?.Capacitor) {
-	//Until app is updated.
-	settingsIcon.src = "https://mahjong4friends.com/assets/settings.svg"
-}
-else {
-	settingsIcon.src = "assets/settings.svg"
-}
+settingsIcon.src = "assets/settings.svg"
 settingsIcon.className = "settingsIcon"
 settingsIcon.addEventListener("click", async function() {
 

@@ -6,6 +6,7 @@ let arr = [
 	"assets/edit.svg",
 	"assets/exit-full-screen.svg",
 	"assets/go-full-screen.svg",
+	"assets/settings.svg",
 	"assets/reload-icon.svg",
 	"assets/tiles/joker.png",
 	"assets/tiles/face-down.png",
