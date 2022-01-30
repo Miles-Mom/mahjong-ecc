@@ -12,11 +12,10 @@ function addBot(obj = {}) {
 
 			//let's name the bot based on the HOST client's set locale
 			let hostLocale = global.serverStateManager.getClient(this.hostClientId).locale
-			let botName = i18n.__({phrase:"Bot ", locale:hostLocale})
-
 			let currentNames = this.clientIds.map((clientId) => {return global.serverStateManager.getClient(clientId).getNickname()})
 			for (let i=1;;i++) {
-				let name = botName + `${i}`
+				let name = i18n.__n({singular: "Bot %d", plural: "Bot %d", locale: hostLocale, count:i})
+
 				if (!currentNames.includes(name)) {
 					client.setNickname(name)
 					break
