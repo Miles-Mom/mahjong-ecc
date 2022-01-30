@@ -491,7 +491,7 @@ try {
 			savedGameDiv.style.display = ""
 
 			let span = document.createElement("span")
-			span.innerHTML = "Saved Game: "
+			span.innerHTML = i18n.__("Saved Game: ")
 			span.style.fontSize = "1.7em"
 			savedGameDiv.appendChild(span)
 
