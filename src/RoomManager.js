@@ -1,6 +1,7 @@
 const Popups = require("./Popups.js")
 const SettingsMenu = require("./RoomManager/GameSettings.js")
 const {readSave, writeSave, deleteSave} = require("./SaveManager.js") //TODO: Should we use a Setting to store saves instead of [read/write/delete]Save?
+const {i18n} = require("./i18nHelper.js")
 
 const QRCode = require("qrcode-generator")
 
@@ -18,12 +19,12 @@ heading.id = "heading"
 roomManager.appendChild(heading)
 
 let mahjongHeading = document.createElement("h1")
-mahjongHeading.innerHTML = "Mahjong"
+mahjongHeading.innerHTML = i18n.__("Mahjong")
 mahjongHeading.id = "mahjongHeading"
 heading.appendChild(mahjongHeading)
 
 let fourFriendsHeading = document.createElement("h1")
-fourFriendsHeading.innerHTML = "4 Friends"
+fourFriendsHeading.innerHTML = i18n.__("4 Friends")
 fourFriendsHeading.id = "fourFriendsHeading"
 heading.appendChild(fourFriendsHeading)
 
@@ -50,7 +51,7 @@ window.stateManager.onSetStaticMessageBar = function({message}) {
 
 let roomIdInput = document.createElement("input")
 roomIdInput.id = "roomIdInput"
-roomIdInput.placeholder = "Enter Room Name..."
+roomIdInput.placeholder = i18n.__("Enter Room Name...")
 roomIdInput.setAttribute("enterkeyhint", "next")
 notInRoomContainer.appendChild(roomIdInput)
 
@@ -59,7 +60,7 @@ notInRoomContainer.appendChild(document.createElement("br"))
 
 let nicknameInput = document.createElement("input")
 nicknameInput.id = "nicknameInput"
-nicknameInput.placeholder = "Nickname (Optional)"
+nicknameInput.placeholder = i18n.__("Nickname (Optional)")
 nicknameInput.setAttribute("enterkeyhint", "done")
 notInRoomContainer.appendChild(nicknameInput)
 
@@ -111,12 +112,12 @@ joinOrCreateRoom.appendChild(joinCreateSpan)
 
 let joinRoom = document.createElement("button")
 joinRoom.id = "joinRoom"
-joinRoom.innerHTML = "Join Room"
+joinRoom.innerHTML = i18n.__("Join Room")
 joinRoom.addEventListener("click", function() {
 	stateManager.offlineMode = false
 
 	if (roomIdInput.value.trim().length === 0) {
-		return new Popups.Notification("Whoops!", "Please enter the name of the room you would like to join into the box labeled \"Enter Room Name\"").show()
+		return new Popups.Notification(i18n.__("Whoops!"), i18n.__("Please enter the name of the room you would like to join into the box labeled \"Enter Room Name\"")).show()
 	}
 	window.stateManager.joinRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
 })
@@ -133,7 +134,7 @@ joinCreateSpan.appendChild(offlineOverlay)
 
 let createRoom = document.createElement("button")
 createRoom.id = "createRoom"
-createRoom.innerHTML = "Create Room"
+createRoom.innerHTML = i18n.__("Create Room")
 createRoom.addEventListener("click", function() {
 	stateManager.offlineMode = false
 	window.stateManager.createRoom(roomIdInput.value.toLowerCase(), nicknameInput.value)
@@ -151,15 +152,18 @@ offlineGameDiv.appendChild(savedGameDiv)
 
 let offlineSinglePlayer = document.createElement("button")
 offlineSinglePlayer.id = "offlineSinglePlayer"
-offlineSinglePlayer.innerHTML = "Single Player"
+offlineSinglePlayer.innerHTML = i18n.__("Single Player")
 offlineSinglePlayer.addEventListener("click", function() {
 	stateManager.offlineMode = true //Send to local server.
 
-	let roomId = "Offline"
+	stateManager.getCurrentRoom() //This syncs locale to the offline server.
 
-	let nickname = nicknameInput.value || "Player 1"
+	let roomId = i18n.__("Offline")
+
+	let nickname = nicknameInput.value || i18n.__("Player 1")
 
 	window.stateManager.createRoom(roomId, nickname)
+
 	for (let i=0;i<3;i++) {
 		window.stateManager.addBot()
 	}
@@ -185,7 +189,7 @@ function resumeOfflineGame(saveText, resumeAtStart = false) {
 		}, 300)
 
 		//Start at the beginning by default.
-		let messageBar = new Popups.MessageBar("Click Here to Load End of Game (Closes Automatically)")
+		let messageBar = new Popups.MessageBar(i18n.__("Click Here to Load End of Game (Closes Automatically)"))
 		messageBar.elem.addEventListener("click", function() {
 			resumeOfflineGame(saveText)
 			messageBar.dismiss()
@@ -196,7 +200,7 @@ function resumeOfflineGame(saveText, resumeAtStart = false) {
 }
 
 let uploadSaveButton = document.createElement("button")
-uploadSaveButton.innerHTML = "Use Save File"
+uploadSaveButton.innerHTML = i18n.__("Use Save File")
 uploadSaveButton.id = "uploadSaveButton"
 offlineGameDiv.appendChild(uploadSaveButton)
 
@@ -213,7 +217,7 @@ uploadSaveButton.addEventListener("click", function() {
 	let popup;
 
 	let p = document.createElement("p")
-	p.innerHTML = "You can upload/drag a save file from your device, or download one of ours: "
+	p.innerHTML = i18n.__("You can upload/drag a save file from your device, or download one of ours: ")
 	p.id = "messageText"
 	elem.appendChild(p)
 
@@ -226,7 +230,7 @@ uploadSaveButton.addEventListener("click", function() {
 
 	let tableContainer = document.createElement("div")
 	tableContainer.className = "guaranteedHandsTableContainer"
-	tableContainer.innerHTML = "Loading Tutorials and Challenges..."
+	tableContainer.innerHTML = i18n.__("Loading Tutorials and Challenges...")
 	elem.appendChild(tableContainer)
 
 	;((async function() {
@@ -237,7 +241,7 @@ uploadSaveButton.addEventListener("click", function() {
 			console.log(obj)
 		}
 		catch (e) {
-			tableContainer.innerHTML = "Error Loading Tutorials and Challenges..."
+			tableContainer.innerHTML = i18n.__("Error Loading Tutorials and Challenges...")
 			return
 		}
 
@@ -248,10 +252,10 @@ uploadSaveButton.addEventListener("click", function() {
 
 		let header = document.createElement("tr")
 		table.appendChild(header)
-		addColumn(header, "Card")
-		addColumn(header, "Section")
-		addColumn(header, "Option")
-		addColumn(header, "Item")
+		addColumn(header, i18n.__("Card"))
+		addColumn(header, i18n.__("Section"))
+		addColumn(header, i18n.__("Option"))
+		addColumn(header, i18n.__("Item"))
 
 		class ExpandableItem {
 			constructor({obj, key, columns = [], depth = 0}) {
@@ -391,7 +395,7 @@ uploadSaveButton.addEventListener("click", function() {
 	}
 
 	let uploadFromDevice = document.createElement("button")
-	uploadFromDevice.innerHTML = "Upload From Device"
+	uploadFromDevice.innerHTML = i18n.__("Upload From Device")
 	fileInput.oninput = function() {
 		processSaveFile(fileInput.files[0])
 	}
@@ -402,7 +406,7 @@ uploadSaveButton.addEventListener("click", function() {
 	uploadFromDevice.id = "resumeSaveNowButton"
 	elem.appendChild(uploadFromDevice)
 
-	popup = new Popups.Notification("Select Save File", elem)
+	popup = new Popups.Notification(i18n.__("Select Save File"), elem)
 	let popupBox = popup.show()
 
 	;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -489,12 +493,12 @@ try {
 			savedGameDiv.style.display = ""
 
 			let span = document.createElement("span")
-			span.innerHTML = "Saved Game: "
+			span.innerHTML = i18n.__("Saved Game: ")
 			span.style.fontSize = "1.7em"
 			savedGameDiv.appendChild(span)
 
 			let resumeButton = document.createElement("button")
-			resumeButton.innerHTML = "Resume"
+			resumeButton.innerHTML = i18n.__("Resume")
 			resumeButton.addEventListener("click", function() {
 				resumeOfflineGame(res)
 				savedGameDiv.remove()
@@ -578,7 +582,7 @@ joinOrCreateRoom.appendChild(connectionStatus)
 
 let dots = 1 //We could make these go a bit faster...
 window.setConnectionStatus = function({connected}) {
-	connectionStatus.innerHTML = "Multiplayer Needs Internet" + ".".repeat(1 + (++dots % 5))
+	connectionStatus.innerHTML = i18n.__("Multiplayer Needs Internet") + ".".repeat(1 + (++dots % 5))
 	offlineOverlay.style.display = connected ? "none":""
 	joinRoom.disabled = createRoom.disabled = connected?"":"disabled"
 	connectionStatus.style.display = connected ? "none":""
@@ -590,7 +594,7 @@ window.setConnectionStatus({connected: false})
 //Inform user to use landscape.
 let screenRotationAlert = document.createElement("p")
 screenRotationAlert.id = "screenRotationAlert"
-screenRotationAlert.innerHTML = "Rotating your screen to Landscape mode is recommended. "
+screenRotationAlert.innerHTML = i18n.__("Rotating your screen to Landscape mode is recommended. ")
 notInRoomContainer.appendChild(screenRotationAlert)
 
 function setScreenRotationAlert(event) {
@@ -626,7 +630,7 @@ playerView.id = "playerView"
 inRoomContainer.appendChild(playerView)
 
 let leaveRoomButton = document.createElement("button")
-leaveRoomButton.innerHTML = "Leave Room"
+leaveRoomButton.innerHTML = i18n.__("Leave Room")
 leaveRoomButton.id = "leaveRoomButton"
 inRoomContainer.appendChild(leaveRoomButton)
 
@@ -635,7 +639,7 @@ leaveRoomButton.addEventListener("click", function() {
 })
 
 let addBotButton = document.createElement("button")
-addBotButton.innerHTML = "Add Bot"
+addBotButton.innerHTML = i18n.__("Add Bot")
 addBotButton.id = "addBotButton"
 addBotButton.style.display = "none"
 inRoomContainer.appendChild(addBotButton)
@@ -645,7 +649,7 @@ addBotButton.addEventListener("click", function() {
 })
 
 let startGameButton = document.createElement("button")
-startGameButton.innerHTML = "Start Game"
+startGameButton.innerHTML =i18n.__( "Start Game")
 startGameButton.id = "startGameButton"
 startGameButton.style.display = "none"
 inRoomContainer.appendChild(startGameButton)
@@ -653,7 +657,7 @@ inRoomContainer.appendChild(startGameButton)
 let gameSettings = new SettingsMenu(gameSettingsElem)
 
 let settingsMenuButton = document.createElement("button")
-settingsMenuButton.innerHTML = "Settings"
+settingsMenuButton.innerHTML = i18n.__("Settings")
 settingsMenuButton.id = "settingsMenuButton"
 inRoomContainer.appendChild(settingsMenuButton)
 
@@ -685,12 +689,12 @@ startGameButton.addEventListener("click", function() {
 				let popup;
 
 				let p = document.createElement("p")
-				p.innerHTML = "You're playing online - Rooms created with the Single Player button are faster <i>and</i> work offline! You can find it on the main page, below the Join Room button."
+				p.innerHTML = i18n.__("You're playing online - Rooms created with the Single Player button are faster <i>and</i> work offline! You can find it on the main page, below the Join Room button.")
 				p.id = "messageText"
 				elem.appendChild(p)
 
 				let goOfflineButton = document.createElement("button")
-				goOfflineButton.innerHTML = "Go Offline"
+				goOfflineButton.innerHTML = i18n.__("Go Offline")
 				goOfflineButton.addEventListener("click", function() {
 					stateManager.addEventListener("onLeaveRoom", startOfflineGame)
 					leaveRoomButton.click()
@@ -708,7 +712,7 @@ startGameButton.addEventListener("click", function() {
 
 
 				let stayOnlineButton = document.createElement("button")
-				stayOnlineButton.innerHTML = "Stay Online"
+				stayOnlineButton.innerHTML = i18n.__("Stay Online")
 				stayOnlineButton.addEventListener("click", function() {
 					window.settings.overruledOnlineSinglePlayerAlert.value = true
 					start()
@@ -717,7 +721,7 @@ startGameButton.addEventListener("click", function() {
 				stayOnlineButton.id = "stayOnlineButton"
 				elem.appendChild(stayOnlineButton)
 
-				popup = new Popups.Notification("Play Offline?", elem)
+				popup = new Popups.Notification(i18n.__("Play Offline?"), elem)
 				popup.show()
 				return;
 			}
@@ -739,12 +743,12 @@ inviteYourFriendsDiv.id = "inviteYourFriendsDiv"
 inviteYourFriendsElem.appendChild(inviteYourFriendsDiv)
 
 let inviteYourFriendsHeader = document.createElement("h2")
-inviteYourFriendsHeader.innerHTML = "Invite Players to Join This Game!"
+inviteYourFriendsHeader.innerHTML = i18n.__("Invite Players to Join This Game!")
 inviteYourFriendsDiv.appendChild(inviteYourFriendsHeader)
 
 let joinRoomLinkElem = document.createElement("p")
 joinRoomLinkElem.id = "joinRoomLinkElem"
-joinRoomLinkElem.innerHTML = "Share the link: <br>"
+joinRoomLinkElem.innerHTML = i18n.__("Share the link: <br>")
 
 let joinRoomLink = document.createElement("a")
 joinRoomLink.target = "_blank"
@@ -759,7 +763,7 @@ inviteYourFriendsElem.appendChild(QRImageElement)
 let tutorial = document.createElement("a")
 tutorial.href = "tutorial.html"
 tutorial.id = "tutorialLink"
-tutorial.innerHTML = "Mahjong 4 Friends Tutorial"
+tutorial.innerHTML = i18n.__("Mahjong 4 Friends Tutorial")
 roomManager.appendChild(tutorial)
 
 roomManager.appendChild(document.createElement("br"))
@@ -768,26 +772,34 @@ roomManager.appendChild(document.createElement("br"))
 let documentation = document.createElement("a")
 documentation.href = "documentation.html"
 documentation.id = "documentationLink"
-documentation.innerHTML = "See Full Documentation"
+documentation.innerHTML = i18n.__("See Full Documentation")
 roomManager.appendChild(documentation)
 
 let supportInfo = document.createElement("p")
 supportInfo.id = "supportInfo"
-supportInfo.innerHTML = "Questions, Comments, or Concerns? Contact <a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>"
+supportInfo.innerHTML = i18n.__("Questions, Comments, or Concerns? ") + i18n.__("Contact %s", "<a href='mailto:support@mahjong4friends.com'>support@mahjong4friends.com</a>")
+
 roomManager.appendChild(supportInfo)
 
 if (window.nativePlatform) {
 	let ratingPrompt = document.createElement("p")
 	ratingPrompt.id = "supportInfo"
+	let link
+	let prompt
 	if (window.nativePlatform === "ios") {
-		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://apps.apple.com/us/app/mahjong-4-friends/id1552704332" target="_blank">rate us in the App Store</a>!`
+		link = "https://apps.apple.com/us/app/mahjong-4-friends/id1552704332"
+		prompt = "rate us in the App Store"
 	}
-	else if (window.nativePlatform === "android") {
-		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="https://play.google.com/store/apps/details?id=com.mahjong4friends.twa" target="_blank">leave a review on Google Play</a>!`
+	else if ( window.nativePlatform === "android") {
+		link = "https://play.google.com/store/apps/details?id=com.mahjong4friends.twa"
+		prompt = "leave a review on Google Play"
 	}
 	else if (window.nativePlatform === "windows") {
-		ratingPrompt.innerHTML = `Enjoying Mahjong 4 Friends? Please <a href="ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P" target="_blank">leave a review in the Microsoft Store</a>!`
+		link = "ms-windows-store://pdp/?productid=9NQS9Z5JJJ8P"
+		prompt = "leave a review in the Microsoft Store"
 	}
+	link =  `href="${link}" target="_blank"` //Properties for anchor element
+	ratingPrompt.innerHTML = i18n.__("Enjoying Mahjong 4 Friends? Please <a %s>%s</a>", link, i18n.__(prompt))
 	roomManager.appendChild(ratingPrompt)
 }
 else {
@@ -815,19 +827,19 @@ else {
 	let buttons = [
 		{
 			href: "https://apps.apple.com/us/app/mahjong-4-friends/id1552704332",
-			src: "assets/badges/appstore.svg",
+			src: `assets/badges/${i18n.locale}/appstore.svg`,
 			text: "Get Mahjong 4 Friends on the App Store",
 			strings: ["iPad", "iPhone", "Mac OS X"]
 		},
 		{
 			href: "https://www.microsoft.com/store/apps/9NQS9Z5JJJ8P",
-			src: "assets/badges/microsoft.svg",
+			src: `assets/badges/${i18n.locale}/microsoft.svg`,
 			text: "Get Mahjong 4 Friends from Microsoft",
 			strings: "Windows"
 		},
 		{
 			href: "https://play.google.com/store/apps/details?id=com.mahjong4friends.twa",
-			src: "assets/badges/googleplay.svg",
+			src: `assets/badges/${i18n.locale}/googleplay.svg`,
 			text: "Get Mahjong 4 Friends on Google Play",
 			strings: ["Android", "CrOS"]
 		},
@@ -860,16 +872,13 @@ catch (e) {
 }
 
 setTimeout(function() {
-	if (stateManager.inRoom && stateManager.inRoom.includes("fbtest")) {
-		require("./addFacebookMessenger.js")
-	}
-	else if (stateManager.inRoom && stateManager.inRoom.includes("ratingtest")) {
+	if (stateManager.inRoom && stateManager.inRoom.includes("ratingtest")) {
 		AppRate.promptForRating(true)
 	}
 }, 2000)
 
 let copyrightNotice = document.createElement("p")
-copyrightNotice.innerHTML = "Copyright © 2021, All Rights Reserved"
+copyrightNotice.innerHTML = i18n.__("Copyright © 2022, All Rights Reserved")
 copyrightNotice.id = "copyrightNotice"
 roomManager.appendChild(copyrightNotice)
 
@@ -925,14 +934,14 @@ function VoiceSelector() {
 		//We need to have a default, as some browsers (firefox) return an empty array for getVoices, but work.
 		let noneChoice = document.createElement("option")
 		noneChoice.value = "none"
-		noneChoice.innerHTML = "No Voice"
+		noneChoice.innerHTML = i18n.__("No Voice")
 		noneChoice.selected = true
 		voiceOptionsSelect.appendChild(noneChoice)
 
 		if (Object.keys(availableVoices).length > 0) {
 			let defaultChoice = document.createElement("option")
 			defaultChoice.value = "default"
-			defaultChoice.innerHTML = "Default Voice"
+			defaultChoice.innerHTML = i18n.__("Default Voice")
 			//defaultChoice.selected = true
 			voiceOptionsSelect.appendChild(defaultChoice)
 
@@ -995,16 +1004,16 @@ function renderPlayerView(clientList = [], kickUserCallback) {
 		}
 
 		if (obj.id === window.clientId) {
-			voiceChoice.innerHTML = "N/A"
+			voiceChoice.innerHTML = i18n.__("N/A")
 
 			//You can edit your own nickname.
 			setNicknameEditable(nameSpan, obj.id)
 
 			if (window.stateManager.isHost) {
-				card.innerHTML = "You (Host)"
+				card.innerHTML = i18n.__("You (Host)")
 			}
 			else {
-				card.innerHTML = "You"
+				card.innerHTML = i18n.__("You")
 			}
 		}
 		else {
@@ -1012,7 +1021,7 @@ function renderPlayerView(clientList = [], kickUserCallback) {
 			voiceChoice.appendChild(voiceChoices[obj.id].elem)
 
 			if (obj.isHost) {
-				card.innerHTML = "Host"
+				card.innerHTML = i18n.__("Host")
 			}
 			else if (window.stateManager.isHost) {
 
@@ -1020,17 +1029,17 @@ function renderPlayerView(clientList = [], kickUserCallback) {
 				setNicknameEditable(nameSpan, obj.id)
 
 				let kickButton = document.createElement("button")
-				kickButton.innerHTML = "Remove " + obj.nickname
+				kickButton.innerHTML = i18n.__("Remove %s", obj.nickname)
 				kickButton.classList.add("playerViewKickButton")
 				kickButton.addEventListener("click", function() {
-					if (obj.isBot || confirm("Are you sure you want to remove " + obj.nickname)) {
+					if (obj.isBot || confirm(i18n.__("Are you sure you want to remove %s", obj.nickname))) {
 						kickUserCallback(obj.id)
 					}
 				})
 				card.appendChild(kickButton)
 			}
 			else {
-				card.innerHTML = "Player"
+				card.innerHTML = i18n.__("Player")
 			}
 		}
 
@@ -1057,7 +1066,6 @@ function enterRoom() {
 	joinRoomLink.innerHTML = joinRoomLink.href //We want the full URL, not just the hash.
 
 	inviteYourFriendsElem.style.display = stateManager.offlineMode?"none":"" //Hide invite friends when offline.
-
 
 	try {
 		let dpi = 4
@@ -1132,11 +1140,12 @@ function exitRoom() {
 let showRestoreNotice = true
 window.stateManager.onJoinRoom = function(obj) {
 	if (obj.status === "error") {
-		return new Popups.Notification("Unable to Join Room", obj.message).show()
+		return new Popups.Notification(i18n.__("Unable to Join Room"), i18n.__(obj.message)).show()
 	}
 	else {
 		if (showRestoreNotice && hashParams.has("roomId") && hashParams.get("roomId") !== obj.message) {
-			new Popups.Notification("Room Restored", "You followed a link to room " + hashParams.get("roomId") + ", but were already in room " + obj.message + ". Your room has been restored - to join a new room, leave your current one. ").show()
+
+			new Popups.Notification(i18n.__("Room Restored"), i18n.__("You followed a link to room %1%s, but were already in room %2%s. Your room has been restored - to join a new room, leave your current one. ", hashParams.get("roomId"), obj.message)).show()
 			showRestoreNotice = false
 		}
 
@@ -1146,7 +1155,7 @@ window.stateManager.onJoinRoom = function(obj) {
 
 window.stateManager.onCreateRoom = function(obj) {
 	if (obj.status === "error") {
-		return new Popups.Notification("Unable to Create Room", obj.message).show()
+		return new Popups.Notification(i18n.__("Unable to Create Room"), i18n.__(obj.message)).show()()
 	}
 	else {
 		enterRoom()
@@ -1163,7 +1172,7 @@ window.stateManager.addEventListener("onLeaveRoom", function(obj) {
 	//Don't show somebody that they left the room. Just exit.
 	//Don't show the host that they closed the room. Just exit.
 	if (obj.message !== "You closed the room. " && obj.message !== "You left the room. ") {
-		new Popups.Notification("Out of Room", obj.message).show()
+		new Popups.Notification(i18n.__("Out of Room"), i18n.__(obj.message)).show()()
 	}
 })
 
@@ -1171,7 +1180,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	//Link room name when online.
 	let roomNameText = stateManager.offlineMode ? stateManager.inRoom : `<a href="${getRoomLink()}" target="_blank">${stateManager.inRoom}</a>`
 	let playerCount = obj.message.clients.length
-	roomInfo.innerHTML = `${playerCount} player${playerCount > 1 ? "s are":" is"} in room ${roomNameText}`
+	roomInfo.innerHTML = i18n.__(`%d player${playerCount > 1 ? "s are":" is"} present in room %s`, playerCount, roomNameText)
 
 	if (window.stateManager.isHost) {
 		startGameButton.style.display = ""
@@ -1204,7 +1213,7 @@ window.stateManager.addEventListener("onEndGame", function(obj) {
 	roomManager.style.display = ""
 	if (obj.message !== "State Sync") {
 		//State Sync game ends happen to the person that ends the game, as well as in development mode.
-		new Popups.Notification("Game Ended", obj.message).show()
+		new Popups.Notification(i18n.__("Game Ended"), i18n.__(obj.message)).show()()
 	}
 })
 

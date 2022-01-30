@@ -263,7 +263,8 @@ function startGame(obj) {
 
 	if (this.state.settings.gameStyle === "chinese") {
 		//Message East about how to start.
-		this.setInstructions(this.gameData.currentTurn.userTurn, `As East wind, you get to make the first throw. Select one tile and press Proceed.\n\nTo initiate a Charleston (first pass ${direction}), select 3 tiles and hit Proceed.`)
+		// note that the direction(left, right) itself needs to be xlated
+		this.setInstructions(this.gameData.currentTurn.userTurn, {format: ["As East wind, you get to make the first throw. ", "Select one tile and press Proceed.", "\n\n", "To initiate a Charleston (first pass %(direction)s), select 3 tiles and hit Proceed."], argsI18n:{"direction": direction}})
 		this.setAllInstructions([this.gameData.currentTurn.userTurn], "Waiting on East Wind to make a play. ")
 	}
 	else if (this.state.settings.gameStyle === "american") {

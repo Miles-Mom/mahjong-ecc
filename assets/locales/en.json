@@ -1,0 +1,17 @@
+{
+	"Hello": "Hello",
+	"Hello %s": "Hello %s",
+	"Hello {{name}}": "Hello {{name}}",
+	"%s dog": {
+		"one": "%s dog",
+		"other": "%s dogs"
+	},
+	"localization credit" : "",
+
+	"Mahjong!" : "Mahjong",
+
+	"Wall View %s tile(s) left" : {
+		"one": "Wall View 1 tile left",
+		"other": "Wall View %s tiles left"
+	}
+}

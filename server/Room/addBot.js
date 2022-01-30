@@ -1,3 +1,5 @@
+const {i18n} = require("../../src/i18nHelper.js")	
+
 function addBot(obj = {}) {
 	//Create a clientId for the bot.
 	let client = globalThis.serverStateManager.createBot()
@@ -7,9 +9,13 @@ function addBot(obj = {}) {
 		try {
 			//This should never error, but an error isn't a problem here. 
 			//Set bot nickname to Bot 1, Bot 2, etc.
+
+			//let's name the bot based on the HOST client's set locale
+			let hostLocale = global.serverStateManager.getClient(this.hostClientId).locale
 			let currentNames = this.clientIds.map((clientId) => {return global.serverStateManager.getClient(clientId).getNickname()})
 			for (let i=1;;i++) {
-				let name = `Bot ${i}`
+				let name = i18n.__n({singular: "Bot %d", plural: "Bot %d", locale: hostLocale, count:i})
+
 				if (!currentNames.includes(name)) {
 					client.setNickname(name)
 					break

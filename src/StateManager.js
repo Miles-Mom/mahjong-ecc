@@ -1,4 +1,5 @@
 const Popups = require("./Popups.js")
+const {i18n} = require("./i18nHelper.js")
 
 class StateManager {
 	constructor(websocketURL) {
@@ -86,7 +87,7 @@ class StateManager {
 							popup = null
 						}
 
-						popup = new Popups.MessageBar("You Disconnected from the Server. Attempting to Reconnect...")
+						popup = new Popups.MessageBar(i18n.__("You are disconnected from the Server. Attempting to Reconnect..."))
 						setTimeout(function() {
 							if (popup) {popup.show(8000)}
 						}, disconnectDelayTime)
@@ -159,7 +160,7 @@ class StateManager {
 				type: "joinRoom",
 				clientId: window.clientId,
 				roomId,
-				nickname
+				nickname,
 			}))
 		}
 
@@ -168,7 +169,7 @@ class StateManager {
 				type: "createRoom",
 				clientId: window.clientId,
 				roomId,
-				nickname
+				nickname,
 			}))
 		}
 
@@ -240,7 +241,8 @@ class StateManager {
 			//Get our room.
 			this.sendMessage(JSON.stringify({
 				"type": "getCurrentRoom",
-				clientId: window.clientId
+				clientId: window.clientId,
+				locale: i18n.getLocale()
 			}))
 		}).bind(this)
 

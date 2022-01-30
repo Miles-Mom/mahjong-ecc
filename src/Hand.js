@@ -5,6 +5,7 @@ const Pretty = require("./Pretty.js")
 const Wall = require("./Wall.js")
 const TileContainer = require("./TileContainer.js")
 const calculateJokerAmount = require("./Hand/calculateJokerAmount.js")
+const {i18n} = require("./i18nHelper.js")
 
 class Hand {
 	constructor(config = {}) {
@@ -359,8 +360,8 @@ class Hand {
 		//We will insert the tile where our sorting algorithm would find it most appropriate.
 		//TODO: this should probably receive some improvement, as if the user changes the location of suits, or puts, say honors first, it will fail to properly insert.
 
-		//This detection code must work on server and client!
-		if (globalThis?.settings?.insertTilesAtEnd?.value) {
+		//This detection code must not crash on either server or client!
+		if (!globalThis?.settings?.autoSortTiles?.value) {
 			return this.contents.push(obj)
 		}
 
@@ -429,7 +430,7 @@ class Hand {
 			if (placematIndex === -1) {
 				//Moving from hand to placemat.
 				if (this.inPlacemat.length >= this.placematLength) {
-					alert("Placemat is already full. ")
+					alert(i18n.__("Placemat is already full. "))
 					return
 				}
 				else {
@@ -439,7 +440,7 @@ class Hand {
 			else {
 				//Moving from placemat to hand.
 				if (placematIndex === 0 && this.inPlacemat[0].evicting) {
-					alert("This tile was discarded. To claim it, select the tiles you would like to match with it, then hit proceed. ")
+					alert(i18n.__({format: ["This tile was discarded. ", "To claim it, select the tiles you would like to match with it, then hit proceed. "]}))
 					return;
 				}
 				let currentTile = this.inPlacemat.splice(placematIndex, 1)[0]

@@ -22,7 +22,7 @@ class Match {
 				value: this.value
 			})
 		}
-
+		
 		this.getPoints = function(userWind) {
 
 			let points = 0;

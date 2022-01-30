@@ -23,7 +23,7 @@
 
 		//Using numeric comparison, so version codes can't have more than one decimal.
 		if (parseFloat(currentVersion) < parseFloat(latestVersion)) {
-			new Popups.Notification("App Update", "There is a Mahjong 4 Friends <a href='https://apps.apple.com/us/app/mahjong-4-friends/id1552704332' target='_blank'>app update</a>. Downloading it is recommended. You may experience issues if you do not update. ").show()
+			new Popups.Notification(i18n.__("App Update"), i18n.__("There is a Mahjong 4 Friends %s. Downloading it is recommended. You may experience issues if you do not update. ", "<a href='https://apps.apple.com/us/app/mahjong-4-friends/id1552704332' target='_blank'>" + i18n.__("app update") + "</a>")).show()
 		}
 	}
 	else if (platform === "android") {
@@ -37,11 +37,11 @@
 		//The native API is also better, as the latest version can vary by device (the old TWA version is
 		//still being released, and it supports older Android versions)
 
-		let latestVersion = "2.2"
+		let latestVersion = "2.6"
 
 		//Using numeric comparison, so version codes can't have more than one decimal.
 		if (parseFloat(currentVersion) < parseFloat(latestVersion)) {
-			new Popups.Notification("App Update", "There is a Mahjong 4 Friends <a href='https://play.google.com/store/apps/details?id=com.mahjong4friends.twa' target='_blank'>app update</a>. Downloading it is recommended. You may experience issues if you do not update. ").show()
+			new Popups.Notification(i18n.__("App Update"), i18n.__("There is a Mahjong 4 Friends %s. Downloading it is recommended. You may experience issues if you do not update. ", "<a href='https://play.google.com/store/apps/details?id=com.mahjong4friends.twa' target='_blank'>" + i18n.__("app update") + "</a>")).show()
 		}
 	}
 })())

@@ -24,9 +24,11 @@ if ('serviceWorker' in navigator) {
     }
 }
 
+const {i18n, initToBrowserLocale, initToClientLocale} = require("./i18nHelper.js")
 
-
-
+// bootstrap i18n using browser detected locale, note this is before user overide setting is applied.
+// this is needed as settings itself need localization support
+let browserLocale = initToBrowserLocale()
 
 const {BooleanSetting, Setting, NumberSetting, NumberSliderSetting} = require("./Settings.js")
 
@@ -35,7 +37,8 @@ window.settings = {
     singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
     displayTips: new BooleanSetting("settingDisplayTips", true),
     soundEffects: new BooleanSetting("settingSoundEffects", false),
-    insertTilesAtEnd: new BooleanSetting("settingInsertTilesAtEnd", false),
+    autoSortTiles: new BooleanSetting("settingAutoSortTiles", true),
+	locale: new Setting("settingLocale", browserLocale),
 
     //Game Settings
     gameStyle: new Setting("gameStyle"),
@@ -63,9 +66,13 @@ window.settings.american = {
     ignoreBotMahjong: new BooleanSetting("american.ignoreBotMahjong", false)
 }
 
+// get user set locale
+let i18n_chain = window.settings.locale.loaded
 
-
-document.title = "Mahjong 4 Friends - Free Mahjong, Friends and/or Bots"
+i18n_chain.then(() => {
+    initToClientLocale()
+    document.title = i18n.__("Mahjong 4 Friends - Free Mahjong, Friends and/or Bots")
+})
 
 require("./appUpdates.js")
 require("./universalLinks.js")
@@ -104,9 +111,10 @@ window.stateManager = new StateManager(websocketURL)
     window[className] = require("./" + className + ".js")
 })
 
-let roomManager = require("./RoomManager.js")
-let gameBoard = require("./GameBoard.js")
-
+i18n_chain.then(function() {
+    let roomManager = require("./RoomManager.js")
+    let gameBoard = require("./GameBoard.js")
+})
 
 //While viewport relative units work fine on desktop, some mobile browsers will not show the entire viewport, due to the url bar.
 //See https://nicolas-hoizey.com/articles/2015/02/18/viewport-height-is-taller-than-the-visible-part-of-the-document-in-some-mobile-browsers/
