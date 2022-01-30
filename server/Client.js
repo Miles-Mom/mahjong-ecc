@@ -61,14 +61,14 @@ class Client {
 					// save the localized data to the new combined args
 					args[key] = i18n.__({phrase:argsI18n[key], locale: this.locale})
 				}
-			} 
+			}
 			else if (typeof message.argsI18n === "string" ) {
 				// eg: message(.., {format:"test %s", argsI18n:var_to_be_localized})
 				// if argsI18n is provided, but is not a named object, then, it has to be a single value, used in lieu of args.
 				if (typeof message.args === "undefined") {
-					args = []	
-					args.push(i18n.__({phrase:message.argsI18n, locale: this.locale}))	
-				} 
+					args = []
+					args.push(i18n.__({phrase:message.argsI18n, locale: this.locale}))
+				}
 				else {
 					console.warn("internal error bad args: " + message.args + " " + message.argsI18n)
 				}
@@ -87,7 +87,7 @@ class Client {
 						console.error(e)
 					}
 				}
-			} 
+			}
 
 			if (fmt.includes("%") && typeof args === "undefined") {
 				console.error(`internal error: bad format ${fmt}`)
@@ -356,7 +356,11 @@ class Client {
 			client = new Client(obj.clientId)
 		}
 		client.setNickname(obj.nickname)
-		client.setLocale(obj.locale)
+
+		if (obj.locale) {
+			//Old save files do not contain locale. 
+			client.setLocale(obj.locale)
+		}
 
 		client.setRoomId(obj.roomId)
 
