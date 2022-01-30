@@ -36,6 +36,12 @@ settingsIcon.addEventListener("click", async function() {
 		if (oldLocale !== newLocale) {
 			//Once it saves to disk, reload.
 			window.settings.locale.saved.then(() => {
+				if (window.Capacitor) {
+					try {
+						window.Capacitor.Plugins.SplashScreen.show()
+					}
+					catch (e) {console.error(e)}
+				}
 				window.location.reload()
 			})
 		}

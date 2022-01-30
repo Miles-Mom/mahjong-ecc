@@ -13,3 +13,5 @@ assets.forEach((item) => {
 
 	fs.writeFileSync(outputPath, fs.readFileSync(inputPath))
 })
+
+//Remember to run npx cap copy

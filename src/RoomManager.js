@@ -872,10 +872,7 @@ catch (e) {
 }
 
 setTimeout(function() {
-	if (stateManager.inRoom && stateManager.inRoom.includes("fbtest")) {
-		require("./addFacebookMessenger.js")
-	}
-	else if (stateManager.inRoom && stateManager.inRoom.includes("ratingtest")) {
+	if (stateManager.inRoom && stateManager.inRoom.includes("ratingtest")) {
 		AppRate.promptForRating(true)
 	}
 }, 2000)
