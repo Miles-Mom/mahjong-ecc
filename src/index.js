@@ -37,7 +37,7 @@ window.settings = {
     singlePlayerDebuggingData: new BooleanSetting("settingCollectDebuggingData", true),
     displayTips: new BooleanSetting("settingDisplayTips", true),
     soundEffects: new BooleanSetting("settingSoundEffects", false),
-    insertTilesAtEnd: new BooleanSetting("settingInsertTilesAtEnd", false),
+    autoSortTiles: new BooleanSetting("settingAutoSortTiles", true),
 	locale: new Setting("settingLocale", browserLocale),
 
     //Game Settings

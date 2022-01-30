@@ -20,7 +20,7 @@ settingsIcon.addEventListener("click", async function() {
 
 	let elem = document.createElement("div")
 
-	//Create a container div for the actual settings inside the settings menu. This container is left justified. 
+	//Create a container div for the actual settings inside the settings menu. This container is left justified.
 	let settingsMenuDiv = document.createElement("div")
 	settingsMenuDiv.className = "settingsMenuDiv"
 	elem.appendChild(settingsMenuDiv)
@@ -53,7 +53,7 @@ settingsIcon.addEventListener("click", async function() {
 	settingsMenuDiv.appendChild(langCredit)
 
 	window.settings.soundEffects.createSelector("Sound Effects: ", settingsMenuDiv)
-	window.settings.insertTilesAtEnd.createSelector("Disable Auto-Sort: ", settingsMenuDiv)
+	window.settings.autoSortTiles.createSelector("Auto-Sort Tiles: ", settingsMenuDiv)
 	//window.settings.displayTips.createSelector("Display Tips: ", settingsMenuDiv)
 	window.settings.singlePlayerDebuggingData.createSelector("Single Player Debugging Data: ", settingsMenuDiv)
 
