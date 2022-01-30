@@ -69,6 +69,10 @@ app.all('*', (req, res, next) => {
 		}
 	})
 
+    if (src.includes("assets")) {
+        res.set("Cache-Control", `max-age=${60 * 60 * 24 * 7}`); //Cache for 7 days
+    }
+
 	if (fs.existsSync(src)) {
 		res.type(path.extname(src))
 		let readStream = fs.createReadStream(src)
