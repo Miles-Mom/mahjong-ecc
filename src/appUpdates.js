@@ -37,7 +37,7 @@
 		//The native API is also better, as the latest version can vary by device (the old TWA version is
 		//still being released, and it supports older Android versions)
 
-		let latestVersion = "2.2"
+		let latestVersion = "2.6"
 
 		//Using numeric comparison, so version codes can't have more than one decimal.
 		if (parseFloat(currentVersion) < parseFloat(latestVersion)) {
