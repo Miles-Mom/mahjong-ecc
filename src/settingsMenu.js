@@ -2,8 +2,6 @@ const Popup = require("./Popups.js")
 
 const {i18n, initToClientLocale} = require("./i18nHelper.js")
 
-let localeSettingChanged = false
-
 let settingsIcon = document.createElement("img")
 settingsIcon.src = "assets/settings.svg"
 settingsIcon.className = "settingsIcon"
@@ -35,8 +33,11 @@ settingsIcon.addEventListener("click", async function() {
 		let oldLocale = i18n.getLocale()
 		i18n.setLocale(window.settings.locale.getValue())
 		let newLocale = i18n.getLocale()
-		if (oldLocale !== newLocale){
-			localeSettingChanged = true
+		if (oldLocale !== newLocale) {
+			//Once it saves to disk, reload.
+			window.settings.locale.saved.then(() => {
+				window.location.reload()
+			})
 		}
 	}
 	window.settings.locale.createSelector("Choose Language: ", choices, settingsMenuDiv)
@@ -82,16 +83,8 @@ settingsIcon.addEventListener("click", async function() {
 	})
 	elem.appendChild(deleteDataButton)
 
-	//refresh screen upon i18n changes
-	function refreshScreen() {
-		if (localeSettingChanged) {
-			window.location.reload(true)
-		}
-	}
-
 	//Display elem inside a popup.
 	popup = new Popups.Notification(i18n.__("General Settings"), elem)
-	popup.ondismissed = refreshScreen
 	let popupElem = popup.show()
 	popupElem.style.width = "100vw" //Force max width allowed. Prevents jumping.
 })
