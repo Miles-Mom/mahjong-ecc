@@ -27,6 +27,10 @@ function removeClient(clientId, explaination = "You left the room. ") {
 			//We have no clients. Delete this room.
 			//Note that this code shouldn't be called, unless there is a bug or lag. The client will not show the Leave Room button if they are the
 			//only player and host (which they should be if they are the only player), and therefore roomActionCloseRoom will be sent instead.
+			this.clientIds.forEach((clientId, i) => {
+				//Delete any bots. 
+				globalThis.serverStateManager.deleteClient(clientId)
+			});
 			globalThis.serverStateManager.deleteRoom(this.roomId)
 		}
 	}
