@@ -1,4 +1,5 @@
 //Alert for App Updates.
+const {i18n} = require("./i18nHelper.js")
 
 ;((async function() {
 	let platform = window?.Capacitor?.getPlatform()
@@ -9,7 +10,7 @@
 
 	let deviceInfo = await window.Capacitor.Plugins.Device.getInfo()
 	let currentVersion = deviceInfo.appVersion
-
+	
 	if (platform === "ios") {
 		//iTunes is settings CORS headers, but those headers don't change when the CDN resends the content -
 		//if the CDN serves us, the CORS headers are for whatever origin last issued the request.
