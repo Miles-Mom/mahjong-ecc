@@ -21,6 +21,7 @@ const WebSocket = require('ws');
 
 
 let app = express()
+app.disable('x-powered-by')
 
 //Compress all responses
 app.use(compression({
