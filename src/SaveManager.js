@@ -1,15 +1,20 @@
-async function readSave(path) {
+if (window.Capacitor) {
+	require("@capacitor/filesystem") //This is necessary. Not sure why. 	
+}
+
+async function readSave(path, directory = "DATA") {
 	if (window.Capacitor) {
 		try {
 			return (await Capacitor.Plugins.Filesystem.readFile({
 				path,
-				directory: "DATA",
+				directory,
 				encoding: "utf8"
 			})).data
 		}
 		catch (e) {
-			console.error("Failed to Read", e)
-			return null //Return null if empty (like localStorage.getItem())
+			//Failed to read - probably did not exist.
+			//Return null (like localStorage.getItem())
+			return null
 		}
 	}
 	else {
@@ -32,17 +37,16 @@ async function writeSave(path, text, directory = "DATA") {
 	}
 }
 
-async function deleteSave(path) {
+async function deleteSave(path, directory = "DATA") {
 	if (window.Capacitor) {
 		await Capacitor.Plugins.Filesystem.deleteFile({
 			path,
-			directory: "DATA"
+			directory
 		})
 	}
 	else {
 		localStorage.removeItem(path)
 	}
 }
-
 
 module.exports = {readSave, writeSave, deleteSave}
