@@ -69,9 +69,22 @@ window.settings.american = {
 // get user set locale
 let i18n_chain = window.settings.locale.loaded
 
-i18n_chain.then(() => {
+//We will wait up to two seconds for the setting to load.
+//This should work, absent a bug, etc.
+
+let localeSettingTimeout = 2000
+Promise.race([
+    i18n_chain,
+    new Promise((r, j) => {setTimeout(r, localeSettingTimeout)})
+]).then(() => {
+    if (window.settings.locale.currentValue === undefined) {
+        console.error("Locale setting failed to load. Timeout triggered. ")
+    }
     initToClientLocale()
     document.title = i18n.__("Mahjong 4 Friends - Free Mahjong, Friends and/or Bots")
+
+    require("./RoomManager.js")
+    require("./GameBoard.js")
 })
 
 require("./appUpdates.js")
@@ -109,11 +122,6 @@ window.stateManager = new StateManager(websocketURL)
 //Make classes public to allow for easier development.
 ;(["Hand", "Tile", "Sequence", "Pretty", "Match", "Wall", "Popups"]).forEach((className) => {
     window[className] = require("./" + className + ".js")
-})
-
-i18n_chain.then(function() {
-    let roomManager = require("./RoomManager.js")
-    let gameBoard = require("./GameBoard.js")
 })
 
 //While viewport relative units work fine on desktop, some mobile browsers will not show the entire viewport, due to the url bar.

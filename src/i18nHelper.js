@@ -46,7 +46,7 @@ function initToBrowserLocale() {
 
 function initToClientLocale() {
 
-  let locale = window.settings.locale.currentValue
+  let locale = window.settings.locale.value
   if (locale) {
     i18n.setLocale(locale)
   }

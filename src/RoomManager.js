@@ -595,7 +595,9 @@ window.setConnectionStatus = function({connected}) {
 	connectionStatus.style.display = connected ? "none":""
 }
 
-window.setConnectionStatus({connected: false})
+window.setConnectionStatus({
+	connected: (window?.stateManager?.websocket?.readyState === 1) //If websocket is open, true. Else false. 
+})
 
 
 //Inform user to use landscape.

@@ -5,10 +5,24 @@ const {i18n, initToClientLocale} = require("./i18nHelper.js")
 let settingsIcon = document.createElement("img")
 settingsIcon.src = "assets/settings.svg"
 settingsIcon.className = "settingsIcon"
-settingsIcon.addEventListener("click", async function() {
+settingsIcon.style.opacity = "0"
+function ensureSettingsLoaded() {
+	return Promise.allSettled([
+		window.settings.singlePlayerDebuggingData.loaded,
+		window.settings.locale.loaded,
+		window.settings.autoSortTiles.loaded,
+		window.settings.soundEffects.loaded
+	])
+}
 
-	await window.settings.singlePlayerDebuggingData.loaded
-    await window.settings.locale.loaded
+//If settings don't load, don't display the menu.
+ensureSettingsLoaded().then(() => {
+	settingsIcon.style.opacity = ""
+})
+
+
+settingsIcon.addEventListener("click", async function() {
+	await ensureSettingsLoaded()
 
 	let elem = document.createElement("div")
 
