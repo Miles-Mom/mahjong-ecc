@@ -21,7 +21,7 @@ let config = {
 		fallback: {
 			"fs": false,
 			"path": false,
-			"url": false, 	
+			"url": false,
 			"crypto": false,
 		}
 	},

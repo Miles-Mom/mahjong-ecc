@@ -8,9 +8,9 @@ const {i18n} = require("./i18nHelper.js")
 
 	const Popups = require("./Popups.js")
 
-	let deviceInfo = await window.Capacitor.Plugins.Device.getInfo()
-	let currentVersion = deviceInfo.appVersion
-	
+	let deviceInfo = await window.Capacitor.Plugins.App.getInfo()
+	let currentVersion = deviceInfo.version
+
 	if (platform === "ios") {
 		//iTunes is settings CORS headers, but those headers don't change when the CDN resends the content -
 		//if the CDN serves us, the CORS headers are for whatever origin last issued the request.

@@ -1,5 +1,9 @@
 //Includes everything but index.html
 let arr = [
+	"index.html",
+	"support.html",
+	"tutorial.html",
+	"documentation.html",
 	"packages/index.js",
 	"packages/docs.js",
 	"packages/index.css",
