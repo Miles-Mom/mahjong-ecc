@@ -351,7 +351,7 @@
 	" - Threw Last Tile": " - 点炮(出冲)的",
 	" - Threw Last Tile (Pay Double)": " - 点炮(出冲)的 (玩翻倍)",
 	" (Net %s points":" (%s 净积分",
-	"%s room total)":"%s 桌子总分)",
+	", %s room total)":", %s 桌子总分)",
 	"North": "北家",
 	"East": "东家",
 	"South": "南家",

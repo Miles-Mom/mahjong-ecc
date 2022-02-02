@@ -1,8 +1,8 @@
-// Note on localization approach: 
-// * we prepare summary for all locales needed for the room upon mahjong or game ending. 
+// Note on localization approach:
+// * we prepare summary for all locales needed for the room upon mahjong or game ending.
 // * caller needs to provide the specific locale to use the summary (this.lastSummary[per client.locale])
 
-const {i18n} = require("../../src/i18nHelper.js")		
+const {i18n} = require("../../src/i18nHelper.js")
 
 function getSummary(mahjongClientId, options = {}) {
 
@@ -13,7 +13,7 @@ function getSummary(mahjongClientId, options = {}) {
 		this.gameScores = []
 	}
 
-	// gather all the locales among all the players. 
+	// gather all the locales among all the players.
 	let locales = []
 	for (let id in this.gameData.playerHands) {
 		let client = globalThis.serverStateManager.getClient(id)
@@ -23,7 +23,7 @@ function getSummary(mahjongClientId, options = {}) {
 			}
 		}
 	}
-	
+
 	function getScoreForClientId(clientId) {
 		let score = 0
 		for (let i=0;i<this.gameScores.length;i++) {
@@ -134,15 +134,13 @@ function getSummary(mahjongClientId, options = {}) {
 			}
 		}
 
-		// push only once regardless of locale, same room score
-		if (this.gameScores.length < 1) {
-			this.gameScores.push(res)
-		}
-		
+
+		this.gameScores.push(res)
+
 		// function getScoreForClientId() was here
-		// note: npm i18n seems to have bugs with namedValues vs args. Sometimes it 
+		// note: npm i18n seems to have bugs with namedValues vs args. Sometimes it
 		// does not support cases like vsprintf("%(id)d - %(name)s", {id: 824, name: 'Hello World'})
-		// so we use either %s plain, or {{name}} syntax. 
+		// so we use either %s plain, or {{name}} syntax.
 		for (let id in this.gameData.playerHands) {
 			// WAS: res[id].text += ` (Net ${(res[id].netpoints > 0?"+":"")}${res[id].netpoints} points`
 			let point = `${(res[id].netpoints > 0?"+":"")}${res[id].netpoints}`
@@ -151,7 +149,7 @@ function getSummary(mahjongClientId, options = {}) {
 				let clientScore = getScoreForClientId.call(this, id)
 				point =  `${(clientScore > 0?"+":"")}${clientScore}`
 				// WAS: res[id].text += `, ${(clientScore > 0?"+":"")}${clientScore} room total)`
-				res[id].text += i18n.__({phrase:"%s room total)", locale:locale}, point)
+				res[id].text += i18n.__({phrase:", %s room total)", locale:locale}, point)
 			}
 			else {
 				res[id].text += ")"
@@ -160,8 +158,8 @@ function getSummary(mahjongClientId, options = {}) {
 
 		this.lastSummary[locale] = summary.map((item) => {return item.text}).join("\n")
 	}
-	
-	// note we are not returning any summary. need a locale. 
+
+	// note we are not returning any summary. need a locale.
 	// return this.lastSummary['en']
 }
 
