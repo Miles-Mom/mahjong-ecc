@@ -193,8 +193,10 @@ function onConnection(websocket) {
 
 				if (!globalThis.serverStateManager.getRoom(obj.roomId)) {
 
+					// locale: if uploaded file then we need to use obj.locale (would've been set), otherwise, we use client.locale. 
+					let locale = obj.locale || client.locale
 					return websocket.send(getMessage("joinRoom", i18n.__({ phrase: "Room %s does not exist. You can click the Create Room button to create it!",
-																															   locale: obj.locale}, obj.roomId), "error"))
+																															   locale: locale}, obj.roomId), "error"))
 				}
 				client.setNickname(obj.nickname)
 				return globalThis.serverStateManager.getRoom(obj.roomId).addClient(clientId)
