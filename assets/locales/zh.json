@@ -4,7 +4,7 @@
 	"Hello {{name}}": "{{name}} 你好",
 	"Hello %(name-only-works-client-msg-our-own-not-generic-i18n-unless-we-fix-it)s": "%(name)s 你好",
 
-	"localization credit":"本地化编程和中文翻译是由小弋, 晓雯, 芳, 晓红, 陈婆婆等提供的。",
+	"localization credit":"本地化编程和中文翻译是由小弋, 芳, 晓雯, 倩, 红, 陈婆婆等提供的。",
 
 	"Mahjong": "麻将",
 	"4 Friends": "合家福",
@@ -47,14 +47,16 @@
 
 	"left":"左",
 	"right":"右",
+	"across": "对面",
 
 	"Choose Language: " : "选择语言: ",
 
-	"Yes":"是",
-	"No":"不是",
+	"Yes":"开",
+	"No":"关",
 	"Display Tips: " : "显示提示: ",
 	"Sound Effects: " : "声音特效: ",
 	"Auto-Sort Tiles: " : "自动将牌排序位: ",
+			"-- TODO - internal auto-sort" : "- TODO - Ask Xiaowen? Tsai?",
 	"Debugging data is collected for all games. " : "收集所有游戏的调试数据。",
 	"Debugging data is collected for multiplayer games only. " : "只收集多人游戏的调试数据。",
 	"Single Player Debugging Data: " : "单人游戏调试数据: ",
@@ -67,17 +69,17 @@
 	"Settings":"设置",
 	"General Settings":"总设置",
 
-	"Enter Room Name...":"已设好的桌子名字... ",
-	"Nickname (Optional)":"您的玩家代名 (可选)",
-	"Join Room": "加入桌子",
-	"Create Room": "创建桌子",
+	"Enter Room Name...":"请输入新的或已有的牌桌名字... ",
+	"Nickname (Optional)":"您的呢称 (可选)",
+	"Join Room": "加入牌桌",
+	"Create Room": "创建牌桌",
 	"Single Player": "单人游戏",
-	"Use Save File": "使用以前存下的资料",
+	"Use Save File": "使用保存的游戏",
 	"You can upload/drag a save file from your device, or download one of ours: "
 		: "您可以上传您自己的文件，或下载中央服务器的文件: ",
 	"Multiplayer Needs Internet": "多人游戏需要互联网络",
-	"Leave Room": "离开桌子",
-	"Close Room": "拆除桌子",
+	"Leave Room": "离开牌桌",
+	"Close Room": "拆除牌桌",
 	"Start Game": "开始玩",
 	"Add Bot": "加机器人",
 	"Bot " : "机器人",
@@ -86,11 +88,11 @@
 	"Go Offline": "下线玩",
 	"Stay Online": "保持在线",
 	"Offline" : "下线",
-	"Player 1":"第一家",
+	"Player 1":"您自己",
 	"Invite Players to Join This Game!": "邀请朋友们加入游戏一起玩!",
 	"Share the link: <br>": "邀请朋友的链接: <br>",
 	"Mahjong 4 Friends Tutorial" :"合家福麻将学习教程",
-	"See Full Documentation": "查看完全的用户文档 (英文)",
+	"See Full Documentation": "查看详细的用户文档 (英文)",
 	"Questions, Comments, or Concerns? ": "您有什么问题, 意见, 或疑虑吗？",
 	"Contact %s": "请联系%s",
 	"Enjoying Mahjong 4 Friends? Please <a %s>%s</a>": "您喜欢玩合家福麻将吗？请广而告之, <a %s>%s</a>。多谢您!",
@@ -116,18 +118,18 @@
 	"You must select a card to play American Mahjong. Select 'Other Card' if your card is not available. "
 	: "您必须选择一种卡来玩美式麻将。如果您的卡没有的话，请选择“其他卡”。",
 
-	"Maximum Sequences: ":"最多个顺子: ",
+	"Maximum Sequences: ":"最多可有的顺子: ",
 	"Check and Alert for Ready Hands: ":"自动提醒开叫/听牌: ",
 	"Bots Can Initiate Charleston: ":"机器人可以查尔斯顿: ",
 	"Allow 4th Tile Pickup: ":"自动明杠: ",
 	"Pickup Discard for Draw: " : "可以要上家打出的牌: ",
-  "Table Limit: " : "桌子最大得分限制: ",
-	"Table Limit Amount: " : "桌子分限制点: ",
+  "Table Limit: " : "牌桌最大得分限制: ",
+	"Table Limit Amount: " : "牌桌分限制点: ",
 	"Most variants should be supported - self-scoring and overrides may be needed. Can't play your way? Send an email to support@mahjong4friends.com!"
-		:"大多数麻将玩法都是支持的，您也可以用自己的玩法, 自己算分。不能按您喜欢的方式玩吗？ 请给support@mahjong4friends.com联系!",
+		:"大多数麻将玩法都是支持的，您也可以采用自己的玩法, 自己算分。不能按您喜欢的方式玩吗？ 请联系support@mahjong4friends.com!",
 
 	"Chinese, but with a limit of 1 sequence/chow, and an optional 3 pass charleston (decided by East wind)"
-		: "中式麻将，但限一个顺子，可选三圈查尔斯顿(charleston)(由东风决定）",
+		: "中式麻将，但限一个顺子，可选三圈查尔斯顿(charleston)(由东家决定）",
 
 	"Additional settings may display depending on selected Mahjong Variant. "
 	:"根据所选的麻将玩法，其他设置会显示。",
@@ -142,11 +144,11 @@
 
 	"Whoops!":"哎呀!",
 	"Please enter the name of the room you would like to join into the box labeled \"Enter Room Name\""
-		: "请在标有“已设好的桌子名字...”的框中输入您要加入的桌子的名称",
+		: "请在标有“请输入新的或已有的牌桌名字... ”的框中输入您要加入的牌桌的名称",
 	"Rotating your screen to Landscape mode is recommended. "
 		: "建议您将屏幕旋转到横向模式。",
 	"You're playing online - Rooms created with the Single Player button are faster <i>and<\/i> work offline! You can find it on the main page, below the Join Room button."
-		:"您正在上线玩 - 使用单人游戏按钮创建的桌子更快一点<i>并且</i>离线工作! 您可以在主页上的“加入桌子”按钮下方找到它。",
+		:"您正在上线玩 - 使用<i>下线的</i>单人游戏更快! 您也可以在主页上找到“单人游戏”按钮。",
 	"Play Offline?" : "下线玩?",
 
 	"Loading Tutorials and Challenges..." : "加载学习教程...",
@@ -163,80 +165,80 @@
 	"Remove %s" : "删除 %s",
 	"Are you sure you want to remove %s" : "您确定要删除%s吗",
 	"Player": "玩家",
-	"Wall View":"麻将墙",
+	"Wall View":"牌墙",
 
 	"Card":"卡",
 	"Section":"部分",
 	"Option":"选项",
 	"Item":"项目",
 
-	"You are in room %s" : "您的桌子是 %s",
-	"Unable to Join Room" : "无法加入桌子",
+	"You are in room %s" : "您的牌桌是%s",
+	"Unable to Join Room" : "无法加入牌桌",
 	"Room %s does not exist. You can click the Create Room button to create it!":
-		"%s桌子还未存在。请点击 “创建桌子” 按钮! ",
-	"Room Restored": "桌子已恢复",
+		"%s牌桌还未存在。请点击 “创建牌桌” 按钮来创建牌桌! ",
+	"Room Restored": "牌桌已恢复",
 	"You followed a link to room %1%s, but were already in room %2%s. Your room has been restored - to join a new room, leave your current one. " :
-		"您点击了桌子%1%s的链接。 但您已经在桌子%2%s上, 此桌子已在运行 - 如果您要加入新的桌子，请先离开当前的这张桌子。 ",
-	"Unable to Create Room" : "无法创建桌子",
-	"Out of Room" : "没有空桌子了",
-	"%d players are present in room %s" : "%d名玩家已在%s桌子上",
-	"%d player is present in room %s" : "%d名玩家已在%s桌子上",
+		"您已经在牌桌%2%s上。如果想加入牌桌%1%s，请先离开牌桌%2%s。",
+	"Unable to Create Room" : "无法创建牌桌",
+	"Out of Room" : "没有空牌桌了",
+	"%d players are present in room %s" : "%d名玩家已在%s牌桌上",
+	"%d player is present in room %s"   : "%d名玩家已在%s牌桌上",
 	"Game Ended" : "游戏结束了",
 
 	"Access Denied" : "访问被拒绝",
 	"You are Spectating." : "你在观看游戏。",
-	"Room Already Exists" : "桌子已经有了",
+	"Room Already Exists" : "牌桌已经存在",
 
 
 	"------ GameBoard - internal temp ---":"xx",
 	"History" : "游戏历史",
-	"Proceed" : "继续 - 下一家",
-	"-- internal Proceed ToDo --": "继续 - 下一家 (? ToDo) for one, and 继续 - 过或要 for the other",
-	"Proceed (%s/4)" : "继续 (%s/4)",
-	"-- internal Proceed2 ToDo --" : "继续 - 过或Pong, Gung, Yao? ToDo ",
+	"Proceed" : "出牌 - 继续",
+	"Proceed (%s/4)" : "吃/碰/杠/过 - 继续 (%s/4)",
 	"New Game" : "新的游戏",
 	"End Game" : "结束游戏",
-	"Mahjong!" : "福了!",
-	"Sync (Reload)" : "刷新（重新加载)",
-	"-- internal Mahjong! todo ": " (?胡?), 刷新, 同步（重新加载) ?TODO ",
-	"Toggle Full Screen" : "切换全屏幕",
+
+	"Mahjong!" : "福/胡/和了!",
+	"Sync (Reload)" : "刷新",
+	"Toggle Full Screen" : "切换成全屏",
 	"Loading Game History... (This should only take a second or two - otherwise, close menu and try again)"
-		: "正在加载游戏历史...（这应该只需要一两秒钟 - 否则，请关闭菜单并重试）",
+		: "正在加载游戏历史...（应该只需要一两秒钟 - 否则，请关闭菜单再重试）",
 	"Click to reset the game back in history: " : "点击回去重新走: ",
 	"Move %d" : "第 %d 步",
 	"Are you sure you would like to revert the game state to move %s? "
-		: "您确定要恢复游戏状态重新回去第 %s 步吗？",
+		: "您确定要回到第 %s 步吗？",
 	"This will affect ALL players, and can't be undone!"
-		: "这将影响所有的玩家，并且无法撤消! ",
+		: "这将影响所有的玩家，无法取消! ",
 	"Swap Joker" : "交换王牌",
-	"-- internal Swap Joker ToDo": "交换大王(?小丑) TODO",
-	"Error Placing Tiles" : "放牌时出错",
+	"Error Placing Tiles" : "放错牌了",
 	"Claim": "要牌",
 	"Are you sure you want to start a new game?" : "您确定要开始新游戏吗？",
 	"Are you sure you want to end the game?" : "您确定要结束这个游戏吗？",
 	"You are spectating (message will close automatically)"
-		: "您在观看游戏。 (此消息会被自动关闭的)",
+		: "您在观看游戏。 (此消息会自动关闭)",
 	"View Scores":"查看分数",
 	"Scores" : "分数",
-	"Sets (In-Hand Blue)" : "套子 (手上的)",
+	"Sets (In-Hand Blue)" : "牌型(手上的)",
 	"Bonuses" : "额外分",
 	"Pts":"分",
-	"Dbs":"翻",
+	"Dbs":"翻倍",
 	"Self-Draw" : "自摸",
 	"No Sequence" : "无顺子",
-	"%s points x 2<sup>%s double</sup> = %s points" : "%s 积分 x 2<sup>%s 翻倍</sup> = %s 总积分",
-	"%s points x 2<sup>%s doubles</sup> = %s points" : "%s 积分 x 2<sup>%s 翻倍</sup> = %s 总积分",
+	"%s points x 2<sup>%s double</sup> = %s points" : "%s 积分 x 2<sup>%s 翻倍</sup> = %s 积分",
+	"%s points x 2<sup>%s doubles</sup> = %s points" : "%s 积分 x 2<sup>%s 翻倍</sup> = %s 积分",
+
+
+	" ___ WE ARE HERE__.. ": "xx",
 
 	"Game Started" : "游戏开始了",
 	"threw" : "扔",
 
 	"You can't discard and go mahjong. ": "福牌不能扔牌。",
-	"--- internal you can't discard --": "or, 你不能先扔牌再福牌。(TODO: which better?) ",
+				"--- internal you can't discard --": "or, 你不能先扔牌再福牌。(TODO: which better?) ",
 	"You can't place a pair when it will not make you mahjong. (Press 'Proceed' or 'Mahjong' again to override)"
 		:"当它不会使您福牌时，您不能放置一对。(再次按“继续”或 '福了!' 去覆盖) ",
 	"Unable to detect a mahjong in your hand. (Press 'Mahjong' again to override). "
 		:"无法確定您手中的麻将是否可以福。(您可以再次按'我福了!'去覆盖)。",
-	"Room Does Not Exist" : "桌子没有了",
+	"Room Does Not Exist" : "牌桌不存在",
 	"%(client)s threw a %(tile)s" : "%(client)s扔了%(tile)s",
 	"%(client)s threw a %(tile)s, and is calling": "%(client)s扔了%(tile)s, 开叫了",
 	"%(client)s threw a %(tile)s, and are calling": "%(client)s扔了%(tile)s, 开叫了",
@@ -251,14 +253,14 @@
 	"Discard Pile (%s tile)" : "丢的牌(%s个)",
 
 	"----- room internal temp -----": "xx",
-	"Already in room" : "已经上桌子了",
+	"Already in room" : "已经上牌桌了",
 	"Revert Error: Invalid Revert turnNumber" : "还原错误: 不正确的还原设置 ",
 	"%(client)s reverted to move %(turn)s (%(move)s moves)":"%(client)s还原到%(turn)s步(后退%(move)s步) ",
 	"Your two selected tiles do not match, sequences require 3 tiles, and discards are a single tile. "
-		: "您选择的的两个牌不是对子, 順子需要三张牌, 弃牌是单张。",
-	"--- internal your two selected ..TODO":"(or, TODO ?? 您选择的的两个牌和弃牌不形成順子或匹配, 不是吃也不是撞。)",
+		: "您选择的的两个牌不是对子; 也不是順子, 順子需要三张牌; 也不是丢牌, 丢牌是单张。",
+			"--- internal your two selected ..TODO":"(or, TODO ?? 您选择的的两个牌和弃牌不形成順子或匹配, 不是吃也不是撞。)",
 	"Your selected tiles do not form a sequence or match, and discards are a single tile. "
-		: "您选择的牌不形成順子或匹配, (不是吃也不是撞)。",
+		: "您选择的牌不形成順子或匹配, (不是吃也不是碰/杠)。",
 	"Please review your selected tiles. " : "请检查您选择的牌。",
 	"The Game Has Ended":"游戏已结束。",
 	"The game has been ended by %s." : "%s结束了游戏。",
@@ -266,9 +268,11 @@
 	"%s has upgraded an exposed pong into a kong. " : "%s将暴明了的碰升级为杠。",
 	"Unable to identify which player you want to swap with. " : "无法确定要与哪个玩家交换。",
 	"You can't place a tile you do not possess - try reloading the page or restarting the app"
-		: "您无法放置您不拥有的牌 - 请尝试刷新重新加载页面, 或重新启动应用程序 ",
+		: "您无法放置您不拥有的牌 - 请刷新页面, 或重新启动应用程序 ",
 	"You can't place tiles you do not possess - try reloading the page or restarting the app"
-		:"您无法放置您不拥有的牌 - 请尝试刷新重新加载页面, 或重新启动应用程序",
+		:"您无法放置您不拥有的牌 - 请刷新页面, 或重新启动应用程序 ",
+	"You can't place a sequence of tiles you do not possess - try reloading the page or restarting the app"
+		: "您无法放置您不拥有的牌 - 请刷新页面, 或重新启动应用程序 ",
 	"You can't go mahjong while placing a kong. ":"你不能边杠边福。",
 	"Can't expose in hand pong, sequence, or pair, except for mahjong."
 		: "不能暴明在手的碰, 順子, 或对子，除非是福了的牌。",
@@ -285,12 +289,24 @@
 		: "点击这里去加载游戏直到结束（此消息会自动关闭的）",
 	"You are disconnected from the Server. Attempting to Reconnect..."
 		: "您与中央服务器断开连接了。正在尝试重新连接... ",
-	"Wall View %s tile left" : "麻将墙 %s张牌剩下",
-	"Wall View %s tiles left" : "麻将墙 %s张牌剩下",
+	"Wall View %s tile left" : "牌墙 %s张牌剩下",
+	"Wall View %s tiles left" : "牌墙 %s张牌剩下",
 	"%(player)s placed an in-hand kong of %(tile)ss" : "%(player)s自杠了%(tile)s",
+	"The first Charleston pass is %s" : "第一轮查尔斯顿(Charleston)向%s)",
+	"The next pass is %s" : "下一轮向%s",
+	"The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. "
+		: "请在牌垫区查看传给您的牌 - 在牌垫区和您的手之间点击牌来选择。选择好后点击继续。 ",
+	"Welcome to the Charleston. Select 3 tiles you would like to pass %s, then hit Proceed. "
+		: "欢迎来到查尔斯顿。 选择三张您想给出的牌, 然后点击'继续'。", 
+	"You have already passed tiles for this charleston round. ":"这轮查尔斯顿你已经给牌了。",
+	"You must choose 3 tiles to pass during charleston. " : "请选择三张您想给出的牌来玩查尔斯顿。",
+	"The Charleston is Over" : "查尔斯顿完了",
+	"Successfully Swapped" : "换牌成功了",
+	"Could not find a joker to swap with. " : "找不到可交换的王牌。",
 
+	
 	"----- drawTile --- internal: delete this later --":"--",
-	"Game Over - Wall Empty": "游戏结束 - 麻将墙空了。",
+	"Game Over - Wall Empty": "游戏结束 - 麻将墙空了",
 	"The Wall is empty. ":"麻将墙空了。",
 	"Press End Game to return everybody to the room screen. "
 		:"请按'结束游戏'让所有玩家返回主屏幕。",
@@ -313,11 +329,12 @@
 	 : "放置牌失败了，因为另一个玩家有更高的优先级放置（福牌>杠牌>碰牌>順子，并按类别内的顺序)。",
 	 "You can only take a sequence from the player before you, except with mahjong. (Press 'Proceed' again to override) "
 	 : "您只能从您的上家那里吃到順子，福牌除外。(请再次点击'继续'来覆盖",
-	"As East wind, you get to make the first throw. ": "作为东风，你先出牌。",
+	"As East wind, you get to make the first throw. ": "作为东家，您先出牌。",
 	"Select one tile and press Proceed." : " 选择一张牌, 然后按'继续'。",
 	"To initiate a Charleston (first pass %(direction)s), select 3 tiles and hit Proceed."
-		:"要启动查尔斯顿(Charleston)（第一次向 %(direction)s)，选择三张牌, 然后点击'下一家'。 ",
+		:"要启动查尔斯顿(Charleston)（第一次向 %(direction)s)，选择三张牌, 然后点击'继续'。",
 	"Waiting on East Wind to make a play. " : "等东家出牌。",
+	"As East wind, you get to make the first throw." : "您是东家, 请先出牌。",
 	"%(player)s called for a %(tile)s" : "%(player)s 要了 %(tile)s",
 	"This tile was called - your draw was skipped. " :"这张牌已被要了 - 你摸牌的轮被跳过了。",
 	"You can pass no more than 3 tiles during one Charleston round. "
@@ -332,6 +349,7 @@
 	"Is someone's game frozen? Clicking the sync icon (below this message) might fix that! "
 	: "有人的游戏冻结了吗？ 点击同步刷新的图标（在此消息下方）可能会解决此问题! ",
 
+
 	"----- handleMessage -- internal delete later" : "",
 	"Bot Error" : "机器人错误",
 	"%(player)s has encountered an error. " : "%(player)s 遇到错误了。",
@@ -340,6 +358,16 @@
 	"%(player)s has received an error message. " : "%(player)s 遇到错误了。",
 	"If it is not functioning, you can manually control the bot <a %(link)s>here</a>. "
 		:"如果它还不工作, 您可以在<a %(link)s>此处</a>手动控制机器人。 ",
+	"Only Host Can Kick" : "只有庄家才能弹出玩家",
+			"internal --- todo - host kick" : " -- TODO: 踢 ?",
+	"Can't Kick During Game" : "游戏不能弹出玩家",
+	"Kicked Client" : "被弹出的玩家",
+	"Error Starting Game" : "错误启开游戏",
+	"Only Host Can Start" : "只有庄家才能启开游戏",
+	"No Game In Progress" : "没有正在进行的游戏",
+	"Only Host Can Close Room" : "只有庄家才能拆除牌桌",
+	"Only Host Can Add Bots" : "只有庄家才能添加机器人",
+
 
 	"------ goMahhong ----": "xx",
 	"%s went mahjong!":"%s已经福了!",
