@@ -256,7 +256,7 @@
 	"The Game Has Ended":"游戏已结束。",
 	"The game has been ended by %s." : "%s结束了游戏。",
 	"Can't place after draw before throw" : "摸牌后必须出牌。",
-	"%s has upgraded an exposed pong into a kong. " : "%s加杠了。",
+	"%s has upgraded an exposed pong into a kong" : "%s加杠了",
 	"Unable to identify which player you want to swap with. " : "无法确定要与哪家换牌。",
 	"You can't place a tile you do not possess - try reloading the page or restarting the app"
 		: "您不能放沒有的牌 - 请刷新页面, 或重新启动程序",
@@ -324,6 +324,7 @@
 	"Select one tile and press Proceed." : " 选择一张牌, 然后按'继续'。",
 	"To initiate a Charleston (first pass %(direction)s), select 3 tiles and hit Proceed."
 		:"要开始查尔斯顿(Charleston)（第一次向 %(direction)s)，选择三张牌, 然后点击'继续'。",
+	"This Charleston round requires exactly three tiles. " : "这轮查尔斯顿必须三张牌。",
 	"Waiting on East Wind to make a play. " : "等东家出牌。",
 	"As East wind, you get to make the first throw." : "您是东家, 请先出牌。",
 	"%(player)s called for a %(tile)s" : "%(player)s 要了 %(tile)s",

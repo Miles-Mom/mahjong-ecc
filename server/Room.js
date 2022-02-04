@@ -307,7 +307,7 @@ class Room {
 							}
 							return false
 						}).bind(this))) {
-							this.messageAll([clientId], "roomActionGameplayAlert", {format:"%s has upgraded an exposed pong into a kong. ", args:client.getNickname()}, {clientId, speech: "Make that a kong", durationMultiplier: 1.1}) //Add duation. Long speech.
+							this.messageAll([clientId], "roomActionGameplayAlert", {format:"%s has upgraded an exposed pong into a kong", args:client.getNickname()}, {clientId, speech: "Make that a kong", durationMultiplier: 1.1}) //Add duation. Long speech.
 							this.sendStateToClients()
 							return;
 						}
