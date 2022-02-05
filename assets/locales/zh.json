@@ -67,17 +67,17 @@
 	"Settings":"设置",
 	"General Settings":"总设置",
 
-	"Enter Room Name...":"请输入新的或已有的牌桌名字... ",
+	"Enter Room Name...":"请输入新的或已有的桌子名字... ",
 	"Nickname (Optional)":"您的呢称 (可选)",
-	"Join Room": "加入牌桌",
-	"Create Room": "创建牌桌",
+	"Join Room": "加入桌子",
+	"Create Room": "创建桌子",
 	"Single Player": "单人游戏",
 	"Use Save File": "使用保存的游戏",
 	"You can upload/drag a save file from your device, or download one of ours: "
 		: "您可以上传您自己的文件，或下载中央服务器的文件: ",
 	"Multiplayer Needs Internet": "多人游戏需要互联网络",
-	"Leave Room": "离开牌桌",
-	"Close Room": "拆除牌桌",
+	"Leave Room": "离开桌子",
+	"Close Room": "拆除桌子",
 	"Start Game": "开始玩",
 	"Add Bot": "加机器人",
 	"Bot " : "机器人",
@@ -121,8 +121,8 @@
 	"Bots Can Initiate Charleston: ":"机器人可以开始查尔斯顿: ",
 	"Allow 4th Tile Pickup: ":"自动明杠: ",
 	"Pickup Discard for Draw: " : "可以要上家打出的牌: ",
-  "Table Limit: " : "牌桌最大得分限制: ",
-	"Table Limit Amount: " : "牌桌最大分限制点: ",
+  "Table Limit: " : "桌子最大得分限制: ",
+	"Table Limit Amount: " : "桌子最大分限制点: ",
 	"Most variants should be supported - self-scoring and overrides may be needed. Can't play your way? Send an email to support@mahjong4friends.com!"
 		:"大多数麻将玩法都是支持的，您也可以采用自己的玩法, 忽略设置和自己算分。不能按您喜欢的方式玩吗？ 请联系support@mahjong4friends.com!",
 	"Chinese, but with a limit of 1 sequence/chow, and an optional 3 pass charleston (decided by East wind)"
@@ -140,7 +140,7 @@
 
 	"Whoops!":"哎呀!",
 	"Please enter the name of the room you would like to join into the box labeled \"Enter Room Name\""
-		: "请在标有“请输入新的或已有的牌桌名字... ”的框中输入您要加入的牌桌名",
+		: "请在标有“请输入新的或已有的桌子名字... ”的框中输入您要加入的桌子名",
 	"Rotating your screen to Landscape mode is recommended. "
 		: "建议您将屏幕旋转到横向模式。",
 	"You're playing online - Rooms created with the Single Player button are faster <i>and<\/i> work offline! You can find it on the main page, below the Join Room button."
@@ -168,22 +168,22 @@
 	"Option":"选项",
 	"Item":"项目",
 
-	"You are in room %s" : "您的牌桌是%s",
-	"Unable to Join Room" : "无法加入牌桌",
+	"You are in room %s" : "您的桌子是%s",
+	"Unable to Join Room" : "无法加入桌子",
 	"Room %s does not exist. You can click the Create Room button to create it!":
-		"%s牌桌还未存在。请点击 “创建牌桌” 按钮来创建牌桌! ",
-	"Room Restored": "牌桌已恢复",
+		"%s桌子还未存在。请点击 “创建桌子” 按钮来创建桌子! ",
+	"Room Restored": "桌子已恢复",
 	"You followed a link to room %1%s, but were already in room %2%s. Your room has been restored - to join a new room, leave your current one. " :
-		"您已经在牌桌%2%s上。如果想加入牌桌%1%s，请先离开牌桌%2%s。",
-	"Unable to Create Room" : "无法创建牌桌",
-	"Out of Room" : "没有空牌桌了",
-	"%d players are present in room %s" : "%d名玩家已在%s牌桌上",
-	"%d player is present in room %s"   : "%d名玩家已在%s牌桌上",
+		"您已经在桌子%2%s上。如果想加入桌子%1%s，请先离开桌子%2%s。",
+	"Unable to Create Room" : "无法创建桌子",
+	"Out of Room" : "没有空桌子了",
+	"%d players are present in room %s" : "%d名玩家已在%s桌子上",
+	"%d player is present in room %s"   : "%d名玩家已在%s桌子上",
 	"Game Ended" : "游戏结束了",
 
 	"Access Denied" : "访问被拒绝",
 	"You are Spectating." : "你在观看游戏。",
-	"Room Already Exists" : "牌桌已经存在",
+	"Room Already Exists" : "桌子已经存在",
 
 
 	"------ GameBoard - internal temp ---":"xx",
@@ -230,7 +230,7 @@
 		:"除了福牌外，不能放对子。(如果要忽略, 请再点击“继续”或“福了!”) ",
 	"Unable to detect a mahjong in your hand. (Press 'Mahjong' again to override). "
 		:"无法確定您手中的麻将是否可以福。(如果要忽略, 请再点击“福了!”。)",
-	"Room Does Not Exist" : "牌桌不存在",
+	"Room Does Not Exist" : "桌子不存在",
 	"%(client)s threw a %(tile)s" : "%(client)s出了%(tile)s",
 	"%(client)s threw a %(tile)s, and is calling": "%(client)s出了%(tile)s, 开叫/听了",
 	"%(client)s threw a %(tile)s, and are calling": "%(client)s出了%(tile)s, 开叫/听了",
@@ -245,7 +245,7 @@
 	"Discard Pile (%s tile)" : "打出的牌(%s个)",
 
 	"----- room internal temp -----": "xx",
-	"Already in room" : "已经在牌桌上了",
+	"Already in room" : "已经在桌子上了",
 	"Revert Error: Invalid Revert turnNumber" : "还原错误: 不正确的还原步",
 	"%(client)s reverted to move %(turn)s (%(move)s moves)":"%(client)s还原到%(turn)s步(后退%(move)s步) ",
 	"Your two selected tiles do not match, sequences require 3 tiles, and discards are a single tile. "
@@ -357,7 +357,7 @@
 	"Error Starting Game" : "开始游戏出错",
 	"Only Host Can Start" : "只有庄家才能开始游戏",
 	"No Game In Progress" : "没有正在进行的游戏",
-	"Only Host Can Close Room" : "只有庄家才能拆除牌桌",
+	"Only Host Can Close Room" : "只有庄家才能拆除桌子",
 	"Only Host Can Add Bots" : "只有庄家才能添加机器人",
 
 
@@ -371,7 +371,7 @@
 	" - Threw Last Tile": " - 点炮(出冲)的",
 	" - Threw Last Tile (Pay Double)": " - 点炮(出冲)的 (付双倍)",
 	" (Net %s points":" (%s 净积分",
-	", %s room total)":", %s 牌桌总分)",
+	", %s room total)":", %s 桌子总分)",
 	"North": "北家",
 	"East": "东家",
 	"South": "南家",
