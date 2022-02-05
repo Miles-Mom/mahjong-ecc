@@ -340,14 +340,14 @@ function calculateNextTurn(obj, exemptFromChecks) {
 				this.setAllInstructions([], `${term} Pass - Pass ${(term==="Blind")?1:0}-3 tiles ${nextDirection.direction} ${(term === "Blind")?"in order of preference":""}. Tap tiles to add/remove from placemat. Hit Proceed when ready.` , "success")
 			}
 			else {
-				this.messageAll([], "roomActionGameplayAlert", "The next pass is " + nextDirection.direction , {optional: true})
-				this.setAllInstructions([], "The next pass is " + nextDirection.direction + ". The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. " , "success")
+				this.messageAll([], "roomActionGameplayAlert", {format: "The next pass is %s", argsI18n: nextDirection.direction}, {optional: true})
+				this.setAllInstructions([], {format: ["The next pass is %s", ". ", "The tiles passed to you are in the placemat - tap to move tiles between the placemat and your hand. Hit Proceed when ready. "], argsI18n: nextDirection.direction} , "success")
 			}
 		}
 		else {
 			this.messageAll([], "roomActionGameplayAlert", "The Charleston is Over")
-			this.setInstructions(this.gameData.currentTurn.userTurn, "The Charleston is over. \n\nAs East wind, you get to make the first throw. Select one tile and press Proceed.")
-			this.setAllInstructions([this.gameData.currentTurn.userTurn], "The Charleston is over. Waiting on East Wind to make a play. ")
+			this.setInstructions(this.gameData.currentTurn.userTurn, {format: ["The Charleston is over", ". ", "\n\n", "As East wind, you get to make the first throw. ", "Select one tile and press Proceed."]})
+			this.setAllInstructions([this.gameData.currentTurn.userTurn], {format: ["The Charleston is over", ". ", "Waiting on East Wind to make a play. "]})
 			this.gameData.charleston = false //The charleston is over.
 		}
 	}
