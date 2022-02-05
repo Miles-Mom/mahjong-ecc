@@ -234,8 +234,8 @@ class Room {
 						}
 
 						let direction = this.gameData.charleston.directions[0][0].direction
-						this.setAllInstructions([], "Welcome to the Charleston. Select 3 tiles you would like to pass " + direction + ", then hit Proceed. " , "success")
-						this.messageAll([clientId], "roomActionGameplayAlert", "The first Charleston pass is " + direction , "success")
+						this.setAllInstructions([], {format:"Welcome to the Charleston. Select 3 tiles you would like to pass %s, then hit Proceed. ", argsI18n: direction} , "success")
+						this.messageAll([clientId], "roomActionGameplayAlert", {format: "The first Charleston pass is %s", argsI18n: direction} , "success")
 					}
 					else if (!obj.mahjong) {
 						return client.message(obj.type, "The very first throw must be either 1 tile, to initiate the game, or 3 tiles, to initiate charleston. ", "error")
@@ -307,7 +307,7 @@ class Room {
 							}
 							return false
 						}).bind(this))) {
-							this.messageAll([clientId], "roomActionGameplayAlert", {format:"%s has upgraded an exposed pong into a kong. ", args:client.getNickname()}, {clientId, speech: "Make that a kong", durationMultiplier: 1.1}) //Add duation. Long speech.
+							this.messageAll([clientId], "roomActionGameplayAlert", {format:"%s has upgraded an exposed pong into a kong", args:client.getNickname()}, {clientId, speech: "Make that a kong", durationMultiplier: 1.1}) //Add duation. Long speech.
 							this.sendStateToClients()
 							return;
 						}

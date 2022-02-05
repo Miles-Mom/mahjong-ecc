@@ -44,9 +44,18 @@ class Client {
 
 			// let's make a copy of the arg before we set out to modify it
 			let args = {}		// assume named value
-			if (typeof message.args === "string") {
+			if (typeof message.args === "string" || typeof message.argsI18n === "string") {
 				args = []		// positional
-				args.push(message.args)		// to avoid turning string into an array of chars via next method
+
+				if (typeof message.args === "string") {
+					// eg: message(.., {format:"test %s", args:var})
+					args.push(message.args)		// to avoid turning string into an array of chars via the assign method
+				} 
+				else {
+					// eg: message(.., {format:"test %s", argsI18n:var_to_be_localized})
+					// if argsI18n is provided, but is not a named object, then, it has to be a single value, used in lieu of args.
+					args.push(i18n.__({phrase:message.argsI18n, locale: this.locale}))
+				}
 			}
 			else if (typeof message.args === "object") {
 				args = Object.assign({}, message.args)
@@ -60,17 +69,6 @@ class Client {
 				for (let key in argsI18n) {
 					// save the localized data to the new combined args
 					args[key] = i18n.__({phrase:argsI18n[key], locale: this.locale})
-				}
-			}
-			else if (typeof message.argsI18n === "string" ) {
-				// eg: message(.., {format:"test %s", argsI18n:var_to_be_localized})
-				// if argsI18n is provided, but is not a named object, then, it has to be a single value, used in lieu of args.
-				if (typeof message.args === "undefined") {
-					args = []
-					args.push(i18n.__({phrase:message.argsI18n, locale: this.locale}))
-				}
-				else {
-					console.warn("internal error bad args: " + message.args + " " + message.argsI18n)
 				}
 			}
 
