@@ -192,9 +192,8 @@ function onConnection(websocket) {
 			else if (obj.type === "joinRoom") {
 
 				if (!globalThis.serverStateManager.getRoom(obj.roomId)) {
-
 					return websocket.send(getMessage("joinRoom", i18n.__({ phrase: "Room %s does not exist. You can click the Create Room button to create it!",
-																															   locale: obj.locale}, obj.roomId), "error"))
+																															   locale: client.locale}, obj.roomId), "error"))
 				}
 				client.setNickname(obj.nickname)
 				return globalThis.serverStateManager.getRoom(obj.roomId).addClient(clientId)
