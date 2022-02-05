@@ -14,13 +14,13 @@ function startGame(obj) {
 
 	if (obj?.settings?.gameStyle === "panama") {
 		//Panama Rules is a specific variant of Chinese rules.
-		obj.settings = {
+		Object.assign(obj.settings, {
 			gameStyle: "chinese",
 			checkForCalling: true,
 			allow4thTilePickup: true,
 			botCanStartCharleston: true,
 			maximumSequences: 1,
-		}
+		})
 	}
 
 	if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
