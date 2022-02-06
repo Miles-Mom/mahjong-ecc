@@ -1,6 +1,7 @@
 //We need to create a new array every time this is called - the
 //startGame code destroys the array while processing (it becomes an empty array)
 module.exports = {
+	noCharleston: function() {return []},
 	americanMahjong: function() {
 		return [
 			[

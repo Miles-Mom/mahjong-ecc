@@ -22,12 +22,15 @@ function startGame(obj) {
 	//Copy settings for game.
 	Object.assign(this.state.settings, obj.settings)
 
-	//Create wall seed. 
+	//Create wall seed.
 	this.state.seed = this.state.seed || Math.random()
+
+	this.state.settings.charleston = charlestonDefaults.noCharleston()
 
 	switch (this.state.settings.gameStyle) {
 		case "panama":
 			//Panama Rules is a specific variant of Chinese rules.
+			//Only settings not overridden are table limits.
 			Object.assign(this.state.settings, {
 				gameStyle: "chinese",
 				checkForCalling: true,
@@ -39,9 +42,18 @@ function startGame(obj) {
 		case "chinese":
 			this.gameData.wall = new Wall(this.state.seed);
 			this.state.settings.charleston = charlestonDefaults.chineseMahjong()
+			this.state.settings.maximumSequences = Math.min(4, Math.max(0, this.state.settings.maximumSequences))
 			break;
 		case "filipino":
 			this.gameData.wall = new Wall(this.state.seed);
+			Object.assign(this.state.settings, {
+				//TODO: Not sure??? These need review.
+				pickupDiscardForDraw: true,
+				allow4thTilePickup: true,
+				maximumSequences: 5,
+				checkForCalling: false, //We don't detect all calling hands.
+				//tableLimit: Infinity, //TODO: Different scoring or disable.
+			})
 			break;
 		case "american":
 			delete this.state.settings.unknownCard
@@ -189,9 +201,14 @@ function startGame(obj) {
 		this.logFile.write(JSON.stringify(this.state) + "\n")
 	}
 
-	let direction = this.state.settings.charleston[0][0].direction
 
-	if (this.state.settings.gameStyle === "chinese") {
+	let direction = this.state.settings.charleston?.[0]?.[0]?.direction
+
+	if (!direction) {
+		this.setInstructions(this.gameData.currentTurn.userTurn, {format: ["As East wind, you get to make the first throw. ", "Select one tile and press Proceed."], argsI18n:{"direction": direction}})
+		this.setAllInstructions([this.gameData.currentTurn.userTurn], "Waiting on East Wind to make a play. ")
+	}
+	else if (this.state.settings.gameStyle === "chinese") {
 		//Message East about how to start.
 		// note that the direction(left, right) itself needs to be xlated
 		this.setInstructions(this.gameData.currentTurn.userTurn, {format: ["As East wind, you get to make the first throw. ", "Select one tile and press Proceed.", "\n\n", "To initiate a Charleston (first pass %(direction)s), select 3 tiles and hit Proceed."], argsI18n:{"direction": direction}})
