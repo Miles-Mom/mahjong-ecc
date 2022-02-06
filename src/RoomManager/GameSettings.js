@@ -1,5 +1,5 @@
 const Popups = require("../Popups.js")
-const {i18n} = require("../i18nHelper.js")	
+const {i18n} = require("../i18nHelper.js")
 
 const variants = [
 	{name: "Please Select Variant..."},
@@ -14,6 +14,10 @@ const variants = [
 	{
 		name: "Panama Rules",
 		value: "panama"
+	},
+	{
+		name: "Filipino Mahjong (Alpha)",
+		value: "filipino"
 	}
 ]
 

@@ -32,7 +32,7 @@ function evaluateNextMove({botConfig}) {
 	//and aren't aware of what others are doing, that is counterbalanced by their superhuman analysis abilities.
 	//Since in single player modes, people want to win quite a bit of the time, we're going to balance it out a bit more.
 	let botDifficultyConfig = {
-		botDifficulty: botConfig.botDifficulty ?? room.state.settings.americanBotDifficulty
+		botDifficulty: botConfig.botDifficulty ?? room.state.settings.botDifficulty
 	}
 
 	let expo = 50

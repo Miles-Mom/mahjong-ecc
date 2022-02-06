@@ -1,6 +1,8 @@
 const Wall = require("../../src/Wall.js")
 const Hand = require("../../src/Hand.js")
 
+const charlestonDefaults = require("./charlestonDefaults.js")
+
 const cards = require("../american/cards.js")
 
 //Note that these native modules will be empty objects in the browser!
@@ -23,7 +25,7 @@ function startGame(obj) {
 		})
 	}
 
-	if (["chinese", "american"].includes(obj?.settings?.gameStyle)) {
+	if (["chinese", "american", "filipino"].includes(obj?.settings?.gameStyle)) {
 		this.state.settings.gameStyle = obj?.settings?.gameStyle
 	}
 	else {
@@ -56,105 +58,38 @@ function startGame(obj) {
 
 	//Set settings
 	//TODO: The charleston setting array is modified, so the settings is useless, as after the charleston, it is an empty array.
-	this.state.settings.charleston = [
-		[
-			{
-				direction: "right",
-			},
-			{
-				direction: "across",
-			},
-			{
-				direction: "left",
-				//TODO: Allow Blind?
-			}
-		]
-	]
+	this.state.settings.charleston = charlestonDefaults.chineseMahjong()
 
-	this.state.settings.suggestedHands = obj?.settings?.suggestedHands ?? true
-	
-	this.state.settings.botCanStartCharleston = obj?.settings?.botCanStartCharleston ?? false
+	//Assign settings. The client will handle defaulting, etc.
+	Object.assign(this.state.settings, obj.settings)
 
-	this.state.settings.windAssignments = this.state.settings.windAssignments || {}
-
-	this.state.settings.checkForCalling = obj?.settings?.checkForCalling ?? true
-
-	this.state.settings.tableLimit = Number(obj?.settings?.tableLimit)
-
-	if (!obj?.settings?.tableLimitEnabled) {
-		this.state.settings.tableLimit = Infinity
-	}
-
-	this.state.settings.allow4thTilePickup = obj?.settings?.allow4thTilePickup ?? true
-
-	this.state.settings.ignoreBotMahjong = obj?.settings?.ignoreBotMahjong || false
-
-	this.state.settings.pickupDiscardForDraw = obj?.settings?.pickupDiscardForDraw || false
-
-	if (!isNaN(obj?.settings?.maximumSequences)) {
-		this.state.settings.maximumSequences = Math.max(0, Math.round(Number(obj?.settings?.maximumSequences)))
-	}
-	else {
-		this.state.settings.maximumSequences = 4
-	}
 
 	//Build the wall.
 	this.state.seed = this.state.seed || Math.random()
 
-	if (this.state.settings.gameStyle === "chinese") {
-		this.gameData.wall = new Wall(this.state.seed)
-		this.state.settings.ignoreBotMahjong = false //Not currently supported for Chinese.
+	switch (this.state.settings.gameStyle) {
+		case "chinese":
+			this.gameData.wall = new Wall(this.state.seed);
+			break;
+		case "filipino":
+			this.gameData.wall = new Wall(this.state.seed);
+			break;
+		case "american":
+			this.gameData.wall = new Wall(this.state.seed, {
+				prettysAsTiles: true,
+				includeJokers: 8
+			})
+
+			this.state.settings.charleston = charlestonDefaults.americanMahjong()
+
+			this.gameData.charleston = {
+				directions: this.state.settings.charleston.slice(0)
+			}
+			break;
+		default:
+			throw "Unknown gameStyle"
 	}
-	else if (this.state.settings.gameStyle === "american") {
-		this.state.settings.pickupDiscardForDraw = false //Not allowed in American.
-		this.gameData.wall = new Wall(this.state.seed, {
-			prettysAsTiles: true,
-			includeJokers: 8
-		})
-		this.state.settings.checkForCalling = false
 
-		this.state.settings.charleston = [
-			[
-				{
-					direction: "right",
-				},
-				{
-					direction: "across",
-				},
-				{
-					direction: "left",
-					blind: true
-				}
-			],
-			[
-				{
-					direction: "left",
-					allAgree: true
-				},
-				{
-					direction: "across",
-				},
-				{
-					direction: "right",
-					blind: true
-				}
-			],
-			[
-				{
-					direction: "across",
-					blind: true
-				}
-			]
-		]
-
-		this.gameData.charleston = {
-			directions: this.state.settings.charleston.slice(0)
-		}
-
-		this.state.settings.americanBotDifficulty = Math.max(0, Number(obj?.settings?.americanBotDifficulty))
-		if (isNaN(this.state.settings.americanBotDifficulty)) {this.state.settings.americanBotDifficulty = 50}
-	}
-	else {throw "Unknown gameStyle"}
 
 	this.state.hostClientId = this.hostClientId
 	this.state.moves = []
@@ -241,6 +176,9 @@ function startGame(obj) {
 		if (wind === "east") {
 			eastWindPlayerId = clientId
 			tileCount = 14
+		}
+		if (this.state.settings.gameStyle === "filipino") {
+			tileCount += 3
 		}
 		for (let i=0;i<tileCount;i++) {
 			this.drawTile(clientId, true)
