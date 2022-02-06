@@ -14,67 +14,54 @@ function startGame(obj) {
 		this.addBot()
 	}
 
-	if (obj?.settings?.gameStyle === "panama") {
-		//Panama Rules is a specific variant of Chinese rules.
-		Object.assign(obj.settings, {
-			gameStyle: "chinese",
-			checkForCalling: true,
-			allow4thTilePickup: true,
-			botCanStartCharleston: true,
-			maximumSequences: 1,
-		})
+	//Reset settings (we don't want extra settings carrying between games - variant switches are possible)
+	let previousWindAssignments = this?.state?.settings?.windAssignments
+	this.state.settings = {
+		windAssignments: previousWindAssignments
 	}
-
-	if (["chinese", "american", "filipino"].includes(obj?.settings?.gameStyle)) {
-		this.state.settings.gameStyle = obj?.settings?.gameStyle
-	}
-	else {
-		return {
-			title: "Please Select Variant",
-			body: "You must select a game variant to play. "
-		}
-	}
-
-	if (this.state.settings.gameStyle === "american") {
-		if (cards[obj?.settings?.card]) {
-			this.state.settings.card = obj?.settings?.card
-			delete this.state.settings.unknownCard
-		}
-		else if (obj?.settings?.card === "Other"){
-			this.state.settings.unknownCard = true
-			this.state.settings.card = "Random"
-		}
-		else {
-			return {
-				title: "Please Select Card",
-				body: "You must select a card to play American Mahjong. Select 'Other Card' if your card is not available. "
-			}
-		}
-		this.gameData.card = cards[this.state.settings.card]
-	}
-
-	this.inGame = true
-	this.messageAll([], obj.type, "Game Started", "success")
-
-	//Set settings
-	//TODO: The charleston setting array is modified, so the settings is useless, as after the charleston, it is an empty array.
-	this.state.settings.charleston = charlestonDefaults.chineseMahjong()
-
-	//Assign settings. The client will handle defaulting, etc.
+	//Copy settings for game.
 	Object.assign(this.state.settings, obj.settings)
 
-
-	//Build the wall.
+	//Create wall seed. 
 	this.state.seed = this.state.seed || Math.random()
 
 	switch (this.state.settings.gameStyle) {
+		case "panama":
+			//Panama Rules is a specific variant of Chinese rules.
+			Object.assign(this.state.settings, {
+				gameStyle: "chinese",
+				checkForCalling: true,
+				allow4thTilePickup: true,
+				botCanStartCharleston: true,
+				maximumSequences: 1,
+			})
+			//Passthrough (no break statement)
 		case "chinese":
 			this.gameData.wall = new Wall(this.state.seed);
+			this.state.settings.charleston = charlestonDefaults.chineseMahjong()
 			break;
 		case "filipino":
 			this.gameData.wall = new Wall(this.state.seed);
 			break;
 		case "american":
+			delete this.state.settings.unknownCard
+
+
+			if (this.state.settings.card === "Other") {
+				//Unknown card - use a random card for bots.
+				this.state.settings.unknownCard = true
+				this.state.settings.card = "Random"
+			}
+
+			this.gameData.card = cards[this.state.settings.card]
+
+			if (!this.gameData.card) {
+				return {
+					title: "Please Select Card",
+					body: "You must select a card to play American Mahjong. Select 'Other Card' if your card is not available. "
+				}
+			}
+
 			this.gameData.wall = new Wall(this.state.seed, {
 				prettysAsTiles: true,
 				includeJokers: 8
@@ -87,9 +74,14 @@ function startGame(obj) {
 			}
 			break;
 		default:
-			throw "Unknown gameStyle"
+			return {
+				title: "Please Select Variant",
+				body: "You must select a game variant to play. "
+			}
 	}
 
+	this.inGame = true
+	this.messageAll([], obj.type, "Game Started", "success")
 
 	this.state.hostClientId = this.hostClientId
 	this.state.moves = []
