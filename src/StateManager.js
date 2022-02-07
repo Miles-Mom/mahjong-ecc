@@ -161,6 +161,7 @@ class StateManager {
 				clientId: window.clientId,
 				roomId,
 				nickname,
+				locale: i18n.getLocale()
 			}))
 		}
 
@@ -170,6 +171,7 @@ class StateManager {
 				clientId: window.clientId,
 				roomId,
 				nickname,
+				locale: i18n.getLocale()
 			}))
 		}
 
