@@ -6,6 +6,9 @@ const Tile = require("../Tile.js")
 const Hand = require("../Hand.js")
 
 function isMahjong(maximumSequences = 4, options = {}) {
+	//We will assume 4 pongs required, unless maximumSequences is greater (like for filipino, where it is 5)
+	let requiredMatchesOrSequences = Math.max(4, maximumSequences);
+
 	//options.thrownTile:
 	//Tile whose match/sequence must be exposed.
 	//Used for autocompleting mahjongs, to make sure we don't give the wrong point valuation.
@@ -42,7 +45,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 	}
 
 	if (pairs === 1) {
-		if (Math.min(sequences, maximumSequences) + pongOrKong === 4) {return 2}
+		if (Math.min(sequences, maximumSequences) + pongOrKong === requiredMatchesOrSequences) {return 2}
 	}
 
 	//Now we need to go through our remaining tiles.
@@ -100,7 +103,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 
 	let combinations = []
 	let allPossibilities = possibleMatches
-	let neededPongEquivs = 4
+	let neededPongEquivs = requiredMatchesOrSequences
 
 	if (maximumSequences > sequences) {
 		//If we are at the sequence limit, there's no need to add the sequences to the possibilities.
@@ -117,7 +120,7 @@ function isMahjong(maximumSequences = 4, options = {}) {
 		let sequenceCount = combo.reduce((total, value) => {return total+Number(value instanceof Sequence)}, 0)
 		let matchCount = neededPongEquivs - sequenceCount
 		sequenceCount += sequences
-		if (4-pongOrKong-matchCount > Math.min(maximumSequences, sequenceCount)) {
+		if (requiredMatchesOrSequences-pongOrKong-matchCount > Math.min(maximumSequences, sequenceCount)) {
 			continue;
 		}
 		combinations.push(combo);

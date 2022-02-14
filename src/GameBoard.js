@@ -719,6 +719,7 @@ window.stateManager.addEventListener("onStateUpdate", function(obj) {
 	}
 
 	gameBoard.className = obj?.message?.settings?.gameStyle //Buttons use this class to determine layout and visibility.
+	if (obj?.message?.settings?.gameStyle === "filipino") {gameBoard.className = "chinese"} //Currently the same layout. 
 
 	let message = obj.message
 

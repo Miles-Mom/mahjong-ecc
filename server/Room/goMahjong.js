@@ -35,6 +35,15 @@ function goMahjong(clientId, options = {}) {
 			return client.message("roomActionPlaceTiles", `Your hand does not appear to be Mahjong for the ${this.gameData.card.name} card. If you are Mahjong, click the Mahjong button again to override. Card selection can be changed by the host in Game Settings. `, "error")
 		}
 	}
+	else if (this.state.settings.gameStyle === "filipino") {
+		let isMahjong = hand.isMahjong(this.state.settings.maximumSequences, {thrownTile: options.autoExpose && this.gameData.previousTurnPickedUp})
+		if (isMahjong instanceof Hand && !ignoreMahjong) {
+			hand.contents = isMahjong.contents //Autocomplete the mahjong.
+		}
+		if (!isMahjong && !options.override) {
+			return client.message("roomActionPlaceTiles", "Mahjong not detected - if this is a special hand, press Mahjong again. ", "error")
+		}
+	}
 
 	hand.status = {
 		status: "mahjong",
@@ -56,14 +65,14 @@ function goMahjong(clientId, options = {}) {
 	}
 
 	this.messageAll([clientId], "roomActionGameplayAlert", {format: "%s went mahjong!", args:client.getNickname()}, {clientId, speech: "Mahjong"})
-	
+
 	this.setAllInstructions([clientId], {format: ["%s went mahjong!", "\n", "Press End Game to return everybody to the room screen. "], args:client.getNickname()})
 	this.setInstructions(clientId, {format: ["%s went mahjong!", "\n", "Press End Game to return everybody to the room screen. "], argsI18n:"You"})
 
-	this.getSummary(clientId, options)	
+	this.getSummary(clientId, options)
 
 	this.messageAll([], "displayMessage", {title: "Mahjong!", body: {format:"%(summary)s", args:{summary:"placeholder"}, argsOption:{summary:localizeSummary}}}, "success")
-	
+
 	setTimeout((function() {
 		//Offset this call for bots (which are synchronus) to avoid infinite recursion if their Mahjong is ignored.
 		this.sendStateToClients()
